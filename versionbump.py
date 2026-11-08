@@ -41,7 +41,7 @@ for toc in [toc for group in allTocs.values() for toc in group]:
             if line[:10] == '## Version':
                 print('## Version: ' + version)
             elif line[:8] == '## Title':
-                print('## Title: Questie|cFF00FF00 v' + version + '|r')
+                print('## Title: Questie-Smazak|cFF00FF00 v' + version + '|r')
             else:
                 print(line, end='')
 

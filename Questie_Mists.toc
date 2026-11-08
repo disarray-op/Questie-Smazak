@@ -1,5 +1,5 @@
 ## Interface: 50503, 50504
-## Title: Questie|cFF00FF00 v12.6.4|r
+## Title: Questie-Smazak|cFF00FF00 v12.6.4|r
 ## Author: Aero/Logon/Muehe/TheCrux(BreakBB)/Drejjmit/Dyaxler/Cheeq/TechnoHunter/Yttrium/Everyone else
 ## Notes: A standalone Classic QuestHelper
 ## Notes-deDE: Ein Quest-Helfer

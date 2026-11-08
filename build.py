@@ -203,7 +203,7 @@ def main():
                         if line[:10] == "## Version":
                             print("## Version: " + vs)
                         elif line[:8] == '## Title':
-                            print('## Title: Questie|cFF00FF00 ' + vs + '|r')
+                            print('## Title: Questie-Smazak|cFF00FF00 ' + vs + '|r')
                         else:
                             print(line, end="")
 
