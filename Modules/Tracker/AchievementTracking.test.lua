@@ -36,12 +36,12 @@ describe("AchievementTracking", function()
             _G[name] = nil
         end
 
-        Expansions = QuestieLoader:ImportModule("Expansions")
+        Expansions = QuestieSmazakLoader:ImportModule("Expansions")
         originalExpansion = Expansions.Current
         Expansions.Current = Expansions.Wotlk
 
         dofile("Modules/Tracker/AchievementTracking.lua")
-        AchievementTracking = QuestieLoader:ImportModule("AchievementTracking")
+        AchievementTracking = QuestieSmazakLoader:ImportModule("AchievementTracking")
     end)
 
     after_each(function()

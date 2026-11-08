@@ -31,8 +31,8 @@ describe("QuestDetailsFrame prerequisite links", function()
     end
 
     before_each(function()
-        originalQuestie, originalLibStub, originalUnitLevel = _G.Questie, _G.LibStub, _G.UnitLevel
-        _G.Questie = {
+        originalQuestie, originalLibStub, originalUnitLevel = _G.QuestieSmazak, _G.LibStub, _G.UnitLevel
+        _G.QuestieSmazak = {
             db = {char = {complete = {}, hidden = {}}, profile = {}},
             Colorize = function(_, text) return text end,
         }
@@ -41,30 +41,30 @@ describe("QuestDetailsFrame prerequisite links", function()
         links, navigation = {}, {}
 
         dofile("Localization/l10n.lua")
-        local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+        local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
         local fields = {requiredLevel = 5, questLevel = 8, name = "Prerequisite"}
         QuestieDB.QueryQuestSingle = function(_, field) return fields[field] end
         QuestieDB.IsRepeatable = function() return false end
         QuestieDB.IsDoableVerbose = function() return nil, false end
-        QuestieLoader:ImportModule("QuestieCorrections").hiddenQuests = {}
-        QuestieLoader:ImportModule("QuestieReputation").GetReputationReward = function() end
+        QuestieSmazakLoader:ImportModule("QuestieCorrections").hiddenQuests = {}
+        QuestieSmazakLoader:ImportModule("QuestieReputation").GetReputationReward = function() end
 
-        local QuestieLib = QuestieLoader:ImportModule("QuestieLib")
+        local QuestieLib = QuestieSmazakLoader:ImportModule("QuestieLib")
         QuestieLib.GetEffectiveQuestLevel = function() return 8 end
         QuestieLib.GetRaceString = function() return "" end
         QuestieLib.GetClassString = function() return "" end
         QuestieLib.GetColoredQuestName = function(_, id) return "Prerequisite " .. id end
 
-        local QuestieJourneyUtils = QuestieLoader:ImportModule("QuestieJourneyUtils")
+        local QuestieJourneyUtils = QuestieSmazakLoader:ImportModule("QuestieJourneyUtils")
         QuestieJourneyUtils.Spacer = function() end
         QuestieJourneyUtils.CreateObjectiveText = function() return "Speak with Sania Silverstream." end
         QuestieJourneyUtils.HideJourneyTooltip = function()
             navigation[#navigation + 1] = "hide tooltip"
         end
 
-        QuestieSearchResults = QuestieLoader:ImportModule("QuestieSearchResults")
+        QuestieSearchResults = QuestieSmazakLoader:ImportModule("QuestieSearchResults")
         QuestieSearchResults.SetSearch = nil
-        QuestieLoader:ImportModule("QuestieJourney").tabGroup = {
+        QuestieSmazakLoader:ImportModule("QuestieJourney").tabGroup = {
             SelectTab = function(_, tab)
                 navigation[#navigation + 1] = tab
                 -- Search controls do not exist until their tab has been drawn.
@@ -73,11 +73,11 @@ describe("QuestDetailsFrame prerequisite links", function()
         }
 
         dofile("Modules/Journey/QuestDetailsFrame.lua")
-        QuestDetailsFrame = QuestieLoader:ImportModule("QuestDetailsFrame")
+        QuestDetailsFrame = QuestieSmazakLoader:ImportModule("QuestDetailsFrame")
     end)
 
     after_each(function()
-        _G.Questie, _G.LibStub, _G.UnitLevel = originalQuestie, originalLibStub, originalUnitLevel
+        _G.QuestieSmazak, _G.LibStub, _G.UnitLevel = originalQuestie, originalLibStub, originalUnitLevel
     end)
 
     it("opens the search tab before navigating to a single prerequisite", function()

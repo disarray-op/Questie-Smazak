@@ -1,11 +1,11 @@
 ---@type QuestieOptions
-local QuestieOptions = QuestieLoader:ImportModule("QuestieOptions");
+local QuestieOptions = QuestieSmazakLoader:ImportModule("QuestieOptions");
 ---@type QuestieOptionsUtils
-local QuestieOptionsUtils = QuestieLoader:ImportModule("QuestieOptionsUtils");
+local QuestieOptionsUtils = QuestieSmazakLoader:ImportModule("QuestieOptionsUtils");
 ---@type QuestieTracker
-local QuestieTracker = QuestieLoader:ImportModule("QuestieTracker");
+local QuestieTracker = QuestieSmazakLoader:ImportModule("QuestieTracker");
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 
 QuestieOptions.tabs.auto = {...}
 
@@ -26,10 +26,10 @@ function QuestieOptions.tabs.auto:Initialize()
                 name = function() return l10n("Auto Modifier") end,
                 desc = function() return l10n("The modifier to NOT auto-accept/-complete quests when either option is enabled and you interact with a quest NPC."); end,
                 width = 0.65,
-                --disabled = function() return (not Questie.db.profile.autocomplete) and (not Questie.db.profile.autoAccept.enabled) end,
-                get = function() return Questie.db.profile.autoModifier; end,
+                --disabled = function() return (not QuestieSmazak.db.profile.autocomplete) and (not QuestieSmazak.db.profile.autoAccept.enabled) end,
+                get = function() return QuestieSmazak.db.profile.autoModifier; end,
                 set = function(input, key)
-                    Questie.db.profile.autoModifier = key
+                    QuestieSmazak.db.profile.autoModifier = key
                 end,
             },
             autocomplete_options = {
@@ -41,11 +41,11 @@ function QuestieOptions.tabs.auto:Initialize()
                 type = "toggle",
                 order = 1.1,
                 name = function() return l10n("Auto Complete Quests"); end,
-                desc = function() return l10n("If checked, Questie will automatically hand in finished quests when talking to NPCs."); end,
-                get = function () return Questie.db.profile.autocomplete; end,
+                desc = function() return l10n("If checked, QuestieSmazak will automatically hand in finished quests when talking to NPCs."); end,
+                get = function () return QuestieSmazak.db.profile.autocomplete; end,
                 set = function (info, value)
-                    Questie.db.profile.autocomplete = value
-                    Questie.Debug(Questie.DEBUG_DEVELOP, "Auto Complete toggled to:", value)
+                    QuestieSmazak.db.profile.autocomplete = value
+                    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "Auto Complete toggled to:", value)
                 end,
             },
             autocomplete_spacer = QuestieOptionsUtils:Spacer(1.2),
@@ -58,11 +58,11 @@ function QuestieOptions.tabs.auto:Initialize()
                 type = "toggle",
                 order = 2.1,
                 name = function() return l10n("Auto Accept Quests"); end,
-                desc = function() return l10n("If checked, Questie will automatically accept quest dialogs when they appear, depending on the rules below."); end,
-                get = function () return Questie.db.profile.autoAccept.enabled; end,
+                desc = function() return l10n("If checked, QuestieSmazak will automatically accept quest dialogs when they appear, depending on the rules below."); end,
+                get = function () return QuestieSmazak.db.profile.autoAccept.enabled; end,
                 set = function (info, value)
-                    Questie.db.profile.autoAccept.enabled = value
-                    Questie.Debug(Questie.DEBUG_DEVELOP, "Auto Accept toggled to:", value)
+                    QuestieSmazak.db.profile.autoAccept.enabled = value
+                    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "Auto Accept toggled to:", value)
                 end,
             },
             npcrules_group = {
@@ -71,7 +71,7 @@ function QuestieOptions.tabs.auto:Initialize()
                 inline = true,
                 width = 0.5,
                 name = function() return l10n("Rules for NPCs"); end,
-                disabled = function() return not Questie.db.profile.autoAccept.enabled end,
+                disabled = function() return not QuestieSmazak.db.profile.autoAccept.enabled end,
                 args = {
                     npc_normalquests = {
                         type = "toggle",
@@ -83,11 +83,11 @@ function QuestieOptions.tabs.auto:Initialize()
                         disabled = true,
                         get = function () return true; end,
                         -- -- AUTO 2.0
-                        -- get = function () return Questie.db.profile.autoaccept_npc_normal; end,
+                        -- get = function () return QuestieSmazak.db.profile.autoaccept_npc_normal; end,
                         -- END
                         set = function (info, value)
-                            Questie.db.profile.autoaccept_npc_normal = value
-                            Questie.Debug(Questie.DEBUG_DEVELOP, "Auto Accept NPC Normal toggled to:", value)
+                            QuestieSmazak.db.profile.autoaccept_npc_normal = value
+                            QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "Auto Accept NPC Normal toggled to:", value)
                         end,
                     },
                     npc_repeatablequests = {
@@ -96,10 +96,10 @@ function QuestieOptions.tabs.auto:Initialize()
                         name = function() return l10n("Repeatable Quests"); end,
                         desc = function() return l10n("Automatically accept repeatable quests (including dailies) from NPCs."); end,
                         width = 1,
-                        get = function () return Questie.db.profile.autoAccept.repeatable; end,
+                        get = function () return QuestieSmazak.db.profile.autoAccept.repeatable; end,
                         set = function (_, value)
-                            Questie.db.profile.autoAccept.repeatable = value
-                            Questie.Debug(Questie.DEBUG_DEVELOP, "Auto Accept NPC Repeatable toggled to:", value)
+                            QuestieSmazak.db.profile.autoAccept.repeatable = value
+                            QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "Auto Accept NPC Repeatable toggled to:", value)
                         end,
                     },
                     npc_dungeonquests = {
@@ -112,10 +112,10 @@ function QuestieOptions.tabs.auto:Initialize()
                         disabled = true,
                         get = function () return true; end,
                         -- -- AUTO 2.0
-                        -- get = function () return Questie.db.profile.autoaccept_npc_dungeon; end,
+                        -- get = function () return QuestieSmazak.db.profile.autoaccept_npc_dungeon; end,
                         set = function (info, value)
-                            Questie.db.profile.autoaccept_npc_dungeon = value
-                            Questie.Debug(Questie.DEBUG_DEVELOP, "Auto Accept NPC Dungeon toggled to:", value)
+                            QuestieSmazak.db.profile.autoaccept_npc_dungeon = value
+                            QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "Auto Accept NPC Dungeon toggled to:", value)
                         end,
                     },
                     npc_pvpquests = {
@@ -124,10 +124,10 @@ function QuestieOptions.tabs.auto:Initialize()
                         name = function() return l10n("PvP Quests"); end,
                         desc = function() return l10n("Automatically accept PvP quests from NPCs."); end,
                         width = 1,
-                        get = function () return Questie.db.profile.autoAccept.pvp; end,
+                        get = function () return QuestieSmazak.db.profile.autoAccept.pvp; end,
                         set = function (info, value)
-                            Questie.db.profile.autoAccept.pvp = value
-                            Questie.Debug(Questie.DEBUG_DEVELOP, "Auto Accept NPC PvP toggled to:", value)
+                            QuestieSmazak.db.profile.autoAccept.pvp = value
+                            QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "Auto Accept NPC PvP toggled to:", value)
                         end,
                     },
                     npc_eventquests = {
@@ -140,10 +140,10 @@ function QuestieOptions.tabs.auto:Initialize()
                         disabled = true,
                         get = function () return true; end,
                         -- -- AUTO 2.0
-                        -- get = function () return Questie.db.profile.autoaccept_npc_event; end,
+                        -- get = function () return QuestieSmazak.db.profile.autoaccept_npc_event; end,
                         set = function (info, value)
-                            Questie.db.profile.autoaccept_npc_event = value
-                            Questie.Debug(Questie.DEBUG_DEVELOP, "Auto Accept NPC Event toggled to:", value)
+                            QuestieSmazak.db.profile.autoaccept_npc_event = value
+                            QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "Auto Accept NPC Event toggled to:", value)
                         end,
                     },
                     npc_trivialquests = {
@@ -153,15 +153,15 @@ function QuestieOptions.tabs.auto:Initialize()
                         desc = function() return l10n("Automatically accept trivial (low-level) quests from NPCs."); end,
                         width = 1,
                         -- AUTO 1.0
-                        get = function() return Questie.db.profile.autoAccept.trivial; end,
+                        get = function() return QuestieSmazak.db.profile.autoAccept.trivial; end,
                         set = function(_, value)
-                            Questie.db.profile.autoAccept.trivial = value
+                            QuestieSmazak.db.profile.autoAccept.trivial = value
                         end,
                         -- AUTO 2.0
-                        -- get = function () return Questie.db.profile.autoaccept_npc_trivial; end,
+                        -- get = function () return QuestieSmazak.db.profile.autoaccept_npc_trivial; end,
                         -- set = function (info, value)
-                        --     Questie.db.profile.autoaccept_npc_trivial = value
-                        --     Questie.Debug(Questie.DEBUG_DEVELOP, "Auto Accept NPC Trivial toggled to:", value)
+                        --     QuestieSmazak.db.profile.autoaccept_npc_trivial = value
+                        --     QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "Auto Accept NPC Trivial toggled to:", value)
                         -- end,
                     },
                 },
@@ -171,7 +171,7 @@ function QuestieOptions.tabs.auto:Initialize()
                 order = 2.3,
                 inline = true,
                 width = 0.5,
-                disabled = function() return not Questie.db.profile.autoAccept.enabled end,
+                disabled = function() return not QuestieSmazak.db.profile.autoAccept.enabled end,
                 name = function() return l10n("Rules for players"); end,
                 args = {
                     player_normalquests = {
@@ -184,10 +184,10 @@ function QuestieOptions.tabs.auto:Initialize()
                         disabled = true,
                         get = function () return true; end,
                         -- -- AUTO 2.0
-                        -- get = function () return Questie.db.profile.autoaccept_player_normal; end,
+                        -- get = function () return QuestieSmazak.db.profile.autoaccept_player_normal; end,
                         set = function (info, value)
-                            Questie.db.profile.autoaccept_player_normal = value
-                            Questie.Debug(Questie.DEBUG_DEVELOP, "Auto Accept Player Normal toggled to:", value)
+                            QuestieSmazak.db.profile.autoaccept_player_normal = value
+                            QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "Auto Accept Player Normal toggled to:", value)
                         end,
                     },
                     player_repeatablequests = {
@@ -200,10 +200,10 @@ function QuestieOptions.tabs.auto:Initialize()
                         disabled = true,
                         get = function () return true; end,
                         -- -- AUTO 2.0
-                        -- get = function () return Questie.db.profile.autoaccept_player_repeatable; end,
+                        -- get = function () return QuestieSmazak.db.profile.autoaccept_player_repeatable; end,
                         set = function (info, value)
-                            Questie.db.profile.autoaccept_player_repeatable = value
-                            Questie.Debug(Questie.DEBUG_DEVELOP, "Auto Accept Player Repeatable toggled to:", value)
+                            QuestieSmazak.db.profile.autoaccept_player_repeatable = value
+                            QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "Auto Accept Player Repeatable toggled to:", value)
                         end,
                     },
                     player_dungeonquests = {
@@ -216,10 +216,10 @@ function QuestieOptions.tabs.auto:Initialize()
                         disabled = true,
                         get = function () return true; end,
                         -- -- AUTO 2.0
-                        -- get = function () return Questie.db.profile.autoaccept_player_dungeon; end,
+                        -- get = function () return QuestieSmazak.db.profile.autoaccept_player_dungeon; end,
                         set = function (info, value)
-                            Questie.db.profile.autoaccept_player_dungeon = value
-                            Questie.Debug(Questie.DEBUG_DEVELOP, "Auto Accept Player Dungeon toggled to:", value)
+                            QuestieSmazak.db.profile.autoaccept_player_dungeon = value
+                            QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "Auto Accept Player Dungeon toggled to:", value)
                         end,
                     },
                     player_pvpquests = {
@@ -232,10 +232,10 @@ function QuestieOptions.tabs.auto:Initialize()
                         disabled = true,
                         get = function () return true; end,
                         -- -- AUTO 2.0
-                        -- get = function () return Questie.db.profile.autoaccept_player_pvp; end,
+                        -- get = function () return QuestieSmazak.db.profile.autoaccept_player_pvp; end,
                         set = function (info, value)
-                            Questie.db.profile.autoaccept_player_pvp = value
-                            Questie.Debug(Questie.DEBUG_DEVELOP, "Auto Accept Player PvP toggled to:", value)
+                            QuestieSmazak.db.profile.autoaccept_player_pvp = value
+                            QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "Auto Accept Player PvP toggled to:", value)
                         end,
                     },
                     player_eventquests = {
@@ -248,10 +248,10 @@ function QuestieOptions.tabs.auto:Initialize()
                         disabled = true,
                         get = function () return true; end,
                         -- -- AUTO 2.0
-                        -- get = function () return Questie.db.profile.autoaccept_player_event; end,
+                        -- get = function () return QuestieSmazak.db.profile.autoaccept_player_event; end,
                         set = function (info, value)
-                            Questie.db.profile.autoaccept_player_event = value
-                            Questie.Debug(Questie.DEBUG_DEVELOP, "Auto Accept Player Event toggled to:", value)
+                            QuestieSmazak.db.profile.autoaccept_player_event = value
+                            QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "Auto Accept Player Event toggled to:", value)
                         end,
                     },
                     player_trivialquests = {
@@ -264,10 +264,10 @@ function QuestieOptions.tabs.auto:Initialize()
                         disabled = true,
                         get = function () return true; end,
                         -- -- AUTO 2.0
-                        -- get = function () return Questie.db.profile.autoaccept_player_trivial; end,
+                        -- get = function () return QuestieSmazak.db.profile.autoaccept_player_trivial; end,
                         set = function (info, value)
-                            Questie.db.profile.autoaccept_player_trivial = value
-                            Questie.Debug(Questie.DEBUG_DEVELOP, "Auto Accept Player Trivial toggled to:", value)
+                            QuestieSmazak.db.profile.autoaccept_player_trivial = value
+                            QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "Auto Accept Player Trivial toggled to:", value)
                         end,
                     },
                 },
@@ -279,11 +279,11 @@ function QuestieOptions.tabs.auto:Initialize()
             --    order = 8,
             --    name = function() return l10n("Accept trivial (low level) quests"); end,
             --    desc = function() return l10n("If checked, trivial (gray) quests will be auto accepted as well."); end,
-            --    disabled = function() return (not Questie.db.profile.autoAccept.enabled) end,
+            --    disabled = function() return (not QuestieSmazak.db.profile.autoAccept.enabled) end,
             --    width = 1.5,
-            --    get = function () return Questie.db.profile.autoAccept.trivial; end,
+            --    get = function () return QuestieSmazak.db.profile.autoAccept.trivial; end,
             --    set = function (info, value)
-            --        Questie.db.profile.autoAccept.trivial = value
+            --        QuestieSmazak.db.profile.autoAccept.trivial = value
             --    end,
             --},
             autoreject_options = {
@@ -297,10 +297,10 @@ function QuestieOptions.tabs.auto:Initialize()
                 name = function() return l10n("Reject quests shared in battlegrounds"); end,
                 desc = function() return l10n("Automatically reject quests shared by players while in a battleground instance. This feature overrides autoaccept behavior."); end,
                 width = 1.6,
-                get = function () return Questie.db.profile.autoAccept.rejectSharedInBattleground; end,
+                get = function () return QuestieSmazak.db.profile.autoAccept.rejectSharedInBattleground; end,
                 set = function (_, value)
-                    Questie.db.profile.autoAccept.rejectSharedInBattleground = value
-                    Questie.Debug(Questie.DEBUG_DEVELOP, "Auto Reject Battleground toggled to:", value)
+                    QuestieSmazak.db.profile.autoAccept.rejectSharedInBattleground = value
+                    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "Auto Reject Battleground toggled to:", value)
                 end,
             },
             autoreject_randoms = {
@@ -313,10 +313,10 @@ function QuestieOptions.tabs.auto:Initialize()
                 disabled = true,
                 get = function () return false; end,
                 -- -- AUTO 2.0
-                -- get = function () return Questie.db.profile.autoreject_nonfriend; end,
+                -- get = function () return QuestieSmazak.db.profile.autoreject_nonfriend; end,
                 set = function (info, value)
-                    Questie.db.profile.autoreject_nonfriend = value
-                    Questie.Debug(Questie.DEBUG_DEVELOP, "Auto Reject Nonfriend toggled to:", value)
+                    QuestieSmazak.db.profile.autoreject_nonfriend = value
+                    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "Auto Reject Nonfriend toggled to:", value)
                 end,
             },
             autoreject_breadcrumb = {
@@ -325,17 +325,17 @@ function QuestieOptions.tabs.auto:Initialize()
                 name = function() return l10n("Abandon quest if breadcrumb is not completed"); end,
                 desc = function() return l10n("Automatically abandon a quest if you accept it before completing its breadcrumb quest."); end,
                 width = 2.0,
-                get = function () return Questie.db.profile.autoAccept.abandonBreadcrumbFollowup; end,
+                get = function () return QuestieSmazak.db.profile.autoAccept.abandonBreadcrumbFollowup; end,
                 set = function (_, value)
-                    Questie.db.profile.autoAccept.abandonBreadcrumbFollowup = value
-                    Questie.Debug(Questie.DEBUG_DEVELOP, "Auto Reject Breadcrumb toggled to:", value)
+                    QuestieSmazak.db.profile.autoAccept.abandonBreadcrumbFollowup = value
+                    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "Auto Reject Breadcrumb toggled to:", value)
                 end,
             },
             wip_spacer = QuestieOptionsUtils:Spacer(4),
             wip_text = {
                 type = "description",
                 order = 5,
-                name = function() return l10n("Further Auto customization is coming in a future Questie update."); end,
+                name = function() return l10n("Further Auto customization is coming in a future QuestieSmazak update."); end,
                 fontSize = "medium",
             },
         }

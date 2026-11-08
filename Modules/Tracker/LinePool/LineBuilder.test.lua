@@ -58,23 +58,23 @@ describe("LineBuilder", function()
         trackedWidths = {}
         updatedWidths = {}
 
-        Questie.db.char.collapsedZones = {}
-        Questie.db.char.collapsedQuests = {}
-        Questie.db.char.minAllQuestsInZone = {}
-        Questie.db.profile.trackerQuestPadding = 2
+        QuestieSmazak.db.char.collapsedZones = {}
+        QuestieSmazak.db.char.collapsedQuests = {}
+        QuestieSmazak.db.char.minAllQuestsInZone = {}
+        QuestieSmazak.db.profile.trackerQuestPadding = 2
 
-        TrackerLayout = QuestieLoader:ImportModule("TrackerLayout")
+        TrackerLayout = QuestieSmazakLoader:ImportModule("TrackerLayout")
         TrackerLayout.GetMargins = function() return {left = 14, right = 30, quest = 20, objective = 30, itemButtonSize = 24, expandQuestRight = 15, buttonSize = 15, playButtonRight = 13, playButtonSize = 17, focusButtonRight = 9} end
         TrackerLayout.GetBaseFrameWidth = function() return 400 end
         TrackerLayout.UpdateWidth = function(width) updatedWidths[#updatedWidths + 1] = width end
         TrackerLayout.TrackLineWidth = function(width) trackedWidths[#trackedWidths + 1] = width end
         TrackerLayout.UpdateLineWidth = spy.new(function() end)
 
-        TrackerLinePool = QuestieLoader:ImportModule("TrackerLinePool")
+        TrackerLinePool = QuestieSmazakLoader:ImportModule("TrackerLinePool")
         TrackerLinePool.GetNextLine = spy.new(function() return nextLine end)
 
         dofile("Modules/Tracker/LinePool/LineBuilder.lua")
-        LineBuilder = QuestieLoader:ImportModule("LineBuilder")
+        LineBuilder = QuestieSmazakLoader:ImportModule("LineBuilder")
     end)
 
     describe("AddHeader", function()
@@ -102,7 +102,7 @@ describe("LineBuilder", function()
         end)
 
         it("should show the collapsed text of a collapsed zone", function()
-            Questie.db.char.collapsedZones = {Achievements = true}
+            QuestieSmazak.db.char.collapsedZones = {Achievements = true}
 
             local line, collapsed = LineBuilder.AddHeader({key = "Achievements", text = "Achievements: 3/10", collapsedText = "Achievements +"})
 
@@ -112,7 +112,7 @@ describe("LineBuilder", function()
         end)
 
         it("should default the collapsed text to the text with a plus", function()
-            Questie.db.char.collapsedZones = {Recipes = true}
+            QuestieSmazak.db.char.collapsedZones = {Recipes = true}
 
             local line = LineBuilder.AddHeader({key = "Recipes", text = "Recipes"})
 
@@ -152,27 +152,27 @@ describe("LineBuilder", function()
         end)
 
         it("should zero out minAllQuestsInZone when it holds no quest ids", function()
-            Questie.db.char.minAllQuestsInZone = {Westfall = {isTrue = false}}
+            QuestieSmazak.db.char.minAllQuestsInZone = {Westfall = {isTrue = false}}
 
             LineBuilder.AddHeader({key = "Westfall", text = "Westfall"})
 
-            assert.is_nil(Questie.db.char.minAllQuestsInZone.Westfall)
+            assert.is_nil(QuestieSmazak.db.char.minAllQuestsInZone.Westfall)
         end)
 
         it("should keep minAllQuestsInZone when it holds quest ids", function()
-            Questie.db.char.minAllQuestsInZone = {Westfall = {[123] = true}}
+            QuestieSmazak.db.char.minAllQuestsInZone = {Westfall = {[123] = true}}
 
             LineBuilder.AddHeader({key = "Westfall", text = "Westfall"})
 
-            assert.is_not_nil(Questie.db.char.minAllQuestsInZone.Westfall)
+            assert.is_not_nil(QuestieSmazak.db.char.minAllQuestsInZone.Westfall)
         end)
 
         it("should keep minAllQuestsInZone while all quests of the zone are minimized", function()
-            Questie.db.char.minAllQuestsInZone = {Westfall = {isTrue = true}}
+            QuestieSmazak.db.char.minAllQuestsInZone = {Westfall = {isTrue = true}}
 
             LineBuilder.AddHeader({key = "Westfall", text = "Westfall"})
 
-            assert.is_not_nil(Questie.db.char.minAllQuestsInZone.Westfall)
+            assert.is_not_nil(QuestieSmazak.db.char.minAllQuestsInZone.Westfall)
         end)
     end)
 
@@ -242,7 +242,7 @@ describe("LineBuilder", function()
         end)
 
         it("should show the expand button of a collapsed title as collapsed", function()
-            Questie.db.char.collapsedQuests = {[4] = true}
+            QuestieSmazak.db.char.collapsedQuests = {[4] = true}
 
             local line, collapsed = LineBuilder.AddTitle({text = "Title", clickMode = "achieve", target = achievement, collapseId = 4, zoneKey = "Achievements"})
 
@@ -251,17 +251,17 @@ describe("LineBuilder", function()
         end)
 
         it("should add the id to minAllQuestsInZone while all titles of the zone are minimized", function()
-            Questie.db.char.minAllQuestsInZone = {Achievements = {isTrue = true}}
+            QuestieSmazak.db.char.minAllQuestsInZone = {Achievements = {isTrue = true}}
 
             LineBuilder.AddTitle({text = "Title", clickMode = "achieve", target = achievement, collapseId = 4, zoneKey = "Achievements"})
 
-            assert.is_true(Questie.db.char.minAllQuestsInZone.Achievements[4])
+            assert.is_true(QuestieSmazak.db.char.minAllQuestsInZone.Achievements[4])
         end)
 
         it("should not touch minAllQuestsInZone when it is not set for the zone", function()
             LineBuilder.AddTitle({text = "Title", clickMode = "achieve", target = achievement, collapseId = 4, zoneKey = "Achievements"})
 
-            assert.is_nil(Questie.db.char.minAllQuestsInZone.Achievements)
+            assert.is_nil(QuestieSmazak.db.char.minAllQuestsInZone.Achievements)
         end)
 
         it("should not hide the play button of a quest title", function()
@@ -421,7 +421,7 @@ describe("LineBuilder", function()
 
     describe("FinishEntry", function()
         it("should add the padding between quests below the last line", function()
-            Questie.db.profile.trackerQuestPadding = 5
+            QuestieSmazak.db.profile.trackerQuestPadding = 5
             local line = _Line()
 
             LineBuilder.FinishEntry(line)

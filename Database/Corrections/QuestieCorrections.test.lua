@@ -24,25 +24,25 @@ describe("QuestieCorrections", function()
         mock = LoadQuestieDBMock()
         LibQuestieDB = mock.lib
 
-        Expansions = QuestieLoader:ImportModule("Expansions")
+        Expansions = QuestieSmazakLoader:ImportModule("Expansions")
         originalExpansion = Expansions.Current
-        originalIsHardcore = Questie.IsHardcore
-        originalIsTitanReforged = Questie.IsTitanReforged
+        originalIsHardcore = QuestieSmazak.IsHardcore
+        originalIsTitanReforged = QuestieSmazak.IsTitanReforged
 
         Expansions.Current = Expansions.Era
-        Questie.IsHardcore = false
-        Questie.IsTitanReforged = false
-        Questie.db.global.isleOfQuelDanasPhase = 1
+        QuestieSmazak.IsHardcore = false
+        QuestieSmazak.IsTitanReforged = false
+        QuestieSmazak.db.global.isleOfQuelDanasPhase = 1
 
         dofile("Database/Corrections/ContentPhases/ContentPhases.lua")
-        ContentPhases = QuestieLoader:ImportModule("ContentPhases")
+        ContentPhases = QuestieSmazakLoader:ImportModule("ContentPhases")
         originalTBCPhase = ContentPhases.activePhases.TBC
         dofile("Database/Corrections/QuestiePolicy/tbcPolicyCorrections.lua")
 
-        QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+        QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
         QuestieDB.RefreshAfterCorrectionApply = spy.new(function() end)
 
-        local BlacklistFilter = QuestieLoader:ImportModule("BlacklistFilter")
+        local BlacklistFilter = QuestieSmazakLoader:ImportModule("BlacklistFilter")
         BlacklistFilter.filterExpansion = function(blacklist)
             for id, hide in pairs(blacklist) do
                 if hide == false then
@@ -52,34 +52,34 @@ describe("QuestieCorrections", function()
             return blacklist
         end
 
-        local QuestieItemBlacklist = QuestieLoader:ImportModule("QuestieItemBlacklist")
+        local QuestieItemBlacklist = QuestieSmazakLoader:ImportModule("QuestieItemBlacklist")
         QuestieItemBlacklist.Load = function() return {[101] = true, [102] = false} end
 
-        local QuestieNPCBlacklist = QuestieLoader:ImportModule("QuestieNPCBlacklist")
+        local QuestieNPCBlacklist = QuestieSmazakLoader:ImportModule("QuestieNPCBlacklist")
         QuestieNPCBlacklist.Load = function() return {[201] = true, [202] = false} end
 
-        local QuestieQuestBlacklist = QuestieLoader:ImportModule("QuestieQuestBlacklist")
+        local QuestieQuestBlacklist = QuestieSmazakLoader:ImportModule("QuestieQuestBlacklist")
         QuestieQuestBlacklist.Load = function() return {[301] = true, [302] = false} end
         QuestieQuestBlacklist.LoadAutoBlacklistWotlk = function() return {} end
         QuestieQuestBlacklist.LoadAutoBlacklistIsTitanReforged = function() return {} end
 
-        local HardcoreBlacklist = QuestieLoader:ImportModule("HardcoreBlacklist")
+        local HardcoreBlacklist = QuestieSmazakLoader:ImportModule("HardcoreBlacklist")
         HardcoreBlacklist.Load = function() return {} end
 
-        local IsleOfQuelDanas = QuestieLoader:ImportModule("IsleOfQuelDanas")
+        local IsleOfQuelDanas = QuestieSmazakLoader:ImportModule("IsleOfQuelDanas")
         IsleOfQuelDanas.MAX_ISLE_OF_QUEL_DANAS_PHASES = 9
         IsleOfQuelDanas.quests = {
             [9] = {},
         }
 
         dofile("Database/Corrections/QuestieCorrections.lua")
-        QuestieCorrections = QuestieLoader:ImportModule("QuestieCorrections")
+        QuestieCorrections = QuestieSmazakLoader:ImportModule("QuestieCorrections")
     end)
 
     after_each(function()
         Expansions.Current = originalExpansion
-        Questie.IsHardcore = originalIsHardcore
-        Questie.IsTitanReforged = originalIsTitanReforged
+        QuestieSmazak.IsHardcore = originalIsHardcore
+        QuestieSmazak.IsTitanReforged = originalIsTitanReforged
         ContentPhases.activePhases.TBC = originalTBCPhase
     end)
 
@@ -100,13 +100,13 @@ describe("QuestieCorrections", function()
             _G.debugstack = nil
         end)
 
-        it("publishes rows under owner Questie immediately, leaving GetRaw untouched", function()
+        it("publishes rows under owner QuestieSmazak immediately, leaving GetRaw untouched", function()
             QuestieCorrections.SetCorrection("Npc", "DarkmoonFaire", {[14828] = {[npcKeys.zoneID] = 215}})
 
             assert.are_same(215, LibQuestieDB.Npc.Get(14828, "zoneID"))
             assert.are_same(1519, LibQuestieDB.Npc.GetRaw(14828, "zoneID"))
-            assert.are_same("Questie", LibQuestieDB.Corrections.GetProvenance("Npc", 14828, "zoneID"))
-            assert.are_same({"QuestieDB", "Questie"}, LibQuestieDB.GetOwners())
+            assert.are_same("QuestieSmazak", LibQuestieDB.Corrections.GetProvenance("Npc", 14828, "zoneID"))
+            assert.are_same({"QuestieDB", "QuestieSmazak"}, LibQuestieDB.GetOwners())
         end)
 
         it("replaces the slot's rows on the next write", function()
@@ -170,7 +170,7 @@ describe("QuestieCorrections", function()
             QuestieCorrections.SetCorrection("Npc", "DarkmoonFaire", nil)
 
             assert.is_nil(LibQuestieDB.Object.Get(1617, "spawns"))
-            assert.are_same("Questie", LibQuestieDB.Corrections.GetProvenance("Object", 1617, "spawns"))
+            assert.are_same("QuestieSmazak", LibQuestieDB.Corrections.GetProvenance("Object", 1617, "spawns"))
         end)
 
         it("records where each slot was last written", function()
@@ -228,7 +228,7 @@ describe("QuestieCorrections", function()
             for _, objectId in ipairs(GATHERING_NODE_OBJECT_IDS) do
                 assert.is_nil(LibQuestieDB.Object.Get(objectId, "spawns"), "spawns visible for " .. objectId)
                 assert.are_same({[1] = {{10, 10}}}, LibQuestieDB.Object.GetRaw(objectId, "spawns"))
-                assert.are_same("Questie", LibQuestieDB.Corrections.GetProvenance("Object", objectId, "spawns"))
+                assert.are_same("QuestieSmazak", LibQuestieDB.Corrections.GetProvenance("Object", objectId, "spawns"))
                 assert.are_same("Node " .. objectId, LibQuestieDB.Object.Get(objectId, "name"))
             end
             assert.are_same({[1519] = {{50, 50}}}, LibQuestieDB.Object.Get(31, "spawns"))
@@ -240,7 +240,7 @@ describe("QuestieCorrections", function()
             QuestieCorrections.Initialize()
 
             local slots = {}
-            for index, registration in ipairs(mock.registrations.Questie) do
+            for index, registration in ipairs(mock.registrations.QuestieSmazak) do
                 slots[index] = registration.datatype .. ":" .. registration.name
             end
             assert.are_same({"Object:GatheringNodeDisplayPolicy"}, slots)
@@ -258,7 +258,7 @@ describe("QuestieCorrections", function()
             assert.are_same({10901, 11052}, LibQuestieDB.Quest.Get(10944, "preQuestGroup"))
             assert.is_nil(LibQuestieDB.Quest.Get(10944, "preQuestSingle"))
             assert.are_same({10888}, LibQuestieDB.Quest.Get(11007, "preQuestSingle"))
-            assert.are_same("Questie", LibQuestieDB.Corrections.GetProvenance("Quest", 10944, "preQuestGroup"))
+            assert.are_same("QuestieSmazak", LibQuestieDB.Corrections.GetProvenance("Quest", 10944, "preQuestGroup"))
             assert.are_same({1}, LibQuestieDB.Quest.GetRaw(10944, "preQuestSingle"))
         end)
 
@@ -272,7 +272,7 @@ describe("QuestieCorrections", function()
             -- post-initialization switch must also invalidate the affected quests through the
             -- quest lifecycle; see the Quest caveat on QuestieDB.RefreshAfterCorrectionApply.
             ContentPhases.activePhases.TBC = 3
-            local QuestieTBCPolicyCorrections = QuestieLoader:ImportModule("QuestieTBCPolicyCorrections")
+            local QuestieTBCPolicyCorrections = QuestieSmazakLoader:ImportModule("QuestieTBCPolicyCorrections")
             QuestieCorrections.SetCorrection("Quest", "ContentPhasePolicy", QuestieTBCPolicyCorrections:LoadContentPhaseFixes())
 
             assert.is_nil(LibQuestieDB.Quest.Get(10944, "preQuestGroup"))
@@ -291,14 +291,14 @@ describe("QuestieCorrections", function()
         end)
 
         it("merges the completed Isle of Quel'Danas phase without overriding existing policy", function()
-            local QuestieQuestBlacklist = QuestieLoader:ImportModule("QuestieQuestBlacklist")
+            local QuestieQuestBlacklist = QuestieSmazakLoader:ImportModule("QuestieQuestBlacklist")
             QuestieQuestBlacklist.Load = function() return {[401] = "HIDE_ON_MAP"} end
-            local IsleOfQuelDanas = QuestieLoader:ImportModule("IsleOfQuelDanas")
+            local IsleOfQuelDanas = QuestieSmazakLoader:ImportModule("IsleOfQuelDanas")
             IsleOfQuelDanas.quests[9] = {
                 [401] = true,
                 [402] = false,
             }
-            Questie.db.global.isleOfQuelDanasPhase = 9
+            QuestieSmazak.db.global.isleOfQuelDanasPhase = 9
 
             QuestieCorrections.Initialize()
 
@@ -308,8 +308,8 @@ describe("QuestieCorrections", function()
 
         it("adds WotLK and Titan blacklists without overriding existing policy", function()
             Expansions.Current = Expansions.Wotlk
-            Questie.IsTitanReforged = true
-            local QuestieQuestBlacklist = QuestieLoader:ImportModule("QuestieQuestBlacklist")
+            QuestieSmazak.IsTitanReforged = true
+            local QuestieQuestBlacklist = QuestieSmazakLoader:ImportModule("QuestieQuestBlacklist")
             QuestieQuestBlacklist.Load = function() return {[501] = "HIDE_ON_MAP"} end
             QuestieQuestBlacklist.LoadAutoBlacklistWotlk = function()
                 return {[501] = true, [502] = true}
@@ -326,10 +326,10 @@ describe("QuestieCorrections", function()
         end)
 
         it("lets Hardcore policy hide quests regardless of earlier visibility policy", function()
-            Questie.IsHardcore = true
-            local QuestieQuestBlacklist = QuestieLoader:ImportModule("QuestieQuestBlacklist")
+            QuestieSmazak.IsHardcore = true
+            local QuestieQuestBlacklist = QuestieSmazakLoader:ImportModule("QuestieQuestBlacklist")
             QuestieQuestBlacklist.Load = function() return {[601] = "HIDE_ON_MAP"} end
-            local HardcoreBlacklist = QuestieLoader:ImportModule("HardcoreBlacklist")
+            local HardcoreBlacklist = QuestieSmazakLoader:ImportModule("HardcoreBlacklist")
             HardcoreBlacklist.Load = function() return {[601] = true, [602] = true} end
 
             QuestieCorrections.Initialize()

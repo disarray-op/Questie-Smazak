@@ -2,7 +2,7 @@ dofile("setupTests.lua")
 
 describe("Client content detection", function()
     local globalNames = {
-        "Questie", "QuestieLoader", "LibStub", "GetBuildInfo", "C_Seasons", "Enum", "C_GameRules",
+        "QuestieSmazak", "QuestieSmazakLoader", "LibStub", "GetBuildInfo", "C_Seasons", "Enum", "C_GameRules",
         "WOW_PROJECT_ID", "WOW_PROJECT_CLASSIC", "WOW_PROJECT_BURNING_CRUSADE_CLASSIC",
         "WOW_PROJECT_WRATH_CLASSIC", "WOW_PROJECT_CATACLYSM_CLASSIC", "WOW_PROJECT_MISTS_CLASSIC",
     }
@@ -13,8 +13,8 @@ describe("Client content detection", function()
         for _, name in ipairs(globalNames) do
             savedGlobals[name] = _G[name]
         end
-        _G.Questie = nil
-        dofile("Modules/Libs/QuestieLoader.lua")
+        _G.QuestieSmazak = nil
+        dofile("Modules/Libs/QuestieSmazakLoader.lua")
         _G.LibStub = function()
             return {NewAddon = function() return {} end}
         end
@@ -44,9 +44,9 @@ describe("Client content detection", function()
     ---Replays TOC ordering; loadfile supplies the addon-name argument that dofile cannot pass.
     ---@return Expansions
     local function LoadClient()
-        assert(loadfile("Modules/VersionCheck.lua"))("Questie", {})
+        assert(loadfile("Modules/VersionCheck.lua"))("QuestieSmazak", {})
         dofile("Modules/Expansions.lua")
-        return QuestieLoader:ImportModule("Expansions")
+        return QuestieSmazakLoader:ImportModule("Expansions")
     end
 
     it("maps Forever's Retail project ID to Classic content using its interface version", function()
@@ -55,11 +55,11 @@ describe("Client content detection", function()
 
         local expansions = LoadClient()
 
-        assert.is_true(Questie.IsForever)
-        assert.is_true(Questie.IsClassic)
-        assert.is_true(Questie.IsEra)
-        assert.is_false(Questie.IsSoD)
-        assert.is_false(Questie.IsTBC)
+        assert.is_true(QuestieSmazak.IsForever)
+        assert.is_true(QuestieSmazak.IsClassic)
+        assert.is_true(QuestieSmazak.IsEra)
+        assert.is_false(QuestieSmazak.IsSoD)
+        assert.is_false(QuestieSmazak.IsTBC)
         assert.are.equal(expansions.Era, expansions.Current)
     end)
 
@@ -69,18 +69,18 @@ describe("Client content detection", function()
 
         local expansions = LoadClient()
 
-        assert.is_false(Questie.IsForever)
-        assert.is_false(Questie.IsClassic)
-        assert.is_false(Questie.IsEra)
+        assert.is_false(QuestieSmazak.IsForever)
+        assert.is_false(QuestieSmazak.IsClassic)
+        assert.is_false(QuestieSmazak.IsEra)
         assert.is_nil(expansions.Current)
     end)
 
     it("keeps Classic Era detection unchanged", function()
         local expansions = LoadClient()
 
-        assert.is_false(Questie.IsForever)
-        assert.is_true(Questie.IsClassic)
-        assert.is_true(Questie.IsEra)
+        assert.is_false(QuestieSmazak.IsForever)
+        assert.is_true(QuestieSmazak.IsClassic)
+        assert.is_true(QuestieSmazak.IsEra)
         assert.are.equal(expansions.Era, expansions.Current)
     end)
 
@@ -90,10 +90,10 @@ describe("Client content detection", function()
 
         local expansions = LoadClient()
 
-        assert.is_false(Questie.IsForever)
-        assert.is_true(Questie.IsClassic)
-        assert.is_false(Questie.IsEra)
-        assert.is_true(Questie.IsSoD)
+        assert.is_false(QuestieSmazak.IsForever)
+        assert.is_true(QuestieSmazak.IsClassic)
+        assert.is_false(QuestieSmazak.IsEra)
+        assert.is_true(QuestieSmazak.IsSoD)
         assert.are.equal(expansions.Era, expansions.Current)
     end)
 
@@ -110,9 +110,9 @@ describe("Client content detection", function()
 
             local expansions = LoadClient()
 
-            assert.is_false(Questie.IsForever)
-            assert.is_false(Questie.IsClassic)
-            assert.is_true(Questie[client.flag])
+            assert.is_false(QuestieSmazak.IsForever)
+            assert.is_false(QuestieSmazak.IsClassic)
+            assert.is_true(QuestieSmazak[client.flag])
             assert.are.equal(client.expansion, expansions.Current)
         end)
     end
@@ -122,8 +122,8 @@ describe("Client content detection", function()
 
         local expansions = LoadClient()
 
-        assert.is_false(Questie.IsForever)
-        assert.is_false(Questie.IsClassic)
+        assert.is_false(QuestieSmazak.IsForever)
+        assert.is_false(QuestieSmazak.IsClassic)
         assert.is_nil(expansions.Current)
     end)
 end)

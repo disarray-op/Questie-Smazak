@@ -1,25 +1,25 @@
 ---@class Tutorial
-local Tutorial = QuestieLoader:CreateModule("Tutorial")
+local Tutorial = QuestieSmazakLoader:CreateModule("Tutorial")
 
 ---@type QuestieCombatQueue
-local QuestieCombatQueue = QuestieLoader:ImportModule("QuestieCombatQueue")
+local QuestieCombatQueue = QuestieSmazakLoader:ImportModule("QuestieCombatQueue")
 ---@type Expansions
-local Expansions = QuestieLoader:ImportModule("Expansions")
+local Expansions = QuestieSmazakLoader:ImportModule("Expansions")
 
 function Tutorial.Initialize()
-    if ((Expansions.Current >= Expansions.Wotlk) or Questie.IsForever) and GetCVar("questPOI") ~= nil and (not Questie.db.global.tutorialObjectiveTypeChosen) then
+    if ((Expansions.Current >= Expansions.Wotlk) or QuestieSmazak.IsForever) and GetCVar("questPOI") ~= nil and (not QuestieSmazak.db.global.tutorialObjectiveTypeChosen) then
         QuestieCombatQueue:Queue(function()
             Tutorial.CreateChooseObjectiveTypeFrame()
         end)
     end
 
-    if Questie.IsSoD and (not Questie.db.profile.tutorialShowRunesDone) then
+    if QuestieSmazak.IsSoD and (not QuestieSmazak.db.profile.tutorialShowRunesDone) then
         QuestieCombatQueue:Queue(function()
             Tutorial.ShowRunes()
         end)
     end
 
-    if (not Questie.db.profile.tutorialRejectInBattlegroundsDone) and not Questie.IsForever then
+    if (not QuestieSmazak.db.profile.tutorialRejectInBattlegroundsDone) and not QuestieSmazak.IsForever then
         QuestieCombatQueue:Queue(function()
             Tutorial.AutoRejectInBattlegroundsFrame()
         end)

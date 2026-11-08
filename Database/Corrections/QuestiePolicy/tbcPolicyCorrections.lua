@@ -1,18 +1,18 @@
 -- Originally extracted verbatim from Database/Corrections/tbcNPCFixes.lua and
--- Database/Corrections/tbcQuestFixes.lua at Questie commit ba0f5acd63cbeb8e5affc5d1990b0d1ee276cd57.
--- Questie keeps this data because Darkmoon location selection and Content Phase prerequisites are Questie runtime policy.
+-- Database/Corrections/tbcQuestFixes.lua at QuestieSmazak commit ba0f5acd63cbeb8e5affc5d1990b0d1ee276cd57.
+-- QuestieSmazak keeps this data because Darkmoon location selection and Content Phase prerequisites are QuestieSmazak runtime policy.
 
 ---@class QuestieTBCPolicyCorrections
-local QuestieTBCPolicyCorrections = QuestieLoader:CreateModule("QuestieTBCPolicyCorrections")
+local QuestieTBCPolicyCorrections = QuestieSmazakLoader:CreateModule("QuestieTBCPolicyCorrections")
 
 ---@type QuestieDB
-local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
 ---@type ZoneDB
-local ZoneDB = QuestieLoader:ImportModule("ZoneDB")
+local ZoneDB = QuestieSmazakLoader:ImportModule("ZoneDB")
 ---@type ContentPhases
-local ContentPhases = QuestieLoader:ImportModule("ContentPhases")
+local ContentPhases = QuestieSmazakLoader:ImportModule("ContentPhases")
 ---@type Expansions
-local Expansions = QuestieLoader:ImportModule("Expansions")
+local Expansions = QuestieSmazakLoader:ImportModule("Expansions")
 
 ---Darkmoon Faire NPC rows for the `Npc:DarkmoonFaire` slot: every faire NPC placed in Terokkar
 ---Forest, Mulgore, or Elwynn Forest, whichever the calendar selected.

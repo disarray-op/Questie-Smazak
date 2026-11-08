@@ -1,5 +1,5 @@
 ---@class SupportValidation
-local SupportValidation = QuestieLoader:CreateModule("SupportValidation")
+local SupportValidation = QuestieSmazakLoader:CreateModule("SupportValidation")
 
 -- Independently authored controls, not a copy or audit of the full provider data.
 -- Every pass reads only the tables the consumer actually bound or decoded.
@@ -46,13 +46,13 @@ end
 local function _Result(failures, dataset, expansion)
     if #failures == 0 then return true end
     local metadata = (C_AddOns and C_AddOns.GetAddOnMetadata) or GetAddOnMetadata
-    local questieVersion = metadata and metadata("Questie", "Version") or "unknown"
+    local questieVersion = metadata and metadata("QuestieSmazak", "Version") or "unknown"
     local tdbVersion = metadata and metadata("QuestieDB", "Version") or "unknown"
-    local consumerFlavor = expansion == 1 and Questie and Questie.IsForever and "Forever" or flavors[expansion]
-    return false, "Questie support-data validation failed. Initialization stopped.\n" ..
+    local consumerFlavor = expansion == 1 and QuestieSmazak and QuestieSmazak.IsForever and "Forever" or flavors[expansion]
+    return false, "QuestieSmazak support-data validation failed. Initialization stopped.\n" ..
         "Dataset: " .. dataset .. "; consumer flavor: " .. (consumerFlavor or tostring(expansion)) ..
         "; provider readMode: " .. tostring(LibQuestieDB and LibQuestieDB.readMode or "unknown") ..
-        "; Questie version: " .. questieVersion .. "; QuestieDB version: " .. tdbVersion .. "\n" ..
+        "; QuestieSmazak version: " .. questieVersion .. "; QuestieDB version: " .. tdbVersion .. "\n" ..
         table.concat(failures, "\n")
 end
 
@@ -134,7 +134,7 @@ function SupportValidation.ValidateZones(zones, expansion)
     local continentMap = expansion == 5 and 12 or 1414
     local reverseOverrideKey = expansion == 5 and 12 or 113
     local reverseOverrideValue = expansion == 5 and 10073 or 0
-    local isForever = expansion == 1 and Questie and Questie.IsForever
+    local isForever = expansion == 1 and QuestieSmazak and QuestieSmazak.IsForever
     if isForever then
         -- Forever shares Era content, but its native map data has no Northrend suppression entry.
         -- Validate its actual continent override instead of requiring a synthetic legacy mapping.

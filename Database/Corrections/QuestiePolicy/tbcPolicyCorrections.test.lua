@@ -19,16 +19,16 @@ describe("QuestieTBCPolicyCorrections", function()
 
     before_each(function()
         LoadQuestieDBMetaMock()
-        local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+        local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
 
         dofile("Database/Corrections/QuestiePolicy/tbcPolicyCorrections.lua")
-        QuestieTBCPolicyCorrections = QuestieLoader:ImportModule("QuestieTBCPolicyCorrections")
-        ContentPhases = QuestieLoader:ImportModule("ContentPhases")
-        Expansions = QuestieLoader:ImportModule("Expansions")
+        QuestieTBCPolicyCorrections = QuestieSmazakLoader:ImportModule("QuestieTBCPolicyCorrections")
+        ContentPhases = QuestieSmazakLoader:ImportModule("ContentPhases")
+        Expansions = QuestieSmazakLoader:ImportModule("Expansions")
         originalExpansion = Expansions.Current
         originalTBCPhase = ContentPhases.activePhases.TBC
 
-        local ZoneDB = QuestieLoader:ImportModule("ZoneDB")
+        local ZoneDB = QuestieSmazakLoader:ImportModule("ZoneDB")
         local npcKeys = QuestieDB.npcKeys
         local questKeys = QuestieDB.questKeys
         local zoneIDs = ZoneDB.zoneIDs

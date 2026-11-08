@@ -14,11 +14,11 @@ describe("l10n", function()
         mock = LoadQuestieDBMock()
         originalGetLocale = _G.GetLocale
         _G.QUESTIE_LOCALES_OVERRIDE = nil
-        Questie.db.global.questieLocaleDiff = false
-        Questie.db.global.questieLocale = nil
+        QuestieSmazak.db.global.questieLocaleDiff = false
+        QuestieSmazak.db.global.questieLocale = nil
 
         dofile("Localization/l10n.lua")
-        l10n = QuestieLoader:ImportModule("l10n")
+        l10n = QuestieSmazakLoader:ImportModule("l10n")
     end)
 
     after_each(function()
@@ -33,9 +33,9 @@ describe("l10n", function()
         assert.are_same("deDE", l10n:GetUILocale())
     end)
 
-    it("uses the configured Questie UI locale", function()
-        Questie.db.global.questieLocaleDiff = true
-        Questie.db.global.questieLocale = "frFR"
+    it("uses the configured QuestieSmazak UI locale", function()
+        QuestieSmazak.db.global.questieLocaleDiff = true
+        QuestieSmazak.db.global.questieLocale = "frFR"
 
         l10n.InitializeUILocale()
 
@@ -43,27 +43,27 @@ describe("l10n", function()
     end)
 
     it("keeps the configured UI locale while registering external UI translations", function()
-        Questie.db.global.questieLocaleDiff = true
-        Questie.db.global.questieLocale = "frFR"
-        l10n.translations["Questie string"] = {
+        QuestieSmazak.db.global.questieLocaleDiff = true
+        QuestieSmazak.db.global.questieLocale = "frFR"
+        l10n.translations["QuestieSmazak string"] = {
             enUS = true,
             frFR = "Configured string",
         }
         _G.QUESTIE_LOCALES_OVERRIDE = {
             locale = "zzZZ",
             translations = {
-                ["Questie string"] = "External string",
+                ["QuestieSmazak string"] = "External string",
             },
         }
 
         l10n.InitializeUILocale()
 
         assert.are_same("frFR", l10n:GetUILocale())
-        assert.are_same("Configured string", l10n("Questie string"))
-        assert.are_same("External string", l10n.translations["Questie string"].zzZZ)
+        assert.are_same("Configured string", l10n("QuestieSmazak string"))
+        assert.are_same("External string", l10n.translations["QuestieSmazak string"].zzZZ)
     end)
 
-    it("uses the client locale when Questie has no locale override", function()
+    it("uses the client locale when QuestieSmazak has no locale override", function()
         _G.GetLocale = function() return "deDE" end
 
         l10n.InitializeUILocale()
@@ -72,18 +72,18 @@ describe("l10n", function()
     end)
 
     it("registers external UI translations under the external locale", function()
-        l10n.translations["Questie string"] = {enUS = true}
+        l10n.translations["QuestieSmazak string"] = {enUS = true}
         _G.QUESTIE_LOCALES_OVERRIDE = {
             locale = "zzZZ",
             translations = {
-                ["Questie string"] = "External string",
+                ["QuestieSmazak string"] = "External string",
             },
         }
 
         l10n.InitializeUILocale()
 
         assert.are_same("zzZZ", l10n:GetUILocale())
-        assert.are_same("External string", l10n("Questie string"))
+        assert.are_same("External string", l10n("QuestieSmazak string"))
     end)
 
     it("falls back to the English key when a UI translation is unavailable", function()
@@ -96,7 +96,7 @@ describe("l10n", function()
         local itemKeys, questKeys, npcKeys, objectKeys
 
         before_each(function()
-            local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+            local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
             itemKeys, questKeys, npcKeys, objectKeys = QuestieDB.itemKeys, QuestieDB.questKeys, QuestieDB.npcKeys, QuestieDB.objectKeys
             mock.SetBaseRow("Item", 5, {[itemKeys.name] = "Sharptalon's Claw"})
             mock.SetBaseRow("Quest", 2, {[questKeys.name] = "Sharptalon's Claw", [questKeys.objectivesText] = {"Bring the claw."}})
@@ -131,8 +131,8 @@ describe("l10n", function()
         end
 
         it("registers inactive translations for a later provider locale switch", function()
-            Questie.db.global.questieLocaleDiff = true
-            Questie.db.global.questieLocale = "frFR"
+            QuestieSmazak.db.global.questieLocaleDiff = true
+            QuestieSmazak.db.global.questieLocale = "frFR"
             _G.QUESTIE_LOCALES_OVERRIDE = {
                 locale = "ukUA",
                 translations = {},

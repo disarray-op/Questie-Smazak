@@ -1,29 +1,29 @@
 ---@class QuestieTooltips
-local QuestieTooltips = QuestieLoader:CreateModule("QuestieTooltips");
+local QuestieTooltips = QuestieSmazakLoader:CreateModule("QuestieTooltips");
 local _QuestieTooltips = QuestieTooltips.private
 -------------------------
 --Import modules.
 -------------------------
 ---@type QuestieComms
-local QuestieComms = QuestieLoader:ImportModule("QuestieComms");
+local QuestieComms = QuestieSmazakLoader:ImportModule("QuestieComms");
 ---@type QuestieLib
-local QuestieLib = QuestieLoader:ImportModule("QuestieLib");
+local QuestieLib = QuestieSmazakLoader:ImportModule("QuestieLib");
 ---@type QuestLogCache
-local QuestLogCache = QuestieLoader:ImportModule("QuestLogCache")
+local QuestLogCache = QuestieSmazakLoader:ImportModule("QuestLogCache")
 ---@type QuestiePlayer
-local QuestiePlayer = QuestieLoader:ImportModule("QuestiePlayer");
+local QuestiePlayer = QuestieSmazakLoader:ImportModule("QuestiePlayer");
 ---@type ActiveQuests
-local ActiveQuests = QuestieLoader:ImportModule("ActiveQuests")
+local ActiveQuests = QuestieSmazakLoader:ImportModule("ActiveQuests")
 ---@type QuestieDB
-local QuestieDB = QuestieLoader:ImportModule("QuestieDB");
+local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB");
 ---@type ZoneDB
-local ZoneDB = QuestieLoader:ImportModule("ZoneDB")
+local ZoneDB = QuestieSmazakLoader:ImportModule("ZoneDB")
 ---@type QuestieEvent
-local QuestieEvent = QuestieLoader:ImportModule("QuestieEvent")
+local QuestieEvent = QuestieSmazakLoader:ImportModule("QuestieEvent")
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 ---@type Forever
-local Forever = QuestieLoader:ImportModule("Forever")
+local Forever = QuestieSmazakLoader:ImportModule("Forever")
 
 local tinsert = table.insert
 QuestieTooltips.lastGametooltip = ""
@@ -45,7 +45,7 @@ local nativeQuestFallback = false
 local nativeTooltipHooksInitialized = false
 ---@type ForeverFormatter?
 local nativeQuestFormatter
--- Blizzard's party progress of the tooltip being rendered, only set while its Questie lines are built.
+-- Blizzard's party progress of the tooltip being rendered, only set while its QuestieSmazak lines are built.
 ---@type table<number, table<string, NativePartyObjective[]>>?
 local nativePartyProgress
 
@@ -125,7 +125,7 @@ function QuestieTooltips:RemoveQuest(questId)
         end
     end
 
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieTooltips:RemoveQuest]", questId)
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieTooltips:RemoveQuest]", questId)
 
     for _, key in pairs(QuestieTooltips.lookupKeysByQuestId[questId] or {}) do
         --Count to see if we should remove the main object
@@ -175,7 +175,7 @@ local function _FetchTooltipsForGroupMembers(key, tooltipData)
         for questId, playerList in pairs(tooltipDataExternal) do
             if (not tooltipData[questId]) then
                 tooltipData[questId] = {
-                    title = QuestieLib:GetColoredQuestName(questId, Questie.db.profile.enableTooltipsQuestLevel, true)
+                    title = QuestieLib:GetColoredQuestName(questId, QuestieSmazak.db.profile.enableTooltipsQuestLevel, true)
                 }
             end
             for playerName, _ in pairs(playerList) do
@@ -197,7 +197,7 @@ local function _FetchTooltipsForGroupMembers(key, tooltipData)
         for questId, playerList in pairs(tooltipDataExternal) do
             if (not tooltipData[questId]) then
                 tooltipData[questId] = {
-                    title = QuestieLib:GetColoredQuestName(questId, Questie.db.profile.enableTooltipsQuestLevel, true)
+                    title = QuestieLib:GetColoredQuestName(questId, QuestieSmazak.db.profile.enableTooltipsQuestLevel, true)
                 }
             end
             for playerName, objectives in pairs(playerList) do
@@ -233,7 +233,7 @@ local function _FetchTooltipsForGroupMembers(key, tooltipData)
     return anotherPlayer
 end
 
----Adds the progress Blizzard shows for party members, so those without Questie are listed too.
+---Adds the progress Blizzard shows for party members, so those without QuestieSmazak are listed too.
 ---Members whose progress already arrived through Comms keep that richer data.
 ---@param tooltipData table
 ---@param finishedAndUnacceptedQuests table<number, boolean> Quests listed as available or completable, shown without objectives
@@ -250,7 +250,7 @@ local function _AddNativePartyProgress(tooltipData, finishedAndUnacceptedQuests)
             if (not hasCommsData) and (not finishedAndUnacceptedQuests[questId]) and objectives[1] then
                 if (not tooltipData[questId]) then
                     tooltipData[questId] = {
-                        title = QuestieLib:GetColoredQuestName(questId, Questie.db.profile.enableTooltipsQuestLevel, true)
+                        title = QuestieLib:GetColoredQuestName(questId, QuestieSmazak.db.profile.enableTooltipsQuestLevel, true)
                     }
                 end
                 for objectiveIndex, objective in ipairs(objectives) do
@@ -282,7 +282,7 @@ end
 ---@param playerZone AreaId|nil @Only needed for object tooltips, otherwise it can be nil. 0 disables the zone filter
 ---@return table<number, string>|nil tooltipLines
 function QuestieTooltips.GetTooltip(key, playerZone)
-    Questie.Debug(Questie.DEBUG_SPAM, "[QuestieTooltips.GetTooltip]", key)
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_SPAM, "[QuestieTooltips.GetTooltip]", key)
     if (not key) then
         return nil
     end
@@ -311,7 +311,7 @@ function QuestieTooltips.GetTooltip(key, playerZone)
         if playerZone == 0 then
             objectIsInCurrentZone = true
         elseif (not playerZone) then
-            Questie.Debug(Questie.DEBUG_CRITICAL, "[QuestieTooltips.GetTooltip] was called without a playerZone for objects")
+            QuestieSmazak.Debug(QuestieSmazak.DEBUG_CRITICAL, "[QuestieTooltips.GetTooltip] was called without a playerZone for objects")
             objectIsInCurrentZone = true
         else
             local objectId = tonumber(key:sub(3))
@@ -358,7 +358,7 @@ function QuestieTooltips.GetTooltip(key, playerZone)
         tooltipLines = {}
         local playerName = GetUnitName("player", true)
 
-        if Questie.db.profile.showQuestsInNpcTooltip then
+        if QuestieSmazak.db.profile.showQuestsInNpcTooltip then
             -- We built a table of all quests in the tooltip that can be accepted or turned in, to not show the objectives for those
             -- and also don't add the quest title twice.
             for _, tooltip in pairs(QuestieTooltips.lookupByKey[key]) do
@@ -375,8 +375,8 @@ function QuestieTooltips.GetTooltip(key, playerZone)
             local questId = tooltip.questId
 
             if tooltip.name then
-                if Questie.db.profile.showQuestsInNpcTooltip then
-                    local questString = QuestieLib:GetColoredQuestName(questId, Questie.db.profile.enableTooltipsQuestLevel, true)
+                if QuestieSmazak.db.profile.showQuestsInNpcTooltip then
+                    local questString = QuestieLib:GetColoredQuestName(questId, QuestieSmazak.db.profile.enableTooltipsQuestLevel, true)
                     if tooltip.type then
                         local level, _ = QuestieLib.GetEffectiveQuestLevel(questId)
                         local colorText
@@ -391,13 +391,13 @@ function QuestieTooltips.GetTooltip(key, playerZone)
                             colorText = ":" .. tostring(math.floor(r * 255)) .. ":" .. tostring(math.floor(g * 255)) .. ":" .. tostring(math.floor(b * 255))
                         end
                         if tooltip.type == "NPC" then
-                            questString = "|TInterface\\Addons\\Questie\\Icons\\tooltip_available.png:14:14:0:0:32:32:0:32:0:32" .. colorText .. "|t" .. questString
+                            questString = "|TInterface\\Addons\\QuestieSmazak\\Icons\\tooltip_available.png:14:14:0:0:32:32:0:32:0:32" .. colorText .. "|t" .. questString
                         elseif tooltip.type == "Finisher" then
-                            questString = "|TInterface\\Addons\\Questie\\Icons\\tooltip_complete.png:14:14:0:0:32:32:0:32:0:32" .. colorText .. "|t" .. questString
+                            questString = "|TInterface\\Addons\\QuestieSmazak\\Icons\\tooltip_complete.png:14:14:0:0:32:32:0:32:0:32" .. colorText .. "|t" .. questString
                         elseif tooltip.type == "itemFromMonster" or tooltip.type == "itemFromObject" then
-                            questString = "|TInterface\\Addons\\Questie\\Icons\\available_mobdrop.png:14|t" .. questString
+                            questString = "|TInterface\\Addons\\QuestieSmazak\\Icons\\available_mobdrop.png:14|t" .. questString
                         elseif tooltip.type == "Object" then
-                            questString = "|TInterface\\Addons\\Questie\\Icons\\available_object.png:14|t" .. questString
+                            questString = "|TInterface\\Addons\\QuestieSmazak\\Icons\\available_object.png:14|t" .. questString
                         end
                     end
                     questLines[questId] = questLines[questId] or {}
@@ -412,7 +412,7 @@ function QuestieTooltips.GetTooltip(key, playerZone)
                 local objectiveIndex = objective.Index;
                 if (not tooltipData[questId]) then
                     tooltipData[questId] = {
-                        title = QuestieLib:GetColoredQuestName(questId, Questie.db.profile.enableTooltipsQuestLevel, true)
+                        title = QuestieLib:GetColoredQuestName(questId, QuestieSmazak.db.profile.enableTooltipsQuestLevel, true)
                     }
                 end
                 if not ActiveQuests.Get(questId) then
@@ -438,16 +438,16 @@ function QuestieTooltips.GetTooltip(key, playerZone)
                     else
                         local dropIcon, dropRateText = "", ""
                         local dropRateData = QuestieDB.GetItemDroprate(objectiveId, npcId)
-                        if dropRateData and dropRateData[1] and Questie.db.profile.enableTooltipDroprates then
-                            if Questie.db.profile.debugEnabled and dropRateData and dropRateData[2] then
+                        if dropRateData and dropRateData[1] and QuestieSmazak.db.profile.enableTooltipDroprates then
+                            if QuestieSmazak.db.profile.debugEnabled and dropRateData and dropRateData[2] then
                                 if dropRateData[2] == "cmangos" then
-                                    dropIcon = "|TInterface\\Addons\\Questie\\Icons\\cmangos.png:10|t "
+                                    dropIcon = "|TInterface\\Addons\\QuestieSmazak\\Icons\\cmangos.png:10|t "
                                 elseif dropRateData[2] == "mangos3" then
-                                    dropIcon = "|TInterface\\Addons\\Questie\\Icons\\mangos3.png:12|t "
+                                    dropIcon = "|TInterface\\Addons\\QuestieSmazak\\Icons\\mangos3.png:12|t "
                                 elseif dropRateData[2] == "wowhead" then
-                                    dropIcon = "|TInterface\\Addons\\Questie\\Icons\\wowhead.png:12|t "
+                                    dropIcon = "|TInterface\\Addons\\QuestieSmazak\\Icons\\wowhead.png:12|t "
                                 elseif dropRateData[2] == "questie" then
-                                    dropIcon = "|TInterface\\Addons\\Questie\\Icons\\questie_flat.png:12|t "
+                                    dropIcon = "|TInterface\\Addons\\QuestieSmazak\\Icons\\questie_flat.png:12|t "
                                 end
                             end
                             dropRateText = "  |cFF999999" .. dropIcon .. "[" .. FormatDropText(dropRateData[1]) .. "%]|r";
@@ -496,14 +496,14 @@ function QuestieTooltips.GetTooltip(key, playerZone)
                 local playerType = ""
                 if playerInfo then
                     playerColor = "|c" .. playerInfo.colorHex
-                elseif QuestieComms.remotePlayerEnabled[objectivePlayerName] and QuestieComms.remoteQuestLogs[questId] and QuestieComms.remoteQuestLogs[questId][objectivePlayerName] and (not Questie.db.profile.onlyPartyShared or UnitInParty(objectivePlayerName)) then
+                elseif QuestieComms.remotePlayerEnabled[objectivePlayerName] and QuestieComms.remoteQuestLogs[questId] and QuestieComms.remoteQuestLogs[questId][objectivePlayerName] and (not QuestieSmazak.db.profile.onlyPartyShared or UnitInParty(objectivePlayerName)) then
                     playerColor = QuestieComms.remotePlayerClasses[objectivePlayerName]
                     if playerColor then
-                        playerColor = Questie:GetClassColor(playerColor)
+                        playerColor = QuestieSmazak:GetClassColor(playerColor)
                         playerType = " (" .. l10n("Nearby") .. ")"
                     end
                 end
-                if objectiveInfo.isNative and Questie.db.profile.debugEnabled then
+                if objectiveInfo.isNative and QuestieSmazak.db.profile.debugEnabled then
                     playerType = " |cFF999999[Blizzard]|r"
                 end
                 if objectivePlayerName == playerName and anotherPlayer then -- Add current player name to own objective
@@ -579,7 +579,7 @@ local function _RegisterObjectTooltipCallback()
         ---@return nil
         function(tooltip, data)
             if tooltip ~= GameTooltip or nativeQuestFallback or objectAugmented or tooltip:IsForbidden() or tooltip.ShownAsMapIcon
-                or not Questie.db.profile.enableTooltips or QuestiePlayer.numberOfGroupMembers > MAX_GROUP_MEMBER_COUNT then
+                or not QuestieSmazak.db.profile.enableTooltips or QuestiePlayer.numberOfGroupMembers > MAX_GROUP_MEMBER_COUNT then
                 return
             end
 
@@ -653,9 +653,9 @@ function QuestieTooltips:Initialize()
             function(tooltip, data)
                 -- Inside Forever instances tooltip data is restricted, effectively all secret: Blizzard's quest
                 -- rows are styled and no lookup runs.
-                if Questie.IsForever and IsInInstance() then return end
+                if QuestieSmazak.IsForever and IsInInstance() then return end
                 -- Outside instances NPC data stays readable, even in combat. Should Forever still hide the GUID,
-                -- Questie's lookup cannot run and Blizzard's GetUnit would test it in our context, so the native
+                -- QuestieSmazak's lookup cannot run and Blizzard's GetUnit would test it in our context, so the native
                 -- tooltip stays as it is.
                 if _IsPublicTooltipTable(data) and not (issecretvalue and issecretvalue(data.guid)) then
                     AddUnitData(tooltip, data)
@@ -733,7 +733,7 @@ function QuestieTooltips:Initialize()
     -- Forever receives Object post-calls on rebuild. Only Classic still needs per-frame object discovery.
     if not usesTooltipData then
         GameTooltip:HookScript("OnUpdate", function(self)
-            if not Questie.db.profile.enableTooltips then return end
+            if not QuestieSmazak.db.profile.enableTooltips then return end
 
             if QuestiePlayer.numberOfGroupMembers > MAX_GROUP_MEMBER_COUNT then
                 -- When in a raid, we want as little code running as possible
@@ -752,7 +752,7 @@ function QuestieTooltips:Initialize()
                         (not QuestieTooltips.lastGametooltipCount) or
                         _QuestieTooltips:CountTooltip() < QuestieTooltips.lastGametooltipCount
                         or QuestieTooltips.lastGametooltipType ~= "object"
-                    ) and (not self.ShownAsMapIcon) then -- We are hovering over a Questie map icon which adds its own tooltip
+                    ) and (not self.ShownAsMapIcon) then -- We are hovering over a QuestieSmazak map icon which adds its own tooltip
                     local playerZone = QuestiePlayer:GetCurrentZoneId()
                     _QuestieTooltips.AddObjectDataToTooltip(objectName, playerZone)
                     GameTooltip:Show() -- Classic must resize after appending lines outside the native render pass.
@@ -787,7 +787,7 @@ end
 
 -- Display-only replacement for one native quest row: no Lua inspection, measurements or secret-ID lookups.
 -- Native helpers may select display text; AddLine owns layout. The styled block owns the tooltip's quest rows,
--- so legacy Questie rows and their FontString readers stay away from this possibly secret payload.
+-- so legacy QuestieSmazak rows and their FontString readers stay away from this possibly secret payload.
 ---@param lineType "QuestTitle"|"QuestObjective"|"QuestPlayer"
 ---@return true? consumed
 local function _StyleNativeQuestLine(tooltip, lineData, lineType)
@@ -818,7 +818,7 @@ end
 ---@return true? consumed
 local function _ProcessNativeQuestLine(tooltip, lineData, lineType)
     if tooltip ~= GameTooltip or tooltip:IsForbidden() or tooltip.ShownAsMapIcon
-        or not Questie.db.profile.enableTooltips then
+        or not QuestieSmazak.db.profile.enableTooltips then
         return
     end
     local info = tooltip.processingInfo
@@ -846,11 +846,11 @@ local function _ProcessNativeQuestLine(tooltip, lineData, lineType)
         return _StyleNativeQuestLine(tooltip, lineData, lineType)
     end
 
-    -- Outside instances, and Objects everywhere: readable data gets Questie's normal replacement, secret
+    -- Outside instances, and Objects everywhere: readable data gets QuestieSmazak's normal replacement, secret
     -- data is styled. In the open world, Object payloads are the ones that turn secret in combat. The whole
     -- payload decides, because a later objective can be secret while its title is not.
     if not _NeedsNativeQuestFallback(data, lineData) then
-        return true -- Hide Blizzard's public quest lines; the normal Questie post-call replaces them.
+        return true -- Hide Blizzard's public quest lines; the normal QuestieSmazak post-call replaces them.
     end
     return _StyleNativeQuestLine(tooltip, lineData, lineType)
 end
@@ -862,7 +862,7 @@ function QuestieTooltips:InitBlizzardTooltips()
         return
     end
     nativeTooltipHooksInitialized = true
-    if Questie.IsForever then
+    if QuestieSmazak.IsForever then
         GameTooltip:HookScript("OnTooltipCleared", function()
             nativeQuestFallback = false
             nativeQuestFormatter = nil
@@ -872,11 +872,11 @@ function QuestieTooltips:InitBlizzardTooltips()
         local lineType = Enum.TooltipDataLineType[name]
         if lineType then
             TooltipDataProcessor.AddLinePreCall(lineType, function(tooltip, lineData)
-                if Questie.IsForever then
+                if QuestieSmazak.IsForever then
                     return _ProcessNativeQuestLine(tooltip, lineData, name)
                 end
                 -- Keep the existing native-line suppression on MoP; this styling experiment is Forever-only.
-                if not Questie.db.profile.enableTooltips then return end
+                if not QuestieSmazak.db.profile.enableTooltips then return end
                 local info = tooltip.processingInfo
                 local data = info and info.tooltipData
                 local kind = data and data.type

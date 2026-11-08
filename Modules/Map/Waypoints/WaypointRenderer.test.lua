@@ -75,12 +75,12 @@ describe("WaypointRenderer", function()
         _G.UPPER_RIGHT_VERTEX, _G.LOWER_RIGHT_VERTEX = UPPER_RIGHT, LOWER_RIGHT
         _G.CreateFrame = function() return NewFrame() end
         _G.DrawLine = function(texture, _, _, _, _, _, thickness) table.insert(bands, {texture = texture, thickness = thickness}) end
-        Questie.db.profile.waypointSmoothing = 0.5
+        QuestieSmazak.db.profile.waypointSmoothing = 0.5
         dofile("Modules/Libs/QuestieLib.lua")
         dofile("Modules/Map/Waypoints/WaypointGeometry.lua")
         dofile("Modules/Map/Waypoints/WaypointRenderer.lua")
-        WaypointGeometry = QuestieLoader:ImportModule("WaypointGeometry")
-        WaypointRenderer = QuestieLoader:ImportModule("WaypointRenderer")
+        WaypointGeometry = QuestieSmazakLoader:ImportModule("WaypointGeometry")
+        WaypointRenderer = QuestieSmazakLoader:ImportModule("WaypointRenderer")
     end)
 
     after_each(function()
@@ -93,7 +93,7 @@ describe("WaypointRenderer", function()
         local view = renderer:Draw(nil, {BEND}, Style(4))
 
         -- The tolerances follow the line's width; the curve fits the quads, fade included.
-        local smoothed = WaypointGeometry.Smooth(BEND, Questie.db.profile.waypointSmoothing * 2, 2 * QUAD_SCALE)
+        local smoothed = WaypointGeometry.Smooth(BEND, QuestieSmazak.db.profile.waypointSmoothing * 2, 2 * QUAD_SCALE)
         local trimmed = WaypointGeometry.Trim(smoothed, WaypointRenderer.TRIMMING * 2)
         local expected = WaypointGeometry.Quads(trimmed, 2 * QUAD_SCALE)
         assert.is_true(#expected > 2)
@@ -229,12 +229,12 @@ describe("WaypointRenderer", function()
     end)
 
     it("redraws every drawn path for a new smoothing setting, coloring the new pieces", function()
-        Questie.db.profile.waypointSmoothing = 0
+        QuestieSmazak.db.profile.waypointSmoothing = 0
         local renderer = WaypointRenderer.New(NewFrame())
         local view = renderer:Draw(nil, {BEND}, Style(4))
         assert.are.equal(2, #view.lines)
 
-        Questie.db.profile.waypointSmoothing = 0.5
+        QuestieSmazak.db.profile.waypointSmoothing = 0.5
         WaypointRenderer.RedrawAll()
 
         local smoothed = WaypointGeometry.Smooth(BEND, 0.5 * 2, 2 * QUAD_SCALE)

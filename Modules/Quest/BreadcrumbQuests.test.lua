@@ -1,7 +1,7 @@
 dofile("setupTests.lua")
 dofile("Modules/Quest/ActiveQuests.lua")
 ---@type ActiveQuests
-local ActiveQuests = QuestieLoader:ImportModule("ActiveQuests")
+local ActiveQuests = QuestieSmazakLoader:ImportModule("ActiveQuests")
 dofile("Localization/l10n.lua")
 
 local QUEST_ID = 123
@@ -17,22 +17,22 @@ describe("BreadcrumbQuests", function()
     local BreadcrumbQuests
 
     before_each(function()
-        Questie.db.profile.questAnnounceIncompleteBreadcrumb = false
-        Questie.db.profile.autoAccept = {enabled = false, abandonBreadcrumbFollowup = false}
-        Questie.db.char.complete = {}
+        QuestieSmazak.db.profile.questAnnounceIncompleteBreadcrumb = false
+        QuestieSmazak.db.profile.autoAccept = {enabled = false, abandonBreadcrumbFollowup = false}
+        QuestieSmazak.db.char.complete = {}
 
-        QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+        QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
         QuestieDB.QueryQuestSingle = function() return nil end
-        QuestiePlayer = QuestieLoader:ImportModule("QuestiePlayer")
+        QuestiePlayer = QuestieSmazakLoader:ImportModule("QuestiePlayer")
         ActiveQuests.Reset()
-        QuestieAnnounce = QuestieLoader:ImportModule("QuestieAnnounce")
+        QuestieAnnounce = QuestieSmazakLoader:ImportModule("QuestieAnnounce")
 
         dofile("Modules/Quest/BreadcrumbQuests.lua")
-        BreadcrumbQuests = QuestieLoader:ImportModule("BreadcrumbQuests")
+        BreadcrumbQuests = QuestieSmazakLoader:ImportModule("BreadcrumbQuests")
     end)
 
     it("should do nothing for quests without breadcrumbs", function()
-        Questie.db.profile.autoAccept.abandonBreadcrumbFollowup = true
+        QuestieSmazak.db.profile.autoAccept.abandonBreadcrumbFollowup = true
         ActiveQuests.Reset()
         ActiveQuests.Add(QUEST_ID, {})
 
@@ -51,8 +51,8 @@ describe("BreadcrumbQuests", function()
     end)
 
     it("should abandon with fallback names when the quests are missing from the database", function()
-        QuestieLoader:ImportModule("QuestieLink").GetQuestHyperLink = function() return nil end
-        Questie.Print = spy.new(function() end)
+        QuestieSmazakLoader:ImportModule("QuestieLink").GetQuestHyperLink = function() return nil end
+        QuestieSmazak.Print = spy.new(function() end)
         _G.GetQuestLogIndexByID = function() return 1 end
         _G.SelectQuestLogEntry = function() end
         _G.SetAbandonQuest = function() end
@@ -61,14 +61,14 @@ describe("BreadcrumbQuests", function()
         local result = BreadcrumbQuests.AbandonQuest(QUEST_ID, 101)
 
         assert.is_true(result)
-        assert.spy(Questie.Print).was.called_with(Questie,
+        assert.spy(QuestieSmazak.Print).was.called_with(QuestieSmazak,
             "Automatically abandoned quest no quest name because breadcrumb quest no quest name is not completed.")
     end)
 
     it("should do nothing when all breadcrumbs are completed", function()
-        Questie.db.profile.questAnnounceIncompleteBreadcrumb = true
-        Questie.db.profile.autoAccept.abandonBreadcrumbFollowup = true
-        Questie.db.char.complete = {[101] = true, [102] = true}
+        QuestieSmazak.db.profile.questAnnounceIncompleteBreadcrumb = true
+        QuestieSmazak.db.profile.autoAccept.abandonBreadcrumbFollowup = true
+        QuestieSmazak.db.char.complete = {[101] = true, [102] = true}
         ActiveQuests.Reset()
         ActiveQuests.Add(QUEST_ID, {})
 
@@ -95,9 +95,9 @@ describe("BreadcrumbQuests", function()
     end)
 
     it("should announce every incomplete breadcrumb when quest is newly accepted", function()
-        Questie.db.profile.questAnnounceIncompleteBreadcrumb = true
-        Questie.db.profile.autoAccept.abandonBreadcrumbFollowup = false
-        Questie.db.char.complete = {}
+        QuestieSmazak.db.profile.questAnnounceIncompleteBreadcrumb = true
+        QuestieSmazak.db.profile.autoAccept.abandonBreadcrumbFollowup = false
+        QuestieSmazak.db.char.complete = {}
         ActiveQuests.Reset()
         ActiveQuests.Add(QUEST_ID, {})
 
@@ -120,9 +120,9 @@ describe("BreadcrumbQuests", function()
     end)
 
     it("should NOT announce when questAnnounceIncompleteBreadcrumb is disabled", function()
-        Questie.db.profile.questAnnounceIncompleteBreadcrumb = false
-        Questie.db.profile.autoAccept.abandonBreadcrumbFollowup = false
-        Questie.db.char.complete = {}
+        QuestieSmazak.db.profile.questAnnounceIncompleteBreadcrumb = false
+        QuestieSmazak.db.profile.autoAccept.abandonBreadcrumbFollowup = false
+        QuestieSmazak.db.char.complete = {}
         ActiveQuests.Reset()
         ActiveQuests.Add(QUEST_ID, {})
 
@@ -142,9 +142,9 @@ describe("BreadcrumbQuests", function()
     end)
 
     it("should abandon the quest using the last incomplete breadcrumb", function()
-        Questie.db.profile.questAnnounceIncompleteBreadcrumb = false
-        Questie.db.profile.autoAccept.abandonBreadcrumbFollowup = true
-        Questie.db.char.complete = {}
+        QuestieSmazak.db.profile.questAnnounceIncompleteBreadcrumb = false
+        QuestieSmazak.db.profile.autoAccept.abandonBreadcrumbFollowup = true
+        QuestieSmazak.db.char.complete = {}
         ActiveQuests.Reset()
         ActiveQuests.Add(QUEST_ID, {})
 
@@ -158,7 +158,7 @@ describe("BreadcrumbQuests", function()
         QuestiePlayer.HasRequiredClass = function() return true end
 
         local linkedQuestIds = {}
-        QuestieLoader:ImportModule("QuestieLink").GetQuestHyperLink = function(...)
+        QuestieSmazakLoader:ImportModule("QuestieLink").GetQuestHyperLink = function(...)
             for i = 1, select("#", ...) do
                 local arg = select(i, ...)
                 if type(arg) ~= "table" then
@@ -181,9 +181,9 @@ describe("BreadcrumbQuests", function()
     end)
 
     it("should not abandon when autoAccept.abandonBreadcrumbFollowup is disabled", function()
-        Questie.db.profile.questAnnounceIncompleteBreadcrumb = false
-        Questie.db.profile.autoAccept.abandonBreadcrumbFollowup = false
-        Questie.db.char.complete = {}
+        QuestieSmazak.db.profile.questAnnounceIncompleteBreadcrumb = false
+        QuestieSmazak.db.profile.autoAccept.abandonBreadcrumbFollowup = false
+        QuestieSmazak.db.char.complete = {}
         ActiveQuests.Reset()
         ActiveQuests.Add(QUEST_ID, {})
 
@@ -208,9 +208,9 @@ describe("BreadcrumbQuests", function()
     end)
 
     it("should skip breadcrumb for wrong race", function()
-        Questie.db.profile.questAnnounceIncompleteBreadcrumb = true
-        Questie.db.profile.autoAccept.abandonBreadcrumbFollowup = false
-        Questie.db.char.complete = {}
+        QuestieSmazak.db.profile.questAnnounceIncompleteBreadcrumb = true
+        QuestieSmazak.db.profile.autoAccept.abandonBreadcrumbFollowup = false
+        QuestieSmazak.db.char.complete = {}
         ActiveQuests.Reset()
         ActiveQuests.Add(QUEST_ID, {})
 
@@ -236,9 +236,9 @@ describe("BreadcrumbQuests", function()
     end)
 
     it("should skip breadcrumb for wrong class", function()
-        Questie.db.profile.questAnnounceIncompleteBreadcrumb = true
-        Questie.db.profile.autoAccept.abandonBreadcrumbFollowup = false
-        Questie.db.char.complete = {}
+        QuestieSmazak.db.profile.questAnnounceIncompleteBreadcrumb = true
+        QuestieSmazak.db.profile.autoAccept.abandonBreadcrumbFollowup = false
+        QuestieSmazak.db.char.complete = {}
         ActiveQuests.Reset()
         ActiveQuests.Add(QUEST_ID, {})
 
@@ -264,9 +264,9 @@ describe("BreadcrumbQuests", function()
     end)
 
     it("should skip breadcrumb when exclusive quest is completed", function()
-        Questie.db.profile.questAnnounceIncompleteBreadcrumb = true
-        Questie.db.profile.autoAccept.abandonBreadcrumbFollowup = false
-        Questie.db.char.complete = {[201] = true} -- Exclusive quest completed
+        QuestieSmazak.db.profile.questAnnounceIncompleteBreadcrumb = true
+        QuestieSmazak.db.profile.autoAccept.abandonBreadcrumbFollowup = false
+        QuestieSmazak.db.char.complete = {[201] = true} -- Exclusive quest completed
         ActiveQuests.Reset()
         ActiveQuests.Add(QUEST_ID, {})
 
@@ -288,9 +288,9 @@ describe("BreadcrumbQuests", function()
     end)
 
     it("should skip breadcrumb when exclusive quest is in current questlog", function()
-        Questie.db.profile.questAnnounceIncompleteBreadcrumb = true
-        Questie.db.profile.autoAccept.abandonBreadcrumbFollowup = false
-        Questie.db.char.complete = {}
+        QuestieSmazak.db.profile.questAnnounceIncompleteBreadcrumb = true
+        QuestieSmazak.db.profile.autoAccept.abandonBreadcrumbFollowup = false
+        QuestieSmazak.db.char.complete = {}
         ActiveQuests.Reset()
         ActiveQuests.Add(QUEST_ID, {})
         ActiveQuests.Add(201, {}) -- Exclusive quest in log
@@ -313,9 +313,9 @@ describe("BreadcrumbQuests", function()
     end)
 
     it("should skip breadcrumb when availableUntilCompleted quest is completed", function()
-        Questie.db.profile.questAnnounceIncompleteBreadcrumb = true
-        Questie.db.profile.autoAccept.abandonBreadcrumbFollowup = false
-        Questie.db.char.complete = {[301] = true} -- availableUntilCompleted quest completed
+        QuestieSmazak.db.profile.questAnnounceIncompleteBreadcrumb = true
+        QuestieSmazak.db.profile.autoAccept.abandonBreadcrumbFollowup = false
+        QuestieSmazak.db.char.complete = {[301] = true} -- availableUntilCompleted quest completed
         ActiveQuests.Reset()
         ActiveQuests.Add(QUEST_ID, {})
 
@@ -337,9 +337,9 @@ describe("BreadcrumbQuests", function()
     end)
 
     it("should announce breadcrumb when availableUntilCompleted quest is NOT completed", function()
-        Questie.db.profile.questAnnounceIncompleteBreadcrumb = true
-        Questie.db.profile.autoAccept.abandonBreadcrumbFollowup = false
-        Questie.db.char.complete = {} -- availableUntilCompleted quest NOT completed
+        QuestieSmazak.db.profile.questAnnounceIncompleteBreadcrumb = true
+        QuestieSmazak.db.profile.autoAccept.abandonBreadcrumbFollowup = false
+        QuestieSmazak.db.char.complete = {} -- availableUntilCompleted quest NOT completed
         ActiveQuests.Reset()
         ActiveQuests.Add(QUEST_ID, {})
 
@@ -362,9 +362,9 @@ describe("BreadcrumbQuests", function()
     end)
 
     it("should skip breadcrumb when breadcrumb quest is already in the quest log", function()
-        Questie.db.profile.questAnnounceIncompleteBreadcrumb = true
-        Questie.db.profile.autoAccept.abandonBreadcrumbFollowup = false
-        Questie.db.char.complete = {}
+        QuestieSmazak.db.profile.questAnnounceIncompleteBreadcrumb = true
+        QuestieSmazak.db.profile.autoAccept.abandonBreadcrumbFollowup = false
+        QuestieSmazak.db.char.complete = {}
         ActiveQuests.Reset()
         ActiveQuests.Add(QUEST_ID, {})
         ActiveQuests.Add(101, {}) -- Breadcrumb quest in log
@@ -385,9 +385,9 @@ describe("BreadcrumbQuests", function()
     end)
 
     it("should announce and abandon when both options enabled", function()
-        Questie.db.profile.questAnnounceIncompleteBreadcrumb = true
-        Questie.db.profile.autoAccept.abandonBreadcrumbFollowup = true
-        Questie.db.char.complete = {}
+        QuestieSmazak.db.profile.questAnnounceIncompleteBreadcrumb = true
+        QuestieSmazak.db.profile.autoAccept.abandonBreadcrumbFollowup = true
+        QuestieSmazak.db.char.complete = {}
         ActiveQuests.Reset()
         ActiveQuests.Add(QUEST_ID, {})
 
@@ -402,7 +402,7 @@ describe("BreadcrumbQuests", function()
         QuestieAnnounce.IncompleteBreadcrumbQuest = spy.new(function() end)
 
         local linkedQuestIds = {}
-        QuestieLoader:ImportModule("QuestieLink").GetQuestHyperLink = function(...)
+        QuestieSmazakLoader:ImportModule("QuestieLink").GetQuestHyperLink = function(...)
             for i = 1, select("#", ...) do
                 local arg = select(i, ...)
                 if type(arg) ~= "table" then

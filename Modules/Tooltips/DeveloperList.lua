@@ -2,10 +2,10 @@
 -- The first 4 digits represent the server ID, the next 4 digits represent the character ID.
 
 -- This file does not use the module system, so it names its own load-timing interval.
-QuestieLoader:StampLoadBoundary()
+QuestieSmazakLoader:StampLoadBoundary()
 
 ---@class DeveloperCharacters
-Questie.devChars = {
+QuestieSmazak.devChars = {
     ["4440"] = {"064FC13C", "064FC234", "064FC0EE"},
     ["4454"] = {"060A0278", "06094BCA", "0609F5FC", "060949E1", "0609AF76", "061564F4"},
     ["5066"] = {"033C8B94"},

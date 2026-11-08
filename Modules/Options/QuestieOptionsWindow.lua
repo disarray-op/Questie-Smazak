@@ -1,14 +1,14 @@
----The art and frames of Questie's own settings window and its side tabs.
+---The art and frames of QuestieSmazak's own settings window and its side tabs.
 ---Which tab is shown and what it contains belongs to QuestieOptionsEngine.
 ---@class QuestieOptionsWindow
-local QuestieOptionsWindow = QuestieLoader:CreateModule("QuestieOptionsWindow")
+local QuestieOptionsWindow = QuestieSmazakLoader:CreateModule("QuestieOptionsWindow")
 
 ---@type QuestieOptionsUtils
-local QuestieOptionsUtils = QuestieLoader:ImportModule("QuestieOptionsUtils")
+local QuestieOptionsUtils = QuestieSmazakLoader:ImportModule("QuestieOptionsUtils")
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 
-local WINDOW_NAME = "QuestieStandaloneSettings"
+local WINDOW_NAME = "QuestieSmazakStandaloneSettings"
 local WINDOW_WIDTH = 675
 
 ---Creates the hidden window. Tab canvases go in its canvasContainer.
@@ -21,7 +21,7 @@ function QuestieOptionsWindow.Create()
     window:SetClampedToScreen(true)
     window:SetFrameStrata("HIGH")
     window:Hide()
-    window:SetTitle("Questie")
+    window:SetTitle("Questie-Smazak")
     window:EnableMouse(true)
 
     local closeButton = window.CloseButton
@@ -63,9 +63,9 @@ function QuestieOptionsWindow.Create()
         end
     end)
 
-    window:SetPortraitTextureRaw("Interface\\AddOns\\Questie\\Icons\\questie_portrait.png", nil, nil, "TRILINEAR")
+    window:SetPortraitTextureRaw("Interface\\AddOns\\QuestieSmazak\\Icons\\questie_portrait.png", nil, nil, "TRILINEAR")
     local portrait = window.PortraitContainer.portrait
-    if Questie.IsForever then
+    if QuestieSmazak.IsForever then
         if portrait then portrait:SetTexCoord(0.16, 0.86, 0.17, 0.87) end
         if window.Bg then window.Bg:SetColorTexture(30 / 255, 23 / 255, 18 / 255, 0.85) end
     else
@@ -95,7 +95,7 @@ function QuestieOptionsWindow.CreateSideTab(window, tabKey, tabData, previousSid
     local sideTab = CreateFrame("Frame", "$parent_Tab_" .. tabKey, window)
 
     -- Window art differs between clients, so the tabs need different alignment and art
-    local isForever = Questie.IsForever
+    local isForever = QuestieSmazak.IsForever
 
     if not previousSideTab then
         sideTab:SetPoint("TOPLEFT", window, "TOPRIGHT", isForever and -1 or -2, -35)

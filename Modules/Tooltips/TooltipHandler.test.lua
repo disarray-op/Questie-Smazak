@@ -23,19 +23,19 @@ describe("TooltipHandler", function()
     end
 
     before_each(function()
-        _G.Questie.db.profile.enableTooltips = true
-        _G.Questie.db.profile.enableTooltipsObjectID = false
-        _G.Questie.db.profile.debugEnabled = false
+        _G.QuestieSmazak.db.profile.enableTooltips = true
+        _G.QuestieSmazak.db.profile.enableTooltipsObjectID = false
+        _G.QuestieSmazak.db.profile.debugEnabled = false
         _G.LibQuestieDB = {Object = {IdsByName = spy.new(function() return nil end)}}
 
         dofile("Localization/l10n.lua")
-        l10n = QuestieLoader:ImportModule("l10n")
+        l10n = QuestieSmazakLoader:ImportModule("l10n")
 
-        QuestieTooltips = QuestieLoader:ImportModule("QuestieTooltips")
+        QuestieTooltips = QuestieSmazakLoader:ImportModule("QuestieTooltips")
         QuestieTooltips.GetTooltip = spy.new(function() end)
 
         dofile("Modules/Tooltips/TooltipHandler.lua")
-        _QuestieTooltips = QuestieLoader:ImportModule("QuestieTooltips").private
+        _QuestieTooltips = QuestieSmazakLoader:ImportModule("QuestieTooltips").private
         _MockGameTooltip()
     end)
 
@@ -63,15 +63,15 @@ describe("TooltipHandler", function()
                 [objectKeys.name] = OBJECT_NAME,
                 [objectKeys.spawns] = {[PLAYER_ZONE] = {{10, 10}}},
             })
-            QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+            QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
             QuestieDB.QueryObjectSingle = mock.lib.Object.Get
             QuestieDB.GetQuest = function() return nil end
             -- The tooltip sorts quests by level and type; these have neither.
             QuestieDB.QueryQuestSingle = function() return nil end
             QuestieDB.GetQuestTagInfo = function() end
             dofile("Modules/Libs/QuestieLib.lua")
-            local QuestieLib = QuestieLoader:ImportModule("QuestieLib")
-            QuestieLoader:ImportModule("QuestLogCache").TryGetQuest = function() return nil end
+            local QuestieLib = QuestieSmazakLoader:ImportModule("QuestieLib")
+            QuestieSmazakLoader:ImportModule("QuestLogCache").TryGetQuest = function() return nil end
             QuestieLib.GetColoredQuestName = function() return "Party Quest" end
             QuestieLib.GetRGBForObjective = function() return "gold" end
             QuestieLib.GetLoadedQuestObjectives = function()
@@ -83,14 +83,14 @@ describe("TooltipHandler", function()
                 for _ in pairs(values) do count = count + 1 end
                 return count
             end
-            local QuestiePlayer = QuestieLoader:ImportModule("QuestiePlayer")
+            local QuestiePlayer = QuestieSmazakLoader:ImportModule("QuestiePlayer")
             dofile("Modules/Quest/ActiveQuests.lua")
             QuestiePlayer.numberOfGroupMembers = 2
             QuestiePlayer.GetPartyMemberByName = function(_, name)
                 if name == "Bob" then return {colorHex = "FFFFFFFF"} end
             end
-            QuestieLoader:ImportModule("ZoneDB").GetParentZoneId = function() return nil end
-            QuestieComms = QuestieLoader:ImportModule("QuestieComms")
+            QuestieSmazakLoader:ImportModule("ZoneDB").GetParentZoneId = function() return nil end
+            QuestieComms = QuestieSmazakLoader:ImportModule("QuestieComms")
             QuestieComms.data = {}
             QuestieComms.remotePlayerEnabled = {}
             QuestieComms.remotePlayerClasses = {}
@@ -99,7 +99,7 @@ describe("TooltipHandler", function()
             -- Exercise both registries and the real rendering path, not a stubbed GetTooltip.
             dofile("Modules/Network/QuestieCommsData.lua")
             dofile("Modules/Tooltips/Tooltip.lua")
-            QuestieTooltips = QuestieLoader:ImportModule("QuestieTooltips")
+            QuestieTooltips = QuestieSmazakLoader:ImportModule("QuestieTooltips")
             dofile("Modules/Tooltips/TooltipHandler.lua")
             _QuestieTooltips = QuestieTooltips.private
             QuestieComms.data:RegisterTooltip(REMOTE_QUEST_ID, "Bob", {
@@ -149,7 +149,7 @@ describe("TooltipHandler", function()
             assert.spy(GameTooltip.AddLine).was.called_with(GameTooltip, PARTY_LINE)
 
             _MockGameTooltip()
-            QuestieLoader:ImportModule("ZoneDB").GetParentZoneId = function(_, areaId)
+            QuestieSmazakLoader:ImportModule("ZoneDB").GetParentZoneId = function(_, areaId)
                 if areaId == 999 then return PLAYER_ZONE end
             end
             _QuestieTooltips.AddObjectDataToTooltip(OBJECT_NAME, 999)
@@ -158,9 +158,9 @@ describe("TooltipHandler", function()
 
         it("moves local objective lines to a corrected name without re-registering the objective", function()
             _G.IsInGroup = function() return false end
-            QuestieLoader:ImportModule("ActiveQuests").Add(7, {})
+            QuestieSmazakLoader:ImportModule("ActiveQuests").Add(7, {})
             QuestieDB.GetItemDroprate = function() return nil end
-            local QuestieLib = QuestieLoader:ImportModule("QuestieLib")
+            local QuestieLib = QuestieSmazakLoader:ImportModule("QuestieLib")
             QuestieLib.GetColoredQuestName = function() return "Local Quest" end
             QuestieTooltips:RegisterObjectiveTooltip(7, "o_1001", {
                 Index = 1, Id = 1001, Type = "object", Description = "Open the chest", Update = function() end,
@@ -225,13 +225,13 @@ describe("TooltipHandler", function()
         local tooltip, savedIsSecret
 
         before_each(function()
-            Questie.db.profile.enableTooltipsSpellID = true
+            QuestieSmazak.db.profile.enableTooltipsSpellID = true
             savedIsSecret = _G.issecretvalue
             tooltip = {AddDoubleLine = spy.new(function() end)}
         end)
 
         after_each(function()
-            Questie.db.profile.enableTooltipsSpellID = nil
+            QuestieSmazak.db.profile.enableTooltipsSpellID = nil
             _G.issecretvalue = savedIsSecret
         end)
 
@@ -239,7 +239,7 @@ describe("TooltipHandler", function()
             _QuestieTooltips.AddSpellIdToTooltip(tooltip, 133)
             assert.spy(tooltip.AddDoubleLine).was.called_with(tooltip, "Spell ID", 133, 1, 0.82, 0, 1, 1, 1)
 
-            Questie.db.profile.enableTooltipsSpellID = false
+            QuestieSmazak.db.profile.enableTooltipsSpellID = false
             _QuestieTooltips.AddSpellIdToTooltip(tooltip, 133)
             assert.spy(tooltip.AddDoubleLine).was.called(1)
         end)
@@ -283,9 +283,9 @@ describe("TooltipHandler", function()
         before_each(function()
             originalTooltip = _G.GameTooltip
             originalGetTooltip = QuestieTooltips.GetTooltip
-            originalItemIDSetting = Questie.db.profile.enableTooltipsItemID
-            Questie.db.profile.enableTooltipsItemID = false
-            QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+            originalItemIDSetting = QuestieSmazak.db.profile.enableTooltipsItemID
+            QuestieSmazak.db.profile.enableTooltipsItemID = false
+            QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
             originalQueryItem = QuestieDB.QueryItemSingle
             QuestieDB.QueryItemSingle = function() return nil end
             QuestieTooltips.GetTooltip = spy.new(function() return {"Wolves Across the Border", "0/8 Tough Wolf Meat"} end)
@@ -295,7 +295,7 @@ describe("TooltipHandler", function()
             _G.GameTooltip = originalTooltip
             QuestieTooltips.GetTooltip = originalGetTooltip
             QuestieDB.QueryItemSingle = originalQueryItem
-            Questie.db.profile.enableTooltipsItemID = originalItemIDSetting
+            QuestieSmazak.db.profile.enableTooltipsItemID = originalItemIDSetting
         end)
 
         local links = {
@@ -319,7 +319,7 @@ describe("TooltipHandler", function()
         end
 
         it("adds the Item ID to the clicked-link tooltip, not the hover tooltip", function()
-            Questie.db.profile.enableTooltipsItemID = true
+            QuestieSmazak.db.profile.enableTooltipsItemID = true
             local itemRef = {
                 GetItem = function() return "Tough Wolf Meat", links[2].link end,
                 GetName = function() return "ItemRefTooltip" end,
@@ -434,7 +434,7 @@ describe("TooltipHandler", function()
 
         describe("Object ID line from the provider name index", function()
             before_each(function()
-                _G.Questie.db.profile.enableTooltipsObjectID = true
+                _G.QuestieSmazak.db.profile.enableTooltipsObjectID = true
             end)
 
             it("should show a single Object ID", function()
@@ -463,7 +463,7 @@ describe("TooltipHandler", function()
             end)
 
             it("should show the full count above ten in debug mode", function()
-                _G.Questie.db.profile.debugEnabled = true
+                _G.QuestieSmazak.db.profile.debugEnabled = true
                 LibQuestieDB.Object.IdsByName = spy.new(function() return {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11} end)
 
                 _QuestieTooltips.AddObjectDataToTooltip(OBJECT_NAME, PLAYER_ZONE)
@@ -497,7 +497,7 @@ describe("TooltipHandler", function()
 
         for _, enableObjectID in ipairs({false, true}) do
             it("should hide wrong-zone quest lines with Object IDs " .. tostring(enableObjectID), function()
-                Questie.db.profile.enableTooltipsObjectID = enableObjectID
+                QuestieSmazak.db.profile.enableTooltipsObjectID = enableObjectID
                 LibQuestieDB.Object.IdsByName = spy.new(function() return {1001, 2002} end)
                 -- Only the Object in zone 12 has quest lines; its namesake is in the player's zone.
                 ---@param key string

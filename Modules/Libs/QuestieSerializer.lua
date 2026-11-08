@@ -1,10 +1,10 @@
 ---@class QuestieSerializer
-local QuestieSerializer = QuestieLoader:CreateModule("QuestieSerializer");
+local QuestieSerializer = QuestieSmazakLoader:CreateModule("QuestieSerializer");
 -------------------------
 --Import modules.
 -------------------------
 ---@type QuestieStreamLib
-local QuestieStreamLib = QuestieLoader:ImportModule("QuestieStreamLib");
+local QuestieStreamLib = QuestieSmazakLoader:ImportModule("QuestieStreamLib");
 
 
 function QuestieSerializer:Hash(value)

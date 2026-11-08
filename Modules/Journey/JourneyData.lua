@@ -1,10 +1,10 @@
 ---@class JourneyData
-local JourneyData = QuestieLoader:CreateModule("JourneyData")
+local JourneyData = QuestieSmazakLoader:CreateModule("JourneyData")
 
 ---@type ZoneDB
-local ZoneDB = QuestieLoader:ImportModule("ZoneDB")
+local ZoneDB = QuestieSmazakLoader:ImportModule("ZoneDB")
 ---@type QuestieDB
-local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
 
 ---Build Journey's quest groups and matching dropdown choices after the database and ZoneDB are initialized.
 ---QuestieJourney:Initialize stores both results in self.zoneMap and self.zones. Tabs should read those tables,

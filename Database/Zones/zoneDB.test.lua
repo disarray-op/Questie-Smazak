@@ -16,9 +16,9 @@ describe("ZoneDB", function()
     before_each(function()
         originalLoadstring = _G.loadstring
         dofile("Database/SupportValidation.lua")
-        QuestieLoader:ImportModule("SupportValidation").ValidateZones = function() return true end
-        _G["Questie"] = {db = {profile = {}}}
-        _G.Questie.Debug = function() end
+        QuestieSmazakLoader:ImportModule("SupportValidation").ValidateZones = function() return true end
+        _G["QuestieSmazak"] = {db = {profile = {}}}
+        _G.QuestieSmazak.Debug = function() end
         _G.C_Map = {
             GetMapInfo = function() return nil end,
             GetAreaInfo = function() return nil end,
@@ -53,7 +53,7 @@ describe("ZoneDB", function()
         }
         mock.supportModules.ZoneDB = zoneData
         dofile("Database/Zones/zoneDB.lua")
-        ZoneDB = QuestieLoader:ImportModule("ZoneDB")
+        ZoneDB = QuestieSmazakLoader:ImportModule("ZoneDB")
 
         ZoneDB.Initialize()
     end)
@@ -136,11 +136,11 @@ describe("ZoneDB", function()
         before_each(function()
             dofile("Database/Constants.lua")
             dofile("Localization/l10n.lua")
-            l10n = QuestieLoader:ImportModule("l10n")
+            l10n = QuestieSmazakLoader:ImportModule("l10n")
             l10n.zoneCategoryLookup = {
                 [1] = {[1] = "Dun Morogh", [141] = "Teldrassil", [-676] = "Night Elf"},
             }
-            QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+            QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
             quests = {
                 [100] = {zoneOrSort = -676},
                 [101] = {zoneOrSort = 141},
@@ -148,9 +148,9 @@ describe("ZoneDB", function()
             }
             QuestieDB.QuestPointers = quests
             QuestieDB.QueryQuestSingle = function(questId, field) return quests[questId][field] end
-            QuestieLoader:ImportModule("QuestieCorrections").hiddenQuests = {}
-            QuestieLoader:ImportModule("QuestieEvent").IsEventQuest = function() return false end
-            local QuestiePlayer = QuestieLoader:ImportModule("QuestiePlayer")
+            QuestieSmazakLoader:ImportModule("QuestieCorrections").hiddenQuests = {}
+            QuestieSmazakLoader:ImportModule("QuestieEvent").IsEventQuest = function() return false end
+            local QuestiePlayer = QuestieSmazakLoader:ImportModule("QuestiePlayer")
             QuestiePlayer.HasRequiredRace = function() return true end
             QuestiePlayer.HasRequiredClass = function() return true end
         end)
@@ -187,7 +187,7 @@ describe("ZoneDB", function()
         end)
 
         it("does not create a destination when the source has no eligible quests", function()
-            QuestieLoader:ImportModule("QuestieCorrections").hiddenQuests[100] = true
+            QuestieSmazakLoader:ImportModule("QuestieCorrections").hiddenQuests[100] = true
             local zoneMap = ZoneDB.GetZonesWithQuests(false, {[-676] = -161})
 
             assert.are_same({[141] = {[101] = true}, [1] = {[102] = true}}, zoneMap)
@@ -202,7 +202,7 @@ describe("ZoneDB", function()
         it("redirects the final holiday categories after seasonal splitting", function()
             quests[100].zoneOrSort = QuestieDB.sortKeys.SEASONAL
             quests[101].zoneOrSort = QuestieDB.sortKeys.SPECIAL
-            QuestieLoader:ImportModule("QuestieEvent").GetEventNameFor = function() return "Winter Veil" end
+            QuestieSmazakLoader:ImportModule("QuestieEvent").GetEventNameFor = function() return "Winter Veil" end
 
             local zoneMap = ZoneDB.GetZonesWithQuests(false, {[QuestieDB.sortKeys.WINTER_VEIL] = 141})
 
@@ -339,11 +339,11 @@ describe("ZoneDB", function()
         end)
     end)
     it("validates actual decoded and overridden maps with debug disabled before dungeon indexing", function()
-        Questie.db.profile.debugEnabled = false
+        QuestieSmazak.db.profile.debugEnabled = false
         -- A rejected old scalar row must never reach ipairs in the index builder.
         ZoneDB.private.dungeons = {[206] = {"Utgarde Keep", 10057}}
         local validator = spy.new(function(zones, expansion)
-            assert.are_equal(QuestieLoader:ImportModule("Expansions").Current, expansion)
+            assert.are_equal(QuestieSmazakLoader:ImportModule("Expansions").Current, expansion)
             assert.are_equal(ZoneDB.zoneIDs, zones.zoneIDs)
             assert.are_equal(ZoneDB.instanceIdToAreaId, zones.instanceIdToAreaId)
             assert.are_equal(ZoneDB.private.dungeons, zones.dungeons)
@@ -355,7 +355,7 @@ describe("ZoneDB", function()
             assert.are_equal(1, zones.subZoneToParentZoneOverride[133])
             return false, "zone report"
         end)
-        QuestieLoader:ImportModule("SupportValidation").ValidateZones = validator
+        QuestieSmazakLoader:ImportModule("SupportValidation").ValidateZones = validator
         _G.loadstring = spy.new(originalLoadstring)
         local valid, report = ZoneDB.Initialize()
         assert.spy(_G.loadstring).was.called(6)

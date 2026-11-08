@@ -1,5 +1,5 @@
 ---@type QuestieDB
-local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
 
 QuestieDB.sortKeys = {
     EPIC = -1,

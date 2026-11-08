@@ -1,11 +1,11 @@
 ---@class WrappedText
-local WrappedText = QuestieLoader:CreateModule("WrappedText")
+local WrappedText = QuestieSmazakLoader:CreateModule("WrappedText")
 
 -------------------------
 --Import modules.
 -------------------------
 ---@type utf8
-local utf8 = QuestieLoader:ImportModule("utf8")
+local utf8 = QuestieSmazakLoader:ImportModule("utf8")
 
 local math_max = math.max
 local strfind = string.find
@@ -561,7 +561,7 @@ function WrappedText:TextWrap(line, prefix, combineTrailing, desiredWidth, fontS
     end
 
     if (textWrapObjectiveFontString:IsVisible()) then
-        Questie.Error("TextWrap already running... Please report this on GitHub or Discord.")
+        QuestieSmazak.Error("TextWrap already running... Please report this on GitHub or Discord.")
     end
 
     -- Set defaults.

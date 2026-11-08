@@ -1,5 +1,5 @@
 ---@class QuestieProfilerPreHook
-local QuestieProfilerPreHook = QuestieLoader:CreateModule("ProfilerPreHook")
+local QuestieProfilerPreHook = QuestieSmazakLoader:CreateModule("ProfilerPreHook")
 
 -- The profiler reaches a function by owning the table slot it lives in, which works only for calls that read
 -- that slot. A file that writes `local IsDoable = QuestieDB.IsDoable` at its top captures the function object
@@ -9,16 +9,16 @@ local QuestieProfilerPreHook = QuestieLoader:CreateModule("ProfilerPreHook")
 -- amount, which is a wrong number rather than a missing one.
 --
 -- This file puts a stable indirection in every module function slot as the addon loads, so whatever a later
--- file captures is something the profiler can still redirect. QuestieLoader drives it: each module
+-- file captures is something the profiler can still redirect. QuestieSmazakLoader drives it: each module
 -- registration is the top of some file, at which point every file above it has finished, so anything it
 -- defined is wrappable before anything below it can alias it.
 --
--- It is listed immediately after QuestieLoader, and that is a constraint rather than a convenience. Modules
+-- It is listed immediately after QuestieSmazakLoader, and that is a constraint rather than a convenience. Modules
 -- that already exist when this loads are wrapped by the seed at the bottom, but a file *above* this one has
 -- already run, so an alias it captured holds the implementation and nothing afterwards can reach it - wrapping
 -- the slot later cannot help, because the alias is a copy, which is the whole problem being solved. Moving
 -- this line down the TOC therefore blinds everything between the loader and its new position, silently.
--- Nothing but QuestieLoader is above it, and nothing should be.
+-- Nothing but QuestieSmazakLoader is above it, and nothing should be.
 --
 -- The indirection is one Lua call, and it stays for the session because an alias that captured it cannot give
 -- it back. Measured in-client that is 0.073us against roughly 3.7us for a measured call - about 2% while
@@ -137,7 +137,7 @@ local function SweepModule(moduleName)
     if EXCLUDED_MODULES[moduleName] then
         return
     end
-    local module = QuestieLoader._modules[moduleName]
+    local module = QuestieSmazakLoader._modules[moduleName]
     if type(module) ~= "table" then
         return
     end
@@ -154,7 +154,7 @@ end
 
 ---Sweeps everything, for the cases where there is no name to go on.
 local function SweepAll()
-    for moduleName in pairs(QuestieLoader._modules) do
+    for moduleName in pairs(QuestieSmazakLoader._modules) do
         SweepModule(moduleName)
     end
 end
@@ -179,21 +179,21 @@ QuestieProfilerPreHook.installed = false
 
 ---Stops wrapping. Everything already installed stays; this only ends the per-loader-call sweep.
 function QuestieProfilerPreHook.Finish()
-    QuestieLoader:SetModuleCallObserver(nil)
+    QuestieSmazakLoader:SetModuleCallObserver(nil)
     -- A full pass, not just the dirty set: this is the last chance, so correctness beats the saved scan.
     SweepAll()
 end
 
 -- Read at load from the same plain saved variable the loader reads: every TOC declares
 -- LoadSavedVariablesFirst, so it is already populated. A player who never profiles builds no wrappers at all.
-if QuestieProfilerEnabled == true then
+if QuestieSmazakProfilerEnabled == true then
     -- Modules registered before this file loaded were never announced, so nothing would mark them dirty.
     -- This wraps their slots; it cannot repair an alias a file above already captured, which is why the
     -- note at the top insists on this file's position.
-    for moduleName in pairs(QuestieLoader._modules) do
+    for moduleName in pairs(QuestieSmazakLoader._modules) do
         dirty[moduleName] = true
     end
-    QuestieLoader:SetModuleCallObserver(OnModuleCall)
+    QuestieSmazakLoader:SetModuleCallObserver(OnModuleCall)
     QuestieProfilerPreHook.installed = true
 
     -- Addon load is over, so no further file can capture anything; stop sweeping on every loader call.
@@ -201,7 +201,7 @@ if QuestieProfilerEnabled == true then
         local finishFrame = CreateFrame("Frame")
         finishFrame:RegisterEvent("ADDON_LOADED")
         finishFrame:SetScript("OnEvent", function(self, _, addonName)
-            if addonName ~= "Questie" then
+            if addonName ~= "QuestieSmazak" then
                 return
             end
             self:UnregisterEvent("ADDON_LOADED")

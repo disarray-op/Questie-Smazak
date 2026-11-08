@@ -1,5 +1,5 @@
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 
 local staticPopup = {
     -------------------------------------------------------------------------------------------
@@ -18,17 +18,17 @@ local staticPopup = {
     },
     -------------------------------------------------------------------------------------------
     -- GameVersionError - "QUESTIE_VERSION_ERROR" Static Popup
-    ["You're trying to use Questie addon"] = {
+    ["You're trying to use QuestieSmazak addon"] = {
         ["enUS"] = true,
-        ["deDE"] = "Du versuchst das Questie Addon",
-        ["esES"] = "Estás intentando de utilizar el addon Questie",
-        ["esMX"] = "Estás intentando de utilizar el addon Questie",
-        ["frFR"] = "Vous essayez d'utiliser l'add-on Questie.",
+        ["deDE"] = "Du versuchst das QuestieSmazak Addon",
+        ["esES"] = "Estás intentando de utilizar el addon QuestieSmazak",
+        ["esMX"] = "Estás intentando de utilizar el addon QuestieSmazak",
+        ["frFR"] = "Vous essayez d'utiliser l'add-on QuestieSmazak.",
         ["koKR"] = "퀘스티 애드온을 사용 중입니다",
-        ["ptBR"] = "Você está tentando usar o addon Questie.",
-        ["ruRU"] = "Вы пытаетесь использовать Questie",
-        ["zhCN"] = "你正在尝试使用 Questie 插件",
-        ["zhTW"] = "你正嘗試將 Questie 插件",
+        ["ptBR"] = "Você está tentando usar o addon QuestieSmazak.",
+        ["ruRU"] = "Вы пытаетесь использовать QuestieSmazak",
+        ["zhCN"] = "你正在尝试使用 QuestieSmazak 插件",
+        ["zhTW"] = "你正嘗試將 QuestieSmazak 插件",
     },
     ["on an unsupported WoW game client!"] = {
         ["enUS"] = true,
@@ -66,17 +66,17 @@ local staticPopup = {
         ["zhCN"] = "不受支持",
         ["zhTW"] = "都不支援",
     },
-    ["Questie only supports"] = {
+    ["QuestieSmazak only supports"] = {
         ["enUS"] = true,
-        ["deDE"] = "Questie unterstützt nur",
-        ["esES"] = "Questie solo soporta",
-        ["esMX"] = "Questie solo soporta",
-        ["frFR"] = "Questie prend en charge uniquement",
+        ["deDE"] = "QuestieSmazak unterstützt nur",
+        ["esES"] = "QuestieSmazak solo soporta",
+        ["esMX"] = "QuestieSmazak solo soporta",
+        ["frFR"] = "QuestieSmazak prend en charge uniquement",
         ["koKR"] = "퀘스티는 지원합니다",
-        ["ptBR"] = "Questie suporta apenas",
-        ["ruRU"] = "Questie поддерживает только",
-        ["zhCN"] = "Questie 只支持",
-        ["zhTW"] = "Questie 只支援",
+        ["ptBR"] = "QuestieSmazak suporta apenas",
+        ["ruRU"] = "QuestieSmazak поддерживает только",
+        ["zhCN"] = "QuestieSmazak 只支持",
+        ["zhTW"] = "QuestieSmazak 只支援",
     },
     ["WoW Classic (Era/Cataclysm)!"] = {
         ["enUS"] = true,

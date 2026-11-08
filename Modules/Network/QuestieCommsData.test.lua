@@ -74,9 +74,9 @@ describe("QuestieCommsData", function()
     end
 
     before_each(function()
-        QuestieComms = QuestieLoader:ImportModule("QuestieComms")
-        QuestieDB = QuestieLoader:ImportModule("QuestieDB")
-        QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+        QuestieComms = QuestieSmazakLoader:ImportModule("QuestieComms")
+        QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
+        QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
 
         originalMonsterTemplate = _G.QUEST_MONSTERS_KILLED
         originalOptionalTemplate = _G.OPTIONAL_QUEST_OBJECTIVE_DESCRIPTION
@@ -97,7 +97,7 @@ describe("QuestieCommsData", function()
         loadedItemName = "Server item name"
         QuestieDB.GetNPC = function() return nil end
         QuestieDB.GetObject = function() return nil end
-        ThreadLib = QuestieLoader:ImportModule("ThreadLib")
+        ThreadLib = QuestieSmazakLoader:ImportModule("ThreadLib")
         originalThread = ThreadLib.Thread
         loadThread = nil
         ThreadLib.Thread = function(body)

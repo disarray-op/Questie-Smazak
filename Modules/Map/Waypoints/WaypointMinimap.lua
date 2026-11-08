@@ -1,21 +1,21 @@
 -- luacheck: read globals GetMinimapShape GetPlayerFacing GetCursorPosition issecretvalue
----Draws the paths around the player onto a layer over the minimap, lined up with Questie's minimap
+---Draws the paths around the player onto a layer over the minimap, lined up with QuestieSmazak's minimap
 ---icons, and finds the path under the cursor.
 ---@class WaypointMinimap
-local WaypointMinimap = QuestieLoader:CreateModule("WaypointMinimap")
+local WaypointMinimap = QuestieSmazakLoader:CreateModule("WaypointMinimap")
 
 ---@type QuestieWaypoints
-local QuestieWaypoints = QuestieLoader:ImportModule("QuestieWaypoints")
+local QuestieWaypoints = QuestieSmazakLoader:ImportModule("QuestieWaypoints")
 ---@type WaypointGeometry
-local WaypointGeometry = QuestieLoader:ImportModule("WaypointGeometry")
+local WaypointGeometry = QuestieSmazakLoader:ImportModule("WaypointGeometry")
 ---@type WaypointRenderer
-local WaypointRenderer = QuestieLoader:ImportModule("WaypointRenderer")
+local WaypointRenderer = QuestieSmazakLoader:ImportModule("WaypointRenderer")
 ---@type WaypointHover
-local WaypointHover = QuestieLoader:ImportModule("WaypointHover")
+local WaypointHover = QuestieSmazakLoader:ImportModule("WaypointHover")
 ---@type QuestieCompat
-local QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+local QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
 ---@type QuestieLib
-local QuestieLib = QuestieLoader:ImportModule("QuestieLib")
+local QuestieLib = QuestieSmazakLoader:ImportModule("QuestieLib")
 
 local HBD = LibStub("HereBeDragonsQuestie-2.0")
 local HBDPins = LibStub("HereBeDragonsQuestie-Pins-2.0")
@@ -109,7 +109,7 @@ end
 
 -- Minimap shape
 -- Blizzard has no getter for the minimap's mask, so the last asset passed to
--- Minimap:SetMaskTexture since Questie loaded is the only exact source. nil until a call.
+-- Minimap:SetMaskTexture since QuestieSmazak loaded is the only exact source. nil until a call.
 local hookedMaskAsset
 ---@type MaskTexture?
 local shapeMask
@@ -121,7 +121,7 @@ end
 
 ---Chooses the minimap's shape mask. An asset seen through Minimap:SetMaskTexture is exact; minimap
 ---addons such as SexyMap set their shapes that way, and Forever's own skin on every Rotate Minimap
----change. A mask set before Questie loaded can only be read through GetMinimapShape, a community
+---change. A mask set before QuestieSmazak loaded can only be read through GetMinimapShape, a community
 ---convention Blizzard does not define, which only names the round quarters. Any round quarter
 ---uses the round mask, so paths stop short in square corners rather than draw past a round edge.
 ---Without GetMinimapShape the minimap is round.
@@ -153,7 +153,7 @@ local function _ApplyShapeMask(mask)
     end
 end
 
--- Installed at load so minimap addons loading after Questie are seen. A post-hook only observes the
+-- Installed at load so minimap addons loading after QuestieSmazak are seen. A post-hook only observes the
 -- call; Blizzard's method runs unchanged. Neither installing nor running it may break the caller
 -- or this file, so failures fall back to GetMinimapShape and are reported once the layer exists.
 local maskHookError
@@ -255,7 +255,7 @@ end
 local function _View(layer, path, alpha, projection)
     local entry = layer.entries[path.route]
     -- Line width is in minimap units.
-    local style = {thickness = Questie.db.profile.waypointWidth, color = QuestieWaypoints.Color(path), alpha = alpha,
+    local style = {thickness = QuestieSmazak.db.profile.waypointWidth, color = QuestieWaypoints.Color(path), alpha = alpha,
         frameLevel = layer.container:GetFrameLevel()}
     if entry and entry.projection == projection then
         -- Restyling redraws only what changed: the color of a highlight, or of another copy of the
@@ -280,7 +280,7 @@ local function _View(layer, path, alpha, projection)
 end
 
 -- Hover
--- Paths take no mouse input. They count as hovered only over the bare minimap, so Questie's icons,
+-- Paths take no mouse input. They count as hovered only over the bare minimap, so QuestieSmazak's icons,
 -- the minimap's buttons and other addons' pins on top win.
 
 ---Cursor in projected units, x right and y down from the projection's origin; nil off the bare
@@ -428,14 +428,14 @@ end
 ---@param minimap Frame
 ---@return WaypointMinimapLayer
 function WaypointMinimap.New(minimap)
-    if maskHookError then Questie.Error("Waypoint minimap shape tracking failed:", maskHookError) end
+    if maskHookError then QuestieSmazak.Error("Waypoint minimap shape tracking failed:", maskHookError) end
     -- Clipping crops paths to the minimap's rectangle, which the masks then shape, and skips
     -- drawing what lies beyond it.
     local root = CreateFrame("Frame", nil, minimap)
     root:SetAllPoints(minimap)
     root:SetClipsChildren(true)
     root:Hide()
-    -- The lowest level above the map itself keeps paths beneath Questie's minimap icons, the
+    -- The lowest level above the map itself keeps paths beneath QuestieSmazak's minimap icons, the
     -- minimap's bezel and buttons, and other addons' pins wherever levels decide.
     root:SetFrameLevel(minimap:GetFrameLevel() + 1)
     local container = CreateFrame("Frame", nil, root)
@@ -459,9 +459,9 @@ function WaypointMinimap.New(minimap)
     root:SetScript("OnUpdate", function()
         local updated, err = pcall(layer.Update, layer)
         if not updated then
-            Questie.Error("Waypoint minimap drawing failed:", err)
+            QuestieSmazak.Error("Waypoint minimap drawing failed:", err)
             local cleared, clearErr = pcall(layer.Clear, layer)
-            if not cleared then Questie.Error("Waypoint minimap cleanup failed:", clearErr) end
+            if not cleared then QuestieSmazak.Error("Waypoint minimap cleanup failed:", clearErr) end
             -- Last: ending the hover in Clear changes the highlight, which shows the root again.
             root:Hide()
         end
@@ -483,7 +483,7 @@ function WaypointMinimap.Invalidate()
         local created, result = pcall(WaypointMinimap.New, Minimap)
         if not created then
             setupFailed = true
-            Questie.Error("Waypoint minimap setup failed:", result)
+            QuestieSmazak.Error("Waypoint minimap setup failed:", result)
             return
         end
         layer = result

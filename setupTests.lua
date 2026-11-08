@@ -1,4 +1,4 @@
-dofile("Modules/Libs/QuestieLoader.lua")
+dofile("Modules/Libs/QuestieSmazakLoader.lua")
 _G.GetBuildInfo = function() return "5.5.3", "0", "", 50503 end
 dofile("Modules/QuestieCompat.lua")
 dofile("Modules/Expansions.lua")
@@ -6,7 +6,7 @@ dofile("Modules/Expansions.lua")
 -- Entity schemas come from the QuestieDB seam in tests that need database metadata.
 
 ---@type ZoneDB
-local ZoneDB = QuestieLoader:ImportModule("ZoneDB")
+local ZoneDB = QuestieSmazakLoader:ImportModule("ZoneDB")
 
 -- Only constants used by test cases and their loaded modules belong in this fixture.
 -- Keep unknown names nil so missing setup cannot silently change a test's behavior.
@@ -82,7 +82,7 @@ _G.Enum = {
 }
 
 _G.MAX_NUM_QUESTS = 25
-QuestieLoader:ImportModule("QuestieCompat").MAX_NUM_QUESTS = 25
+QuestieSmazakLoader:ImportModule("QuestieCompat").MAX_NUM_QUESTS = 25
 _G.QUEST_MONSTERS_KILLED = ""
 _G.QUEST_ITEMS_NEEDED = ""
 _G.QUEST_OBJECTS_FOUND = ""
@@ -292,7 +292,7 @@ setmetatable(_G.LibStub, {
 })
 
 local registeredEvents = {}
-_G["Questie"] = {
+_G["QuestieSmazak"] = {
     API = {
         isReady = false,
     },

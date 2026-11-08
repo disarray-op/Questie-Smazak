@@ -9,16 +9,16 @@ describe("Forever", function()
 
     before_each(function()
         dofile("Localization/l10n.lua")
-        QuestieLib = QuestieLoader:ImportModule("QuestieLib")
+        QuestieLib = QuestieSmazakLoader:ImportModule("QuestieLib")
         saved = {
             C_QuestLog = _G.C_QuestLog, C_Intl = _G.C_Intl,
             C_StringUtil = _G.C_StringUtil, C_CurveUtil = _G.C_CurveUtil, Enum = _G.Enum,
             GetColoredQuestName = QuestieLib.GetColoredQuestName, GetRGBForObjective = QuestieLib.GetRGBForObjective,
             issecretvalue = _G.issecretvalue, issecrettable = _G.issecrettable,
-            IsForever = Questie.IsForever, profile = Questie.db.profile, format = string.format,
+            IsForever = QuestieSmazak.IsForever, profile = QuestieSmazak.db.profile, format = string.format,
         }
-        Questie.IsForever = true
-        Questie.db.profile = {enableTooltipsQuestLevel = true, enableTooltipsQuestID = false}
+        QuestieSmazak.IsForever = true
+        QuestieSmazak.db.profile = {enableTooltipsQuestLevel = true, enableTooltipsQuestID = false}
         _G.issecretvalue, _G.issecrettable = nil, nil
         entries = {{isHeader = true}, {questID = 4402}, {questID = 97279}}
         titles = {[4402] = "|cff00ff00[3+] Apple quest|r", [97279] = "|cffff8000[2] Weapon quest|r"}
@@ -34,7 +34,7 @@ describe("Forever", function()
         }
         titleCalls = spy.new(function(id) return titles[id] or error("Quest missing from database") end)
         QuestieLib.GetColoredQuestName = function(_, id, showLevel, showState)
-            assert.are.equal(Questie.db.profile.enableTooltipsQuestLevel, showLevel)
+            assert.are.equal(QuestieSmazak.db.profile.enableTooltipsQuestLevel, showLevel)
             assert.is_true(showState)
             return titleCalls(id)
         end
@@ -69,7 +69,7 @@ describe("Forever", function()
             return ifFalse
         end}
         dofile("Modules/Tooltips/Forever.lua")
-        Forever = QuestieLoader:ImportModule("Forever")
+        Forever = QuestieSmazakLoader:ImportModule("Forever")
     end)
 
     after_each(function()
@@ -77,18 +77,18 @@ describe("Forever", function()
         _G.C_StringUtil, _G.C_CurveUtil, _G.Enum = saved.C_StringUtil, saved.C_CurveUtil, saved.Enum
         QuestieLib.GetColoredQuestName, QuestieLib.GetRGBForObjective = saved.GetColoredQuestName, saved.GetRGBForObjective
         _G.issecretvalue, _G.issecrettable = saved.issecretvalue, saved.issecrettable
-        Questie.IsForever, Questie.db.profile, string.format = saved.IsForever, saved.profile, saved.format
+        QuestieSmazak.IsForever, QuestieSmazak.db.profile, string.format = saved.IsForever, saved.profile, saved.format
     end)
 
     describe("Title", function()
-        it("selects only the matching quest's normal Questie title from overlapping candidates", function()
+        it("selects only the matching quest's normal QuestieSmazak title from overlapping candidates", function()
             local formatter = Forever.CreateFormatter()
 
             assert.are.equal(OPEN .. "|cff00ff00[3+] Apple quest|r", formatter.Title(4402, "Native apple title"))
             assert.are.equal(OPEN .. "|cffff8000[2] Weapon quest|r", formatter.Title(97279, "Native weapon title"))
         end)
 
-        it("uses Questie's title for a readable ID outside the quest log, such as a party member's quest", function()
+        it("uses QuestieSmazak's title for a readable ID outside the quest log, such as a party member's quest", function()
             titles[5000] = "|cff21cce7[10] Repeatable party quest|r"
             local formatter = Forever.CreateFormatter()
 
@@ -99,15 +99,15 @@ describe("Forever", function()
             local formatter = Forever.CreateFormatter()
             assert.are.equal(OPEN .. "[??] Unknown title", formatter.Title(99999, "Unknown title"))
 
-            Questie.db.profile.enableTooltipsQuestID = true
+            QuestieSmazak.db.profile.enableTooltipsQuestID = true
             assert.are.equal(OPEN .. "[??] Unknown title (99999)", formatter.Title(99999, "Unknown title"))
             assert.are.equal("[??] Missing ID (???)", formatter.Title(nil, "Missing ID"))
 
-            Questie.db.profile.enableTooltipsQuestLevel = false
+            QuestieSmazak.db.profile.enableTooltipsQuestLevel = false
             assert.are.equal(OPEN .. "Unknown title (99999)", formatter.Title(99999, "Unknown title"))
         end)
 
-        it("keeps Blizzard's title for a logged quest missing from Questie's database", function()
+        it("keeps Blizzard's title for a logged quest missing from QuestieSmazak's database", function()
             titles[4402] = nil
             local formatter = Forever.CreateFormatter()
 
@@ -202,7 +202,7 @@ describe("Forever", function()
             assert.are.equal("3/10 Cactus Apple", formatter.Objective("3/10 Cactus Apple"))
         end)
 
-        it("colors objectives of a logged quest missing from Questie's database", function()
+        it("colors objectives of a logged quest missing from QuestieSmazak's database", function()
             titles[4402] = nil
             local formatter = Forever.CreateFormatter()
             formatter.Title(4402, "Apple")
@@ -305,7 +305,7 @@ describe("Forever", function()
             _G.C_Intl = nil
             assert.are.equal("[??] Native title", Forever.CreateFormatter().Title(12345, "Native title"))
 
-            Questie.IsForever = false
+            QuestieSmazak.IsForever = false
             local formatter = Forever.CreateFormatter()
             assert.are.equal("[??] Native title", formatter.Title(12345, "Native title"))
             assert.are.equal("3/10 Cactus Apple", formatter.Objective("3/10 Cactus Apple"))

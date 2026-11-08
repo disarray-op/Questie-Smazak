@@ -9,11 +9,11 @@ describe("CommsRouting", function()
         _G.UnitInRaid = function(unit) return unit == "RaidFriend" end
 
         dofile("Modules/Network/CommsRouting.lua")
-        CommsRouting = QuestieLoader:ImportModule("CommsRouting")
+        CommsRouting = QuestieSmazakLoader:ImportModule("CommsRouting")
     end)
 
     describe("GetGroupBroadcastDistribution", function()
-        it("normalizes Questie group types", function()
+        it("normalizes QuestieSmazak group types", function()
             assert.are_equal("PARTY", CommsRouting:GetGroupBroadcastDistribution("party"))
             assert.are_equal("RAID", CommsRouting:GetGroupBroadcastDistribution("raid"))
             assert.are_equal("INSTANCE_CHAT", CommsRouting:GetGroupBroadcastDistribution("instance"))

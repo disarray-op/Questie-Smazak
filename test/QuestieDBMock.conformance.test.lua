@@ -2,7 +2,7 @@ dofile("setupTests.lua")
 
 -- Mock-versus-provider conformance.
 --
--- Every other Questie test runs against `test/QuestieDBMock.lua`, a hand-written double of
+-- Every other QuestieSmazak test runs against `test/QuestieDBMock.lua`, a hand-written double of
 -- `LibQuestieDB`. This file runs the double's behavioral cases a second time against the real
 -- provider, loaded headless in Source mode from the QuestieDB checkout, and asserts that both
 -- report the same observations for the same inputs. When they disagree, the mock is wrong.
@@ -23,7 +23,7 @@ dofile("setupTests.lua")
 -- datatype where the provider returns nil or accepts the spelling. Both are guards that can
 -- only fail a test loudly, never hide a provider behavior, so the mock keeps them. Not modeled
 -- at all: the provider's write-time normalization (constant fields dropped, a table refused on
--- a scalar field, `""` and `{0, 0}` reading nil). Questie tests seed normalized values.
+-- a scalar field, `""` and `{0, 0}` reading nil). QuestieSmazak tests seed normalized values.
 
 local PROVIDER_PATH = os.getenv("QUESTIE_DB_PATH") or "../QuestieDB"
 local PROVIDER_TOC = PROVIDER_PATH .. "/QuestieDB.toc"
@@ -65,7 +65,7 @@ local function ProviderCheckoutPresent()
 end
 
 ---Loads the provider in Source mode the way its own suite does, then restores every global the
----emulator replaced so the rest of this file, and the mock, keep Questie's test environment.
+---emulator replaced so the rest of this file, and the mock, keep QuestieSmazak's test environment.
 ---@param expansion string? Provider content flavor; defaults to Classic.
 ---@return table lib The provider's `LibQuestieDB`
 local function LoadProvider(expansion)
@@ -74,7 +74,7 @@ local function LoadProvider(expansion)
         snapshot[key] = value
     end
     -- The emulator writes into an existing `Enum` table in place; give it a fresh one so the
-    -- restore below hands Questie's own back untouched.
+    -- restore below hands QuestieSmazak's own back untouched.
     _G.Enum = nil
     _G.LibStub = nil
 
@@ -188,7 +188,7 @@ local function RecordProviderWrites(lib)
         end
         return changed
     end
-    -- Questie writes through the `SetCorrection` alias; keep it pointing at the recorder.
+    -- QuestieSmazak writes through the `SetCorrection` alias; keep it pointing at the recorder.
     assert(lib.SetCorrection == originalSet, "the provider no longer aliases SetCorrection to Corrections.Set")
     lib.SetCorrection = lib.Corrections.Set
 
@@ -967,10 +967,10 @@ describe("Forever race encoding across provider and consumer", function()
             savedGlobals[name] = _G[name]
         end
         for _, name in ipairs(flags) do
-            savedFlags[name] = Questie[name]
-            Questie[name] = false
+            savedFlags[name] = QuestieSmazak[name]
+            QuestieSmazak[name] = false
         end
-        Questie.IsForever, Questie.IsClassic = true, true
+        QuestieSmazak.IsForever, QuestieSmazak.IsClassic = true, true
         _G.LibQuestieDB = foreverProvider
         _G.UnitRace = function() return "High Order Skyborne", "Skyborne", 95 end
         _G.UnitFactionGroup = function() return "Alliance" end
@@ -979,12 +979,12 @@ describe("Forever race encoding across provider and consumer", function()
 
         dofile("Database/QuestieDB.lua")
         dofile("Localization/l10n.lua")
-        QuestieLoader:ImportModule("l10n").GetUILocale = function() return "enUS" end
+        QuestieSmazakLoader:ImportModule("l10n").GetUILocale = function() return "enUS" end
         dofile("Modules/Libs/QuestieLib.lua")
         dofile("Modules/QuestiePlayer.lua")
-        QuestieDB = QuestieLoader:ImportModule("QuestieDB")
-        QuestieLib = QuestieLoader:ImportModule("QuestieLib")
-        QuestiePlayer = QuestieLoader:ImportModule("QuestiePlayer")
+        QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
+        QuestieLib = QuestieSmazakLoader:ImportModule("QuestieLib")
+        QuestiePlayer = QuestieSmazakLoader:ImportModule("QuestiePlayer")
         QuestiePlayer:Initialize()
     end)
 
@@ -993,7 +993,7 @@ describe("Forever race encoding across provider and consumer", function()
             _G[name] = savedGlobals[name]
         end
         for _, name in ipairs(flags) do
-            Questie[name] = savedFlags[name]
+            QuestieSmazak[name] = savedFlags[name]
         end
     end)
 
@@ -1057,7 +1057,7 @@ describe("PreloadEntityData on the real provider", function()
         local provider = LoadProvider()
         _G.LibQuestieDB = provider
         dofile("Database/QuestieDB.lua")
-        local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+        local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
 
         local loadedTypesAfterResume = {}
         local preload = coroutine.create(QuestieDB.PreloadEntityData)

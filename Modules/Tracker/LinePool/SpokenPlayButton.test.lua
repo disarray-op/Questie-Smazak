@@ -16,8 +16,8 @@ describe("SpokenPlayButton", function()
             IsPartOn = function(_, part) return part == "quests" and partOn end,
             RegisterCallback = function(_, event, callback) callbacks[event] = callback end,
         }
-        originalQuestieDB = Questie.db
-        Questie.db = {profile = {trackerShowPlayButtons = true}}
+        originalQuestieDB = QuestieSmazak.db
+        QuestieSmazak.db = {profile = {trackerShowPlayButtons = true}}
         playNow = spy.new(function(_, soundData) queuedLines[soundData.questID] = soundData end)
         remove = spy.new(function(_, soundData) queuedLines[soundData.questID] = nil end)
         _G.VoiceOver = {
@@ -39,19 +39,19 @@ describe("SpokenPlayButton", function()
             },
             Utils = {MakeGUID = function(_, giverType, id) return giverType .. "-" .. id end},
         }
-        local QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+        local QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
         QuestieCompat.GetQuestLogIndexByID = function() return 1 end
         QuestieCompat.GetQuestLogTitle = function() return "Quest title" end
 
         dofile("Modules/Tracker/LinePool/SpokenPlayButton.lua")
-        SpokenPlayButton = QuestieLoader:ImportModule("SpokenPlayButton")
+        SpokenPlayButton = QuestieSmazakLoader:ImportModule("SpokenPlayButton")
     end)
 
     after_each(function()
         _G.VoiceOver = nil
         _G.Spoken = nil
         _G.InCombatLockdown = nil
-        Questie.db = originalQuestieDB
+        QuestieSmazak.db = originalQuestieDB
     end)
 
     it("should show the play button only for quests Spoken has audio for", function()
@@ -66,7 +66,7 @@ describe("SpokenPlayButton", function()
     end)
 
     it("should hide the play button when the play buttons setting is off", function()
-        Questie.db.profile.trackerShowPlayButtons = false
+        QuestieSmazak.db.profile.trackerShowPlayButtons = false
         local button = SpokenPlayButton.New(1, CreateFrame("Button"))
 
         button:SetPlayButton(123)
@@ -89,16 +89,16 @@ describe("SpokenPlayButton", function()
             title = "Quest title",
             unitGUID = "Creature-456",
             unitIsObjectOrItem = false,
-            origin = "Questie's tracker Play button",
+            origin = "QuestieSmazak's tracker Play button",
             stopCallback = queuedLines[123].stopCallback,
         }, queuedLines[123])
-        assert.are_same("Interface\\Addons\\Questie\\Icons\\QuestLogStopButton", button:GetNormalTexture():GetTexture())
+        assert.are_same("Interface\\Addons\\QuestieSmazak\\Icons\\QuestLogStopButton", button:GetNormalTexture():GetTexture())
 
         button.scripts.OnClick(button)
 
         assert.spy(remove).was.called(1)
         assert.is_nil(queuedLines[123])
-        assert.are_same("Interface\\Addons\\Questie\\Icons\\QuestLogPlayButton", button:GetNormalTexture():GetTexture())
+        assert.are_same("Interface\\Addons\\QuestieSmazak\\Icons\\QuestLogPlayButton", button:GetNormalTexture():GetTexture())
     end)
 
     it("should show the play icon on the new button when a playing quest moves to another line", function()
@@ -113,10 +113,10 @@ describe("SpokenPlayButton", function()
         queuedLines[123] = nil
         callbacks.AUDIO_CHANGED()
 
-        assert.are_same("Interface\\Addons\\Questie\\Icons\\QuestLogPlayButton", otherButton:GetNormalTexture():GetTexture())
+        assert.are_same("Interface\\Addons\\QuestieSmazak\\Icons\\QuestLogPlayButton", otherButton:GetNormalTexture():GetTexture())
     end)
 
-    it("should show the stop icon when audio is queued outside of Questie", function()
+    it("should show the stop icon when audio is queued outside of QuestieSmazak", function()
         SpokenPlayButton.Initialize(function() end)
         local button = SpokenPlayButton.New(1, CreateFrame("Button"))
         button:SetPlayButton(123)
@@ -124,7 +124,7 @@ describe("SpokenPlayButton", function()
         queuedLines[123] = {}
         callbacks.AUDIO_CHANGED()
 
-        assert.are_same("Interface\\Addons\\Questie\\Icons\\QuestLogStopButton", button:GetNormalTexture():GetTexture())
+        assert.are_same("Interface\\Addons\\QuestieSmazak\\Icons\\QuestLogStopButton", button:GetNormalTexture():GetTexture())
     end)
 
     it("should hide the play button when Spoken's Quests part is off", function()
@@ -138,7 +138,7 @@ describe("SpokenPlayButton", function()
 
     it("should queue the redraw for after combat when Spoken's voice packs load in combat", function()
         local redraw = spy.new(function() end)
-        local QuestieCombatQueue = QuestieLoader:ImportModule("QuestieCombatQueue")
+        local QuestieCombatQueue = QuestieSmazakLoader:ImportModule("QuestieCombatQueue")
         local originalQueue = QuestieCombatQueue.Queue
         QuestieCombatQueue.Queue = spy.new(function() end)
         _G.InCombatLockdown = function() return true end

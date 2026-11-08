@@ -1,15 +1,15 @@
 ---@type QuestieJourney
-local QuestieJourney = QuestieLoader:ImportModule("QuestieJourney")
+local QuestieJourney = QuestieSmazakLoader:ImportModule("QuestieJourney")
 local _QuestieJourney = QuestieJourney.private
 -------------------------
 --Import modules.
 -------------------------
 ---@type QuestieSearchResults
-local QuestieSearchResults = QuestieLoader:ImportModule("QuestieSearchResults")
+local QuestieSearchResults = QuestieSmazakLoader:ImportModule("QuestieSearchResults")
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 ---@type ThreadLib
-local ThreadLib = QuestieLoader:ImportModule("ThreadLib")
+local ThreadLib = QuestieSmazakLoader:ImportModule("ThreadLib")
 
 _QuestieJourney.containerCache = nil
 _QuestieJourney.treeCache = nil

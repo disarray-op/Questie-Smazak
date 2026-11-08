@@ -1,17 +1,17 @@
 ---@type QuestieCompat
-local QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+local QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
 
 ---@class TrackerItemButton
-local TrackerItemButton = QuestieLoader:CreateModule("TrackerItemButton")
+local TrackerItemButton = QuestieSmazakLoader:CreateModule("TrackerItemButton")
 
 ---@type QuestieDB
-local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
 ---@type QuestieCombatQueue
-local QuestieCombatQueue = QuestieLoader:ImportModule("QuestieCombatQueue")
+local QuestieCombatQueue = QuestieSmazakLoader:ImportModule("QuestieCombatQueue")
 ---@type QuestieTracker
-local QuestieTracker = QuestieLoader:ImportModule("QuestieTracker")
+local QuestieTracker = QuestieSmazakLoader:ImportModule("QuestieTracker")
 ---@type TrackerFadeTicker
-local TrackerFadeTicker = QuestieLoader:ImportModule("TrackerFadeTicker")
+local TrackerFadeTicker = QuestieSmazakLoader:ImportModule("TrackerFadeTicker")
 
 local LSM30 = LibStub("LibSharedMedia-3.0")
 local GetItemCount = QuestieCompat.GetItemCount
@@ -27,7 +27,7 @@ function TrackerItemButton.New(buttonName, OnHighlightEnter, OnHighlightLeave)
     btn.count = btn:CreateFontString(nil, "ARTWORK", "Game10Font_o1")
     btn:Hide()
 
-    if Questie.db.profile.trackerFadeQuestItemButtons then
+    if QuestieSmazak.db.profile.trackerFadeQuestItemButtons then
         btn:SetAlpha(0)
     end
 
@@ -83,7 +83,7 @@ function TrackerItemButton.New(buttonName, OnHighlightEnter, OnHighlightLeave)
 
             -- Charges Updates
             self.count:Hide()
-            self.count:SetFont(LSM30:Fetch("font", Questie.db.profile.trackerFontQuest), Questie.db.profile.trackerFontSizeQuest, "OUTLINE")
+            self.count:SetFont(LSM30:Fetch("font", QuestieSmazak.db.profile.trackerFontQuest), QuestieSmazak.db.profile.trackerFontSizeQuest, "OUTLINE")
             if self.charges > 1 then
                 self.count:SetText(self.charges)
                 self.count:Show()
@@ -118,7 +118,7 @@ function TrackerItemButton.New(buttonName, OnHighlightEnter, OnHighlightLeave)
                 self.count:Show()
             end
             if self.charges == 0 then
-                Questie.Debug(Questie.DEBUG_DEVELOP, "[TrackerLinePool: Button.UpdateCharges]")
+                QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[TrackerLinePool: Button.UpdateCharges]")
                 QuestieCombatQueue:Queue(function()
                     C_Timer.After(0.2, function()
                         QuestieTracker:Update()

@@ -1,15 +1,15 @@
 ---@type QuestieCompat
-local QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+local QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
 
 --Contains functions to fetch the Quest Experiance for quests.
 ---@class QuestXP
-local QuestXP = QuestieLoader:CreateModule("QuestXP")
+local QuestXP = QuestieSmazakLoader:CreateModule("QuestXP")
 
 ---@type SupportValidation
-local SupportValidation = QuestieLoader:ImportModule("SupportValidation")
+local SupportValidation = QuestieSmazakLoader:ImportModule("SupportValidation")
 
 ---@type Expansions
-local Expansions = QuestieLoader:ImportModule("Expansions")
+local Expansions = QuestieSmazakLoader:ImportModule("Expansions")
 
 local support = LibQuestieDB.Support.Get("QuestXP")
 -- Shared, read-only base XP; invalid support stays nil for Init's validation report.
@@ -42,7 +42,7 @@ end
 ---Skips aura reads during Forever combat; other clients retain their normal money-bonus check.
 ---@return boolean
 local function HasDiscoverersDelight()
-    if Questie.IsForever and (InCombatLockdown() or IsInInstance()) then return false end
+    if QuestieSmazak.IsForever and (InCombatLockdown() or IsInInstance()) then return false end
 
     for i = 1, 40 do
         local _, _, _, _, _, _, _, _, _, spellId = QuestieCompat.UnitAura("player", i, "HELPFUL")
@@ -121,7 +121,7 @@ local exclusions = {
 ---@return number money Copper.
 function QuestXP.GetQuestRewardMoney(questId)
     local modifier = 1
-    if Questie.IsSoD and HasDiscoverersDelight() and (not exclusions[questId]) then
+    if QuestieSmazak.IsSoD and HasDiscoverersDelight() and (not exclusions[questId]) then
         modifier = 3
     end
     return floor(GetQuestLogRewardMoney(questId) * modifier)
@@ -131,7 +131,7 @@ end
 ---This changes only the displayed estimate; normal level scaling and guild perks still apply.
 ---@return number
 _GetBuffMultiplier = function()
-    if Questie.IsForever and (InCombatLockdown() or IsInInstance()) then return 0 end
+    if QuestieSmazak.IsForever and (InCombatLockdown() or IsInInstance()) then return 0 end
 
     local buffMultiplier = 0
     for i = 1, 40 do
@@ -141,8 +141,8 @@ _GetBuffMultiplier = function()
         end
 
         if spellId == 377749 then
-            buffMultiplier = buffMultiplier + (Questie.IsTitanReforged and 1 or 0.5) -- Joyous Journeys
-        elseif Questie.IsSoD and spellId == 436412 then
+            buffMultiplier = buffMultiplier + (QuestieSmazak.IsTitanReforged and 1 or 0.5) -- Joyous Journeys
+        elseif QuestieSmazak.IsSoD and spellId == 436412 then
             buffMultiplier = buffMultiplier + (UnitLevel("player") < 50 and 1.5 or 0.5) -- Discoverer's Delight - 150% bonus XP till level 50 and 50% after
         elseif spellId == 46668 then
             buffMultiplier = buffMultiplier + 0.1 -- Darkmoon Faire

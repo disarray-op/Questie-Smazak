@@ -19,20 +19,20 @@ truth and can still feed contextual tooltip progress.
 -- No snapshot for a player means unknown. Within a stored full snapshot, omission means suppressed.
 
 ---@class CommsVisibility : QuestieModule
-local CommsVisibility = QuestieLoader:CreateModule("CommsVisibility")
+local CommsVisibility = QuestieSmazakLoader:CreateModule("CommsVisibility")
 
 ---@type CommsEncoding
-local CommsEncoding = QuestieLoader:ImportModule("CommsEncoding")
+local CommsEncoding = QuestieSmazakLoader:ImportModule("CommsEncoding")
 ---@type CommsRouting
-local CommsRouting = QuestieLoader:ImportModule("CommsRouting")
+local CommsRouting = QuestieSmazakLoader:ImportModule("CommsRouting")
 ---@type QuestiePlayer
-local QuestiePlayer = QuestieLoader:ImportModule("QuestiePlayer")
+local QuestiePlayer = QuestieSmazakLoader:ImportModule("QuestiePlayer")
 ---@type QuestLogCache
-local QuestLogCache = QuestieLoader:ImportModule("QuestLogCache")
+local QuestLogCache = QuestieSmazakLoader:ImportModule("QuestLogCache")
 ---@type QuestieQuest
-local QuestieQuest = QuestieLoader:ImportModule("QuestieQuest")
+local QuestieQuest = QuestieSmazakLoader:ImportModule("QuestieQuest")
 ---@type QuestiePartyObjectives
-local QuestiePartyObjectives = QuestieLoader:ImportModule("QuestiePartyObjectives")
+local QuestiePartyObjectives = QuestieSmazakLoader:ImportModule("QuestiePartyObjectives")
 
 -------------------------
 -- Protocol contract.
@@ -73,13 +73,13 @@ function CommsVisibility:Initialize()
     end
 
     if (not CommsEncoding.hasCodecSupport) then
-        Questie.Debug(Questie.DEBUG_DEVELOP, "[CommsVisibility] Codec support unavailable, not registering QuestieV1")
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[CommsVisibility] Codec support unavailable, not registering QuestieV1")
         return
     end
 
     MAX_SNAPSHOT_ENTRIES = C_QuestLog.GetMaxNumQuestsCanAccept()
 
-    Questie:RegisterComm(VISIBILITY_PREFIX, CommsVisibility.OnCommReceived)
+    QuestieSmazak:RegisterComm(VISIBILITY_PREFIX, CommsVisibility.OnCommReceived)
     initialized = true
 end
 
@@ -88,9 +88,9 @@ local function _BuildLocalSnapshot()
     local snapshot = {}
     for questId in pairs(QuestLogCache.questLog_DO_NOT_MODIFY) do
         if type(questId) == "number" then
-            -- Local policy: explicit Questie hidden state wins, otherwise party pins follow
+            -- Local policy: explicit QuestieSmazak hidden state wins, otherwise party pins follow
             -- the tracker state. This is map/minimap UI intent, not quest-log truth.
-            if Questie.db.char.hidden and Questie.db.char.hidden[questId] then
+            if QuestieSmazak.db.char.hidden and QuestieSmazak.db.char.hidden[questId] then
                 snapshot[questId] = false
             else
                 snapshot[questId] = QuestieQuest:IsQuestTracked(questId)
@@ -109,7 +109,7 @@ end
 --- and group convergence points such as roster changes or full quest-log responses.
 ---@param reason string? Debug-only call-site label reserved for future logging.
 function CommsVisibility:ScheduleSnapshot(reason)
-    Questie.Debug(Questie.DEBUG_INFO, "[CommsVisibility:ScheduleSnapshot] Reason", reason)
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_INFO, "[CommsVisibility:ScheduleSnapshot] Reason", reason)
 
     -- Send with timer debounce.
     _CancelSnapshotTimer()
@@ -135,7 +135,7 @@ function CommsVisibility:ScheduleSnapshot(reason)
             return
         end
 
-        Questie:SendCommMessage(VISIBILITY_PREFIX, message, distribution)
+        QuestieSmazak:SendCommMessage(VISIBILITY_PREFIX, message, distribution)
     end)
 end
 

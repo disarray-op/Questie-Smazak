@@ -1,6 +1,6 @@
 -- small binary stream library with "base 89" decoder (credit to Aero for the algorithm)
 ---@class QuestieStreamLib
-local QuestieStreamLib = QuestieLoader:CreateModule("QuestieStreamLib");
+local QuestieStreamLib = QuestieSmazakLoader:CreateModule("QuestieStreamLib");
 
 local tinsert = table.insert
 
@@ -50,7 +50,7 @@ end
 
 function QuestieStreamLib:GetStream(mode) -- returns a new stream
     if not mode then
-        Questie.Error("QuestieStreamLib: Stream encoding mode is not defined.")
+        QuestieSmazak.Error("QuestieStreamLib: Stream encoding mode is not defined.")
         error("Stream encoding mode is not defined.")
     end
 
@@ -243,7 +243,7 @@ function QuestieStreamLib:_ReadShort_raw()
     local a,b = stringbyte(self._bin, p, p+1)
     if not a or not b then
         -- Stream decoding reports malformed payloads; entity database recovery belongs to QuestieDB.
-        Questie.Error("QuestieStreamLib: Unexpected end of raw stream while reading a short.")
+        QuestieSmazak.Error("QuestieStreamLib: Unexpected end of raw stream while reading a short.")
         return
     end
     return a*256 + b

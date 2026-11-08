@@ -5,7 +5,7 @@ describe("TrackerMapEligibility", function()
 
     before_each(function()
         dofile("Modules/Tracker/TrackerMapEligibility.lua")
-        TrackerMapEligibility = QuestieLoader:ImportModule("TrackerMapEligibility")
+        TrackerMapEligibility = QuestieSmazakLoader:ImportModule("TrackerMapEligibility")
         objective = {Index = 3, spawnList = {{Name = "Wolf", Spawns = {[12] = {{50, 50}}}}}}
         original = {Id = 100, Objectives = {[3] = objective}, Finisher = {NPC = {240}}}
         quest = {
@@ -105,7 +105,7 @@ describe("TrackerMapEligibility", function()
         local TrackerData
 
         before_each(function()
-            TrackerData = QuestieLoader:ImportModule("TrackerData")
+            TrackerData = QuestieSmazakLoader:ImportModule("TrackerData")
             TrackerData.RefreshQuest = spy.new(function() return quest end)
         end)
 

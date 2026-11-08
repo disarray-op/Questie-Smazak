@@ -1,7 +1,7 @@
 dofile("setupTests.lua")
 dofile("Modules/Quest/ActiveQuests.lua")
 ---@type ActiveQuests
-local ActiveQuests = QuestieLoader:ImportModule("ActiveQuests")
+local ActiveQuests = QuestieSmazakLoader:ImportModule("ActiveQuests")
 local stub = require("luassert.stub")
 dofile("Localization/l10n.lua")
 
@@ -58,36 +58,36 @@ describe("QuestEventHandler", function()
             return timer
         end)
         _G.C_Timer = {NewTimer = newTimerMock}
-        Questie.db.profile.autoAccept = {enabled = false}
-        QuestieCombatQueue = QuestieLoader:ImportModule("QuestieCombatQueue")
+        QuestieSmazak.db.profile.autoAccept = {enabled = false}
+        QuestieCombatQueue = QuestieSmazakLoader:ImportModule("QuestieCombatQueue")
         QuestieCombatQueue.Queue = function(_, callback) callback() end
-        BreadcrumbQuests = QuestieLoader:ImportModule("BreadcrumbQuests")
+        BreadcrumbQuests = QuestieSmazakLoader:ImportModule("BreadcrumbQuests")
         BreadcrumbQuests.CheckQuestBreadcrumbs = spy.new(function() end)
-        QuestLogCache = QuestieLoader:ImportModule("QuestLogCache")
-        QuestieQuest = QuestieLoader:ImportModule("QuestieQuest")
-        QuestLifecycle = QuestieLoader:ImportModule("QuestLifecycle")
-        AutoQuesting = QuestieLoader:ImportModule("AutoQuesting")
-        QuestieJourney = QuestieLoader:ImportModule("QuestieJourney")
-        QuestieAnnounce = QuestieLoader:ImportModule("QuestieAnnounce")
+        QuestLogCache = QuestieSmazakLoader:ImportModule("QuestLogCache")
+        QuestieQuest = QuestieSmazakLoader:ImportModule("QuestieQuest")
+        QuestLifecycle = QuestieSmazakLoader:ImportModule("QuestLifecycle")
+        AutoQuesting = QuestieSmazakLoader:ImportModule("AutoQuesting")
+        QuestieJourney = QuestieSmazakLoader:ImportModule("QuestieJourney")
+        QuestieAnnounce = QuestieSmazakLoader:ImportModule("QuestieAnnounce")
         ActiveQuests.Reset()
-        QuestieTracker = QuestieLoader:ImportModule("QuestieTracker")
+        QuestieTracker = QuestieSmazakLoader:ImportModule("QuestieTracker")
         QuestieTracker.Update = spy.new(function() end)
-        QuestieDB = QuestieLoader:ImportModule("QuestieDB")
-        QuestieNameplate = QuestieLoader:ImportModule("QuestieNameplate")
-        WatchFrameHook = QuestieLoader:ImportModule("WatchFrameHook")
-        AutoCompleteFrame = QuestieLoader:ImportModule("AutoCompleteFrame")
+        QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
+        QuestieNameplate = QuestieSmazakLoader:ImportModule("QuestieNameplate")
+        WatchFrameHook = QuestieSmazakLoader:ImportModule("WatchFrameHook")
+        AutoCompleteFrame = QuestieSmazakLoader:ImportModule("AutoCompleteFrame")
         dofile("Public/Enums.lua")
-        QuestieAPI = QuestieLoader:ImportModule("QuestieAPI")
+        QuestieAPI = QuestieSmazakLoader:ImportModule("QuestieAPI")
         QuestieAPI.PropagateQuestUpdate = spy.new(function() end)
-        QuestiePartyObjectives = QuestieLoader:ImportModule("QuestiePartyObjectives")
+        QuestiePartyObjectives = QuestieSmazakLoader:ImportModule("QuestiePartyObjectives")
         QuestiePartyObjectives.ScheduleUpdate = spy.new(function() end)
-        AvailableQuests = QuestieLoader:ImportModule("AvailableQuests")
+        AvailableQuests = QuestieSmazakLoader:ImportModule("AvailableQuests")
         AvailableQuests.ResetLastNpcGuid = spy.new(function() end)
-        QuestieLib = QuestieLoader:ImportModule("QuestieLib")
+        QuestieLib = QuestieSmazakLoader:ImportModule("QuestieLib")
         QuestieLib.RepairMissingItemNames = spy.new(function() end)
 
         dofile("Modules/EventHandler/QuestEventHandler.lua")
-        QuestEventHandler = QuestieLoader:ImportModule("QuestEventHandler")
+        QuestEventHandler = QuestieSmazakLoader:ImportModule("QuestEventHandler")
         QuestEventHandler.InitQuestLogStates({[QUEST_ID] = true})
     end)
 
@@ -101,7 +101,7 @@ describe("QuestEventHandler", function()
         local hooks, dialog
 
         before_each(function()
-            local compat = QuestieLoader:ImportModule("QuestieCompat")
+            local compat = QuestieSmazakLoader:ImportModule("QuestieCompat")
             getItemInfoMock = stub(compat, "GetItemInfo", function() return "A Letter" end)
             getQuestLogTitleMock = stub(compat, "GetQuestLogTitle", function(index)
                 if index == 1 then
@@ -264,7 +264,7 @@ describe("QuestEventHandler", function()
     end)
 
     it("should hide Immersion frame when quest was auto accepted and modifier is not held", function()
-        Questie.db.profile.autoAccept.enabled = true
+        QuestieSmazak.db.profile.autoAccept.enabled = true
         AutoQuesting.IsModifierHeld = function() return false end
         local ImmersionFrameHideMock = spy.new(function() end)
         _G.ImmersionFrame = {IsShown = function() return true end, Hide = ImmersionFrameHideMock}
@@ -280,7 +280,7 @@ describe("QuestEventHandler", function()
     end)
 
     it("should not hide Immersion frame when quest was auto accepted and modifier is held", function()
-        Questie.db.profile.autoAccept.enabled = true
+        QuestieSmazak.db.profile.autoAccept.enabled = true
         AutoQuesting.IsModifierHeld = function() return true end
         local ImmersionFrameHideMock = spy.new(function() end)
         _G.ImmersionFrame = {IsShown = function() return true end, Hide = ImmersionFrameHideMock}
@@ -331,7 +331,7 @@ describe("QuestEventHandler", function()
     end)
 
     it("should mark quest as abandoned on QUEST_REMOVED without preceding QUEST_TURNED_IN", function()
-        Questie.SendMessage = spy.new(function() end)
+        QuestieSmazak.SendMessage = spy.new(function() end)
         QuestLogCache.RemoveQuest = spy.new(function() end)
         QuestieQuest.SetObjectivesDirty = spy.new(function() end)
         QuestLifecycle.AbandonQuest = spy.new(function() end)
@@ -348,7 +348,7 @@ describe("QuestEventHandler", function()
         QuestEventHandler.QuestRemoved(QUEST_ID)
         callbacks[1]()
 
-        assert.spy(Questie.SendMessage).was.called_with(Questie, "QC_ID_BROADCAST_QUEST_REMOVE", QUEST_ID)
+        assert.spy(QuestieSmazak.SendMessage).was.called_with(QuestieSmazak, "QC_ID_BROADCAST_QUEST_REMOVE", QUEST_ID)
         assert.spy(QuestLogCache.RemoveQuest).was.called_with(QUEST_ID)
         assert.spy(QuestLifecycle.AbandonQuest).was.called_with(QuestLifecycle, QUEST_ID)
         assert.spy(QuestieJourney.AbandonQuest).was.called_with(QuestieJourney, QUEST_ID)
@@ -360,7 +360,7 @@ describe("QuestEventHandler", function()
         local abandonCheck, flaggedCompletedStub
 
         before_each(function()
-            Questie.db.char.complete = {}
+            QuestieSmazak.db.char.complete = {}
             _G.C_Timer = {
                 NewTicker = function(_, callback)
                     abandonCheck = callback
@@ -378,7 +378,7 @@ describe("QuestEventHandler", function()
             QuestieJourney.AbandonQuest = spy.new(function() end)
             QuestieAnnounce.CompletedQuest = spy.new(function() end)
             QuestieAnnounce.AbandonedQuest = spy.new(function() end)
-            flaggedCompletedStub = stub(QuestieLoader:ImportModule("QuestieCompat"), "IsQuestFlaggedCompleted", function() return true end)
+            flaggedCompletedStub = stub(QuestieSmazakLoader:ImportModule("QuestieCompat"), "IsQuestFlaggedCompleted", function() return true end)
         end)
 
         after_each(function()
@@ -421,8 +421,8 @@ describe("QuestEventHandler", function()
             assert.spy(QuestieAnnounce.CompletedQuest).was.called(2)
         end)
 
-        it("abandons a flagged quest that Questie already counts as complete", function()
-            Questie.db.char.complete[QUEST_ID] = true
+        it("abandons a flagged quest that QuestieSmazak already counts as complete", function()
+            QuestieSmazak.db.char.complete[QUEST_ID] = true
 
             QuestEventHandler.QuestRemoved(QUEST_ID)
             abandonCheck()
@@ -537,8 +537,8 @@ describe("QuestEventHandler", function()
         local originalError
 
         before_each(function()
-            originalError = Questie.Error
-            Questie.Error = spy.new(function() end)
+            originalError = QuestieSmazak.Error
+            QuestieSmazak.Error = spy.new(function() end)
             _G.C_Timer = {After = function(_, callback) callback() end}
             QuestLogCache.CheckForChanges = spy.new(function() return false, {[QUEST_ID] = {1}} end)
             QuestieQuest.SetObjectivesDirty = spy.new(function() end)
@@ -549,14 +549,14 @@ describe("QuestEventHandler", function()
         end)
 
         after_each(function()
-            Questie.Error = originalError
-            Questie.IsSoD, Questie.IsForever = nil, nil
+            QuestieSmazak.Error = originalError
+            QuestieSmazak.IsSoD, QuestieSmazak.IsForever = nil, nil
         end)
 
         -- Its objectives had not loaded yet when the quest log was first read at login.
         for _, flavor in ipairs({"IsSoD", "IsForever", "neither"}) do
             it("should be adopted when a scan finds it (" .. flavor .. ")", function()
-                Questie[flavor] = true
+                QuestieSmazak[flavor] = true
                 local quest = {Id = QUEST_ID}
                 QuestieDB.GetQuest = spy.new(function() return quest end)
 
@@ -564,22 +564,22 @@ describe("QuestEventHandler", function()
                 QuestEventHandler.QuestLogUpdate()
 
                 assert.spy(QuestLifecycle.AdoptQuest).was.called_with(QuestLifecycle, QUEST_ID)
-                assert.spy(Questie.Error).was.not_called()
+                assert.spy(QuestieSmazak.Error).was.not_called()
             end)
         end
 
         it("should report a quest unknown to QuestieDB, except in SoD and Forever", function()
             QuestieDB.GetQuest = spy.new(function() return nil end)
 
-            Questie.IsForever = true
+            QuestieSmazak.IsForever = true
             QuestEventHandler.QuestWatchUpdate(QUEST_ID)
             QuestEventHandler.QuestLogUpdate()
-            assert.spy(Questie.Error).was.not_called()
+            assert.spy(QuestieSmazak.Error).was.not_called()
 
-            Questie.IsForever = nil
+            QuestieSmazak.IsForever = nil
             QuestEventHandler.QuestWatchUpdate(QUEST_ID)
             QuestEventHandler.QuestLogUpdate()
-            assert.spy(Questie.Error).was.called(1)
+            assert.spy(QuestieSmazak.Error).was.called(1)
             assert.is_nil(ActiveQuests.Get(QUEST_ID))
         end)
     end)
@@ -608,7 +608,7 @@ describe("QuestEventHandler", function()
             QuestLifecycle.AdoptQuest = spy.new(function() end)
         end)
 
-        -- 2026-09-30_190105Z s9: the character's 9 quests arrived from the server after Questie had started.
+        -- 2026-09-30_190105Z s9: the character's 9 quests arrived from the server after QuestieSmazak had started.
         it("is adopted as at login, without a Journey entry or announcement", function()
             QuestEventHandler.QuestWatchUpdate(QUEST_ID)
             QuestEventHandler.QuestLogUpdate()
@@ -621,7 +621,7 @@ describe("QuestEventHandler", function()
             assert.spy(QuestieAnnounce.AcceptedQuest).was.not_called()
         end)
 
-        it("is left to its own lifecycle while Questie tracks it, e.g. removed and awaiting the abandon check", function()
+        it("is left to its own lifecycle while QuestieSmazak tracks it, e.g. removed and awaiting the abandon check", function()
             _G.C_Timer.NewTicker = function() return {Cancel = function() end} end
             QuestEventHandler.QuestRemoved(UNLISTED_ID)
 
@@ -671,7 +671,7 @@ describe("QuestEventHandler", function()
     end)
 
     it("should handle QUEST_AUTOCOMPLETE", function()
-        Questie.db.profile.trackerEnabled = true
+        QuestieSmazak.db.profile.trackerEnabled = true
         WatchFrameHook.Hide = spy.new(function() end)
         AutoCompleteFrame.ShowAutoComplete = spy.new(function() end)
 
@@ -763,10 +763,10 @@ describe("QuestEventHandler", function()
         before_each(function()
             savedGlobals = {}
             for _, name in ipairs(globalNames) do savedGlobals[name] = _G[name] end
-            savedRegistration = {Questie.RegisterEvent, Questie.RegisterBucketEvent}
+            savedRegistration = {QuestieSmazak.RegisterEvent, QuestieSmazak.RegisterBucketEvent}
             callbacks, timers, now, unavailable = {}, {}, 100, {}
-            Questie.RegisterEvent = function(_, event, callback) callbacks[event] = callback end
-            Questie.RegisterBucketEvent = function() end
+            QuestieSmazak.RegisterEvent = function(_, event, callback) callbacks[event] = callback end
+            QuestieSmazak.RegisterBucketEvent = function() end
             _G.ERR_QUEST_ACCEPTED_S = "Quest accepted: %s"
             _G.ERR_QUEST_COMPLETE_S = "Quest completed: %s"
             _G.GetTime = function() return now end
@@ -797,7 +797,7 @@ describe("QuestEventHandler", function()
             local repairMissingItemNames = QuestieLib.RepairMissingItemNames
             dofile("Modules/Libs/QuestieLib.lua")
             QuestieLib.RepairMissingItemNames = repairMissingItemNames
-            Sounds = QuestieLoader:ImportModule("Sounds")
+            Sounds = QuestieSmazakLoader:ImportModule("Sounds")
             Sounds.PlayObjectiveProgress = spy.new(function() end)
             Sounds.PlayObjectiveComplete = spy.new(function() end)
             Sounds.PlayQuestComplete = spy.new(function() end)
@@ -810,16 +810,16 @@ describe("QuestEventHandler", function()
             ActiveQuests.Reset()
             ActiveQuests.Add(QUEST_ID, {})
             ActiveQuests.Add(OTHER_QUEST_ID, {})
-            QuestieLoader:ImportModule("QuestgiverFrame").RecheckGreeting = function() end
-            QuestieLoader:ImportModule("QuestgiverFrame").RecheckGossip = function() end
-            QuestieLoader:ImportModule("TrackerRecipes").IsSupported = function() return false end
+            QuestieSmazakLoader:ImportModule("QuestgiverFrame").RecheckGreeting = function() end
+            QuestieSmazakLoader:ImportModule("QuestgiverFrame").RecheckGossip = function() end
+            QuestieSmazakLoader:ImportModule("TrackerRecipes").IsSupported = function() return false end
             dofile("Modules/EventHandler/EventHandler.lua")
-            QuestieLoader:ImportModule("EventHandler"):RegisterLateEvents()
+            QuestieSmazakLoader:ImportModule("EventHandler"):RegisterLateEvents()
         end)
 
         after_each(function()
             for _, name in ipairs(globalNames) do _G[name] = savedGlobals[name] end
-            Questie.RegisterEvent, Questie.RegisterBucketEvent = unpack(savedRegistration)
+            QuestieSmazak.RegisterEvent, QuestieSmazak.RegisterBucketEvent = unpack(savedRegistration)
         end)
 
         it("publishes banked item decreases while another quest still needs recovery", function()
@@ -934,7 +934,7 @@ describe("QuestEventHandler", function()
                 NewTicker = function() return {Cancel = function() end} end,
                 NewTimer = newTimerMock,
             }
-            indexMock = stub(QuestieLoader:ImportModule("QuestieCompat"), "GetQuestLogIndexByID", function() return 2 end)
+            indexMock = stub(QuestieSmazakLoader:ImportModule("QuestieCompat"), "GetQuestLogIndexByID", function() return 2 end)
             QuestLogCache.CheckForChanges = spy.new(function() return true, {} end)
             QuestLifecycle.AcceptQuest = spy.new(function() end)
             QuestieJourney.AcceptQuest = spy.new(function() end)

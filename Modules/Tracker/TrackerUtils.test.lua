@@ -1,7 +1,7 @@
 dofile("setupTests.lua")
 dofile("Modules/Quest/ActiveQuests.lua")
 ---@type ActiveQuests
-local ActiveQuests = QuestieLoader:ImportModule("ActiveQuests")
+local ActiveQuests = QuestieSmazakLoader:ImportModule("ActiveQuests")
 local stub = require("luassert.stub")
 
 local _GetMockedLine
@@ -35,50 +35,50 @@ describe("TrackerUtils", function()
     before_each(function()
         originalGlobals = {}
         for _, name in ipairs(globalNames) do originalGlobals[name] = _G[name] end
-        originalExpansion = QuestieLoader:ImportModule("Expansions").Current
-        originalIsCata, originalIsWotlk = Questie.IsCata, Questie.IsWotlk
-        Questie.db.profile = {
+        originalExpansion = QuestieSmazakLoader:ImportModule("Expansions").Current
+        originalIsCata, originalIsWotlk = QuestieSmazak.IsCata, QuestieSmazak.IsWotlk
+        QuestieSmazak.db.profile = {
             trackerShowCompleteQuests = true
         }
-        Questie.db.char = {
+        QuestieSmazak.db.char = {
             collapsedQuests = {},
             collapsedZones = {},
         }
         CreateFrame.resetMockedFrames()
-        local compat = QuestieLoader:ImportModule("QuestieCompat")
+        local compat = QuestieSmazakLoader:ImportModule("QuestieCompat")
         getItemSpellMock = stub(compat, "GetItemSpell")
         isEquippableItemMock = stub(compat, "IsEquippableItem", function() return false end)
         isAddOnLoadedMock = stub(compat, "IsAddOnLoaded", function() return false end)
-        getItemCountMock = stub(QuestieLoader:ImportModule("QuestieCompat"), "GetItemCount", function() return 0 end)
+        getItemCountMock = stub(QuestieSmazakLoader:ImportModule("QuestieCompat"), "GetItemCount", function() return 0 end)
 
-        Expansions = QuestieLoader:ImportModule("Expansions")
-        ZoneIDs = QuestieLoader:ImportModule("ZoneDB").zoneIDs
+        Expansions = QuestieSmazakLoader:ImportModule("Expansions")
+        ZoneIDs = QuestieSmazakLoader:ImportModule("ZoneDB").zoneIDs
         dofile("Modules/Libs/QuestieLib.lua")
-        QuestieLib = QuestieLoader:ImportModule("QuestieLib")
+        QuestieLib = QuestieSmazakLoader:ImportModule("QuestieLib")
         ActiveQuests.Reset()
-        QuestieTracker = QuestieLoader:ImportModule("QuestieTracker")
+        QuestieTracker = QuestieSmazakLoader:ImportModule("QuestieTracker")
         QuestieTracker.GetNumTrackedQuests = function() return 0 end
         QuestieTracker.IsTrackedByQuestie = function() return false end
-        QuestieLoader:ImportModule("TrackerLayout").GetMargins = function() return {quest = 43, itemButtonLeft = 17} end
+        QuestieSmazakLoader:ImportModule("TrackerLayout").GetMargins = function() return {quest = 43, itemButtonLeft = 17} end
         trackerQuests = {}
-        TrackerData = QuestieLoader:ImportModule("TrackerData")
+        TrackerData = QuestieSmazakLoader:ImportModule("TrackerData")
         TrackerData.Refresh = spy.new(function() return trackerQuests end)
         TrackerData.GetQuests = function() return trackerQuests end
         TrackerData.GetQuest = function(id) return trackerQuests[id] end
         TrackerData.RefreshQuest = spy.new(function(id) return trackerQuests[id] end)
-        QuestieLoader:ImportModule("TrackerRecipes").HasShownRecipes = function() return false end
+        QuestieSmazakLoader:ImportModule("TrackerRecipes").HasShownRecipes = function() return false end
         dofile("Modules/Tracker/TrackerMapEligibility.lua")
         originalSpecialItemInfo = _G.GetQuestLogSpecialItemInfo
         _G.GetQuestLogSpecialItemInfo = nil
-        TrackerLinePool = QuestieLoader:ImportModule("TrackerLinePool")
-        QuestieLoader:ImportModule("TrackerItemButton")
+        TrackerLinePool = QuestieSmazakLoader:ImportModule("TrackerLinePool")
+        QuestieSmazakLoader:ImportModule("TrackerItemButton")
 
-        local FocusedQuestgiver = QuestieLoader:ImportModule("FocusedQuestgiver")
+        local FocusedQuestgiver = QuestieSmazakLoader:ImportModule("FocusedQuestgiver")
         FocusedQuestgiver.Show = spy.new(function() end)
         FocusedQuestgiver.Hide = spy.new(function() end)
 
         dofile("Modules/Tracker/TrackerUtils.lua")
-        TrackerUtils = QuestieLoader:ImportModule("TrackerUtils")
+        TrackerUtils = QuestieSmazakLoader:ImportModule("TrackerUtils")
 
         rePositionLineMock = spy.new(function() end)
     end)
@@ -86,7 +86,7 @@ describe("TrackerUtils", function()
     after_each(function()
         for _, name in ipairs(globalNames) do _G[name] = originalGlobals[name] end
         Expansions.Current = originalExpansion
-        Questie.IsCata, Questie.IsWotlk = originalIsCata, originalIsWotlk
+        QuestieSmazak.IsCata, QuestieSmazak.IsWotlk = originalIsCata, originalIsWotlk
         _G.GetQuestLogSpecialItemInfo = originalSpecialItemInfo
         getItemCountMock:revert()
         getItemSpellMock:revert()
@@ -99,11 +99,11 @@ describe("TrackerUtils", function()
 
         before_each(function()
             originalCTimer = _G.C_Timer
-            QuestieMap = QuestieLoader:ImportModule("QuestieMap")
+            QuestieMap = QuestieSmazakLoader:ImportModule("QuestieMap")
             originalQuestIdFrames = QuestieMap.questIdFrames
             originalManualFrames = QuestieMap.manualFrames
             QuestieMap.manualFrames = {}
-            QuestieWaypoints = QuestieLoader:ImportModule("QuestieWaypoints")
+            QuestieWaypoints = QuestieSmazakLoader:ImportModule("QuestieWaypoints")
             originalSetSolo = QuestieWaypoints.SetSolo
             tickers = {}
             _G.C_Timer = {
@@ -114,12 +114,12 @@ describe("TrackerUtils", function()
                 end,
                 After = function() end,
             }
-            QuestieLoader:ImportModule("QuestieWaypoints").SetSolo = spy.new(function() end)
+            QuestieSmazakLoader:ImportModule("QuestieWaypoints").SetSolo = spy.new(function() end)
             icon = CreateFrame("Button")
             icon:SetWidth(16)
             icon:SetHeight(16)
             _G.QuestieFlashTestIcon = icon
-            QuestieLoader:ImportModule("QuestieMap").questIdFrames = {[54] = {"QuestieFlashTestIcon"}}
+            QuestieSmazakLoader:ImportModule("QuestieMap").questIdFrames = {[54] = {"QuestieFlashTestIcon"}}
         end)
 
         after_each(function()
@@ -177,11 +177,11 @@ describe("TrackerUtils", function()
         local openMock, nearestObjectiveMock, nearestFinisherMock, uiMapIdMock, originalWorldMapFrame, nearestSpawnMock
 
         before_each(function()
-            local DistanceUtils = QuestieLoader:ImportModule("DistanceUtils")
-            openMock = stub(QuestieLoader:ImportModule("QuestieCompat"), "OpenWorldMap", function() return true end)
+            local DistanceUtils = QuestieSmazakLoader:ImportModule("DistanceUtils")
+            openMock = stub(QuestieSmazakLoader:ImportModule("QuestieCompat"), "OpenWorldMap", function() return true end)
             nearestObjectiveMock = stub(DistanceUtils, "GetNearestObjective", function() return {50, 50}, 12 end)
             nearestFinisherMock = stub(DistanceUtils, "GetNearestFinisherOrStarter", function() return {50, 50}, 12 end)
-            uiMapIdMock = stub(QuestieLoader:ImportModule("ZoneDB"), "GetUiMapIdByAreaId", function() return 1429 end)
+            uiMapIdMock = stub(QuestieSmazakLoader:ImportModule("ZoneDB"), "GetUiMapIdByAreaId", function() return 1429 end)
             originalWorldMapFrame = _G.WorldMapFrame
             _G.WorldMapFrame = {Show = spy.new(function() end), SetMapID = spy.new(function() end)}
             TrackerUtils.FlashObjective = function() end
@@ -223,13 +223,13 @@ describe("TrackerUtils", function()
                 SpecialObjectives = {}, IsComplete = function() return 0 end,
             }
             trackerQuests[100] = quest
-            nearestSpawnMock = stub(QuestieLoader:ImportModule("DistanceUtils"), "GetNearestSpawnForQuest", function() return {50, 60}, 40 end)
+            nearestSpawnMock = stub(QuestieSmazakLoader:ImportModule("DistanceUtils"), "GetNearestSpawnForQuest", function() return {50, 60}, 40 end)
             TrackerUtils.FlashFinisher = spy.new(function() end)
 
             assert.is_true(TrackerUtils.ShowQuestOnMap(100, original))
 
             assert.stub(nearestSpawnMock).was.called_with(quest)
-            assert.stub(uiMapIdMock).was.called_with(match.is_ref(QuestieLoader:ImportModule("ZoneDB")), 40)
+            assert.stub(uiMapIdMock).was.called_with(match.is_ref(QuestieSmazakLoader:ImportModule("ZoneDB")), 40)
             assert.stub(openMock).was.called_with(1429)
             assert.spy(TrackerUtils.FlashFinisher).was.called_with(TrackerUtils, original)
         end)
@@ -240,7 +240,7 @@ describe("TrackerUtils", function()
                 Id = 100, enrichment = original, Objectives = {{enrichment = {Index = 3, spawnList = {{}}}}},
                 SpecialObjectives = {}, IsComplete = function() return 0 end,
             }
-            nearestSpawnMock = stub(QuestieLoader:ImportModule("DistanceUtils"), "GetNearestSpawnForQuest", function() return {50, 60}, 40 end)
+            nearestSpawnMock = stub(QuestieSmazakLoader:ImportModule("DistanceUtils"), "GetNearestSpawnForQuest", function() return {50, 60}, 40 end)
             openMock.invokes(function() return false end)
             TrackerUtils.FlashFinisher = spy.new(function() end)
 
@@ -270,7 +270,7 @@ describe("TrackerUtils", function()
                 Id = 100, enrichment = original, Objectives = {{enrichment = {Index = 3, spawnList = {{}}}}},
                 SpecialObjectives = {}, IsComplete = function() return 0 end,
             }
-            nearestSpawnMock = stub(QuestieLoader:ImportModule("DistanceUtils"), "GetNearestSpawnForQuest", function() end)
+            nearestSpawnMock = stub(QuestieSmazakLoader:ImportModule("DistanceUtils"), "GetNearestSpawnForQuest", function() end)
             TrackerUtils.FlashFinisher = spy.new(function() end)
 
             assert.is_false(TrackerUtils.ShowQuestOnMap(100, original))
@@ -295,10 +295,10 @@ describe("TrackerUtils", function()
             before_each(function()
                 originalFlashObjectives = TrackerUtils.FlashObjectives
                 -- Each fake spawn list names its own zone and distance.
-                QuestieLoader:ImportModule("DistanceUtils").GetNearestObjective = function(spawnList)
+                QuestieSmazakLoader:ImportModule("DistanceUtils").GetNearestObjective = function(spawnList)
                     return spawnList.spawn, spawnList.zone, "Name", spawnList.distance
                 end
-                QuestieLoader:ImportModule("ZoneDB").GetUiMapIdByAreaId = function(_, zone) return zone + 1000 end
+                QuestieSmazakLoader:ImportModule("ZoneDB").GetUiMapIdByAreaId = function(_, zone) return zone + 1000 end
                 flashed = nil
                 TrackerUtils.FlashObjectives = function(_, objectives) flashed = objectives end
             end)
@@ -349,11 +349,11 @@ describe("TrackerUtils", function()
                 NewTicker = function(_, fn) tick = fn return {Cancel = function() end} end,
                 After = function() end,
             }
-            local QuestieMap = QuestieLoader:ImportModule("QuestieMap")
+            local QuestieMap = QuestieSmazakLoader:ImportModule("QuestieMap")
             originalQuestIdFrames = QuestieMap.questIdFrames
             QuestieMap.questIdFrames = {[200] = {"QuestieTestOtherIcon"}}
             _G.QuestieTestOtherIcon = _Frame(16)
-            local QuestieWaypoints = QuestieLoader:ImportModule("QuestieWaypoints")
+            local QuestieWaypoints = QuestieSmazakLoader:ImportModule("QuestieWaypoints")
             originalSetSolo = QuestieWaypoints.SetSolo
             QuestieWaypoints.SetSolo = function(data) solo = data end
             solo = nil
@@ -361,8 +361,8 @@ describe("TrackerUtils", function()
 
         after_each(function()
             _G.C_Timer = originalTimer
-            QuestieLoader:ImportModule("QuestieMap").questIdFrames = originalQuestIdFrames
-            QuestieLoader:ImportModule("QuestieWaypoints").SetSolo = originalSetSolo
+            QuestieSmazakLoader:ImportModule("QuestieMap").questIdFrames = originalQuestIdFrames
+            QuestieSmazakLoader:ImportModule("QuestieWaypoints").SetSolo = originalSetSolo
             _G.QuestieTestOtherIcon = nil
         end)
 
@@ -421,13 +421,13 @@ describe("TrackerUtils", function()
             _G.QuestMapFrame_OpenToQuestDetails = spy.new(function() end)
             _G.ShowUIPanel = spy.new(function() end)
             _G.InCombatLockdown = function() return false end
-            local compat = QuestieLoader:ImportModule("QuestieCompat")
+            local compat = QuestieSmazakLoader:ImportModule("QuestieCompat")
             getIndexMock = stub(compat, "GetQuestLogIndexByID", function() return 5 end)
             selectMock = stub(compat, "SelectQuestLogEntry")
             detailsMock = stub(compat, "QuestLog_UpdateQuestDetails")
             updateMock = stub(compat, "QuestLog_Update")
-            printMock = stub(Questie, "Print")
-            originalIsForever = Questie.IsForever
+            printMock = stub(QuestieSmazak, "Print")
+            originalIsForever = QuestieSmazak.IsForever
             dofile("Localization/l10n.lua")
             dofile("Modules/Tracker/TrackerUtils.lua")
         end)
@@ -438,7 +438,7 @@ describe("TrackerUtils", function()
             detailsMock:revert()
             updateMock:revert()
             printMock:revert()
-            Questie.IsForever = originalIsForever
+            QuestieSmazak.IsForever = originalIsForever
             for _, name in ipairs(globalNames) do _G[name] = originals[name] end
         end)
 
@@ -471,7 +471,7 @@ describe("TrackerUtils", function()
         end)
 
         it("opens nothing and prints a hint on Forever with the gamepad UI", function()
-            Questie.IsForever = true
+            QuestieSmazak.IsForever = true
             _G.InputUtil = {IsGamepadUIEnabled = function() return true end}
             _G.QuestLogFrame = nil
             _G.QuestLogListScrollFrame = nil
@@ -486,7 +486,7 @@ describe("TrackerUtils", function()
         end)
 
         it("still opens the quest log on Forever without the gamepad UI", function()
-            Questie.IsForever = true
+            QuestieSmazak.IsForever = true
             _G.InputUtil = {IsGamepadUIEnabled = function() return false end}
             _G.QuestLogFrame = nil
             _G.QuestLogListScrollFrame = nil
@@ -499,7 +499,7 @@ describe("TrackerUtils", function()
         end)
 
         it("ignores the gamepad UI on other flavors", function()
-            Questie.IsForever = false
+            QuestieSmazak.IsForever = false
             _G.InputUtil = {IsGamepadUIEnabled = function() return true end}
 
             TrackerUtils:ShowQuestLog({Id = 783})
@@ -527,7 +527,7 @@ describe("TrackerUtils", function()
         it("requires both the addon and its Vanilla data", function()
             local loaded = {AI_VoiceOver = true}
             isAddOnLoadedMock:revert()
-            isAddOnLoadedMock = stub(QuestieLoader:ImportModule("QuestieCompat"), "IsAddOnLoaded", function(addon)
+            isAddOnLoadedMock = stub(QuestieSmazakLoader:ImportModule("QuestieCompat"), "IsAddOnLoaded", function(addon)
                 return loaded[addon] == true
             end)
             dofile("Modules/Tracker/TrackerUtils.lua")
@@ -542,7 +542,7 @@ describe("TrackerUtils", function()
         it("should be false when Spoken is loaded as well", function()
             local loaded = {AI_VoiceOver = true, AI_VoiceOverData_Vanilla = true, Spoken = true, Spoken_Quests = true}
             isAddOnLoadedMock:revert()
-            isAddOnLoadedMock = stub(QuestieLoader:ImportModule("QuestieCompat"), "IsAddOnLoaded", function(addon)
+            isAddOnLoadedMock = stub(QuestieSmazakLoader:ImportModule("QuestieCompat"), "IsAddOnLoaded", function(addon)
                 return loaded[addon] == true
             end)
             dofile("Modules/Tracker/TrackerUtils.lua")
@@ -555,7 +555,7 @@ describe("TrackerUtils", function()
         it("should require Spoken and Spoken_Quests", function()
             local loaded = {Spoken = true}
             isAddOnLoadedMock:revert()
-            isAddOnLoadedMock = stub(QuestieLoader:ImportModule("QuestieCompat"), "IsAddOnLoaded", function(addon)
+            isAddOnLoadedMock = stub(QuestieSmazakLoader:ImportModule("QuestieCompat"), "IsAddOnLoaded", function(addon)
                 return loaded[addon] == true
             end)
             dofile("Modules/Tracker/TrackerUtils.lua")
@@ -824,7 +824,7 @@ describe("TrackerUtils", function()
         it("should add second item of requiredSourceItems as primary button if first is not in the inventory", function()
             getItemSpellMock.returns("Use Quest Item", 111)
             getItemCountMock:revert()
-            getItemCountMock = stub(QuestieLoader:ImportModule("QuestieCompat"), "GetItemCount", function(itemId)
+            getItemCountMock = stub(QuestieSmazakLoader:ImportModule("QuestieCompat"), "GetItemCount", function(itemId)
                 return itemId == 456 and 1 or 0
             end)
             dofile("Modules/Tracker/TrackerUtils.lua")
@@ -870,7 +870,7 @@ describe("TrackerUtils", function()
         end)
 
         it("should hide expandQuest button for complete quests without quest item and collapseCompletedQuests is true", function()
-            Questie.db.profile.collapseCompletedQuests = true
+            QuestieSmazak.db.profile.collapseCompletedQuests = true
             local quest = {
                 Id = 1,
                 Objectives = {},
@@ -886,7 +886,7 @@ describe("TrackerUtils", function()
         end)
 
         it("should show expandQuest button and hide item buttons when quest is collapsed", function()
-            Questie.db.char.collapsedQuests[1] = true
+            QuestieSmazak.db.char.collapsedQuests[1] = true
             getItemSpellMock.returns("Use Quest Item", 111)
             getItemCountMock.returns(1)
             local primaryButton, secondaryButton = CreateFrame("Button"), CreateFrame("Button")
@@ -925,7 +925,7 @@ describe("TrackerUtils", function()
         end)
 
         it("should show expandQuest button when no primary button is added", function()
-            Questie.db.char.collapsedQuests[1] = true
+            QuestieSmazak.db.char.collapsedQuests[1] = true
             getItemSpellMock.returns("Use Quest Item", 111)
             getItemCountMock.returns(1)
             local primaryButton = CreateFrame("Button")
@@ -953,8 +953,8 @@ describe("TrackerUtils", function()
         end)
 
         it("should hide expandQuest button and hide item buttons when quest is collapsed and collapseCompletedQuests is true", function()
-            Questie.db.char.collapsedQuests[1] = true
-            Questie.db.profile.collapseCompletedQuests = true
+            QuestieSmazak.db.char.collapsedQuests[1] = true
+            QuestieSmazak.db.profile.collapseCompletedQuests = true
             getItemSpellMock.returns("Use Quest Item", 111)
             getItemCountMock.returns(1)
             local primaryButton, secondaryButton = CreateFrame("Button"), CreateFrame("Button")
@@ -993,7 +993,7 @@ describe("TrackerUtils", function()
         end)
 
         it("should hide item buttons when zone is collapsed", function()
-            Questie.db.char.collapsedZones["Durotar"] = true
+            QuestieSmazak.db.char.collapsedZones["Durotar"] = true
             getItemSpellMock.returns("Use Quest Item", 111)
             getItemCountMock.returns(1)
             local primaryButton, secondaryButton = CreateFrame("Button"), CreateFrame("Button")
@@ -1035,7 +1035,7 @@ describe("TrackerUtils", function()
             local indexMock, button, quest
 
             before_each(function()
-                indexMock = stub(QuestieLoader:ImportModule("QuestieCompat"), "GetQuestLogIndexByID", function() return 2 end)
+                indexMock = stub(QuestieSmazakLoader:ImportModule("QuestieCompat"), "GetQuestLogIndexByID", function() return 2 end)
                 button = CreateFrame("Button")
                 button.SetItem = spy.new(function() return true end)
                 TrackerLinePool.GetNextItemButton = spy.new(function() return button end)
@@ -1087,7 +1087,7 @@ describe("TrackerUtils", function()
                 assert.spy(button.SetItem).was.called_with(button, 90001, 91741, 12, true)
             end)
 
-            it("hides a native action on additional Questie completion unless Blizzard allows it", function()
+            it("hides a native action on additional QuestieSmazak completion unless Blizzard allows it", function()
                 quest.isComplete = true
 
                 TrackerUtils.AddQuestItemButtons(quest, 0, _GetMockedLine(), 12, {}, true, rePositionLineMock)
@@ -1112,16 +1112,16 @@ describe("TrackerUtils", function()
         local achievementIds, originalGetTrackedIds
 
         before_each(function()
-            Questie.IsCata = false
-            Questie.IsWotlk = false
+            QuestieSmazak.IsCata = false
+            QuestieSmazak.IsWotlk = false
             achievementIds = {}
-            local AchievementTracking = QuestieLoader:ImportModule("AchievementTracking")
+            local AchievementTracking = QuestieSmazakLoader:ImportModule("AchievementTracking")
             originalGetTrackedIds = AchievementTracking.GetTrackedIds
             AchievementTracking.GetTrackedIds = function() return achievementIds end
         end)
 
         after_each(function()
-            QuestieLoader:ImportModule("AchievementTracking").GetTrackedIds = originalGetTrackedIds
+            QuestieSmazakLoader:ImportModule("AchievementTracking").GetTrackedIds = originalGetTrackedIds
         end)
 
         it("should return true when a quest is tracked", function()
@@ -1135,7 +1135,7 @@ describe("TrackerUtils", function()
         it("should return true when no quest is tracked but an achievement for Cata", function()
             QuestieTracker.GetNumTrackedQuests = function() return 0 end
             achievementIds = {1}
-            Questie.IsCata = true
+            QuestieSmazak.IsCata = true
             Expansions.Current = Expansions.Cata
 
             local hasQuest = TrackerUtils.HasQuest()
@@ -1146,7 +1146,7 @@ describe("TrackerUtils", function()
         it("should return true when no quest is tracked but an achievement for WotLK", function()
             QuestieTracker.GetNumTrackedQuests = function() return 0 end
             achievementIds = {1}
-            Questie.IsWotlk = true
+            QuestieSmazak.IsWotlk = true
             Expansions.Current = Expansions.Wotlk
 
             local hasQuest = TrackerUtils.HasQuest()
@@ -1157,7 +1157,7 @@ describe("TrackerUtils", function()
         it("should return false when no quest and achievement is tracked for Cata", function()
             QuestieTracker.GetNumTrackedQuests = function() return 0 end
             achievementIds = {}
-            Questie.IsCata = true
+            QuestieSmazak.IsCata = true
             Expansions.Current = Expansions.Cata
 
             local hasQuest = TrackerUtils.HasQuest()
@@ -1168,7 +1168,7 @@ describe("TrackerUtils", function()
         it("should return false when no quest and achievement is tracked for WotLK", function()
             QuestieTracker.GetNumTrackedQuests = function() return 0 end
             achievementIds = {}
-            Questie.IsWotlk = true
+            QuestieSmazak.IsWotlk = true
             Expansions.Current = Expansions.Wotlk
 
             local hasQuest = TrackerUtils.HasQuest()
@@ -1186,7 +1186,7 @@ describe("TrackerUtils", function()
 
         it("should return true when no quest is tracked but a recipe", function()
             QuestieTracker.GetNumTrackedQuests = function() return 0 end
-            QuestieLoader:ImportModule("TrackerRecipes").HasShownRecipes = function() return true end
+            QuestieSmazakLoader:ImportModule("TrackerRecipes").HasShownRecipes = function() return true end
 
             local hasQuest = TrackerUtils.HasQuest()
 
@@ -1195,7 +1195,7 @@ describe("TrackerUtils", function()
 
         it("should return false when no quest is tracked and no tracked recipe can be shown yet", function()
             QuestieTracker.GetNumTrackedQuests = function() return 0 end
-            local TrackerRecipes = QuestieLoader:ImportModule("TrackerRecipes")
+            local TrackerRecipes = QuestieSmazakLoader:ImportModule("TrackerRecipes")
             TrackerRecipes.HasTrackedRecipes = function() return true end
             TrackerRecipes.HasShownRecipes = function() return false end
 
@@ -1207,7 +1207,7 @@ describe("TrackerUtils", function()
         it("should return true when a single quest is tracked and it is not complete and complete quests should not show", function()
             QuestieTracker.GetNumTrackedQuests = function() return 1 end
             QuestieTracker.IsTrackedByQuestie = function() return true end
-            Questie.db.profile.trackerShowCompleteQuests = false
+            QuestieSmazak.db.profile.trackerShowCompleteQuests = false
             trackerQuests = {
                 [1] = {
                     IsComplete = function() return 0 end
@@ -1224,7 +1224,7 @@ describe("TrackerUtils", function()
             QuestieTracker.IsTrackedByQuestie = function(questId)
                 return questId == 1
             end
-            Questie.db.profile.trackerShowCompleteQuests = false
+            QuestieSmazak.db.profile.trackerShowCompleteQuests = false
             trackerQuests = {
                 [1] = {
                     Id = 1,
@@ -1244,7 +1244,7 @@ describe("TrackerUtils", function()
         it("should return false when a quest is tracked and it is complete and complete quests should not show", function()
             QuestieTracker.GetNumTrackedQuests = function() return 1 end
             QuestieTracker.IsTrackedByQuestie = function() return true end
-            Questie.db.profile.trackerShowCompleteQuests = false
+            QuestieSmazak.db.profile.trackerShowCompleteQuests = false
             trackerQuests = {
                 [1] = {
                     IsComplete = function() return 1 end
@@ -1259,17 +1259,17 @@ describe("TrackerUtils", function()
 
     describe("focus without verified enrichment", function()
         it("does not change existing focus when an unknown quest is selected", function()
-            Questie.db.char.TrackerFocus = 11
+            QuestieSmazak.db.char.TrackerFocus = 11
             trackerQuests[91741] = {Id = 91741, Objectives = {}, SpecialObjectives = {}}
 
             assert.is_false(TrackerUtils:FocusQuest(91741))
-            assert.are.equal(11, Questie.db.char.TrackerFocus)
+            assert.are.equal(11, QuestieSmazak.db.char.TrackerFocus)
         end)
 
         it("can focus a known finisher even when the completed quest has a new log objective", function()
             local original = {Id = 54, Objectives = {}, Finisher = {NPC = {240}}}
             ActiveQuests.Add(54, original)
-            local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+            local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
             QuestieDB.GetQuest = function() return original end
             trackerQuests[54] = {
                 Id = 54, enrichment = original, Finisher = original.Finisher,
@@ -1277,7 +1277,7 @@ describe("TrackerUtils", function()
             }
 
             assert.is_true(TrackerUtils:FocusQuest(54))
-            assert.are.equal(54, Questie.db.char.TrackerFocus)
+            assert.are.equal(54, QuestieSmazak.db.char.TrackerFocus)
             assert.is_nil(original.FadeIcons)
         end)
     end)
@@ -1290,10 +1290,10 @@ describe("TrackerUtils", function()
                 Objectives = {{enrichment = {Index = 3, spawnList = {{}}}}, {Description = "Unknown step"}},
                 SpecialObjectives = {}, IsComplete = function() return 0 end,
             }
-            Questie.db.char.TrackerFocus = 11
+            QuestieSmazak.db.char.TrackerFocus = 11
 
             assert.is_false(TrackerUtils:FocusQuest(100))
-            assert.are.equal(11, Questie.db.char.TrackerFocus)
+            assert.are.equal(11, QuestieSmazak.db.char.TrackerFocus)
         end)
 
         it("navigates using the refreshed display quest and its verified locations", function()
@@ -1303,7 +1303,7 @@ describe("TrackerUtils", function()
                 SpecialObjectives = {}, IsComplete = function() return 0 end,
             }
             trackerQuests[100] = quest
-            local distance = QuestieLoader:ImportModule("DistanceUtils")
+            local distance = QuestieSmazakLoader:ImportModule("DistanceUtils")
             distance.GetNearestSpawnForQuest = spy.new(function() return {50, 60}, 12, "Wolf" end)
             TrackerUtils.SetTomTomTarget = spy.new(function() end)
 
@@ -1318,7 +1318,7 @@ describe("TrackerUtils", function()
                 Id = 100, enrichment = {Id = 100}, Objectives = {{enrichment = {Index = 3, spawnList = {{}}}}},
                 SpecialObjectives = {}, IsComplete = function() return 0 end,
             }
-            local distance = QuestieLoader:ImportModule("DistanceUtils")
+            local distance = QuestieSmazakLoader:ImportModule("DistanceUtils")
             distance.GetNearestSpawnForQuest = spy.new(function() end)
 
             assert.is_false(TrackerUtils.SetQuestTomTomTarget(100, {Id = 100}))
@@ -1332,7 +1332,7 @@ describe("TrackerUtils", function()
         local original
 
         before_each(function()
-            compat = QuestieLoader:ImportModule("QuestieCompat")
+            compat = QuestieSmazakLoader:ImportModule("QuestieCompat")
             superTrackedQuestId = nil
             compat.GetSuperTrackedQuestID = function() return superTrackedQuestId end
             compat.SetSuperTrackedQuestID = spy.new(function(questId) superTrackedQuestId = questId end)
@@ -1340,7 +1340,7 @@ describe("TrackerUtils", function()
 
             original = {Id = 54, Objectives = {}, Finisher = {NPC = {240}}}
             ActiveQuests.Add(54, original)
-            QuestieLoader:ImportModule("QuestieDB").GetQuest = function() return original end
+            QuestieSmazakLoader:ImportModule("QuestieDB").GetQuest = function() return original end
             trackerQuests[54] = {
                 Id = 54, enrichment = original, Finisher = original.Finisher,
                 Objectives = {}, IsComplete = function() return 1 end,
@@ -1354,7 +1354,7 @@ describe("TrackerUtils", function()
         end)
 
         it("should show the quest giver of a focused quest", function()
-            local FocusedQuestgiver = QuestieLoader:ImportModule("FocusedQuestgiver")
+            local FocusedQuestgiver = QuestieSmazakLoader:ImportModule("FocusedQuestgiver")
 
             TrackerUtils:FocusQuest(54)
 
@@ -1362,7 +1362,7 @@ describe("TrackerUtils", function()
         end)
 
         it("should not show a quest giver for a quest that can not be focused", function()
-            local FocusedQuestgiver = QuestieLoader:ImportModule("FocusedQuestgiver")
+            local FocusedQuestgiver = QuestieSmazakLoader:ImportModule("FocusedQuestgiver")
             trackerQuests[91741] = {Id = 91741, Objectives = {}, SpecialObjectives = {}}
 
             TrackerUtils:FocusQuest(91741)
@@ -1371,8 +1371,8 @@ describe("TrackerUtils", function()
         end)
 
         it("should hide the quest giver when unfocusing", function()
-            local FocusedQuestgiver = QuestieLoader:ImportModule("FocusedQuestgiver")
-            Questie.db.char.TrackerFocus = 54
+            local FocusedQuestgiver = QuestieSmazakLoader:ImportModule("FocusedQuestgiver")
+            QuestieSmazak.db.char.TrackerFocus = 54
             superTrackedQuestId = 54
 
             TrackerUtils:UnFocus()
@@ -1389,7 +1389,7 @@ describe("TrackerUtils", function()
         end)
 
         it("should clear super tracking when unfocusing the super tracked quest", function()
-            Questie.db.char.TrackerFocus = 54
+            QuestieSmazak.db.char.TrackerFocus = 54
             superTrackedQuestId = 54
 
             TrackerUtils:UnFocus()
@@ -1398,10 +1398,10 @@ describe("TrackerUtils", function()
         end)
 
         it("should have cleared the focus when super tracking changes notify right away", function()
-            Questie.db.char.TrackerFocus = 54
+            QuestieSmazak.db.char.TrackerFocus = 54
             superTrackedQuestId = 54
             local focusSeenOnClear
-            compat.ClearSuperTrackedQuest = function() focusSeenOnClear = Questie.db.char.TrackerFocus or false end
+            compat.ClearSuperTrackedQuest = function() focusSeenOnClear = QuestieSmazak.db.char.TrackerFocus or false end
 
             TrackerUtils:UnFocus()
 
@@ -1409,7 +1409,7 @@ describe("TrackerUtils", function()
         end)
 
         it("should keep super tracking of another quest when unfocusing", function()
-            Questie.db.char.TrackerFocus = 54
+            QuestieSmazak.db.char.TrackerFocus = 54
             superTrackedQuestId = 99
 
             TrackerUtils:UnFocus()
@@ -1460,13 +1460,13 @@ describe("TrackerUtils", function()
 
     describe("GetQuestGroupName", function()
         it("uses the native header when sorting by zone", function()
-            Questie.db.profile.trackerSortObjectives = "byZone"
+            QuestieSmazak.db.profile.trackerSortObjectives = "byZone"
 
             assert.are.equal("Northshire Abbey", TrackerUtils.GetQuestGroupName({Id = 1, zoneName = "Northshire Abbey", zoneOrSort = 12}))
         end)
 
         it("uses the sort mode's single group instead of the zone in other sort modes", function()
-            Questie.db.profile.trackerSortObjectives = "byLevel"
+            QuestieSmazak.db.profile.trackerSortObjectives = "byLevel"
 
             assert.are.equal("Quests (By Level)", TrackerUtils.GetQuestGroupName({Id = 1, zoneName = "Northshire Abbey", zoneOrSort = 12}))
         end)
@@ -1475,7 +1475,7 @@ describe("TrackerUtils", function()
     describe("GetSortedQuestIds", function()
         before_each(function()
             trackerQuests = {}
-            Questie.db.profile.trackerSortObjectives = "byZone"
+            QuestieSmazak.db.profile.trackerSortObjectives = "byZone"
             QuestieLib.GetQuestTypeSuffix = function() return "" end
 
             dofile("Modules/Tracker/Sorter/Sorter.lua")
@@ -1528,7 +1528,7 @@ describe("TrackerUtils", function()
         end)
 
         it("should return quest IDs correctly sorted for 'byZone' sorting", function()
-            Questie.db.profile.trackerSortObjectives = "byZone"
+            QuestieSmazak.db.profile.trackerSortObjectives = "byZone"
             trackerQuests = {
                 [1] = {Id = 1, level = 10, zoneOrSort = ZoneIDs.DUROTAR, IsComplete = function() return 1 end},
                 [2] = {Id = 2, level = 5, zoneOrSort = ZoneIDs.ELWYNN_FOREST, IsComplete = function() return 1 end},
@@ -1559,7 +1559,7 @@ describe("TrackerUtils", function()
         end)
 
         it("should return quest IDs correctly sorted for 'byComplete' sorting", function()
-            Questie.db.profile.trackerSortObjectives = "byComplete"
+            QuestieSmazak.db.profile.trackerSortObjectives = "byComplete"
             trackerQuests = {
                 [1] = {Id = 1, level = 10, IsComplete = function() return 0 end, Objectives = {{Collected = 0, Needed = 1}}},
                 [2] = {Id = 2, level = 5, IsComplete = function() return 1 end},
@@ -1586,7 +1586,7 @@ describe("TrackerUtils", function()
         end)
 
         it("should return quest IDs correctly sorted for 'byCompleteReversed' sorting", function()
-            Questie.db.profile.trackerSortObjectives = "byCompleteReversed"
+            QuestieSmazak.db.profile.trackerSortObjectives = "byCompleteReversed"
             trackerQuests = {
                 [1] = {Id = 1, level = 10, IsComplete = function() return 0 end, Objectives = {{Collected = 0, Needed = 1}}},
                 [2] = {Id = 2, level = 5, IsComplete = function() return 1 end},
@@ -1613,7 +1613,7 @@ describe("TrackerUtils", function()
         end)
 
         it("should return quest IDs correctly sorted for 'byLevel' sorting", function()
-            Questie.db.profile.trackerSortObjectives = "byLevel"
+            QuestieSmazak.db.profile.trackerSortObjectives = "byLevel"
             trackerQuests = {
                 [1] = {Id = 1, level = 10, IsComplete = function() return 1 end},
                 [2] = {Id = 2, level = 5, IsComplete = function() return 1 end},
@@ -1637,7 +1637,7 @@ describe("TrackerUtils", function()
         end)
 
         it("should return quest IDs correctly sorted for 'byLevelReversed' sorting", function()
-            Questie.db.profile.trackerSortObjectives = "byLevelReversed"
+            QuestieSmazak.db.profile.trackerSortObjectives = "byLevelReversed"
             trackerQuests = {
                 [1] = {Id = 1, level = 10, IsComplete = function() return 1 end},
                 [2] = {Id = 2, level = 5, IsComplete = function() return 1 end},

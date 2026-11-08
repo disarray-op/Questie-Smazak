@@ -129,7 +129,7 @@ describe("QuestieDBMock", function()
 
     describe("schema", function()
         it("binds the provider Database Key Enums onto QuestieDB, as QuestieDB.lua does at Addon Load", function()
-            local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+            local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
 
             assert.are_equal(questKeys, QuestieDB.questKeys)
             assert.are_equal(npcKeys, QuestieDB.npcKeys)
@@ -153,14 +153,14 @@ describe("QuestieDBMock", function()
                 [objectKeys.spawns] = {[1] = {{20, 20}}},
             })
             darkmoonRows = {}
-            registrar = LibQuestieDB.GetRegistrar("Questie")
+            registrar = LibQuestieDB.GetRegistrar("QuestieSmazak")
             registrar.RegisterRuntimeCorrection("Npc", "DarkmoonFaire", function() return darkmoonRows end, 100)
         end)
 
         it("keeps registrations append-only, so registering one name twice yields two entries", function()
             registrar.RegisterRuntimeCorrection("Npc", "DarkmoonFaire", function() return {} end, 100)
 
-            assert.are_same(2, #mock.registrations.Questie)
+            assert.are_same(2, #mock.registrations.QuestieSmazak)
         end)
 
         it("invokes every provider again on each apply", function()
@@ -174,7 +174,7 @@ describe("QuestieDBMock", function()
             registrar.Apply()
 
             assert.are_same(2, providerCalls)
-            assert.are_same(2, mock.applyCount.Questie)
+            assert.are_same(2, mock.applyCount.QuestieSmazak)
         end)
 
         it("composes the corrected field over base data and leaves GetRaw untouched", function()
@@ -220,7 +220,7 @@ describe("QuestieDBMock", function()
             assert.is_nil(LibQuestieDB.Object.Get(1617, "spawns"))
             assert.are_same("Silverleaf", LibQuestieDB.Object.Get(1617, "name"))
             assert.are_same({[1] = {{20, 20}}}, LibQuestieDB.Object.GetRaw(1617, "spawns"))
-            assert.are_same("Questie", LibQuestieDB.Corrections.GetProvenance("Object", 1617, "spawns"))
+            assert.are_same("QuestieSmazak", LibQuestieDB.Corrections.GetProvenance("Object", 1617, "spawns"))
         end)
 
         it("creates an entity absent from base data and removes it again on withdrawal", function()
@@ -234,7 +234,7 @@ describe("QuestieDBMock", function()
             assert.is_true(LibQuestieDB.Item.GetAllIds(true)[999])
             assert.are_same({999}, LibQuestieDB.Item.GetAllIds())
             assert.is_nil(LibQuestieDB.Item.GetRaw(999, "name"))
-            assert.are_same("Questie", LibQuestieDB.Corrections.GetProvenance("Item", 999, "name"))
+            assert.are_same("QuestieSmazak", LibQuestieDB.Corrections.GetProvenance("Item", 999, "name"))
 
             repairedItems = {}
             registrar.Apply()
@@ -309,7 +309,7 @@ describe("QuestieDBMock", function()
 
             assert.are_same(99, LibQuestieDB.Npc.Get(14828, "zoneID"))
             assert.are_same("ThirdParty", LibQuestieDB.GetProvenance("Npc", 14828, "zoneID"))
-            assert.are_same({"QuestieDB", "Questie", "ThirdParty"}, LibQuestieDB.GetOwners())
+            assert.are_same({"QuestieDB", "QuestieSmazak", "ThirdParty"}, LibQuestieDB.GetOwners())
         end)
 
         it("rejects datatypes outside Quest, Npc, Item, and Object", function()
@@ -342,17 +342,17 @@ describe("QuestieDBMock", function()
         end)
 
         it("publishes a data slot immediately and composes it over base data", function()
-            local changed = LibQuestieDB.Corrections.Set("Questie", "Npc", "DarkmoonFaire", {[14828] = {[npcKeys.zoneID] = 215}})
+            local changed = LibQuestieDB.Corrections.Set("QuestieSmazak", "Npc", "DarkmoonFaire", {[14828] = {[npcKeys.zoneID] = 215}})
 
             assert.is_true(changed)
             assert.are_same(215, LibQuestieDB.Npc.Get(14828, "zoneID"))
             assert.are_same(1, LibQuestieDB.Npc.GetRaw(14828, "zoneID"))
-            assert.are_same("Questie", LibQuestieDB.Corrections.GetProvenance("Npc", 14828, "zoneID"))
-            assert.are_same({"QuestieDB", "Questie"}, LibQuestieDB.GetOwners())
+            assert.are_same("QuestieSmazak", LibQuestieDB.Corrections.GetProvenance("Npc", 14828, "zoneID"))
+            assert.are_same({"QuestieDB", "QuestieSmazak"}, LibQuestieDB.GetOwners())
         end)
 
         it("replaces a slot in place and removes it with nil", function()
-            local registrar = LibQuestieDB.GetRegistrar("Questie")
+            local registrar = LibQuestieDB.GetRegistrar("QuestieSmazak")
             registrar.Set("Npc", "DarkmoonFaire", {[14828] = {[npcKeys.zoneID] = 215}})
 
             registrar.Set("Npc", "DarkmoonFaire", {[14828] = {[npcKeys.zoneID] = 12}})
@@ -365,7 +365,7 @@ describe("QuestieDBMock", function()
 
         for _, fieldIndex in ipairs({999, 1.5}) do
             it("rejects invalid field key " .. fieldIndex .. " without replacing the stored slot", function()
-                local registrar = LibQuestieDB.GetRegistrar("Questie")
+                local registrar = LibQuestieDB.GetRegistrar("QuestieSmazak")
                 registrar.Set("Npc", "DarkmoonFaire", {[14828] = {[npcKeys.zoneID] = 215}})
 
                 assert.has_error(function()
@@ -380,7 +380,7 @@ describe("QuestieDBMock", function()
         end
 
         it("restores the last successful rows after rejecting an in-place mutation", function()
-            local registrar = LibQuestieDB.GetRegistrar("Questie")
+            local registrar = LibQuestieDB.GetRegistrar("QuestieSmazak")
             local rows = {[14828] = {[npcKeys.zoneID] = 215}}
             registrar.Set("Npc", "DarkmoonFaire", rows)
             rows[14828][999] = "invalid"
@@ -395,11 +395,11 @@ describe("QuestieDBMock", function()
         end)
 
         it("republishes only the written datatype", function()
-            LibQuestieDB.Corrections.Set("Questie", "Npc", "DarkmoonFaire", {[14828] = {[npcKeys.zoneID] = 215}})
+            LibQuestieDB.Corrections.Set("QuestieSmazak", "Npc", "DarkmoonFaire", {[14828] = {[npcKeys.zoneID] = 215}})
             local npcMapBefore = LibQuestieDB.Npc.GetAllIds(true)
             local objectMapBefore = LibQuestieDB.Object.GetAllIds(true)
 
-            LibQuestieDB.Corrections.Set("Questie", "Object", "AddedObject", {[1618] = {[objectKeys.name] = "Peacebloom"}})
+            LibQuestieDB.Corrections.Set("QuestieSmazak", "Object", "AddedObject", {[1618] = {[objectKeys.name] = "Peacebloom"}})
 
             assert.are_equal(npcMapBefore, LibQuestieDB.Npc.GetAllIds(true))
             assert.are_not_equal(objectMapBefore, LibQuestieDB.Object.GetAllIds(true))
@@ -408,7 +408,7 @@ describe("QuestieDBMock", function()
         end)
 
         it("refuses a data write into a function-shaped correction name", function()
-            local registrar = LibQuestieDB.GetRegistrar("Questie")
+            local registrar = LibQuestieDB.GetRegistrar("QuestieSmazak")
             registrar.RegisterRuntimeCorrection("Npc", "DarkmoonFaire", function() return {} end)
 
             assert.has_error(function()
@@ -417,13 +417,13 @@ describe("QuestieDBMock", function()
         end)
 
         it("fixes owner precedence at the first write", function()
-            LibQuestieDB.Corrections.Set("Questie", "Npc", "slotA", {[14828] = {[npcKeys.zoneID] = 215}})
+            LibQuestieDB.Corrections.Set("QuestieSmazak", "Npc", "slotA", {[14828] = {[npcKeys.zoneID] = 215}})
             LibQuestieDB.Corrections.Set("ThirdParty", "Npc", "slotB", {[14828] = {[npcKeys.zoneID] = 99}})
 
-            LibQuestieDB.Corrections.Set("Questie", "Npc", "slotA", {[14828] = {[npcKeys.zoneID] = 300}})
+            LibQuestieDB.Corrections.Set("QuestieSmazak", "Npc", "slotA", {[14828] = {[npcKeys.zoneID] = 300}})
 
             assert.are_same(99, LibQuestieDB.Npc.Get(14828, "zoneID"))
-            assert.are_same({"QuestieDB", "Questie", "ThirdParty"}, LibQuestieDB.GetOwners())
+            assert.are_same({"QuestieDB", "QuestieSmazak", "ThirdParty"}, LibQuestieDB.GetOwners())
         end)
     end)
 
@@ -492,7 +492,7 @@ describe("QuestieDBMock", function()
 
         it("follows a Correction rename after the next apply", function()
             LibQuestieDB.Object.BuildNameIndex()
-            local registrar = LibQuestieDB.GetRegistrar("Questie")
+            local registrar = LibQuestieDB.GetRegistrar("QuestieSmazak")
             registrar.RegisterRuntimeCorrection("Object", "ExternalLocaleObject", function()
                 return {[31] = {[objectKeys.name] = "Alte Löwenstatue"}}
             end, 503)

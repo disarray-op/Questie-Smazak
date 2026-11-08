@@ -66,7 +66,7 @@ describe("TooltipLayout", function()
     local function RequireTooltipLayout()
         package.loaded["Modules.Libs.WrappedText"] = nil
         dofile("Modules/Libs/WrappedText.lua")
-        WrappedText = QuestieLoader:ImportModule("WrappedText")
+        WrappedText = QuestieSmazakLoader:ImportModule("WrappedText")
         originalTextWrap = WrappedText.TextWrap
         WrappedText.TextWrap = function(_, text, prefix, combineTrailing, desiredWidth, fontSource)
             capturedTextWrap = {
@@ -81,7 +81,7 @@ describe("TooltipLayout", function()
 
         package.loaded["Modules.Tooltips.TooltipLayout"] = nil
         dofile("Modules/Tooltips/TooltipLayout.lua")
-        TooltipLayout = QuestieLoader:ImportModule("TooltipLayout")
+        TooltipLayout = QuestieSmazakLoader:ImportModule("TooltipLayout")
     end
 
     before_each(function()
@@ -114,10 +114,10 @@ describe("TooltipLayout", function()
         _G.TestTooltipTextLeft1 = CreateFontStringMock()
         _G.TestTooltipTextLeft2 = CreateFontStringMock()
         _G.TestTooltipTextRight1 = CreateFontStringMock()
-        _G.QuestieTooltipLayoutGapMeasureTooltipTextLeft1 = {GetRight = function() return 100 end}
-        _G.QuestieTooltipLayoutGapMeasureTooltipTextRight1 = {GetLeft = function() return 150 end}
-        _G.QuestieTooltipLayoutGapMeasureTooltipTextLeft2 = {GetRight = function() return 100 end}
-        _G.QuestieTooltipLayoutGapMeasureTooltipTextRight2 = {GetLeft = function() return 150 end}
+        _G.QuestieSmazakTooltipLayoutGapMeasureTooltipTextLeft1 = {GetRight = function() return 100 end}
+        _G.QuestieSmazakTooltipLayoutGapMeasureTooltipTextRight1 = {GetLeft = function() return 150 end}
+        _G.QuestieSmazakTooltipLayoutGapMeasureTooltipTextLeft2 = {GetRight = function() return 100 end}
+        _G.QuestieSmazakTooltipLayoutGapMeasureTooltipTextRight2 = {GetLeft = function() return 150 end}
 
         RequireTooltipLayout()
     end)
@@ -128,10 +128,10 @@ describe("TooltipLayout", function()
         _G.TestTooltipTextLeft1 = nil
         _G.TestTooltipTextLeft2 = nil
         _G.TestTooltipTextRight1 = nil
-        _G.QuestieTooltipLayoutGapMeasureTooltipTextLeft1 = nil
-        _G.QuestieTooltipLayoutGapMeasureTooltipTextRight1 = nil
-        _G.QuestieTooltipLayoutGapMeasureTooltipTextLeft2 = nil
-        _G.QuestieTooltipLayoutGapMeasureTooltipTextRight2 = nil
+        _G.QuestieSmazakTooltipLayoutGapMeasureTooltipTextLeft1 = nil
+        _G.QuestieSmazakTooltipLayoutGapMeasureTooltipTextRight1 = nil
+        _G.QuestieSmazakTooltipLayoutGapMeasureTooltipTextLeft2 = nil
+        _G.QuestieSmazakTooltipLayoutGapMeasureTooltipTextRight2 = nil
         WrappedText.TextWrap = originalTextWrap
         package.loaded["Modules.Libs.WrappedText"] = nil
         package.loaded["Modules.Tooltips.TooltipLayout"] = nil

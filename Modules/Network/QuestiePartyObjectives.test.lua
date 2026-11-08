@@ -114,7 +114,7 @@ describe("QuestiePartyObjectives", function()
         pendingObjectiveLoadSuccess = nil
         pendingObjectiveLoadFailure = nil
 
-        Questie.db.profile.showPartyQuestObjectives = true
+        QuestieSmazak.db.profile.showPartyQuestObjectives = true
 
         _G.UnitIsConnected = function() return true end
         _G.GetNumGroupMembers = function() return 2 end
@@ -123,16 +123,16 @@ describe("QuestiePartyObjectives", function()
         -- quests one at a time in a deterministic order (a full Update() clears everything first).
         _G.C_Timer = {After = function(_, callback) callback() end}
 
-        QuestieComms = QuestieLoader:ImportModule("QuestieComms")
-        QuestieQuest = QuestieLoader:ImportModule("QuestieQuest")
-        QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+        QuestieComms = QuestieSmazakLoader:ImportModule("QuestieComms")
+        QuestieQuest = QuestieSmazakLoader:ImportModule("QuestieQuest")
+        QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
         dofile("Modules/Libs/QuestieLib.lua")
-        QuestieLib = QuestieLoader:ImportModule("QuestieLib")
-        QuestieFramePool = QuestieLoader:ImportModule("QuestieFramePool")
-        QuestLogCache = QuestieLoader:ImportModule("QuestLogCache")
-        ThreadLib = QuestieLoader:ImportModule("ThreadLib")
-        QuestiePlayer = QuestieLoader:ImportModule("QuestiePlayer")
-        CommsVisibility = QuestieLoader:ImportModule("CommsVisibility")
+        QuestieLib = QuestieSmazakLoader:ImportModule("QuestieLib")
+        QuestieFramePool = QuestieSmazakLoader:ImportModule("QuestieFramePool")
+        QuestLogCache = QuestieSmazakLoader:ImportModule("QuestLogCache")
+        ThreadLib = QuestieSmazakLoader:ImportModule("ThreadLib")
+        QuestiePlayer = QuestieSmazakLoader:ImportModule("QuestiePlayer")
+        CommsVisibility = QuestieSmazakLoader:ImportModule("CommsVisibility")
 
         QuestiePlayer.GetGroupType = function() return "party" end
         CommsVisibility.ShouldShowPartyObjective = function() return true end
@@ -149,7 +149,7 @@ describe("QuestiePartyObjectives", function()
         end
 
         dofile("Modules/Network/QuestiePartyObjectives.lua")
-        QuestiePartyObjectives = QuestieLoader:ImportModule("QuestiePartyObjectives")
+        QuestiePartyObjectives = QuestieSmazakLoader:ImportModule("QuestiePartyObjectives")
 
         QuestiePartyObjectives:Clear()
     end)

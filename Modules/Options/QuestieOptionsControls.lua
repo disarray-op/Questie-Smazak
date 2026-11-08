@@ -3,12 +3,12 @@
 ---Each control type below pairs a Create function with the Refresh that updates it, and is registered
 ---in CONTROL_TYPES at the bottom of this file. Adding a control type only touches this file.
 ---@class QuestieOptionsControls
-local QuestieOptionsControls = QuestieLoader:CreateModule("QuestieOptionsControls")
+local QuestieOptionsControls = QuestieSmazakLoader:CreateModule("QuestieOptionsControls")
 
 ---@type QuestieOptionsEngine
-local QuestieOptionsEngine = QuestieLoader:ImportModule("QuestieOptionsEngine")
+local QuestieOptionsEngine = QuestieSmazakLoader:ImportModule("QuestieOptionsEngine")
 ---@type QuestieOptionsUtils
-local QuestieOptionsUtils = QuestieLoader:ImportModule("QuestieOptionsUtils")
+local QuestieOptionsUtils = QuestieSmazakLoader:ImportModule("QuestieOptionsUtils")
 
 ---@class QuestieOptionsControl: Button
 ---@field itemData table Normalized item definition, see QuestieOptionsLayout
@@ -224,7 +224,7 @@ local function _CreateCheckbox(control, parent, item, width)
 
     local hoverTexture = checkbox:CreateTexture(nil, "ARTWORK", nil, 1)
     hoverTexture:SetAllPoints(checkbox, true)
-    hoverTexture:SetTexture("Interface\\Addons\\Questie\\Icons\\checkbox-minimal-highlight.png")
+    hoverTexture:SetTexture("Interface\\Addons\\QuestieSmazak\\Icons\\checkbox-minimal-highlight.png")
     hoverTexture:SetBlendMode("ADD")
     hoverTexture:SetAlpha(0.5)
     hoverTexture:Hide()
@@ -286,7 +286,7 @@ local RADIO_TICK_COORDS = {465 / 512, 509 / 512, 1 / 512, 45 / 512}
 ---@return Texture
 local function _NewRadioTexture(radio, foreverAtlas, classicCoords, desaturated)
     local texture = radio:CreateTexture(nil, "ARTWORK")
-    if Questie.IsForever then
+    if QuestieSmazak.IsForever then
         texture:SetAtlas(foreverAtlas, nil, "TRILINEAR")
     else
         texture:SetTexture("interface\\common\\commondropdownclassic2x", nil, nil, "TRILINEAR")
@@ -303,7 +303,7 @@ local function _CreateRadioButton(control, parent, item, width)
     local wrapper = _CreateRowWrapper(control, parent, width, 20)
 
     local radio = CreateFrame("CheckButton", nil, wrapper, "SettingsCheckboxTemplate")
-    if Questie.IsForever then
+    if QuestieSmazak.IsForever then
         radio:SetPoint("LEFT", wrapper, "LEFT", 0, 0)
     else
         radio:SetPoint("LEFT", wrapper, "LEFT", 4, 0)
@@ -315,7 +315,7 @@ local function _CreateRadioButton(control, parent, item, width)
     radio:SetNormalTexture(_NewRadioTexture(radio, slotAtlas, RADIO_SLOT_COORDS))
     radio:SetPushedTexture(_NewRadioTexture(radio, slotAtlas, RADIO_SLOT_COORDS))
     -- Forever has dedicated disabled art for the slot, Classic greys out the normal art
-    radio:SetDisabledTexture(_NewRadioTexture(radio, "gamepad-flyout-circular-slot-disabled", RADIO_SLOT_COORDS, not Questie.IsForever))
+    radio:SetDisabledTexture(_NewRadioTexture(radio, "gamepad-flyout-circular-slot-disabled", RADIO_SLOT_COORDS, not QuestieSmazak.IsForever))
     radio:SetCheckedTexture(_NewRadioTexture(radio, tickAtlas, RADIO_TICK_COORDS))
     radio:SetDisabledCheckedTexture(_NewRadioTexture(radio, tickAtlas, RADIO_TICK_COORDS, true))
 
@@ -1015,7 +1015,7 @@ end
 ---@param alpha number?
 ---@return number
 local function _ConvertPickerAlpha(alpha)
-    if not Questie.IsForever then
+    if not QuestieSmazak.IsForever then
         return 1 - (alpha or 1)
     end
     return alpha or 1
@@ -1029,7 +1029,7 @@ local function _CreateColorPicker(control, parent, item, width)
     swatchButton:SetPoint("LEFT", wrapper, "LEFT", 0, 0)
 
     local border = swatchButton:CreateTexture(nil, "ARTWORK")
-    if Questie.IsForever then
+    if QuestieSmazak.IsForever then
         border:SetAtlas("UI-HUD-Minimap-Frame-Cycle")
         border:SetSize(28, 28)
     else

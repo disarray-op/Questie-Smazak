@@ -1,5 +1,5 @@
 ---@type DailyQuests
-local DailyQuests = QuestieLoader:ImportModule("DailyQuests")
+local DailyQuests = QuestieSmazakLoader:ImportModule("DailyQuests")
 
 ---@alias HubId string
 

@@ -1,5 +1,5 @@
 ---@class Sounds
-local Sounds = QuestieLoader:CreateModule("Sounds")
+local Sounds = QuestieSmazakLoader:CreateModule("Sounds")
 
 local LSM30 = LibStub("LibSharedMedia-3.0")
 
@@ -8,15 +8,15 @@ local shouldPlayObjectiveProgress = false
 local shouldPlayObjectiveComplete = false
 
 function Sounds.PlayObjectiveProgress()
-    if (not Questie.db.profile.soundOnObjectiveProgress) then
+    if (not QuestieSmazak.db.profile.soundOnObjectiveProgress) then
         return
     end
 
     if (not shouldPlayObjectiveProgress) then
         shouldPlayObjectiveProgress = true
-        C_Timer.After(Questie.db.profile.soundDelay, function ()
+        C_Timer.After(QuestieSmazak.db.profile.soundDelay, function ()
             if shouldPlayObjectiveProgress then
-                PlaySoundFile(Sounds.GetSelectedSoundFile(Questie.db.profile.objectiveProgressSoundChoiceName), Questie.db.profile.soundChannel)
+                PlaySoundFile(Sounds.GetSelectedSoundFile(QuestieSmazak.db.profile.objectiveProgressSoundChoiceName), QuestieSmazak.db.profile.soundChannel)
                 shouldPlayObjectiveProgress = false
             end
         end)
@@ -24,15 +24,15 @@ function Sounds.PlayObjectiveProgress()
 end
 
 function Sounds.PlayObjectiveComplete()
-    if (not Questie.db.profile.soundOnObjectiveComplete) then
+    if (not QuestieSmazak.db.profile.soundOnObjectiveComplete) then
         return
     end
 
     if (not shouldPlayObjectiveComplete) then
         shouldPlayObjectiveComplete = true
-        C_Timer.After(Questie.db.profile.soundDelay, function ()
+        C_Timer.After(QuestieSmazak.db.profile.soundDelay, function ()
             if shouldPlayObjectiveComplete then
-                PlaySoundFile(Sounds.GetSelectedSoundFile(Questie.db.profile.objectiveCompleteSoundChoiceName), Questie.db.profile.soundChannel)
+                PlaySoundFile(Sounds.GetSelectedSoundFile(QuestieSmazak.db.profile.objectiveCompleteSoundChoiceName), QuestieSmazak.db.profile.soundChannel)
                 shouldPlayObjectiveComplete = false
             end
         end)
@@ -40,13 +40,13 @@ function Sounds.PlayObjectiveComplete()
 end
 
 function Sounds.PlayQuestComplete()
-    if (not Questie.db.profile.soundOnQuestComplete) then
+    if (not QuestieSmazak.db.profile.soundOnQuestComplete) then
         return
     end
 
     shouldPlayObjectiveProgress = false
     shouldPlayObjectiveComplete = false
-    PlaySoundFile(Sounds.GetSelectedSoundFile(Questie.db.profile.questCompleteSoundChoiceName), Questie.db.profile.soundChannel)
+    PlaySoundFile(Sounds.GetSelectedSoundFile(QuestieSmazak.db.profile.questCompleteSoundChoiceName), QuestieSmazak.db.profile.soundChannel)
 end
 
 function Sounds.GetSelectedSoundFile(typeSelected)

@@ -1,5 +1,5 @@
 ---@type AutoQuesting
-local AutoQuesting = QuestieLoader:ImportModule("AutoQuesting")
+local AutoQuesting = QuestieSmazakLoader:ImportModule("AutoQuesting")
 local _AutoQuesting = AutoQuesting.private
 
 _AutoQuesting.disallowedNPCs = {

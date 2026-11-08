@@ -1,9 +1,9 @@
 ---@type Tutorial
-local Tutorial = QuestieLoader:ImportModule("Tutorial")
+local Tutorial = QuestieSmazakLoader:ImportModule("Tutorial")
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 ---@type QuestieOptionsUtils
-local QuestieOptionsUtils = QuestieLoader:ImportModule("QuestieOptionsUtils")
+local QuestieOptionsUtils = QuestieSmazakLoader:ImportModule("QuestieOptionsUtils")
 
 local function _LinkPreviewToButton(preview, button)
     preview:RegisterForClicks("LeftButtonUp")
@@ -33,7 +33,7 @@ local function _LinkPreviewToButton(preview, button)
 end
 
 function Tutorial.CreateChooseObjectiveTypeFrame()
-    local baseFrame = CreateFrame("Frame", "QuestieTutorialChooseObjectiveType", UIParent)
+    local baseFrame = CreateFrame("Frame", "QuestieSmazakTutorialChooseObjectiveType", UIParent)
     baseFrame:SetSize(760, 400)
     baseFrame:SetPoint("CENTER", 0, 50)
     baseFrame:SetFrameStrata("HIGH")
@@ -45,11 +45,11 @@ function Tutorial.CreateChooseObjectiveTypeFrame()
     CreateFrame("Frame", nil, baseFrame, "DialogBorderDarkTemplate")
 
     local titleText = baseFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
-    titleText:SetText(l10n("Welcome to Questie"))
+    titleText:SetText(l10n("Welcome to QuestieSmazak"))
     titleText:SetPoint("TOP", 0, -24)
 
     local customText = baseFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-    if Questie.IsForever then
+    if QuestieSmazak.IsForever then
         customText:SetText(l10n("With WoW Forever Blizzard introduced their own quest objective system.\n\nPlease choose the objective style you want to use:"))
     else
         customText:SetText(l10n("With WotLK Phase 4 Blizzard introduced their own quest objective system.\n\nPlease choose the objective style you want to use:"))
@@ -58,26 +58,26 @@ function Tutorial.CreateChooseObjectiveTypeFrame()
     customText:SetPoint("TOP", 0, -54)
 
     local onlyQuestieImage = CreateFrame("Button", nil, baseFrame)
-    onlyQuestieImage:SetNormalTexture("Interface\\Addons\\Questie\\Modules\\Tutorial\\onlyQuestie.blp")
+    onlyQuestieImage:SetNormalTexture("Interface\\Addons\\QuestieSmazak\\Modules\\Tutorial\\onlyQuestie.blp")
     onlyQuestieImage:SetSize(220, 220)
     onlyQuestieImage:SetPoint("TOPLEFT", 30, -112)
 
     local pdfQuestImage = CreateFrame("Button", nil, baseFrame)
-    pdfQuestImage:SetNormalTexture("Interface\\Addons\\Questie\\Modules\\Tutorial\\pfQuest.blp")
+    pdfQuestImage:SetNormalTexture("Interface\\Addons\\QuestieSmazak\\Modules\\Tutorial\\pfQuest.blp")
     pdfQuestImage:SetSize(220, 220)
     pdfQuestImage:SetPoint("TOP", 0, -112)
 
     local onlyBlizzardImage = CreateFrame("Button", nil, baseFrame)
-    onlyBlizzardImage:SetNormalTexture("Interface\\Addons\\Questie\\Modules\\Tutorial\\onlyBlizzard.blp")
+    onlyBlizzardImage:SetNormalTexture("Interface\\Addons\\QuestieSmazak\\Modules\\Tutorial\\onlyBlizzard.blp")
     onlyBlizzardImage:SetSize(220, 220)
     onlyBlizzardImage:SetPoint("TOPRIGHT", -30, -112)
 
     local acceptOnlyQuestieButton = CreateFrame("Button", nil, baseFrame, "UIPanelButtonTemplate")
-    acceptOnlyQuestieButton:SetText(l10n("Questie Objectives"))
+    acceptOnlyQuestieButton:SetText(l10n("QuestieSmazak Objectives"))
     acceptOnlyQuestieButton:SetSize(180, 28)
     acceptOnlyQuestieButton:SetPoint("TOP", onlyQuestieImage, "BOTTOM", 0, -16)
     acceptOnlyQuestieButton:SetScript("OnClick", function()
-        Questie.db.global.tutorialObjectiveTypeChosen = true
+        QuestieSmazak.db.global.tutorialObjectiveTypeChosen = true
         QuestieOptionsUtils.ExecuteTheme(nil, 'questie')
         baseFrame:Hide()
     end)
@@ -87,7 +87,7 @@ function Tutorial.CreateChooseObjectiveTypeFrame()
     acceptPfQuestButton:SetSize(180, 28)
     acceptPfQuestButton:SetPoint("TOP", pdfQuestImage, "BOTTOM", 0, -16)
     acceptPfQuestButton:SetScript("OnClick", function()
-        Questie.db.global.tutorialObjectiveTypeChosen = true
+        QuestieSmazak.db.global.tutorialObjectiveTypeChosen = true
         QuestieOptionsUtils.ExecuteTheme(nil, 'pfquest')
         baseFrame:Hide()
     end)
@@ -97,7 +97,7 @@ function Tutorial.CreateChooseObjectiveTypeFrame()
     acceptOnlyBlizzardButton:SetSize(180, 28)
     acceptOnlyBlizzardButton:SetPoint("TOP", onlyBlizzardImage, "BOTTOM", 0, -16)
     acceptOnlyBlizzardButton:SetScript("OnClick", function()
-        Questie.db.global.tutorialObjectiveTypeChosen = true
+        QuestieSmazak.db.global.tutorialObjectiveTypeChosen = true
         QuestieOptionsUtils.ExecuteTheme(nil, 'blizzard')
         baseFrame:Hide()
     end)

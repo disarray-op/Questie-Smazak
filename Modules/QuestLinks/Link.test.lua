@@ -1,7 +1,7 @@
 dofile("setupTests.lua")
 dofile("Modules/Quest/ActiveQuests.lua")
 ---@type ActiveQuests
-local ActiveQuests = QuestieLoader:ImportModule("ActiveQuests")
+local ActiveQuests = QuestieSmazakLoader:ImportModule("ActiveQuests")
 
 describe("QuestieLink", function()
     ---@type QuestieLink
@@ -22,9 +22,9 @@ describe("QuestieLink", function()
     local originalItemSetHyperlink, originalGetUILocale
 
     before_each(function()
-        Questie.started = true
-        Questie.db.profile = {}
-        Questie.db.char = {
+        QuestieSmazak.started = true
+        QuestieSmazak.db.profile = {}
+        QuestieSmazak.db.char = {
             complete = {},
         }
 
@@ -38,7 +38,7 @@ describe("QuestieLink", function()
             SetHyperlink = originalItemSetHyperlink,
         }
 
-        _G.Questie.Colorize = function(_, text)
+        _G.QuestieSmazak.Colorize = function(_, text)
             return text
         end
 
@@ -46,7 +46,7 @@ describe("QuestieLink", function()
         _G.GetQuestLink = nil
         _G.C_QuestLog.GetQuestObjectives = function() return nil end
 
-        QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+        QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
         QuestieDB.DoableStates = {AVAILABLE = "AVAILABLE"}
         QuestieDB.IsComplete = function() return 0 end
         QuestieDB.IsRepeatable = function() return false end
@@ -55,39 +55,39 @@ describe("QuestieLink", function()
         QuestieDB.QueryObjectSingle = spy.new(function() return nil end)
         QuestieDB.QueryItemSingle = spy.new(function() return nil end)
         ActiveQuests.Reset()
-        QuestieLoader:ImportModule("QuestLogCache").TryGetQuest = function() return nil end
+        QuestieSmazakLoader:ImportModule("QuestLogCache").TryGetQuest = function() return nil end
 
-        QuestieReputation = QuestieLoader:ImportModule("QuestieReputation")
+        QuestieReputation = QuestieSmazakLoader:ImportModule("QuestieReputation")
         QuestieReputation.GetFactionName = spy.new(function() return nil end)
 
         dofile("Modules/Libs/QuestieLib.lua")
-        QuestieLib = QuestieLoader:ImportModule("QuestieLib")
+        QuestieLib = QuestieSmazakLoader:ImportModule("QuestieLib")
         QuestieLib.GetEffectiveQuestLevel = function() return 10 end
         QuestieLib.GetLevelString = function() return "[10] " end
         QuestieLib.PrintDifficultyColor = spy.new(function() return "|cffffffff" end)
 
-        QuestieEvent = QuestieLoader:ImportModule("QuestieEvent")
+        QuestieEvent = QuestieSmazakLoader:ImportModule("QuestieEvent")
         QuestieEvent.IsEventQuest = function() return false end
 
-        TrackerUtils = QuestieLoader:ImportModule("TrackerUtils")
-        QuestieLoader:ImportModule("ZoneDB")
+        TrackerUtils = QuestieSmazakLoader:ImportModule("TrackerUtils")
+        QuestieSmazakLoader:ImportModule("ZoneDB")
         dofile("Localization/l10n.lua")
-        originalGetUILocale = QuestieLoader:ImportModule("l10n").GetUILocale
+        originalGetUILocale = QuestieSmazakLoader:ImportModule("l10n").GetUILocale
 
         dofile("Modules/QuestLinks/Link.lua")
-        QuestieLink = QuestieLoader:ImportModule("QuestieLink")
+        QuestieLink = QuestieSmazakLoader:ImportModule("QuestieLink")
         QuestieLink.Initialize()
     end)
 
     after_each(function()
-        QuestieLoader:ImportModule("l10n").GetUILocale = originalGetUILocale
-        Questie.IsForever = nil
+        QuestieSmazakLoader:ImportModule("l10n").GetUILocale = originalGetUILocale
+        QuestieSmazak.IsForever = nil
         _G.LinkUtil = nil
     end)
 
     describe("GetQuestLinkStringById", function()
         it("should return a formatted link string with level and name from the database when trackerShowQuestLevel is true", function()
-            Questie.db.profile.trackerShowQuestLevel = true
+            QuestieSmazak.db.profile.trackerShowQuestLevel = true
             QuestieDB.QueryQuestSingle = function()
                 return "Test Quest"
             end
@@ -101,7 +101,7 @@ describe("QuestieLink", function()
         end)
 
         it("should return a formatted link string without level when trackerShowQuestLevel is false", function()
-            Questie.db.profile.trackerShowQuestLevel = false
+            QuestieSmazak.db.profile.trackerShowQuestLevel = false
             QuestieDB.QueryQuestSingle = function()
                 return "Test Quest"
             end
@@ -158,11 +158,11 @@ describe("QuestieLink", function()
             assert.are_same("Test Link", result)
         end)
 
-        it("should fall back to Questie format when GetQuestLink returns nil (quest not in quest log)", function()
+        it("should fall back to QuestieSmazak format when GetQuestLink returns nil (quest not in quest log)", function()
             _G.GetQuestLink = function()
                 return nil
             end
-            Questie.db.profile.trackerShowQuestLevel = true
+            QuestieSmazak.db.profile.trackerShowQuestLevel = true
             QuestieDB.QueryQuestSingle = function()
                 return "Test Quest"
             end
@@ -175,9 +175,9 @@ describe("QuestieLink", function()
             assert.are_same("[[15] Test Quest (1234)]", result)
         end)
 
-        it("should fall back to Questie format when GetQuestLink API is not available", function()
+        it("should fall back to QuestieSmazak format when GetQuestLink API is not available", function()
             _G.GetQuestLink = nil
-            Questie.db.profile.trackerShowQuestLevel = false
+            QuestieSmazak.db.profile.trackerShowQuestLevel = false
             QuestieDB.QueryQuestSingle = function()
                 return "Test Quest"
             end
@@ -242,7 +242,7 @@ describe("QuestieLink", function()
         end)
 
         it("should insert the quest link when the quest is in the database", function()
-            Questie.db.profile.trackerShowQuestLevel = false
+            QuestieSmazak.db.profile.trackerShowQuestLevel = false
             QuestieDB.QueryQuestSingle = function() return "Test Quest" end
 
             clickHandler(nil, "questie:1234", nil, "LeftButton")
@@ -253,7 +253,7 @@ describe("QuestieLink", function()
 
     describe("ItemRefTooltip:SetHyperlink wiring", function()
         it("should delegate to HandleSetHyperlink.Run with self, the original fallback handler, and the link", function()
-            local HandleSetHyperlink = QuestieLoader:ImportModule("HandleSetHyperlink")
+            local HandleSetHyperlink = QuestieSmazakLoader:ImportModule("HandleSetHyperlink")
             HandleSetHyperlink.Run = spy.new(function() end)
 
             local link = "questie:74:GUID-0-1234"
@@ -263,11 +263,11 @@ describe("QuestieLink", function()
         end)
 
         it("should register link handlers instead of replacing SetHyperlink on Forever", function()
-            local HandleSetHyperlink = QuestieLoader:ImportModule("HandleSetHyperlink")
+            local HandleSetHyperlink = QuestieSmazakLoader:ImportModule("HandleSetHyperlink")
             local originalSetHyperlink = function() end
             _G.ItemRefTooltip.SetHyperlink = originalSetHyperlink
             _G.LinkUtil = {RegisterLinkHandler = spy.new(function() end)}
-            Questie.IsForever = true
+            QuestieSmazak.IsForever = true
 
             QuestieLink.Initialize()
 
@@ -404,7 +404,7 @@ describe("QuestieLink", function()
         end)
 
         it("preserves loaded Chinese sentences with interior spaces instead of substituting database names", function()
-            QuestieLoader:ImportModule("l10n").GetUILocale = function() return "zhCN" end
+            QuestieSmazakLoader:ImportModule("l10n").GetUILocale = function() return "zhCN" end
             QuestieDB.GetQuest = function(questId)
                 return {
                     Id = questId, name = "Agitators", Description = {"Destroy the winds."}, zoneOrSort = 0,
@@ -630,7 +630,7 @@ describe("QuestieLink", function()
                 ActiveQuests.Add(5678)
                 QuestieDB.IsDoableVerbose = function() return "On quest", nil, "AVAILABLE" end
                 local cached = {objectives = {[3] = {text = case.text}}}
-                QuestieLoader:ImportModule("QuestLogCache").TryGetQuest = function(id)
+                QuestieSmazakLoader:ImportModule("QuestLogCache").TryGetQuest = function(id)
                     assert.are.equal(5678, id)
                     return cached
                 end
@@ -657,7 +657,7 @@ describe("QuestieLink", function()
             end
             ActiveQuests.Add(5678)
             QuestieDB.IsDoableVerbose = function() return "On quest", nil, "AVAILABLE" end
-            QuestieLoader:ImportModule("QuestLogCache").TryGetQuest = function()
+            QuestieSmazakLoader:ImportModule("QuestLogCache").TryGetQuest = function()
                 return {objectives = {{text = "Unrelated native objective"}}}
             end
 

@@ -5,7 +5,7 @@ describe("SourceModeStatus", function()
     local SourceModeStatus, QuestieStatus, Expansions, QuestieCompat
     local savedGlobals, originalExpansion, originalMetadata
     local globalNames = {
-        "Questie", "LibQuestieDB", "GetBuildInfo", "GetCurrentRegion", "GetLocale", "C_Seasons", "Enum",
+        "QuestieSmazak", "LibQuestieDB", "GetBuildInfo", "GetCurrentRegion", "GetLocale", "C_Seasons", "Enum",
         "WOW_PROJECT_ID", "WOW_PROJECT_MAINLINE", "WOW_PROJECT_CLASSIC", "WOW_PROJECT_BURNING_CRUSADE_CLASSIC",
         "WOW_PROJECT_WRATH_CLASSIC", "WOW_PROJECT_CATACLYSM_CLASSIC", "WOW_PROJECT_MISTS_CLASSIC",
     }
@@ -13,16 +13,16 @@ describe("SourceModeStatus", function()
     before_each(function()
         savedGlobals = {}
         for _, name in ipairs(globalNames) do savedGlobals[name] = _G[name] end
-        Expansions = QuestieLoader:ImportModule("Expansions")
+        Expansions = QuestieSmazakLoader:ImportModule("Expansions")
         originalExpansion = Expansions.Current
         Expansions.Current = Expansions.Era
-        QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+        QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
         originalMetadata = QuestieCompat.GetAddOnMetadata
         QuestieCompat.GetAddOnMetadata = function(addon, key)
             if addon == "QuestieDB" and key == "Version" then return "1.0.4" end
-            if addon == "Questie" and key == "X-QuestieDB-Contract" then return "3" end
+            if addon == "QuestieSmazak" and key == "X-QuestieDB-Contract" then return "3" end
         end
-        _G.Questie = {
+        _G.QuestieSmazak = {
             IsForever = true, IsClassic = true, IsEra = true,
             IsTBC = false, IsWotlk = false, IsCata = false, IsMoP = false,
             IsSoM = false, IsSoD = false, IsTitanReforged = false, IsAnniversaryEra = false,
@@ -42,9 +42,9 @@ describe("SourceModeStatus", function()
             ModeIndicator = {GetStatus = function() return {mode = "source", expansion = "Forever", contractVersion = 3} end},
         }
         dofile("Modules/Status/QuestieStatus.lua")
-        QuestieStatus = QuestieLoader:ImportModule("QuestieStatus")
+        QuestieStatus = QuestieSmazakLoader:ImportModule("QuestieStatus")
         dofile("Modules/Status/SourceModeStatus.lua")
-        SourceModeStatus = QuestieLoader:ImportModule("SourceModeStatus")
+        SourceModeStatus = QuestieSmazakLoader:ImportModule("SourceModeStatus")
     end)
 
     after_each(function()
@@ -53,7 +53,7 @@ describe("SourceModeStatus", function()
         for _, name in ipairs(globalNames) do _G[name] = savedGlobals[name] end
     end)
 
-    it("distinguishes Forever's raw project, Questie content expansion, and provider data expansion", function()
+    it("distinguishes Forever's raw project, QuestieSmazak content expansion, and provider data expansion", function()
         assert.is_true(SourceModeStatus.Update())
 
         local issues = QuestieStatus.GetIssues()
@@ -64,7 +64,7 @@ describe("SourceModeStatus", function()
             {message = "Client: %s (build %s, %s)", args = {GOLD .. "1.60.1|r", GOLD .. "70205|r", GOLD .. "Sep 29 2026|r"}},
             {message = "Interface: %s", args = {GOLD .. "16001|r"}},
             {message = "Project: %s (%s)", args = {GOLD .. "WOW_PROJECT_MAINLINE|r", GOLD .. "1|r"}},
-            {message = "Questie expansion: %s (%s)", args = {GOLD .. "Era|r", GOLD .. "1|r"}},
+            {message = "QuestieSmazak expansion: %s (%s)", args = {GOLD .. "Era|r", GOLD .. "1|r"}},
             {message = "Season: %s (%s), active: %s", args = {GOLD .. "None|r", GOLD .. "0|r", RED .. "false|r"}},
             {message = "Region: %s (%s), locale: %s", args = {GOLD .. "EU|r", GOLD .. "3|r", GOLD .. "enUS|r"}},
             {message = "Client flags: %s", args = {
@@ -85,16 +85,16 @@ describe("SourceModeStatus", function()
             {message = "Provider version: %s", args = {GOLD .. "1.0.4|r"}},
             {message = "Data expansion: %s", args = {GOLD .. "Forever|r"}},
             {message = "Read mode: %s", args = {GOLD .. "source|r"}},
-            {message = "Provider contracts: %s to %s; Questie requires %s", args = {GOLD .. "1|r", GOLD .. "3|r", GOLD .. "3|r"}},
+            {message = "Provider contracts: %s to %s; QuestieSmazak requires %s", args = {GOLD .. "1|r", GOLD .. "3|r", GOLD .. "3|r"}},
         }, issues[2].details)
-        assert.are_same("Interface\\AddOns\\Questie\\Icons\\green_plus.png", QuestieStatus.GetBadgeIssue().icon.texture)
+        assert.are_same("Interface\\AddOns\\QuestieSmazak\\Icons\\green_plus.png", QuestieStatus.GetBadgeIssue().icon.texture)
         assert.are_same(issues[1].icon, issues[2].icon)
     end)
 
     it("preserves value colors when detail labels are translated on hover", function()
-        Questie.db = {profile = {}}
+        QuestieSmazak.db = {profile = {}}
         dofile("Localization/l10n.lua")
-        local l10n = QuestieLoader:ImportModule("l10n")
+        local l10n = QuestieSmazakLoader:ImportModule("l10n")
         l10n.translations["Project: %s (%s)"] = {deDE = "Projekt: %s (%s)"}
         l10n.translations["Client flags: %s"] = {deDE = "Client-Flags: %s"}
         l10n:SetUILocale("deDE")
@@ -109,7 +109,7 @@ describe("SourceModeStatus", function()
 
     it("reports Classic seasonal identity without using the season as the content expansion", function()
         _G.WOW_PROJECT_ID = 2
-        Questie.IsForever, Questie.IsEra, Questie.IsSoD = false, false, true
+        QuestieSmazak.IsForever, QuestieSmazak.IsEra, QuestieSmazak.IsSoD = false, false, true
         _G.GetBuildInfo = function() return "1.15.9", "70003", "Sep 2026", 11509 end
         C_Seasons.GetActiveSeason = function() return 2 end
         C_Seasons.HasActiveSeason = function() return true end

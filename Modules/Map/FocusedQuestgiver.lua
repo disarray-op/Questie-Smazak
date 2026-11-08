@@ -1,12 +1,12 @@
 ---@class FocusedQuestgiver
-local FocusedQuestgiver = QuestieLoader:CreateModule("FocusedQuestgiver")
+local FocusedQuestgiver = QuestieSmazakLoader:CreateModule("FocusedQuestgiver")
 
 ---@type QuestieDB
-local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
 ---@type QuestieMap
-local QuestieMap = QuestieLoader:ImportModule("QuestieMap")
+local QuestieMap = QuestieSmazakLoader:ImportModule("QuestieMap")
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 
 --- Manual-frame type key. Using a dedicated key keeps these icons separate from the quest's
 --- objective and finisher frames, so they can be unloaded independently and never trip the
@@ -34,7 +34,7 @@ function FocusedQuestgiver.Show(questId)
     -- Always clear the previous giver first so focusing a different quest never stacks icons.
     FocusedQuestgiver.Hide()
 
-    if (not Questie.db.profile.trackerShowQuestGiverOnFocus) then
+    if (not QuestieSmazak.db.profile.trackerShowQuestGiverOnFocus) then
         return
     end
 
@@ -43,10 +43,10 @@ function FocusedQuestgiver.Show(questId)
         return
     end
 
-    local icon = Questie.icons["available"]
-    local scale = Questie.db.profile.availableScale
+    local icon = QuestieSmazak.icons["available"]
+    local scale = QuestieSmazak.db.profile.availableScale
     local questName = quest.name or tostring(questId)
-    local title = Questie:Colorize(questName, "white") .. "\n" .. l10n("Quest Giver")
+    local title = QuestieSmazak:Colorize(questName, "white") .. "\n" .. l10n("Quest Giver")
 
     local npcs = quest.Starts.NPC
     if npcs then

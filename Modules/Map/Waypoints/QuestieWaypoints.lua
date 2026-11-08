@@ -1,16 +1,16 @@
----Registry of NPC patrol paths, and Questie's adapter to them. Questie's icons add and release
+---Registry of NPC patrol paths, and QuestieSmazak's adapter to them. QuestieSmazak's icons add and release
 ---paths; WaypointMap and WaypointMinimap read which paths show and how, and draw them.
 ---@class QuestieWaypoints
-local QuestieWaypoints = QuestieLoader:CreateModule("QuestieWaypoints")
+local QuestieWaypoints = QuestieSmazakLoader:CreateModule("QuestieWaypoints")
 
 ---@type WaypointGeometry
-local WaypointGeometry = QuestieLoader:ImportModule("WaypointGeometry")
+local WaypointGeometry = QuestieSmazakLoader:ImportModule("WaypointGeometry")
 ---@type WaypointMap
-local WaypointMap = QuestieLoader:ImportModule("WaypointMap")
+local WaypointMap = QuestieSmazakLoader:ImportModule("WaypointMap")
 ---@type WaypointMinimap
-local WaypointMinimap = QuestieLoader:ImportModule("WaypointMinimap")
+local WaypointMinimap = QuestieSmazakLoader:ImportModule("WaypointMinimap")
 ---@type ZoneDB
-local ZoneDB = QuestieLoader:ImportModule("ZoneDB")
+local ZoneDB = QuestieSmazakLoader:ImportModule("ZoneDB")
 
 local HBD = LibStub("HereBeDragonsQuestie-2.0")
 
@@ -50,7 +50,7 @@ end
 
 ---Draws an NPC's patrols in one zone for as long as owner is loaded, following its visibility.
 ---@param owner IconFrame World map icon of the NPC in this zone.
----@param entity string? Whose patrols these are, as Questie's tooltip keys: "m_<npcId>" or "o_<objectId>".
+---@param entity string? Whose patrols these are, as QuestieSmazak's tooltip keys: "m_<npcId>" or "o_<objectId>".
 ---Without one, the paths are the owner's alone and never share a route.
 ---@param patrols CoordPair[][] The zone's waypoints, {{{x, y}, ...}, ...} in percentages.
 ---@param areaId AreaId
@@ -121,10 +121,10 @@ end
 ---@param path WaypointPath
 ---@return number?
 function QuestieWaypoints.WorldMapAlpha(path)
-    if not Questie.db.profile.waypointMapEnabled then return nil end
+    if not QuestieSmazak.db.profile.waypointMapEnabled then return nil end
     local owner = path.owner
     if not _IsOwned(path) or owner.hidden or (soloData and not soloData[path.data]) then return nil end
-    return owner.faded and Questie.db.profile.iconFadeLevel or 1
+    return owner.faded and QuestieSmazak.db.profile.iconFadeLevel or 1
 end
 
 ---Minimap opacity of a path; nil while it should not show. Paths follow the owner's minimap
@@ -132,7 +132,7 @@ end
 ---@param path WaypointPath
 ---@return number?
 function QuestieWaypoints.MinimapAlpha(path)
-    local profile = Questie.db.profile
+    local profile = QuestieSmazak.db.profile
     if not profile.waypointMinimapEnabled then return nil end
     local twin = path.owner.minimapTwin
     if not _IsOwned(path) or not twin or twin.data ~= path.data or twin.hidden then return nil end
@@ -158,14 +158,14 @@ end
 ---@param path WaypointPath
 ---@return boolean
 function QuestieWaypoints.IsHighlighted(path)
-    return path.highlighted and Questie.db.profile.waypointHighlight or false
+    return path.highlighted and QuestieSmazak.db.profile.waypointHighlight or false
 end
 
 ---The path's color setting, its alpha scaled by the opacity setting.
 ---@param path WaypointPath
 ---@return number[] color {r, g, b, a}
 function QuestieWaypoints.Color(path)
-    local profile = Questie.db.profile
+    local profile = QuestieSmazak.db.profile
     local color = QuestieWaypoints.IsHighlighted(path) and profile.waypointHighlightColor
         or path.hostile and profile.waypointHostileColor
         or profile.waypointColor

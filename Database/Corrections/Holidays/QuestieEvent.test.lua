@@ -1,5 +1,5 @@
 dofile("setupTests.lua")
-local QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+local QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
 
 describe("QuestieEvent", function()
     ---@type QuestieEvent
@@ -15,31 +15,31 @@ describe("QuestieEvent", function()
     local printMock
 
     before_each(function()
-        Questie.IsClassic = false
-        Questie.IsAnniversaryEra = false
-        Questie.IsAnniversaryHardcore = false
-        Questie.IsTBC = false
-        Questie.db.profile.showEventQuests = true
-        _G.Questie.Colorize = function(_, str) return str end
+        QuestieSmazak.IsClassic = false
+        QuestieSmazak.IsAnniversaryEra = false
+        QuestieSmazak.IsAnniversaryHardcore = false
+        QuestieSmazak.IsTBC = false
+        QuestieSmazak.db.profile.showEventQuests = true
+        _G.QuestieSmazak.Colorize = function(_, str) return str end
         printMock = spy.new(function() end)
         _G.print = printMock
         _G.GetCVarBool = function() return true end
         _G.SetCVar = function() end
-        QuestieCorrections = QuestieLoader:ImportModule("QuestieCorrections")
+        QuestieCorrections = QuestieSmazakLoader:ImportModule("QuestieCorrections")
         QuestieCorrections.hiddenQuests = {}
         QuestieCorrections.SetCorrection = function() end
         -- The Darkmoon NPC producers are exercised in their own QuestiePolicy tests; here they only need to exist.
-        QuestieLoader:ImportModule("QuestieClassicPolicyCorrections").LoadDarkmoonFixes = function() return {} end
-        QuestieLoader:ImportModule("QuestieTBCPolicyCorrections").LoadDarkmoonFixes = function() return {} end
+        QuestieSmazakLoader:ImportModule("QuestieClassicPolicyCorrections").LoadDarkmoonFixes = function() return {} end
+        QuestieSmazakLoader:ImportModule("QuestieTBCPolicyCorrections").LoadDarkmoonFixes = function() return {} end
 
-        Expansions = QuestieLoader:ImportModule("Expansions")
+        Expansions = QuestieSmazakLoader:ImportModule("Expansions")
 
         dofile("Database/Corrections/ContentPhases/ContentPhases.lua")
-        ContentPhases = QuestieLoader:ImportModule("ContentPhases")
+        ContentPhases = QuestieSmazakLoader:ImportModule("ContentPhases")
         dofile("Localization/l10n.lua")
 
         dofile("Database/Corrections/Holidays/QuestieEvent.lua")
-        QuestieEvent = QuestieLoader:ImportModule("QuestieEvent")
+        QuestieEvent = QuestieSmazakLoader:ImportModule("QuestieEvent")
         QuestieEvent.eventQuests = {} -- This is done on top level in QuestieEvent.lua
         QuestieEvent.activeQuests = {} -- This is done on top level in QuestieEvent.lua
         dofile("Database/Corrections/Holidays/quests/DarkmoonFaire.lua")
@@ -59,8 +59,8 @@ describe("QuestieEvent", function()
                 end
             ContentPhases.activePhases.Anniversary = 1
 
-            Questie.IsClassic = true
-            Questie.IsAnniversaryEra = true
+            QuestieSmazak.IsClassic = true
+            QuestieSmazak.IsAnniversaryEra = true
 
             QuestieEvent:Load()
 
@@ -82,9 +82,9 @@ describe("QuestieEvent", function()
                 end
             ContentPhases.activePhases.Anniversary = 1
 
-            Questie.IsClassic = true
-            Questie.IsAnniversaryEra = false
-            Questie.IsAnniversaryHardcore = true
+            QuestieSmazak.IsClassic = true
+            QuestieSmazak.IsAnniversaryEra = false
+            QuestieSmazak.IsAnniversaryHardcore = true
 
             QuestieEvent:Load()
 
@@ -106,8 +106,8 @@ describe("QuestieEvent", function()
                 end
             ContentPhases.activePhases.Anniversary = 2
 
-            Questie.IsClassic = true
-            Questie.IsAnniversaryEra = true
+            QuestieSmazak.IsClassic = true
+            QuestieSmazak.IsAnniversaryEra = true
 
             QuestieEvent:Load()
 
@@ -129,9 +129,9 @@ describe("QuestieEvent", function()
                 end
             ContentPhases.activePhases.Anniversary = 2
 
-            Questie.IsClassic = true
-            Questie.IsAnniversaryEra = false
-            Questie.IsAnniversaryHardcore = true
+            QuestieSmazak.IsClassic = true
+            QuestieSmazak.IsAnniversaryEra = false
+            QuestieSmazak.IsAnniversaryHardcore = true
 
             QuestieEvent:Load()
 
@@ -162,12 +162,12 @@ describe("QuestieEvent", function()
             }
             ContentPhases.activePhases.Anniversary = 3
 
-            Questie.IsClassic = true
-            Questie.IsAnniversaryEra = true
+            QuestieSmazak.IsClassic = true
+            QuestieSmazak.IsAnniversaryEra = true
 
             QuestieEvent:Load()
 
-            assert.spy(printMock).was.called_with("[Questie]", "|cFF6ce314The Darkmoon Faire is up in Mulgore!")
+            assert.spy(printMock).was.called_with("[QuestieSmazak]", "|cFF6ce314The Darkmoon Faire is up in Mulgore!")
             assert.is_nil(QuestieEvent.eventQuests)
             assert.is_true(table.getn(QuestieEvent.activeQuests) > 0)
         end)
@@ -194,13 +194,13 @@ describe("QuestieEvent", function()
             }
             ContentPhases.activePhases.Anniversary = 3
 
-            Questie.IsClassic = true
-            Questie.IsAnniversaryEra = false
-            Questie.IsAnniversaryHardcore = true
+            QuestieSmazak.IsClassic = true
+            QuestieSmazak.IsAnniversaryEra = false
+            QuestieSmazak.IsAnniversaryHardcore = true
 
             QuestieEvent:Load()
 
-            assert.spy(printMock).was.called_with("[Questie]", "|cFF6ce314The Darkmoon Faire is up in Mulgore!")
+            assert.spy(printMock).was.called_with("[QuestieSmazak]", "|cFF6ce314The Darkmoon Faire is up in Mulgore!")
             assert.is_nil(QuestieEvent.eventQuests)
             assert.is_true(table.getn(QuestieEvent.activeQuests) > 0)
         end)
@@ -226,11 +226,11 @@ describe("QuestieEvent", function()
                 end
             }
 
-            Questie.IsClassic = true
+            QuestieSmazak.IsClassic = true
 
             QuestieEvent:Load()
 
-            assert.spy(printMock).was.called_with("[Questie]", "|cFF6ce314The Darkmoon Faire is up in Mulgore!")
+            assert.spy(printMock).was.called_with("[QuestieSmazak]", "|cFF6ce314The Darkmoon Faire is up in Mulgore!")
             assert.is_nil(QuestieEvent.eventQuests)
             assert.is_true(table.getn(QuestieEvent.activeQuests) > 0)
         end)
@@ -248,7 +248,7 @@ describe("QuestieEvent", function()
                     }
                 end
 
-            Questie.IsClassic = true
+            QuestieSmazak.IsClassic = true
             Expansions.Current = Expansions.Era
 
             _G.C_Calendar = {
@@ -280,7 +280,7 @@ describe("QuestieEvent", function()
                     }
                 end
 
-            Questie.IsClassic = true
+            QuestieSmazak.IsClassic = true
             Expansions.Current = Expansions.Era
 
             _G.C_Calendar = {
@@ -294,7 +294,7 @@ describe("QuestieEvent", function()
             }
 
             QuestieEvent:Load()
-            assert.spy(printMock).was.called_with("[Questie]", "|cFF6ce314The Darkmoon Faire is up in Mulgore!")
+            assert.spy(printMock).was.called_with("[QuestieSmazak]", "|cFF6ce314The Darkmoon Faire is up in Mulgore!")
             assert.is_nil(QuestieEvent.eventQuests)
             assert.is_true(table.getn(QuestieEvent.activeQuests) > 0)
         end)
@@ -311,7 +311,7 @@ describe("QuestieEvent", function()
                     }
                 end
 
-            Questie.IsClassic = true
+            QuestieSmazak.IsClassic = true
             Expansions.Current = Expansions.Era
 
             _G.C_Calendar = {
@@ -343,7 +343,7 @@ describe("QuestieEvent", function()
                     }
                 end
 
-            Questie.IsClassic = true
+            QuestieSmazak.IsClassic = true
             Expansions.Current = Expansions.Era
 
             _G.C_Calendar = {
@@ -358,7 +358,7 @@ describe("QuestieEvent", function()
 
             QuestieEvent:Load()
 
-            assert.spy(printMock).was.called_with("[Questie]", "|cFF6ce314The Darkmoon Faire is up in Elwynn Forest!")
+            assert.spy(printMock).was.called_with("[QuestieSmazak]", "|cFF6ce314The Darkmoon Faire is up in Elwynn Forest!")
             assert.is_nil(QuestieEvent.eventQuests)
             assert.is_true(table.getn(QuestieEvent.activeQuests) > 0)
         end)
@@ -383,7 +383,7 @@ describe("QuestieEvent", function()
 
             QuestieEvent:Load()
 
-            assert.spy(printMock).was.called_with("[Questie]", "|cFF6ce314The \"Darkmoon Faire\" world event is active!")
+            assert.spy(printMock).was.called_with("[QuestieSmazak]", "|cFF6ce314The \"Darkmoon Faire\" world event is active!")
             assert.is_nil(QuestieEvent.eventQuests)
             assert.is_true(table.getn(QuestieEvent.activeQuests) > 0)
             assert.spy(getNumDayEventsMock).was.called_with(0, 3)
@@ -409,7 +409,7 @@ describe("QuestieEvent", function()
 
             QuestieEvent:Load()
 
-            assert.spy(printMock).was.called_with("[Questie]", "|cFF6ce314The \"Darkmoon Faire\" world event is active!")
+            assert.spy(printMock).was.called_with("[QuestieSmazak]", "|cFF6ce314The \"Darkmoon Faire\" world event is active!")
             assert.is_nil(QuestieEvent.eventQuests)
             assert.is_true(table.getn(QuestieEvent.activeQuests) > 0)
             assert.spy(getNumDayEventsMock).was.called_with(0, 3)
@@ -435,7 +435,7 @@ describe("QuestieEvent", function()
 
             QuestieEvent:Load()
 
-            assert.spy(printMock).was.called_with("[Questie]", "|cFF6ce314The \"Darkmoon Faire\" world event is active!")
+            assert.spy(printMock).was.called_with("[QuestieSmazak]", "|cFF6ce314The \"Darkmoon Faire\" world event is active!")
             assert.is_nil(QuestieEvent.eventQuests)
             assert.is_true(table.getn(QuestieEvent.activeQuests) > 0)
             assert.spy(getNumDayEventsMock).was.called_with(0, 3)
@@ -489,12 +489,12 @@ describe("QuestieEvent", function()
             }
 
 
-            Questie.IsTBC = true
+            QuestieSmazak.IsTBC = true
             Expansions.Current = Expansions.Tbc
 
             QuestieEvent:Load()
 
-            assert.spy(printMock).was.called_with("[Questie]", "|cFF6ce314The Darkmoon Faire is up in Mulgore!")
+            assert.spy(printMock).was.called_with("[QuestieSmazak]", "|cFF6ce314The Darkmoon Faire is up in Mulgore!")
             assert.is_true(QuestieEvent.activeQuests[7926] == true)
             assert.is_nil(QuestieEvent.activeQuests[7905])
         end)
@@ -521,12 +521,12 @@ describe("QuestieEvent", function()
             }
 
 
-            Questie.IsTBC = true
+            QuestieSmazak.IsTBC = true
             Expansions.Current = Expansions.Tbc
 
             QuestieEvent:Load()
 
-            assert.spy(printMock).was.called_with("[Questie]", "|cFF6ce314The Darkmoon Faire is up in Elwynn Forest!")
+            assert.spy(printMock).was.called_with("[QuestieSmazak]", "|cFF6ce314The Darkmoon Faire is up in Elwynn Forest!")
             assert.is_true(QuestieEvent.activeQuests[7905] == true)
             assert.is_nil(QuestieEvent.activeQuests[7926])
         end)
@@ -553,12 +553,12 @@ describe("QuestieEvent", function()
             }
 
 
-            Questie.IsTBC = true
+            QuestieSmazak.IsTBC = true
             Expansions.Current = Expansions.Tbc
 
             QuestieEvent:Load()
 
-            assert.spy(printMock).was.called_with("[Questie]", "|cFF6ce314The Darkmoon Faire is up in Terokkar Forest!")
+            assert.spy(printMock).was.called_with("[QuestieSmazak]", "|cFF6ce314The Darkmoon Faire is up in Terokkar Forest!")
             assert.is_true(QuestieEvent.activeQuests[7905] == true)
             assert.is_true(QuestieEvent.activeQuests[7926] == true)
         end)
@@ -584,7 +584,7 @@ describe("QuestieEvent", function()
                 end
             }
 
-            Questie.IsTBC = true
+            QuestieSmazak.IsTBC = true
             Expansions.Current = Expansions.Tbc
 
             QuestieEvent:Load()
@@ -666,11 +666,11 @@ describe("QuestieEvent", function()
             QuestieCorrections.SetCorrection = function(datatype, name, rows)
                 table.insert(setCorrectionCalls, {datatype = datatype, name = name, rows = rows})
             end
-            QuestieClassicPolicyCorrections = QuestieLoader:ImportModule("QuestieClassicPolicyCorrections")
+            QuestieClassicPolicyCorrections = QuestieSmazakLoader:ImportModule("QuestieClassicPolicyCorrections")
             QuestieClassicPolicyCorrections.LoadDarkmoonFixes = function(_, isInMulgore)
                 return {producer = "classic", isInMulgore = isInMulgore}
             end
-            QuestieTBCPolicyCorrections = QuestieLoader:ImportModule("QuestieTBCPolicyCorrections")
+            QuestieTBCPolicyCorrections = QuestieSmazakLoader:ImportModule("QuestieTBCPolicyCorrections")
             QuestieTBCPolicyCorrections.LoadDarkmoonFixes = function(_, isInMulgore, isInTerokkar)
                 return {producer = "tbc", isInMulgore = isInMulgore, isInTerokkar = isInTerokkar}
             end
@@ -679,7 +679,7 @@ describe("QuestieEvent", function()
         it("publishes the Classic Mulgore table exactly once, independent of the Event Quest count", function()
             -- December 2024, an even month: Mulgore. The 1st is a Sunday, so the faire runs from Monday the 9th.
             _MockCalendar(2024, 12, 11, 0, 1)
-            Questie.IsClassic = true
+            QuestieSmazak.IsClassic = true
             Expansions.Current = Expansions.Era
 
             QuestieEvent:Load()
@@ -691,7 +691,7 @@ describe("QuestieEvent", function()
         it("publishes the Classic Elwynn Forest table in an odd month", function()
             -- March 2025, an odd month: Elwynn Forest. The 1st is a Monday, so the faire runs from the 8th until 03:00 on the 15th.
             _MockCalendar(2025, 3, 15, 2, 2)
-            Questie.IsClassic = true
+            QuestieSmazak.IsClassic = true
             Expansions.Current = Expansions.Era
 
             QuestieEvent:Load()
@@ -702,7 +702,7 @@ describe("QuestieEvent", function()
         it("publishes the TBC Mulgore table", function()
             -- January 2025, month % 3 == 1: Mulgore on TBC. The 1st is a Saturday, so the faire runs from the 10th.
             _MockCalendar(2025, 1, 12, 12, 7)
-            Questie.IsTBC = true
+            QuestieSmazak.IsTBC = true
             Expansions.Current = Expansions.Tbc
 
             QuestieEvent:Load()
@@ -714,7 +714,7 @@ describe("QuestieEvent", function()
         it("publishes the TBC Terokkar Forest table", function()
             -- March 2025, month % 3 == 0: Terokkar Forest. The 1st is a Monday, so the faire runs from the 8th.
             _MockCalendar(2025, 3, 10, 12, 2)
-            Questie.IsTBC = true
+            QuestieSmazak.IsTBC = true
             Expansions.Current = Expansions.Tbc
 
             QuestieEvent:Load()
@@ -725,7 +725,7 @@ describe("QuestieEvent", function()
         it("withdraws the NPC slot with nil when no faire is active", function()
             -- April 1st 2025 is before the faire week: the 1st is a Saturday, so the faire starts on the 10th.
             _MockCalendar(2025, 4, 1, 0, 7)
-            Questie.IsTBC = true
+            QuestieSmazak.IsTBC = true
             Expansions.Current = Expansions.Tbc
 
             QuestieEvent:Load()
@@ -740,8 +740,8 @@ describe("QuestieEvent", function()
             -- December 2024 would be a Mulgore faire week; phases 1 and 2 have no faire at all.
             _MockCalendar(2024, 12, 11, 0, 1)
             ContentPhases.activePhases.Anniversary = 2
-            Questie.IsClassic = true
-            Questie.IsAnniversaryEra = true
+            QuestieSmazak.IsClassic = true
+            QuestieSmazak.IsAnniversaryEra = true
 
             QuestieEvent:Load()
 
@@ -752,8 +752,8 @@ describe("QuestieEvent", function()
             -- December 2024, an even month: Mulgore. The 1st is a Sunday, so the faire runs from Monday the 9th.
             _MockCalendar(2024, 12, 11, 0, 1)
             ContentPhases.activePhases.Anniversary = 3
-            Questie.IsClassic = true
-            Questie.IsAnniversaryEra = true
+            QuestieSmazak.IsClassic = true
+            QuestieSmazak.IsAnniversaryEra = true
 
             QuestieEvent:Load()
 
@@ -819,7 +819,7 @@ describe("QuestieEvent", function()
 
             QuestieEvent:Load()
 
-            assert.spy(printMock).was.called_with("[Questie]", "|cFF6ce314The \"Love is in the Air\" world event is active!")
+            assert.spy(printMock).was.called_with("[QuestieSmazak]", "|cFF6ce314The \"Love is in the Air\" world event is active!")
             assert.is_true(table.getn(QuestieEvent.activeQuests) > 0)
         end)
 
@@ -855,7 +855,7 @@ describe("QuestieEvent", function()
 
             QuestieEvent:Load()
 
-            assert.spy(printMock).was.called_with("[Questie]", "|cFF6ce314The \"Winter Veil\" world event is active!")
+            assert.spy(printMock).was.called_with("[QuestieSmazak]", "|cFF6ce314The \"Winter Veil\" world event is active!")
             assert.is_true(table.getn(QuestieEvent.activeQuests) > 0)
         end)
 
@@ -873,7 +873,7 @@ describe("QuestieEvent", function()
 
             QuestieEvent:Load()
 
-            assert.spy(printMock).was.called_with("[Questie]", "|cFF6ce314The \"Winter Veil\" world event is active!")
+            assert.spy(printMock).was.called_with("[QuestieSmazak]", "|cFF6ce314The \"Winter Veil\" world event is active!")
             assert.is_true(table.getn(QuestieEvent.activeQuests) > 0)
         end)
 
@@ -911,7 +911,7 @@ describe("QuestieEvent", function()
             QuestieEvent:Load()
 
             -- Event itself prints active
-            assert.spy(printMock).was.called_with("[Questie]", "|cFF6ce314The \"Noblegarden\" world event is active!")
+            assert.spy(printMock).was.called_with("[QuestieSmazak]", "|cFF6ce314The \"Noblegarden\" world event is active!")
             -- But quest sub-window (Apr 6-10) does not include Apr 5, so quest should not be active
             assert.is_nil(next(QuestieEvent.activeQuests))
         end)
@@ -930,7 +930,7 @@ describe("QuestieEvent", function()
 
             QuestieEvent:Load()
 
-            assert.spy(printMock).was.called_with("[Questie]", "|cFF6ce314The \"Noblegarden\" world event is active!")
+            assert.spy(printMock).was.called_with("[QuestieSmazak]", "|cFF6ce314The \"Noblegarden\" world event is active!")
             assert.is_true(table.getn(QuestieEvent.activeQuests) > 0)
         end)
     end)

@@ -9,7 +9,7 @@ describe("DropDB support data", function()
     ---@param expansion number
     ---@return nil
     local function SelectExpansion(expansion)
-        for index, flag in ipairs(flags) do Questie[flag] = index == expansion end
+        for index, flag in ipairs(flags) do QuestieSmazak[flag] = index == expansion end
         Expansions.Current = expansion
     end
 
@@ -22,9 +22,9 @@ describe("DropDB support data", function()
     before_each(function()
         originalLoadstring = _G.loadstring
         dofile("Database/SupportValidation.lua")
-        QuestieLoader:ImportModule("SupportValidation").ValidateDropTables = function() return true end
+        QuestieSmazakLoader:ImportModule("SupportValidation").ValidateDropTables = function() return true end
         mock = LoadQuestieDBMock()
-        Expansions = QuestieLoader:ImportModule("Expansions")
+        Expansions = QuestieSmazakLoader:ImportModule("Expansions")
         SelectExpansion(Expansions.Era)
         mock.supportModules.QuestieItemDropCorrections = {
             Era = {[100] = {[1] = 10, [2] = 15}, [200] = {[1] = 12}},
@@ -34,7 +34,7 @@ describe("DropDB support data", function()
             MoP = {[100] = {[1] = 50}, [300] = {[1] = 60}},
         }
         dofile("Database/DropTables/dropDB.lua")
-        DropDB = QuestieLoader:ImportModule("DropDB")
+        DropDB = QuestieSmazakLoader:ImportModule("DropDB")
     end)
 
     for _, case in ipairs({
@@ -155,7 +155,7 @@ describe("DropDB support data", function()
         assert.are_not_equal(mock.supportModules.QuestieItemDropCorrections.Era, DropDB.tableCorrections)
     end)
     it("validates only selected decoded tables and effective corrections with debug disabled", function()
-        Questie.db.profile.debugEnabled = false
+        QuestieSmazak.db.profile.debugEnabled = false
         SelectExpansion(Expansions.MoP)
         mock.supportModules.QuestieMopItemDrops = {
             wowheadData = "return {[400] = {[1] = 45}}",
@@ -173,7 +173,7 @@ describe("DropDB support data", function()
             assert.are_equal(5, expansion)
             return false, "drop report"
         end)
-        QuestieLoader:ImportModule("SupportValidation").ValidateDropTables = validator
+        QuestieSmazakLoader:ImportModule("SupportValidation").ValidateDropTables = validator
         _G.loadstring = spy.new(originalLoadstring)
         local valid, report = DropDB:Initialize()
         assert.spy(_G.loadstring).was.called(2)

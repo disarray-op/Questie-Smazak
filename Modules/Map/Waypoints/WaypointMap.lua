@@ -1,20 +1,20 @@
 -- luacheck: read globals issecretvalue
 ---Draws the paths of the shown world map onto its canvas, and finds the path under the cursor.
 ---@class WaypointMap
-local WaypointMap = QuestieLoader:CreateModule("WaypointMap")
+local WaypointMap = QuestieSmazakLoader:CreateModule("WaypointMap")
 
 ---@type QuestieWaypoints
-local QuestieWaypoints = QuestieLoader:ImportModule("QuestieWaypoints")
+local QuestieWaypoints = QuestieSmazakLoader:ImportModule("QuestieWaypoints")
 ---@type WaypointGeometry
-local WaypointGeometry = QuestieLoader:ImportModule("WaypointGeometry")
+local WaypointGeometry = QuestieSmazakLoader:ImportModule("WaypointGeometry")
 ---@type WaypointRenderer
-local WaypointRenderer = QuestieLoader:ImportModule("WaypointRenderer")
+local WaypointRenderer = QuestieSmazakLoader:ImportModule("WaypointRenderer")
 ---@type WaypointHover
-local WaypointHover = QuestieLoader:ImportModule("WaypointHover")
+local WaypointHover = QuestieSmazakLoader:ImportModule("WaypointHover")
 ---@type QuestieCompat
-local QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+local QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
 
--- Below Questie's icons, which start at 2016 (QuestieMap.utils.SetDrawOrder).
+-- Below QuestieSmazak's icons, which start at 2016 (QuestieMap.utils.SetDrawOrder).
 local FRAME_LEVEL = 2015
 
 ---A route drawn on the current map, in canvas units with y down.
@@ -50,7 +50,7 @@ local cursorX, cursorY
 ---@param alpha number
 ---@return WaypointStyle
 local function _Style(path, alpha)
-    local profile = Questie.db.profile
+    local profile = QuestieSmazak.db.profile
     return {thickness = profile.waypointWidth / shownScale, color = QuestieWaypoints.Color(path), alpha = alpha,
         frameLevel = FRAME_LEVEL, hoverRadius = profile.waypointDebugHover and WaypointHover.Radius() / shownScale or nil}
 end
@@ -122,7 +122,7 @@ local function _ReadCursor()
     return x * shownWidth, y * shownHeight
 end
 
--- Paths take no mouse input. They count as hovered only over the bare map, so Questie's icons,
+-- Paths take no mouse input. They count as hovered only over the bare map, so QuestieSmazak's icons,
 -- Blizzard's pins and other UI on top win.
 local function _IsCursorOnMap()
     return QuestieCompat.GetMouseFocus() == WorldMapFrame.ScrollContainer

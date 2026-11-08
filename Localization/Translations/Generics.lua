@@ -1,5 +1,5 @@
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 
 local genericsLocales = {
     ["Objects"] = {
@@ -50,27 +50,27 @@ local genericsLocales = {
         ["zhCN"] = "任务",
         ["zhTW"] = "任務",
     },
-    ["Show Questie"] = {
+    ["Show QuestieSmazak"] = {
         ["enUS"] = true,
-        ["deDE"] = "Zeige Questie",
-        ["esES"] = "Mostrar Questie",
-        ["esMX"] = "Mostrar Questie",
-        ["frFR"] = "Afficher Questie",
-        ["koKR"] = "Questie 표시",
-        ["ptBR"] = "Mostrar Questie",
-        ["ruRU"] = "Показать Questie",
+        ["deDE"] = "Zeige QuestieSmazak",
+        ["esES"] = "Mostrar QuestieSmazak",
+        ["esMX"] = "Mostrar QuestieSmazak",
+        ["frFR"] = "Afficher QuestieSmazak",
+        ["koKR"] = "QuestieSmazak 표시",
+        ["ptBR"] = "Mostrar QuestieSmazak",
+        ["ruRU"] = "Показать QuestieSmazak",
         ["zhCN"] = "显示Questie",
         ["zhTW"] = "顯示任務圖示",
     },
-    ["Hide Questie"] = {
+    ["Hide QuestieSmazak"] = {
         ["enUS"] = true,
-        ["deDE"] = "Verstecke Questie",
-        ["esES"] = "Ocultar Questie",
-        ["esMX"] = "Ocultar Questie",
-        ["frFR"] = "Cacher Questie",
-        ["koKR"] = "Questie 숨기기",
-        ["ptBR"] = "Ocultar Questie",
-        ["ruRU"] = "Скрыть Questie",
+        ["deDE"] = "Verstecke QuestieSmazak",
+        ["esES"] = "Ocultar QuestieSmazak",
+        ["esMX"] = "Ocultar QuestieSmazak",
+        ["frFR"] = "Cacher QuestieSmazak",
+        ["koKR"] = "QuestieSmazak 숨기기",
+        ["ptBR"] = "Ocultar QuestieSmazak",
+        ["ruRU"] = "Скрыть QuestieSmazak",
         ["zhCN"] = "隐藏Questie",
         ["zhTW"] = "隱藏任務圖示",
     },

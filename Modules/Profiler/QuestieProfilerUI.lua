@@ -1,15 +1,15 @@
 ---@class QuestieProfilerUI
-local QuestieProfilerUI = QuestieLoader:CreateModule("ProfilerUI")
+local QuestieProfilerUI = QuestieSmazakLoader:CreateModule("ProfilerUI")
 local _QuestieProfilerUI = QuestieProfilerUI.private
 
 -------------------------
 --Import modules.
 -------------------------
--- The profiler engine is the only Questie module this file may touch. Every other module is wrapped by the
+-- The profiler engine is the only QuestieSmazak module this file may touch. Every other module is wrapped by the
 -- profiler, so calling into one from here would measure the diagnostic tool instead of the addon.
 -- For the same reason this file has no localization: l10n is a profiled module.
 ---@type QuestieProfiler
-local QuestieProfiler = QuestieLoader:ImportModule("Profiler")
+local QuestieProfiler = QuestieSmazakLoader:ImportModule("Profiler")
 
 -- Performance: alias frequently used functions
 local tinsert = table.insert
@@ -172,7 +172,7 @@ local COLOR = {
         {share = 0, r = 0.30, g = 0.42, b = 0.58, a = 0.12},
     },
 
-    -- Row colour, worn by both the name and the left accent stripe. Questie's own functions are the baseline
+    -- Row colour, worn by both the name and the left accent stripe. QuestieSmazak's own functions are the baseline
     -- and stay neutral on purpose: colouring the majority would spend the colour without buying a
     -- distinction. Everything else is marked, so a glance down the stripe separates measured work from addon
     -- load, scheduling from calls, and our code from a dependency's, without reading a single name. Kept clear
@@ -182,7 +182,7 @@ local COLOR = {
     fileLoad = {r = 0.55, g = 0.85, b = 0.55},
     -- A bundled-library function is not a fourth species: it is a called function like any other, with
     -- callers, self time and an average, and it gets no visibility checkbox because there is nothing
-    -- categorically different to switch off. What differs is ownership - a Questie row is code we can edit, a
+    -- categorically different to switch off. What differs is ownership - a QuestieSmazak row is code we can edit, a
     -- library row is a dependency we can only call less or differently - and that is worth one glance rather
     -- than a read of the path. It earns the colour on the same rule the baseline is neutral by: measured over
     -- a normal session it was 26 rows of 341, a minority, so colouring it buys a distinction.
@@ -218,15 +218,15 @@ end
 local REFRESH_INTERVAL = 0.5
 local WHEEL_SCROLL_ROWS = 3
 local INDICATOR_POLL_INTERVAL = 0.5
-local INDICATOR_LABEL = "Questie profiler running"
+local INDICATOR_LABEL = "QuestieSmazak profiler running"
 
 -- The report model owns these; the window only chooses between them.
 ---@type QuestieProfilerReport
-local ProfilerReport = QuestieLoader:ImportModule("ProfilerReport")
+local ProfilerReport = QuestieSmazakLoader:ImportModule("ProfilerReport")
 -- Read-only, and the third exception to this file touching no other module: whether the load-time indirections
 -- are installed changes what Stop can honestly claim, and there is nowhere else to learn it.
 ---@type QuestieProfilerPreHook
-local ProfilerPreHook = QuestieLoader:ImportModule("ProfilerPreHook")
+local ProfilerPreHook = QuestieSmazakLoader:ImportModule("ProfilerPreHook")
 local SORT_NAME = ProfilerReport.SORT_NAME
 local SORT_TOTAL = ProfilerReport.SORT_TOTAL
 local SORT_SELF = ProfilerReport.SORT_SELF
@@ -251,7 +251,7 @@ local SELF_DOMINANT_SHARE = 0.5
 -------------------------
 -- Display state
 -------------------------
--- Frames are deliberately kept in file locals. Nothing here may be reachable from another Questie module
+-- Frames are deliberately kept in file locals. Nothing here may be reachable from another QuestieSmazak module
 -- table, or the profiler's traversal would find it.
 local baseFrame
 local listFrame
@@ -382,7 +382,7 @@ end
 -- Row rendering
 -------------------------
 ---@param reportRow ProfilerReportRow
----@return table? speciesColor @nil for one of Questie's own functions, the uncoloured baseline
+---@return table? speciesColor @nil for one of QuestieSmazak's own functions, the uncoloured baseline
 local function SpeciesColor(reportRow)
     if reportRow.isFileLoad then
         return COLOR.fileLoad
@@ -1192,7 +1192,7 @@ function UpdateControls()
         else
             SetControlTooltip(sessionButton, "Stop profiling",
                 "Stops collecting and removes the hooks.",
-                "Questie runs at full speed again.",
+                "QuestieSmazak runs at full speed again.",
                 "",
                 "Everything measured stays on screen and stays browsable.")
         end
@@ -1246,7 +1246,7 @@ function UpdateControls()
     end
 
     if startupCheckButton then
-        startupCheckButton:SetChecked(QuestieProfilerEnabled == true)
+        startupCheckButton:SetChecked(QuestieSmazakProfilerEnabled == true)
     end
 
     local counts = currentReport and currentReport.speciesCounts or {}
@@ -1496,7 +1496,7 @@ local function BuildTitleBar()
 
     local title = titleBar:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     title:SetPoint("LEFT", titleBar, "LEFT", LAYOUT.edgePadding - 1, 0)
-    title:SetText("Questie Profiler")
+    title:SetText("QuestieSmazak Profiler")
 
     local closeButton = CreateFrame("Button", nil, titleBar, "UIPanelCloseButton")
     closeButton:SetSize(24, 24)
@@ -1616,15 +1616,15 @@ local function BuildControlRow()
     startupCheckButton:SetSize(20, 20)
     startupCheckButton:SetPoint("RIGHT", reloadButton, "LEFT", -6, 0)
     startupCheckButton:SetScript("OnClick", function(self)
-        -- Read at load by Questie.lua, so the change lands on the next reload rather than now. Saying so
+        -- Read at load by QuestieSmazak.lua, so the change lands on the next reload rather than now. Saying so
         -- beats letting the profiler look like it ignored the click.
-        QuestieProfilerEnabled = self:GetChecked() and true or false
-        Questie:Print(QuestieProfilerEnabled
-            and "Questie profiler will start on |cff40dd40next reload|r."
-            or "Questie profiler will |cffdd4040not|r start on next reload.")
+        QuestieSmazakProfilerEnabled = self:GetChecked() and true or false
+        QuestieSmazak:Print(QuestieSmazakProfilerEnabled
+            and "QuestieSmazak profiler will start on |cff40dd40next reload|r."
+            or "QuestieSmazak profiler will |cffdd4040not|r start on next reload.")
     end)
     SetControlTooltip(startupCheckButton, "Profile on startup",
-        "Arms the profiler while Questie loads.",
+        "Arms the profiler while QuestieSmazak loads.",
         "",
         "The only way to measure addon file load and initialisation,",
         "and to see functions that files copy into locals as they load.",
@@ -1645,13 +1645,13 @@ end
 local SPECIES_CHECKBOXES = {
     {key = "showFunctions", label = "Functions", countKey = "functions", icon = ICON.functionRow,
         color = COLOR.text,
-        description = "Hooked Questie functions, timed per call."},
+        description = "Hooked QuestieSmazak functions, timed per call."},
     {key = "showJobs", label = "Jobs", countKey = "jobs", icon = ICON.threadJob,
         color = COLOR.threadJob,
         description = "ThreadLib coroutine jobs, timed across their resume slices."},
     {key = "showFiles", label = "Files", countKey = "files", icon = ICON.fileLoad,
         color = COLOR.fileLoad,
-        description = "Addon files, timed while Questie loaded."},
+        description = "Addon files, timed while QuestieSmazak loaded."},
 }
 
 ---@param anchorTo table
@@ -2357,7 +2357,7 @@ local function CreateIndicator()
         return indicatorButton
     end
 
-    indicatorButton = CreateFrame("Button", "QuestieProfilerIndicator", UIParent)
+    indicatorButton = CreateFrame("Button", "QuestieSmazakProfilerIndicator", UIParent)
     indicatorButton:SetPoint("TOP", UIParent, "TOP", 0, -4)
     indicatorButton:SetFrameStrata("HIGH")
 
@@ -2382,7 +2382,7 @@ local function CreateIndicator()
     indicatorButton:SetScript("OnEnter", function(self)
         self.label:SetTextColor(1, 1, 1)
         GameTooltip:SetOwner(self, "ANCHOR_BOTTOM")
-        GameTooltip:AddLine("Questie profiler is running", 1, 0.82, 0)
+        GameTooltip:AddLine("QuestieSmazak profiler is running", 1, 0.82, 0)
         -- Resolved per hover so the hint always names what the click will actually do.
         if QuestieProfilerUI:IsShown() then
             GameTooltip:AddLine("Click to close the profiler window.", 0.8, 0.8, 0.8)
@@ -2417,7 +2417,7 @@ function QuestieProfilerUI:Create()
         return baseFrame
     end
 
-    baseFrame = CreateFrame("Frame", "QuestieProfilerFrame", UIParent, BackdropTemplateMixin and "BackdropTemplate")
+    baseFrame = CreateFrame("Frame", "QuestieSmazakProfilerFrame", UIParent, BackdropTemplateMixin and "BackdropTemplate")
     baseFrame:SetSize(LAYOUT.windowDefaultWidth, LAYOUT.windowDefaultHeight)
     baseFrame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
     baseFrame:SetFrameStrata("DIALOG")
@@ -2470,17 +2470,17 @@ function QuestieProfilerUI:Create()
     if type(UISpecialFrames) == "table" then
         local alreadyRegistered = false
         for _, frameName in ipairs(UISpecialFrames) do
-            if frameName == "QuestieProfilerFrame" then
+            if frameName == "QuestieSmazakProfilerFrame" then
                 alreadyRegistered = true
                 break
             end
         end
         if not alreadyRegistered then
-            tinsert(UISpecialFrames, "QuestieProfilerFrame")
+            tinsert(UISpecialFrames, "QuestieSmazakProfilerFrame")
         end
     end
 
-    -- Own event frame rather than Questie:RegisterEvent, which is a profiled function.
+    -- Own event frame rather than QuestieSmazak:RegisterEvent, which is a profiled function.
     eventFrame = CreateFrame("Frame")
     eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
     eventFrame:SetScript("OnEvent", function()
@@ -2530,39 +2530,39 @@ end
 -- Enable toggle
 -------------------------
 -- Registered here rather than in QuestieSlash so that enabling the profiler touches no gameplay file, and so
--- the command exists even on a client where profiling never armed. The flag is read at load by Questie.lua,
+-- the command exists even on a client where profiling never armed. The flag is read at load by QuestieSmazak.lua,
 -- so a change only takes effect on the next reload - which is stated plainly rather than implied.
 ---@param enabled boolean
 local function ReportProfilerEnabled(enabled)
     if enabled then
-        Questie:Print("Questie profiler |cff40dd40enabled|r. Reload the UI to start profiling.")
+        QuestieSmazak:Print("QuestieSmazak profiler |cff40dd40enabled|r. Reload the UI to start profiling.")
     else
-        Questie:Print("Questie profiler |cffdd4040disabled|r. Reload the UI to stop profiling.")
+        QuestieSmazak:Print("QuestieSmazak profiler |cffdd4040disabled|r. Reload the UI to stop profiling.")
     end
 end
 
-SLASH_QUESTIEPROFILER1 = "/qprofiler"
-SlashCmdList["QUESTIEPROFILER"] = function(argument)
+SLASH_QUESTIESMAZAKPROFILER1 = "/qsmazakprofiler"
+SlashCmdList["QUESTIESMAZAKPROFILER"] = function(argument)
     local command = string.lower(string.match(argument or "", "^%s*(%S*)") or "")
 
     if command == "on" then
-        QuestieProfilerEnabled = true
+        QuestieSmazakProfilerEnabled = true
         ReportProfilerEnabled(true)
     elseif command == "off" then
-        QuestieProfilerEnabled = false
+        QuestieSmazakProfilerEnabled = false
         ReportProfilerEnabled(false)
     elseif command == "toggle" then
-        QuestieProfilerEnabled = not QuestieProfilerEnabled
-        ReportProfilerEnabled(QuestieProfilerEnabled == true)
+        QuestieSmazakProfilerEnabled = not QuestieSmazakProfilerEnabled
+        ReportProfilerEnabled(QuestieSmazakProfilerEnabled == true)
     elseif command == "show" and QuestieProfiler:HasResults() then
         -- A stopped session's results stay readable, so show opens on them too: requiring an active session
         -- here made a closed window's capture unreachable except by starting over, which erases it.
         QuestieProfilerUI:Show()
     else
-        local state = QuestieProfilerEnabled and "enabled" or "disabled"
+        local state = QuestieSmazakProfilerEnabled and "enabled" or "disabled"
         local session = QuestieProfiler.active and "running" or "not running"
-        Questie:Print(string.format("Questie profiler: %s, currently %s.", state, session))
-        Questie:Print("/qprofiler on | off | toggle | show")
+        QuestieSmazak:Print(string.format("QuestieSmazak profiler: %s, currently %s.", state, session))
+        QuestieSmazak:Print("/qprofiler on | off | toggle | show")
     end
 end
 

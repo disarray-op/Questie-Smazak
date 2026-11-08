@@ -1,25 +1,25 @@
 ---@type QuestieCompat
-local QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+local QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
 
 local GetAddOnMetadata = QuestieCompat.GetAddOnMetadata
 
 ---@class QuestieLib
-local QuestieLib = QuestieLoader:CreateModule("QuestieLib")
+local QuestieLib = QuestieSmazakLoader:CreateModule("QuestieLib")
 
 ---@type QuestieDB
-local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
 ---@type QuestiePlayer
-local QuestiePlayer = QuestieLoader:ImportModule("QuestiePlayer")
+local QuestiePlayer = QuestieSmazakLoader:ImportModule("QuestiePlayer")
 ---@type QuestieEvent
-local QuestieEvent = QuestieLoader:ImportModule("QuestieEvent")
+local QuestieEvent = QuestieSmazakLoader:ImportModule("QuestieEvent")
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 ---@type ThreadLib
-local ThreadLib = QuestieLoader:ImportModule("ThreadLib")
+local ThreadLib = QuestieSmazakLoader:ImportModule("ThreadLib")
 ---@type QuestieCorrections
-local QuestieCorrections = QuestieLoader:ImportModule("QuestieCorrections")
+local QuestieCorrections = QuestieSmazakLoader:ImportModule("QuestieCorrections")
 
-QuestieLib.AddonPath = "Interface\\Addons\\Questie\\"
+QuestieLib.AddonPath = "Interface\\Addons\\QuestieSmazak\\"
 
 local math_abs = math.abs
 local math_sqrt = math.sqrt
@@ -32,7 +32,7 @@ local strim = string.trim
 local smatch = string.match
 local tonumber = tonumber
 
--- Keep Questie's palette while allowing the client to choose the difficulty category.
+-- Keep QuestieSmazak's palette while allowing the client to choose the difficulty category.
 local difficultyColors = {
     Trivial = {hex = "|cFFC0C0C0", r = 0.753, g = 0.753, b = 0.753},
     Easy = {hex = "|cFF40C040", r = 0.251, g = 0.753, b = 0.251},
@@ -129,7 +129,7 @@ function QuestieLib:GetRGBForObjective(objective)
     end
 
     local float = objective.Collected / objective.Needed
-    local trackerColor = Questie.db.profile.trackerColorObjectives
+    local trackerColor = QuestieSmazak.db.profile.trackerColorObjectives
     if not trackerColor or trackerColor == "white" or trackerColor == "minimal" then
         -- White
         return "|cFFEEEEEE"
@@ -160,7 +160,7 @@ function QuestieLib:GetColoredQuestName(questId, showLevel, showState)
         name = QuestieLib:GetLevelString(questId, level) .. name
     end
 
-    if Questie.db.profile.enableTooltipsQuestID then
+    if QuestieSmazak.db.profile.enableTooltipsQuestID then
         name = name .. " " .. l10n("(") .. questId .. l10n(")")
     end
 
@@ -168,13 +168,13 @@ function QuestieLib:GetColoredQuestName(questId, showLevel, showState)
         local isComplete = QuestieDB.IsComplete(questId)
 
         if isComplete == -1 then
-            name = name .. " " .. Questie:Colorize(l10n("(") .. l10n("Failed") .. l10n(")"), "red")
+            name = name .. " " .. QuestieSmazak:Colorize(l10n("(") .. l10n("Failed") .. l10n(")"), "red")
         elseif isComplete == 1 then
-            name = name .. " " .. Questie:Colorize(l10n("(") .. l10n("Complete") .. l10n(")"), "green")
+            name = name .. " " .. QuestieSmazak:Colorize(l10n("(") .. l10n("Complete") .. l10n(")"), "green")
 
             -- Quests treated as complete - zero objectives or synthetic objectives
         elseif isComplete == 0 and QuestieDB.GetQuest(questId).isComplete == true then
-            name = name .. " " .. Questie:Colorize(l10n("(") .. l10n("Complete") .. l10n(")"), "green")
+            name = name .. " " .. QuestieSmazak:Colorize(l10n("(") .. l10n("Complete") .. l10n(")"), "green")
         end
     end
 
@@ -465,7 +465,7 @@ function QuestieLib.IsObjectiveDataLoaded(objective)
     -- Diagnose only heuristic rejections with a non-empty parsed name. Quote the original row so edge spaces
     -- and optional labels remain visible when tracing possible false positives in client wording.
     if string.byte(text, -1) == 32 then
-        Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieLib.IsObjectiveDataLoaded] Rejected trailing ASCII space:",
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieLib.IsObjectiveDataLoaded] Rejected trailing ASCII space:",
             string.format("%q", objective.text))
         return false
     end
@@ -473,7 +473,7 @@ function QuestieLib.IsObjectiveDataLoaded(objective)
     -- missing-name heuristic, independent of language, UTF-8 encoding or word boundaries. This deliberately assumes
     -- legitimate objective text will not contain triple spaces; if it does, it will also be treated as not loaded.
     if string.find(text, "   ", 1, true) then
-        Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieLib.IsObjectiveDataLoaded] Rejected triple ASCII spaces:",
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieLib.IsObjectiveDataLoaded] Rejected triple ASCII spaces:",
             string.format("%q", objective.text))
         return false
     end
@@ -571,7 +571,7 @@ function QuestieLib.RepairMissingItemNames(questId)
 
     for _, objective in pairs(quest.ObjectiveData) do
         if objective.Type == "item" and not QuestieDB.ItemPointers[objective.Id] then
-            Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieLib.RepairMissingItemNames] Requesting client data for missing itemId:",
+            QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieLib.RepairMissingItemNames] Requesting client data for missing itemId:",
                 objective.Id)
             local item = Item:CreateFromItemID(objective.Id)
             item:ContinueOnItemLoad(function()
@@ -612,7 +612,7 @@ local cachedVersion
 ---@return number, number, number
 function QuestieLib:GetAddonVersionInfo()
     if (not cachedVersion) then
-        cachedVersion = GetAddOnMetadata("Questie", "Version")
+        cachedVersion = GetAddOnMetadata("QuestieSmazak", "Version")
     end
 
     local major, minor, patch = string.match(cachedVersion, "(%d+)%p(%d+)%p(%d+)")
@@ -623,7 +623,7 @@ end
 function QuestieLib:GetAddonVersionString()
     if (not cachedVersion) then
         -- This brings up the ## Version from the TOC
-        cachedVersion = GetAddOnMetadata("Questie", "Version")
+        cachedVersion = GetAddOnMetadata("QuestieSmazak", "Version")
     end
 
     return "v" .. cachedVersion
@@ -883,31 +883,31 @@ end
 ---@param quest Quest
 ---@return number iconType The number representing the type of icon
 function QuestieLib.GetQuestIcon(quest)
-    if Questie.IsSoD and QuestieDB.IsSoDRuneQuest(quest.Id) then
-        return Questie.ICON_TYPE_SODRUNE
+    if QuestieSmazak.IsSoD and QuestieDB.IsSoDRuneQuest(quest.Id) then
+        return QuestieSmazak.ICON_TYPE_SODRUNE
     elseif QuestieDB.IsActiveEventQuest(quest.Id) then
-        return Questie.ICON_TYPE_EVENTQUEST
+        return QuestieSmazak.ICON_TYPE_EVENTQUEST
     end
     if QuestieDB.IsPvPQuest(quest.Id) then
-        return Questie.ICON_TYPE_PVPQUEST
+        return QuestieSmazak.ICON_TYPE_PVPQUEST
     end
     if quest.requiredLevel > QuestiePlayer.GetPlayerLevel() then
-        return Questie.ICON_TYPE_AVAILABLE_GRAY
+        return QuestieSmazak.ICON_TYPE_AVAILABLE_GRAY
     end
     if quest.IsRepeatable then
-        return Questie.ICON_TYPE_REPEATABLE
+        return QuestieSmazak.ICON_TYPE_REPEATABLE
     end
     if QuestieDB.IsTrivial(quest.level) then
-        return Questie.ICON_TYPE_AVAILABLE_GRAY
+        return QuestieSmazak.ICON_TYPE_AVAILABLE_GRAY
     end
-    return Questie.ICON_TYPE_AVAILABLE
+    return QuestieSmazak.ICON_TYPE_AVAILABLE
 end
 
 --- Checks if a daily reset has occurred since the player's last login.
 ---@return boolean True if a daily reset has occurred, false otherwise.
 function QuestieLib.DidDailyResetHappenSinceLastLogin()
     local realmName = GetRealmName()
-    local lastKnownDailyReset = Questie.db.global.lastKnownDailyReset[realmName]
+    local lastKnownDailyReset = QuestieSmazak.db.global.lastKnownDailyReset[realmName]
 
     if (not lastKnownDailyReset) then
         return true -- No previous login recorded, assume a reset has occurred
@@ -920,7 +920,7 @@ end
 function QuestieLib.UpdateLastKnownDailyReset()
     local realmName = GetRealmName()
 
-    Questie.db.global.lastKnownDailyReset[realmName] = GetServerTime() + QuestieCompat.GetQuestResetTime()
+    QuestieSmazak.db.global.lastKnownDailyReset[realmName] = GetServerTime() + QuestieCompat.GetQuestResetTime()
 end
 
 ---@param timeStamp number

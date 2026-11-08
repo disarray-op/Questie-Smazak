@@ -32,17 +32,17 @@ describe("HBDHooks", function()
         _G.LibStub = function() return HBDPins end
 
         dofile("Modules/Map/HBDHooks.lua")
-        HBDHooks = QuestieLoader:ImportModule("HBDHooks")
+        HBDHooks = QuestieSmazakLoader:ImportModule("HBDHooks")
     end)
 
     after_each(function()
         _G.LibStub = originalLibStub
-        Questie.IsForever = nil
+        QuestieSmazak.IsForever = nil
     end)
 
     describe("Init", function()
-        it("should hide Questie world map pins from the gamepad cursor on Forever", function()
-            Questie.IsForever = true
+        it("should hide QuestieSmazak world map pins from the gamepad cursor on Forever", function()
+            QuestieSmazak.IsForever = true
 
             HBDHooks:Init()
 
@@ -52,7 +52,7 @@ describe("HBDHooks", function()
         end)
 
         it("should hide world map pins created after Init from the gamepad cursor on Forever", function()
-            Questie.IsForever = true
+            QuestieSmazak.IsForever = true
 
             HBDHooks:Init()
 
@@ -65,7 +65,7 @@ describe("HBDHooks", function()
         end)
 
         it("should not touch the world map pins on other flavors", function()
-            Questie.IsForever = false
+            QuestieSmazak.IsForever = false
 
             HBDHooks:Init()
 

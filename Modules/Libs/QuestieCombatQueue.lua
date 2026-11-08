@@ -1,8 +1,8 @@
 ---@class QuestieCombatQueue
-local QuestieCombatQueue = QuestieLoader:CreateModule("QuestieCombatQueue")
+local QuestieCombatQueue = QuestieSmazakLoader:CreateModule("QuestieCombatQueue")
 
 ---@type QuestieLib
-local QuestieLib = QuestieLoader:CreateModule("QuestieLib")
+local QuestieLib = QuestieSmazakLoader:CreateModule("QuestieLib")
 
 local tpack =  QuestieLib.tpack
 local tunpack = QuestieLib.tunpack
@@ -10,7 +10,7 @@ local tunpack = QuestieLib.tunpack
 local _Queue = {}
 local started = false
 
--- This will limit the amount of updates Questie does to the UI and will reduce the chance to lag the game
+-- This will limit the amount of updates QuestieSmazak does to the UI and will reduce the chance to lag the game
 local maxUpdatesPerCircle = 5
 
 function QuestieCombatQueue.Initialize()

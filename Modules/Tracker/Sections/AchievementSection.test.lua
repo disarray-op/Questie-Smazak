@@ -62,36 +62,36 @@ describe("AchievementSection", function()
         availableLines = 100
         unboundedWidth = 10
 
-        Questie.db.char.collapsedZones = {}
-        Questie.db.char.collapsedQuests = {}
-        Questie.db.char.minAllQuestsInZone = {}
-        Questie.db.profile.trackerQuestPadding = 2
-        Questie.db.profile.trackerColorObjectives = "white"
-        Questie.db.profile.hideCompletedAchieveObjectives = false
-        Questie.db.profile.enableTooltipsQuestID = false
+        QuestieSmazak.db.char.collapsedZones = {}
+        QuestieSmazak.db.char.collapsedQuests = {}
+        QuestieSmazak.db.char.minAllQuestsInZone = {}
+        QuestieSmazak.db.profile.trackerQuestPadding = 2
+        QuestieSmazak.db.profile.trackerColorObjectives = "white"
+        QuestieSmazak.db.profile.hideCompletedAchieveObjectives = false
+        QuestieSmazak.db.profile.enableTooltipsQuestID = false
 
-        TrackerAchievements = QuestieLoader:ImportModule("TrackerAchievements")
+        TrackerAchievements = QuestieSmazakLoader:ImportModule("TrackerAchievements")
         TrackerAchievements.GetAchievements = spy.new(function() return achievements end)
 
-        TrackerLayout = QuestieLoader:ImportModule("TrackerLayout")
+        TrackerLayout = QuestieSmazakLoader:ImportModule("TrackerLayout")
         TrackerLayout.GetMargins = function() return {left = 14, right = 30, quest = 20, objective = 30, itemButtonSize = 24, buttonSize = 15, playButtonRight = 13, playButtonSize = 17} end
         TrackerLayout.UpdateWidth = function() end
         TrackerLayout.GetBaseFrameWidth = function() return 400 end
         TrackerLayout.TrackLineWidth = function() end
         TrackerLayout.UpdateLineWidth = spy.new(function() end)
 
-        TrackerLinePool = QuestieLoader:ImportModule("TrackerLinePool")
+        TrackerLinePool = QuestieSmazakLoader:ImportModule("TrackerLinePool")
         TrackerLinePool.GetNextLine = spy.new(_GetLine)
         TrackerLinePool.GetLastLine = _FakeLine
 
         dofile("Localization/l10n.lua")
         dofile("Modules/Libs/QuestieLib.lua")
         dofile("Modules/Tracker/AchievementTracking.lua")
-        AchievementTracking = QuestieLoader:ImportModule("AchievementTracking")
+        AchievementTracking = QuestieSmazakLoader:ImportModule("AchievementTracking")
         AchievementTracking.GetTrackedIds = function() return trackedIds end
         dofile("Modules/Tracker/LinePool/LineBuilder.lua")
         dofile("Modules/Tracker/Sections/AchievementSection.lua")
-        AchievementSection = QuestieLoader:ImportModule("AchievementSection")
+        AchievementSection = QuestieSmazakLoader:ImportModule("AchievementSection")
     end)
 
     it("should read the tracked achievements of the game", function()
@@ -139,7 +139,7 @@ describe("AchievementSection", function()
     end)
 
     it("should draw the id in the title when quest ids are shown", function()
-        Questie.db.profile.enableTooltipsQuestID = true
+        QuestieSmazak.db.profile.enableTooltipsQuestID = true
         achievements = {_Achievement(1)}
 
         AchievementSection.Draw()
@@ -173,7 +173,7 @@ describe("AchievementSection", function()
     end)
 
     it("should not set the criteria mark when completed criteria are hidden", function()
-        Questie.db.profile.hideCompletedAchieveObjectives = true
+        QuestieSmazak.db.profile.hideCompletedAchieveObjectives = true
         achievements = {_Achievement(1, {_Criteria("Westfall")})}
 
         AchievementSection.Draw()
@@ -234,7 +234,7 @@ describe("AchievementSection", function()
     end)
 
     it("should not set the criteria mark when the objective color is not white", function()
-        Questie.db.profile.trackerColorObjectives = "redToGreen"
+        QuestieSmazak.db.profile.trackerColorObjectives = "redToGreen"
         achievements = {_Achievement(1, {_Criteria("Westfall")})}
 
         AchievementSection.Draw()
@@ -255,7 +255,7 @@ describe("AchievementSection", function()
     end)
 
     it("should only draw the header when it is collapsed", function()
-        Questie.db.char.collapsedZones = {Achievements = true}
+        QuestieSmazak.db.char.collapsedZones = {Achievements = true}
         achievements = {_Achievement(1)}
 
         AchievementSection.Draw()
@@ -264,7 +264,7 @@ describe("AchievementSection", function()
     end)
 
     it("should not draw the criteria of a collapsed achievement", function()
-        Questie.db.char.collapsedQuests = {[1] = true}
+        QuestieSmazak.db.char.collapsedQuests = {[1] = true}
         achievements = {_Achievement(1, {_Criteria("Westfall")})}
 
         AchievementSection.Draw()

@@ -1,7 +1,7 @@
 dofile("setupTests.lua")
 local stub = require("luassert.stub")
 
-local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
 
 ---@param index number
 ---@param isActive number
@@ -33,19 +33,19 @@ describe("QuestgiverFrame greeting icons", function()
             originals[name] = _G[name]
             _G[name] = nil
         end
-        originalIcons = Questie.icons
-        originalStarted = Questie.started
-        originalEnabled = Questie.db.profile.enableQuestFrameIcons
-        Questie.icons = {available = "available", incomplete = "incomplete", complete = "complete"}
-        Questie.started = true
-        Questie.db.profile.enableQuestFrameIcons = true
+        originalIcons = QuestieSmazak.icons
+        originalStarted = QuestieSmazak.started
+        originalEnabled = QuestieSmazak.db.profile.enableQuestFrameIcons
+        QuestieSmazak.icons = {available = "available", incomplete = "incomplete", complete = "complete"}
+        QuestieSmazak.started = true
+        QuestieSmazak.db.profile.enableQuestFrameIcons = true
         mocks = {
             stub(QuestieDB, "IsComplete", function() return 1 end),
             stub(QuestieDB, "IsPvPQuest", function() return false end),
             stub(QuestieDB, "IsActiveEventQuest", function() return false end),
             stub(QuestieDB, "IsRepeatable", function() return false end),
             stub(QuestieDB, "GetQuestIDFromName", function() return 33 end),
-            stub(Questie, "Error"),
+            stub(QuestieSmazak, "Error"),
         }
         _G.UnitGUID = spy.new(function() return npcGuid end)
         _G.GetNumActiveQuests = function() return 2 end
@@ -55,7 +55,7 @@ describe("QuestgiverFrame greeting icons", function()
         rebuildGreeting = function() end
         _G.QuestFrameGreetingPanel_OnShow = function() rebuildGreeting() end
 
-        -- XML binds OnShow before Questie loads. Replacing the global must not replace that saved script.
+        -- XML binds OnShow before QuestieSmazak loads. Replacing the global must not replace that saved script.
         local nativeOnShow = _G.QuestFrameGreetingPanel_OnShow
         local scripts = {}
         _G.QuestFrameGreetingPanel = {
@@ -73,7 +73,7 @@ describe("QuestgiverFrame greeting icons", function()
             end
         end
         dofile("Modules/Quest/QuestgiverFrame.lua")
-        QuestgiverFrame = QuestieLoader:ImportModule("QuestgiverFrame")
+        QuestgiverFrame = QuestieSmazakLoader:ImportModule("QuestgiverFrame")
     end)
 
     after_each(function()
@@ -83,15 +83,15 @@ describe("QuestgiverFrame greeting icons", function()
         for _, name in ipairs(globals) do
             _G[name] = originals[name]
         end
-        Questie.icons = originalIcons
-        Questie.started = originalStarted
-        Questie.db.profile.enableQuestFrameIcons = originalEnabled
+        QuestieSmazak.icons = originalIcons
+        QuestieSmazak.started = originalStarted
+        QuestieSmazak.db.profile.enableQuestFrameIcons = originalEnabled
     end)
 
     it("decorates the XML-bound OnShow after Blizzard populates native pooled buttons", function()
-        -- Questie's event may arrive before Blizzard has built the greeting.
+        -- QuestieSmazak's event may arrive before Blizzard has built the greeting.
         QuestgiverFrame.GreetingMark()
-        assert.spy(Questie.Error).was.not_called()
+        assert.spy(QuestieSmazak.Error).was.not_called()
         local active = GreetingButton(2, 1)
         local available = GreetingButton(3, 0)
         local buttons = {[active] = true, [available] = true}
@@ -172,14 +172,14 @@ describe("QuestgiverFrame greeting icons", function()
 
         assert.spy(QuestieDB.GetQuestIDFromName).was.called_with("Offered Quest", npcGuid, true)
         assert.spy(icon.SetTexture).was.called_with(icon, "available")
-        assert.spy(Questie.Error).was.not_called()
+        assert.spy(QuestieSmazak.Error).was.not_called()
     end)
 
     it("leaves native icons alone when the option is disabled", function()
         local button = GreetingButton(1, 0)
         local buttons = {[button] = true}
         QuestFrameGreetingPanel.titleButtonPool = {EnumerateActive = function() return next, buttons end}
-        Questie.db.profile.enableQuestFrameIcons = false
+        QuestieSmazak.db.profile.enableQuestFrameIcons = false
 
         QuestgiverFrame.GreetingMark()
         QuestFrameGreetingPanel:Show()
@@ -188,8 +188,8 @@ describe("QuestgiverFrame greeting icons", function()
         assert.spy(button.Icon.SetTexture).was.not_called()
     end)
 
-    it("does not decorate Blizzard's greeting before Questie has started", function()
-        Questie.started = false
+    it("does not decorate Blizzard's greeting before QuestieSmazak has started", function()
+        QuestieSmazak.started = false
 
         QuestFrameGreetingPanel:Show()
         _G.QuestFrameGreetingPanel_OnShow()
@@ -217,15 +217,15 @@ describe("QuestgiverFrame gossip icons", function()
     end
 
     before_each(function()
-        originals = {IsForever = Questie.IsForever, started = Questie.started, icons = Questie.icons,
-            enabled = Questie.db.profile.enableQuestFrameIcons}
+        originals = {IsForever = QuestieSmazak.IsForever, started = QuestieSmazak.started, icons = QuestieSmazak.icons,
+            enabled = QuestieSmazak.db.profile.enableQuestFrameIcons}
         for _, name in ipairs(globals) do
             originals[name] = _G[name]
             _G[name] = nil
         end
-        Questie.icons = {available = "available", incomplete = "incomplete", complete = "complete"}
-        Questie.started = true
-        Questie.db.profile.enableQuestFrameIcons = true
+        QuestieSmazak.icons = {available = "available", incomplete = "incomplete", complete = "complete"}
+        QuestieSmazak.started = true
+        QuestieSmazak.db.profile.enableQuestFrameIcons = true
         mocks = {
             stub(QuestieDB, "IsComplete", function() return 1 end),
             stub(QuestieDB, "IsPvPQuest", function() return false end),
@@ -258,19 +258,19 @@ describe("QuestgiverFrame gossip icons", function()
         for _, name in ipairs(globals) do
             _G[name] = originals[name]
         end
-        Questie.IsForever = originals.IsForever
-        Questie.started = originals.started
-        Questie.icons = originals.icons
-        Questie.db.profile.enableQuestFrameIcons = originals.enabled
+        QuestieSmazak.IsForever = originals.IsForever
+        QuestieSmazak.started = originals.started
+        QuestieSmazak.icons = originals.icons
+        QuestieSmazak.db.profile.enableQuestFrameIcons = originals.enabled
     end)
 
     local function Load()
         dofile("Modules/Quest/QuestgiverFrame.lua")
-        QuestgiverFrame = QuestieLoader:ImportModule("QuestgiverFrame")
+        QuestgiverFrame = QuestieSmazakLoader:ImportModule("QuestgiverFrame")
     end
 
     it("never replaces Blizzard's gossip button Setup on Forever", function()
-        Questie.IsForever = true
+        QuestieSmazak.IsForever = true
         Load()
 
         assert.are.equal(originalAvailableSetup, GossipAvailableQuestButtonMixin.Setup)
@@ -278,7 +278,7 @@ describe("QuestgiverFrame gossip icons", function()
     end)
 
     it("sets the icons on the next frame on Forever", function()
-        Questie.IsForever = true
+        QuestieSmazak.IsForever = true
         Load()
 
         QuestgiverFrame.GossipMark()
@@ -290,7 +290,7 @@ describe("QuestgiverFrame gossip icons", function()
     end)
 
     it("re-applies the icons when the quest log changes while the dialog is open on Forever", function()
-        Questie.IsForever = true
+        QuestieSmazak.IsForever = true
         Load()
 
         QuestgiverFrame.RecheckGossip()
@@ -300,8 +300,8 @@ describe("QuestgiverFrame gossip icons", function()
     end)
 
     it("leaves the icons alone when the option is disabled", function()
-        Questie.IsForever = true
-        Questie.db.profile.enableQuestFrameIcons = false
+        QuestieSmazak.IsForever = true
+        QuestieSmazak.db.profile.enableQuestFrameIcons = false
         Load()
 
         QuestgiverFrame.GossipMark()
@@ -310,7 +310,7 @@ describe("QuestgiverFrame gossip icons", function()
     end)
 
     it("keeps the existing Setup decoration on other flavors", function()
-        Questie.IsForever = false
+        QuestieSmazak.IsForever = false
         Load()
 
         assert.are_not.equal(originalAvailableSetup, GossipAvailableQuestButtonMixin.Setup)

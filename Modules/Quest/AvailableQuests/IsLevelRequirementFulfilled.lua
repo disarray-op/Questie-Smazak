@@ -1,14 +1,14 @@
 ---@type AvailableQuests
-local AvailableQuests = QuestieLoader:ImportModule("AvailableQuests")
+local AvailableQuests = QuestieSmazakLoader:ImportModule("AvailableQuests")
 
 ---@type QuestieDB
-local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
 ---@type QuestieLib
-local QuestieLib = QuestieLoader:ImportModule("QuestieLib")
+local QuestieLib = QuestieSmazakLoader:ImportModule("QuestieLib")
 ---@type ActiveQuests
-local ActiveQuests = QuestieLoader:ImportModule("ActiveQuests")
+local ActiveQuests = QuestieSmazakLoader:ImportModule("ActiveQuests")
 ---@type QuestieEvent
-local QuestieEvent = QuestieLoader:ImportModule("QuestieEvent")
+local QuestieEvent = QuestieSmazakLoader:ImportModule("QuestieEvent")
 
 local levelRequirementCache = {}
 AvailableQuests.levelRequirementCache = levelRequirementCache
@@ -32,26 +32,26 @@ function AvailableQuests.IsLevelRequirementsFulfilled(questId, minLevel, maxLeve
         return true
     end
 
-    if (Questie.db.profile.lowLevelStyle ~= Questie.LOWLEVEL_RANGE) and
+    if (QuestieSmazak.db.profile.lowLevelStyle ~= QuestieSmazak.LOWLEVEL_RANGE) and
         minLevel > requiredLevel and QuestieEvent.activeQuests[questId] and (requiredMaxLevel == 0 or playerLevel < requiredMaxLevel) then
         levelRequirementCache[questId] = true
         return true
     end
 
-    if (Questie.IsSoD == true) and (QuestieDB.IsSoDRuneQuest(questId) == true) and (requiredLevel <= playerLevel) then
+    if (QuestieSmazak.IsSoD == true) and (QuestieDB.IsSoDRuneQuest(questId) == true) and (requiredLevel <= playerLevel) then
         -- Season of Discovery Rune quests are still shown when trivial
         levelRequirementCache[questId] = true
         return true
     end
 
     if maxLevel >= level then
-        if (Questie.db.profile.lowLevelStyle ~= Questie.LOWLEVEL_ALL) and minLevel > level then
+        if (QuestieSmazak.db.profile.lowLevelStyle ~= QuestieSmazak.LOWLEVEL_ALL) and minLevel > level then
             -- The quest level is too low and trivial quests are not shown
             levelRequirementCache[questId] = false
             return false
         end
     else
-        if (Questie.db.profile.lowLevelStyle == Questie.LOWLEVEL_RANGE) or maxLevel < requiredLevel then
+        if (QuestieSmazak.db.profile.lowLevelStyle == QuestieSmazak.LOWLEVEL_RANGE) or maxLevel < requiredLevel then
             -- Either an absolute level range is set and maxLevel < level OR the maxLevel is manually set to a lower value
             levelRequirementCache[questId] = false
             return false

@@ -1,7 +1,7 @@
 dofile("setupTests.lua")
 dofile("Modules/Quest/ActiveQuests.lua")
 ---@type ActiveQuests
-local ActiveQuests = QuestieLoader:ImportModule("ActiveQuests")
+local ActiveQuests = QuestieSmazakLoader:ImportModule("ActiveQuests")
 local stub = require("luassert.stub")
 local match = require("luassert.match")
 
@@ -23,34 +23,34 @@ describe("QuestieTracker", function()
     local TrackerData
 
     before_each(function()
-        Questie.db.char = {
+        QuestieSmazak.db.char = {
             collapsedQuests = {},
             AutoUntrackedQuests = {},
             TrackedQuests = {},
             isTrackerExpanded = true,
         }
-        Questie.db.profile = {
+        QuestieSmazak.db.profile = {
             trackerEnabled = true,
             minimizeTrackerInInstances = false,
             hideTrackerInInstances = false,
         }
 
-        TrackerData = QuestieLoader:ImportModule("TrackerData")
+        TrackerData = QuestieSmazakLoader:ImportModule("TrackerData")
         TrackerData.RemoveQuest = spy.new(function() end)
         TrackerData.ContainsQuest = function() return false end
-        TrackerUtils = QuestieLoader:ImportModule("TrackerUtils")
+        TrackerUtils = QuestieSmazakLoader:ImportModule("TrackerUtils")
         TrackerUtils.UnFocus = spy.new(function() end)
-        local FocusedQuestgiver = QuestieLoader:ImportModule("FocusedQuestgiver")
+        local FocusedQuestgiver = QuestieSmazakLoader:ImportModule("FocusedQuestgiver")
         FocusedQuestgiver.Show = spy.new(function() end)
         FocusedQuestgiver.Hide = spy.new(function() end)
-        QuestieQuest = QuestieLoader:ImportModule("QuestieQuest")
+        QuestieQuest = QuestieSmazakLoader:ImportModule("QuestieQuest")
         QuestieQuest.ToggleQuestNotes = spy.new(function() end)
-        QuestieCombatQueue = QuestieLoader:ImportModule("QuestieCombatQueue")
+        QuestieCombatQueue = QuestieSmazakLoader:ImportModule("QuestieCombatQueue")
         QuestieCombatQueue.Queue = function(_, callback) callback() end
 
         dofile("Modules/Tracker/TrackerLayout.lua")
         dofile("Modules/Tracker/QuestieTracker.lua")
-        QuestieTracker = QuestieLoader:ImportModule("QuestieTracker")
+        QuestieTracker = QuestieSmazakLoader:ImportModule("QuestieTracker")
     end)
 
     describe("QuestItemLooted", function()
@@ -58,7 +58,7 @@ describe("QuestieTracker", function()
         local originalTimer
 
         before_each(function()
-            local compat = QuestieLoader:ImportModule("QuestieCompat")
+            local compat = QuestieSmazakLoader:ImportModule("QuestieCompat")
             getItemInfoMock = stub(compat, "GetItemInfo")
             getItemInfoMock.returns(nil, nil, nil, nil, nil, "Quest")
             getItemCountMock = stub(compat, "GetItemCount", function() return 1 end)
@@ -66,7 +66,7 @@ describe("QuestieTracker", function()
             originalTimer = _G.C_Timer
             afterMock = spy.new(function() end)
             _G.C_Timer = {After = afterMock}
-            registerEventMock = stub(Questie, "RegisterEvent")
+            registerEventMock = stub(QuestieSmazak, "RegisterEvent")
             dofile("Modules/Tracker/TrackerLayout.lua")
             dofile("Modules/Tracker/QuestieTracker.lua")
         end)
@@ -108,27 +108,27 @@ describe("QuestieTracker", function()
         end)
 
         it("should return true when manual tracking has the quest in TrackedQuests", function()
-            Questie.db.profile.autoTrackQuests = false
-            Questie.db.char.TrackedQuests[RIVERPAW_GNOLL_BOUNTY_ID] = true
+            QuestieSmazak.db.profile.autoTrackQuests = false
+            QuestieSmazak.db.char.TrackedQuests[RIVERPAW_GNOLL_BOUNTY_ID] = true
             assert.is_true(QuestieTracker.IsTrackedByQuestie(RIVERPAW_GNOLL_BOUNTY_ID))
         end)
 
         it("should return false when manual tracking does not have the quest in TrackedQuests", function()
-            Questie.db.profile.autoTrackQuests = false
+            QuestieSmazak.db.profile.autoTrackQuests = false
             assert.is_false(QuestieTracker.IsTrackedByQuestie(RIVERPAW_GNOLL_BOUNTY_ID))
         end)
 
         it("should auto-track native quests without requiring database enrichment", function()
-            Questie.db.profile.autoTrackQuests = true
+            QuestieSmazak.db.profile.autoTrackQuests = true
             TrackerData.ContainsQuest = function(id) return id == 91741 end
             ActiveQuests.Reset()
             assert.is_true(QuestieTracker.IsTrackedByQuestie(91741))
         end)
 
         it("should return false when auto-tracking has the quest auto-untracked", function()
-            Questie.db.profile.autoTrackQuests = true
+            QuestieSmazak.db.profile.autoTrackQuests = true
             TrackerData.ContainsQuest = function() return true end
-            Questie.db.char.AutoUntrackedQuests[RIVERPAW_GNOLL_BOUNTY_ID] = true
+            QuestieSmazak.db.char.AutoUntrackedQuests[RIVERPAW_GNOLL_BOUNTY_ID] = true
             assert.is_false(QuestieTracker.IsTrackedByQuestie(RIVERPAW_GNOLL_BOUNTY_ID))
         end)
     end)
@@ -138,7 +138,7 @@ describe("QuestieTracker", function()
 
         before_each(function()
             TrackerData.ContainsQuest = function() return true end
-            countMock = stub(QuestieLoader:ImportModule("QuestieCompat"), "GetNumQuestLogEntries", function() return 6, 5 end)
+            countMock = stub(QuestieSmazakLoader:ImportModule("QuestieCompat"), "GetNumQuestLogEntries", function() return 6, 5 end)
         end)
 
         after_each(function()
@@ -146,21 +146,21 @@ describe("QuestieTracker", function()
         end)
 
         it("should count TrackedQuests when auto-tracking is disabled", function()
-            Questie.db.profile.autoTrackQuests = false
-            Questie.db.char.TrackedQuests = {[RIVERPAW_GNOLL_BOUNTY_ID] = true, [COLLECTING_KELP_ID] = true}
+            QuestieSmazak.db.profile.autoTrackQuests = false
+            QuestieSmazak.db.char.TrackedQuests = {[RIVERPAW_GNOLL_BOUNTY_ID] = true, [COLLECTING_KELP_ID] = true}
             assert.are.equal(2, QuestieTracker.GetNumTrackedQuests())
         end)
 
         it("should subtract auto-untracked quests from the quest log count when auto-tracking is enabled", function()
-            Questie.db.profile.autoTrackQuests = true
-            Questie.db.char.AutoUntrackedQuests = {[RIVERPAW_GNOLL_BOUNTY_ID] = true}
+            QuestieSmazak.db.profile.autoTrackQuests = true
+            QuestieSmazak.db.char.AutoUntrackedQuests = {[RIVERPAW_GNOLL_BOUNTY_ID] = true}
             ActiveQuests.Reset()
             assert.are.equal(4, QuestieTracker.GetNumTrackedQuests())
         end)
 
         it("should not subtract auto-untracked quests that are no longer in the quest log", function()
-            Questie.db.profile.autoTrackQuests = true
-            Questie.db.char.AutoUntrackedQuests = {[RIVERPAW_GNOLL_BOUNTY_ID] = true}
+            QuestieSmazak.db.profile.autoTrackQuests = true
+            QuestieSmazak.db.char.AutoUntrackedQuests = {[RIVERPAW_GNOLL_BOUNTY_ID] = true}
             TrackerData.ContainsQuest = function() return false end
             assert.are.equal(5, QuestieTracker.GetNumTrackedQuests())
         end)
@@ -172,7 +172,7 @@ describe("QuestieTracker", function()
         before_each(function()
             originalIsWatched = _G.IsQuestWatched
             originalCount = _G.GetNumQuestWatches
-            local timers = QuestieLoader:ImportModule("TrackerQuestTimers")
+            local timers = QuestieSmazakLoader:ImportModule("TrackerQuestTimers")
             timers.HideBlizzardTimer = function() end
             timers.ShowBlizzardTimer = function() end
             QuestieTracker.alreadyHooked = nil
@@ -185,10 +185,10 @@ describe("QuestieTracker", function()
             _G.GetNumQuestWatches = originalCount
         end)
 
-        it("should redirect IsQuestWatched to Questie's own tracking state on non-Forever clients", function()
-            Questie.IsForever = false
-            Questie.db.profile.autoTrackQuests = false
-            Questie.db.char.TrackedQuests[RIVERPAW_GNOLL_BOUNTY_ID] = true
+        it("should redirect IsQuestWatched to QuestieSmazak's own tracking state on non-Forever clients", function()
+            QuestieSmazak.IsForever = false
+            QuestieSmazak.db.profile.autoTrackQuests = false
+            QuestieSmazak.db.char.TrackedQuests[RIVERPAW_GNOLL_BOUNTY_ID] = true
 
             QuestieTracker:HookBaseTracker()
 
@@ -196,7 +196,7 @@ describe("QuestieTracker", function()
         end)
 
         it("should leave GetNumQuestWatches untouched so Blizzard's native watch limit still applies", function()
-            Questie.IsForever = false
+            QuestieSmazak.IsForever = false
             local nativeCount = function() return 3 end
             _G.GetNumQuestWatches = nativeCount
 
@@ -206,7 +206,7 @@ describe("QuestieTracker", function()
         end)
 
         it("should restore the original IsQuestWatched global on unhook", function()
-            Questie.IsForever = false
+            QuestieSmazak.IsForever = false
             local nativeIsWatched = function() return true end
             _G.IsQuestWatched = nativeIsWatched
 
@@ -217,7 +217,7 @@ describe("QuestieTracker", function()
         end)
 
         it("should not touch IsQuestWatched on Forever clients", function()
-            Questie.IsForever = true
+            QuestieSmazak.IsForever = true
             local nativeIsWatched = function() return true end
             _G.IsQuestWatched = nativeIsWatched
 
@@ -229,7 +229,7 @@ describe("QuestieTracker", function()
 
     describe("RemoveQuest", function()
         it("should not unfocus when another quest is removed", function()
-            Questie.db.char.TrackerFocus = COLLECTING_KELP_ID
+            QuestieSmazak.db.char.TrackerFocus = COLLECTING_KELP_ID
 
             QuestieTracker:RemoveQuest(RIVERPAW_GNOLL_BOUNTY_ID)
 
@@ -238,7 +238,7 @@ describe("QuestieTracker", function()
         end)
 
         it("should unfocus when the removed quest id matches the focused quest id", function()
-            Questie.db.char.TrackerFocus = COLLECTING_KELP_ID
+            QuestieSmazak.db.char.TrackerFocus = COLLECTING_KELP_ID
 
             QuestieTracker:RemoveQuest(COLLECTING_KELP_ID)
 
@@ -252,59 +252,59 @@ describe("QuestieTracker", function()
         local titleMock, removeWatchMock, quest, QuestEventHandler
 
         before_each(function()
-            originalForever = Questie.IsForever
+            originalForever = QuestieSmazak.IsForever
             originalQuestLog = _G.C_QuestLog
-            Questie.IsForever = true
+            QuestieSmazak.IsForever = true
             _G.C_QuestLog = {
                 GetQuestWatchType = function() return 1 end,
                 RemoveQuestWatch = spy.new(function() end),
             }
-            Questie.db.profile.autoTrackQuests = true
-            Questie.db.char.collapsedZones = {}
+            QuestieSmazak.db.profile.autoTrackQuests = true
+            QuestieSmazak.db.char.collapsedZones = {}
             ActiveQuests.Reset()
             quest = {Id = 91741, name = "Nibbled-On Book", zoneName = "Northshire Abbey", Objectives = {}}
-            QuestEventHandler = QuestieLoader:ImportModule("QuestEventHandler")
+            QuestEventHandler = QuestieSmazakLoader:ImportModule("QuestEventHandler")
             QuestEventHandler.IsQuestAccepted = spy.new(function() return true end)
             TrackerData.RefreshQuest = spy.new(function() return quest end)
             TrackerUtils.GetQuestGroupName = function(trackerQuest) return trackerQuest.zoneName end
-            QuestieLoader:ImportModule("CommsVisibility").ScheduleSnapshot = spy.new(function() end)
-            removeWatchMock = stub(QuestieLoader:ImportModule("QuestieCompat"), "RemoveQuestWatch")
-            titleMock = stub(QuestieLoader:ImportModule("QuestieCompat"), "GetQuestLogTitle", function()
+            QuestieSmazakLoader:ImportModule("CommsVisibility").ScheduleSnapshot = spy.new(function() end)
+            removeWatchMock = stub(QuestieSmazakLoader:ImportModule("QuestieCompat"), "RemoveQuestWatch")
+            titleMock = stub(QuestieSmazakLoader:ImportModule("QuestieCompat"), "GetQuestLogTitle", function()
                 return "Nibbled-On Book", 2, nil, false, false, 1, nil, 91741
             end)
             QuestieTracker.Update = spy.new(function() end)
         end)
 
         after_each(function()
-            Questie.IsForever = originalForever
+            QuestieSmazak.IsForever = originalForever
             _G.C_QuestLog = originalQuestLog
             titleMock:revert()
             removeWatchMock:revert()
         end)
 
         it("keeps Classic's watch migration when tracking a quest without database enrichment", function()
-            Questie.IsForever = false
-            Questie.db.profile.autoTrackQuests = false
+            QuestieSmazak.IsForever = false
+            QuestieSmazak.db.profile.autoTrackQuests = false
             QuestieTracker.last_aqw = nil
 
             QuestieTracker:AQW_Insert(2)
 
             assert.spy(removeWatchMock).was.called_with(2, true)
-            assert.is_true(Questie.db.char.TrackedQuests[91741])
+            assert.is_true(QuestieSmazak.db.char.TrackedQuests[91741])
             assert.spy(QuestieTracker.Update).was.called()
         end)
 
         it("retracks and expands an unknown native quest", function()
-            Questie.db.char.AutoUntrackedQuests[91741] = true
-            Questie.db.char.collapsedQuests[91741] = true
-            Questie.db.char.collapsedZones["Northshire Abbey"] = true
+            QuestieSmazak.db.char.AutoUntrackedQuests[91741] = true
+            QuestieSmazak.db.char.collapsedQuests[91741] = true
+            QuestieSmazak.db.char.collapsedZones["Northshire Abbey"] = true
 
             QuestieTracker:AQW_Insert(2)
 
             assert.spy(QuestEventHandler.IsQuestAccepted).was.called_with(91741)
-            assert.is_nil(Questie.db.char.AutoUntrackedQuests[91741])
-            assert.is_nil(Questie.db.char.collapsedQuests[91741])
-            assert.is_nil(Questie.db.char.collapsedZones["Northshire Abbey"])
+            assert.is_nil(QuestieSmazak.db.char.AutoUntrackedQuests[91741])
+            assert.is_nil(QuestieSmazak.db.char.collapsedQuests[91741])
+            assert.is_nil(QuestieSmazak.db.char.collapsedZones["Northshire Abbey"])
             assert.spy(removeWatchMock).was.not_called()
             assert.spy(QuestieTracker.Update).was.called()
         end)
@@ -312,36 +312,36 @@ describe("QuestieTracker", function()
         it("expands the tracker group the quest is listed under on retrack", function()
             -- Non-zone sort modes list every quest under one group, not under its zone.
             TrackerUtils.GetQuestGroupName = function() return "Quests (By Level)" end
-            Questie.db.char.AutoUntrackedQuests[91741] = true
-            Questie.db.char.collapsedZones["Quests (By Level)"] = true
+            QuestieSmazak.db.char.AutoUntrackedQuests[91741] = true
+            QuestieSmazak.db.char.collapsedZones["Quests (By Level)"] = true
 
             QuestieTracker:AQW_Insert(2)
 
-            assert.is_nil(Questie.db.char.collapsedZones["Quests (By Level)"])
+            assert.is_nil(QuestieSmazak.db.char.collapsedZones["Quests (By Level)"])
         end)
 
-        it("ignores Blizzard's auto-watch before Questie finishes accepting the quest in manual tracking", function()
-            Questie.IsForever = false
-            Questie.db.profile.autoTrackQuests = false
+        it("ignores Blizzard's auto-watch before QuestieSmazak finishes accepting the quest in manual tracking", function()
+            QuestieSmazak.IsForever = false
+            QuestieSmazak.db.profile.autoTrackQuests = false
             QuestieTracker.last_aqw = nil
-            -- The quest is already in the native log; only Questie's acceptance is still pending.
+            -- The quest is already in the native log; only QuestieSmazak's acceptance is still pending.
             TrackerData.ContainsQuest = function() return true end
             QuestEventHandler.IsQuestAccepted = function() return false end
 
             QuestieTracker:AQW_Insert(2)
 
-            assert.is_nil(Questie.db.char.TrackedQuests[91741])
+            assert.is_nil(QuestieSmazak.db.char.TrackedQuests[91741])
             assert.spy(removeWatchMock).was.not_called()
             assert.spy(QuestieTracker.Update).was.not_called()
         end)
 
         it("ignores a stale add after the native quest was removed", function()
             QuestEventHandler.IsQuestAccepted = function() return false end
-            Questie.db.char.AutoUntrackedQuests[91741] = true
+            QuestieSmazak.db.char.AutoUntrackedQuests[91741] = true
 
             QuestieTracker:AQW_Insert(2)
 
-            assert.is_true(Questie.db.char.AutoUntrackedQuests[91741])
+            assert.is_true(QuestieSmazak.db.char.AutoUntrackedQuests[91741])
             assert.spy(TrackerData.RefreshQuest).was.not_called()
             assert.spy(QuestieTracker.Update).was.not_called()
         end)
@@ -349,13 +349,13 @@ describe("QuestieTracker", function()
         it("untracks the native watch without requiring a database object", function()
             QuestieTracker:UntrackQuestId(91741)
 
-            assert.is_true(Questie.db.char.AutoUntrackedQuests[91741])
+            assert.is_true(QuestieSmazak.db.char.AutoUntrackedQuests[91741])
             assert.spy(_G.C_QuestLog.RemoveQuestWatch).was.called_with(91741)
             assert.spy(QuestieTracker.Update).was.called()
         end)
 
         it("passes refreshed data to text-only updates", function()
-            local pool = QuestieLoader:ImportModule("TrackerLinePool")
+            local pool = QuestieSmazakLoader:ImportModule("TrackerLinePool")
             pool.UpdateQuestLines = spy.new(function() end)
 
             QuestieTracker.UpdateQuestLines(91741)
@@ -366,7 +366,7 @@ describe("QuestieTracker", function()
 
         it("does not update old rows after the quest leaves the native log", function()
             TrackerData.RefreshQuest = function() return nil end
-            local pool = QuestieLoader:ImportModule("TrackerLinePool")
+            local pool = QuestieSmazakLoader:ImportModule("TrackerLinePool")
             pool.UpdateQuestLines = spy.new(function() end)
 
             QuestieTracker.UpdateQuestLines(91741)
@@ -393,52 +393,52 @@ describe("QuestieTracker", function()
             instanceMock = stub(_G, "IsInInstance", function() return false end)
             infoMock = stub(_G, "GetInstanceInfo", function() return "Outside", "none" end)
             screenMock = stub(_G, "GetScreenWidth", function() return 1000 end)
-            countMock = stub(QuestieLoader:ImportModule("QuestieCompat"), "GetNumQuestWatches", function() return 0 end)
-            expansion = QuestieLoader:ImportModule("Expansions")
+            countMock = stub(QuestieSmazakLoader:ImportModule("QuestieCompat"), "GetNumQuestWatches", function() return 0 end)
+            expansion = QuestieSmazakLoader:ImportModule("Expansions")
             originalExpansion = expansion.Current
             expansion.Current = expansion.Era
             originalTimer, originalDurability = _G.C_Timer, _G.DurabilityFrame
-            originalBindingLabel = _G.BINDING_NAME_QUESTIE_TOGGLE_TRACKER
+            originalBindingLabel = _G.BINDING_NAME_QUESTIESMAZAK_TOGGLE_TRACKER
             _G.C_Timer = {After = function() end}
             _G.DurabilityFrame = {GetPoint = function() return "TOPLEFT" end}
-            Questie.db.profile.trackerFontSizeZone = 12
-            Questie.db.profile.trackerFontSizeQuest = 10
-            Questie.db.profile.trackerFontSizeObjective = 10
-            Questie.db.profile.trackerWidthRatio = 0.5
+            QuestieSmazak.db.profile.trackerFontSizeZone = 12
+            QuestieSmazak.db.profile.trackerFontSizeQuest = 10
+            QuestieSmazak.db.profile.trackerFontSizeObjective = 10
+            QuestieSmazak.db.profile.trackerWidthRatio = 0.5
 
             TrackerData.Refresh = spy.new(function() return {} end)
             revision = 0
             TrackerData.GetLayoutRevision = function() return revision end
-            local base = QuestieLoader:ImportModule("TrackerBaseFrame")
+            local base = QuestieSmazakLoader:ImportModule("TrackerBaseFrame")
             base.Initialize = function()
                 local baseFrame = CreateFrame("Frame")
                 baseFrame.GetWidth = function() return 200 end
                 return baseFrame
             end
             base.Update = function() end
-            header = QuestieLoader:ImportModule("TrackerHeaderFrame")
+            header = QuestieSmazakLoader:ImportModule("TrackerHeaderFrame")
             header.Initialize = function() return {} end
             header.Update = function() assert.spy(TrackerData.Refresh).was.called(1) end
-            local frame = QuestieLoader:ImportModule("TrackerQuestFrame")
+            local frame = QuestieSmazakLoader:ImportModule("TrackerQuestFrame")
             frame.Initialize = function() return {} end
             frame.Update = function() end
-            pool = QuestieLoader:ImportModule("TrackerLinePool")
+            pool = QuestieSmazakLoader:ImportModule("TrackerLinePool")
             pool.Initialize = function() end
             pool.ResetLinesForChange = function() end
             pool.ResetButtonsForChange = function() end
             pool.GetLastLine = function() return nil end
             pool.RefreshHighlight = function() end
-            RecipeSection = QuestieLoader:ImportModule("RecipeSection")
+            RecipeSection = QuestieSmazakLoader:ImportModule("RecipeSection")
             RecipeSection.Draw = spy.new(function() end)
-            ScenarioSection = QuestieLoader:ImportModule("ScenarioSection")
+            ScenarioSection = QuestieSmazakLoader:ImportModule("ScenarioSection")
             ScenarioSection.Draw = spy.new(function() end)
-            AchievementSection = QuestieLoader:ImportModule("AchievementSection")
+            AchievementSection = QuestieSmazakLoader:ImportModule("AchievementSection")
             AchievementSection.Draw = spy.new(function() table.insert(drawnSections, "achievements") end)
-            QuestSection = QuestieLoader:ImportModule("QuestSection")
+            QuestSection = QuestieSmazakLoader:ImportModule("QuestSection")
             QuestSection.Draw = spy.new(function() table.insert(drawnSections, "quests") end)
             QuestSection.HasVisibleQuestItems = function() return false end
             drawnSections = {}
-            QuestieLoader:ImportModule("TrackerFadeTicker").Initialize = function() end
+            QuestieSmazakLoader:ImportModule("TrackerFadeTicker").Initialize = function() end
             TrackerUtils.IsVoiceOverLoaded = function() return false end
             TrackerUtils.IsSpokenLoaded = function() return false end
             TrackerUtils.GetSortedQuestIds = spy.new(function()
@@ -448,7 +448,7 @@ describe("QuestieTracker", function()
 
             dofile("Localization/l10n.lua")
             dofile("Modules/Tracker/TrackerLayout.lua")
-            QuestieLoader:ImportModule("TrackerLayout").SetItemColumnShown = spy.new(function() end)
+            QuestieSmazakLoader:ImportModule("TrackerLayout").SetItemColumnShown = spy.new(function() end)
             dofile("Modules/Tracker/QuestieTracker.lua")
             QuestieTracker.started = false
             QuestieTracker.alreadyHooked = nil
@@ -464,10 +464,10 @@ describe("QuestieTracker", function()
             instanceMock:revert()
             infoMock:revert()
             screenMock:revert()
-            Questie.db.profile.listAchievementsFirst = nil
+            QuestieSmazak.db.profile.listAchievementsFirst = nil
             expansion.Current = originalExpansion
             _G.C_Timer, _G.DurabilityFrame = originalTimer, originalDurability
-            _G.BINDING_NAME_QUESTIE_TOGGLE_TRACKER = originalBindingLabel
+            _G.BINDING_NAME_QUESTIESMAZAK_TOGGLE_TRACKER = originalBindingLabel
         end)
 
         it("should draw quests and recipes outside scenarios before WotLK", function()
@@ -496,7 +496,7 @@ describe("QuestieTracker", function()
             QuestSection.HasVisibleQuestItems = originalPredicate
 
             assert.are_same({sortedQuestIds, questDetails}, passedArguments)
-            assert.spy(QuestieLoader:ImportModule("TrackerLayout").SetItemColumnShown).was.called_with(true)
+            assert.spy(QuestieSmazakLoader:ImportModule("TrackerLayout").SetItemColumnShown).was.called_with(true)
         end)
 
         it("should hide the quest item column when no quest item button is visible", function()
@@ -504,7 +504,7 @@ describe("QuestieTracker", function()
 
             QuestieTracker:Update()
 
-            assert.spy(QuestieLoader:ImportModule("TrackerLayout").SetItemColumnShown).was.called_with(false)
+            assert.spy(QuestieSmazakLoader:ImportModule("TrackerLayout").SetItemColumnShown).was.called_with(false)
         end)
 
         it("should draw the achievement section from WotLK on", function()
@@ -518,7 +518,7 @@ describe("QuestieTracker", function()
 
         it("should draw achievements before quests when configured", function()
             expansion.Current = expansion.Wotlk
-            Questie.db.profile.listAchievementsFirst = true
+            QuestieSmazak.db.profile.listAchievementsFirst = true
             now = 1
 
             QuestieTracker:Update()
@@ -667,7 +667,7 @@ describe("QuestieTracker", function()
             it("lays out quests again after leaving a Challenge Mode", function()
                 expansion.Current = expansion.MoP
                 pool.GetNextLine = function() return nil end
-                QuestieLoader:ImportModule("ChallengeModeTimer").SetTimerLabel = function() end
+                QuestieSmazakLoader:ImportModule("ChallengeModeTimer").SetTimerLabel = function() end
                 infoMock.invokes(function() return "Temple of the Jade Serpent", "party", 8, "Challenge Mode" end)
                 now = 2
                 QuestieTracker:Update()
@@ -689,7 +689,7 @@ describe("QuestieTracker", function()
                 original = {Id = 11, HideIcons = true, Objectives = {[3] = objective}, SpecialObjectives = {}}
                 ActiveQuests.Reset()
                 ActiveQuests.Add(11, original)
-                QuestieLoader:ImportModule("QuestieDB").GetQuest = function() return original end
+                QuestieSmazakLoader:ImportModule("QuestieDB").GetQuest = function() return original end
                 TrackerData.RefreshQuest = spy.new(function()
                     return {Id = 11, enrichment = original, Objectives = {{enrichment = objective}},
                         SpecialObjectives = {}, IsComplete = function() return 0 end}
@@ -702,14 +702,14 @@ describe("QuestieTracker", function()
             end)
 
             it("restores quest focus through an explicit single-quest refresh", function()
-                Questie.db.char.TrackerFocus = 11
+                QuestieSmazak.db.char.TrackerFocus = 11
 
                 local initialized, err = coroutine.resume(coroutine.create(QuestieTracker.Initialize))
 
                 assert.is_true(initialized, err)
                 assert.spy(TrackerData.Refresh).was.not_called()
                 assert.spy(TrackerData.RefreshQuest).was.called_with(11)
-                assert.are.equal(11, Questie.db.char.TrackerFocus)
+                assert.are.equal(11, QuestieSmazak.db.char.TrackerFocus)
                 assert.is_nil(original.HideIcons)
                 assert.spy(QuestieQuest.ToggleQuestNotes).was.called_with(false)
             end)
@@ -721,12 +721,12 @@ describe("QuestieTracker", function()
                         SpecialObjectives = {}, IsComplete = function() return 0 end}
                 end)
                 TrackerData.ContainsQuest = function() return true end
-                Questie.db.char.TrackerFocus = 11
+                QuestieSmazak.db.char.TrackerFocus = 11
 
                 local initialized, err = coroutine.resume(coroutine.create(QuestieTracker.Initialize))
 
                 assert.is_true(initialized, err)
-                assert.are.equal(11, Questie.db.char.TrackerFocus)
+                assert.are.equal(11, QuestieSmazak.db.char.TrackerFocus)
                 assert.spy(QuestieQuest.ToggleQuestNotes).was.not_called()
 
                 ready, now = true, 1
@@ -743,39 +743,39 @@ describe("QuestieTracker", function()
                 end)
                 TrackerData.ContainsQuest = function() return true end
                 TrackerUtils.GetSortedQuestIds = function() return {}, {} end
-                TrackerUtils.UnFocus = spy.new(function() Questie.db.char.TrackerFocus = nil end)
-                Questie.db.char.TrackerFocus = 11
+                TrackerUtils.UnFocus = spy.new(function() QuestieSmazak.db.char.TrackerFocus = nil end)
+                QuestieSmazak.db.char.TrackerFocus = 11
 
                 local initialized, err = coroutine.resume(coroutine.create(QuestieTracker.Initialize))
                 assert.is_true(initialized, err)
 
                 now = 30
                 QuestieTracker:Update()
-                assert.are.equal(11, Questie.db.char.TrackerFocus)
+                assert.are.equal(11, QuestieSmazak.db.char.TrackerFocus)
 
                 now = 61
                 TrackerData.Refresh:clear() -- The shared header stub asserts one refresh per update.
                 QuestieTracker:Update()
                 assert.spy(TrackerUtils.UnFocus).was.called(1)
-                assert.is_nil(Questie.db.char.TrackerFocus)
+                assert.is_nil(QuestieSmazak.db.char.TrackerFocus)
                 assert.spy(QuestieQuest.ToggleQuestNotes).was.not_called()
             end)
 
             it("should clear a saved objective focus from older versions at startup", function()
-                Questie.db.char.TrackerFocus = "11 3"
+                QuestieSmazak.db.char.TrackerFocus = "11 3"
 
                 local initialized, err = coroutine.resume(coroutine.create(QuestieTracker.Initialize))
 
                 assert.is_true(initialized, err)
-                assert.is_nil(Questie.db.char.TrackerFocus)
+                assert.is_nil(QuestieSmazak.db.char.TrackerFocus)
                 assert.spy(TrackerData.RefreshQuest).was.not_called()
             end)
 
             it("clears saved focus when its quest is no longer in the quest log", function()
                 TrackerData.RefreshQuest = spy.new(function() return nil end)
                 TrackerData.ContainsQuest = function() return false end
-                TrackerUtils.UnFocus = spy.new(function() Questie.db.char.TrackerFocus = nil end)
-                Questie.db.char.TrackerFocus = 11
+                TrackerUtils.UnFocus = spy.new(function() QuestieSmazak.db.char.TrackerFocus = nil end)
+                QuestieSmazak.db.char.TrackerFocus = 11
 
                 local initialized, err = coroutine.resume(coroutine.create(QuestieTracker.Initialize))
 
@@ -788,7 +788,7 @@ describe("QuestieTracker", function()
 
     describe("ToggleTracker", function()
         it("should collapse when tracker is expanded", function()
-            Questie.db.char.isTrackerExpanded = true
+            QuestieSmazak.db.char.isTrackerExpanded = true
             QuestieTracker.Collapse = spy.new(function() end)
 
             QuestieTracker.ToggleTracker()
@@ -797,7 +797,7 @@ describe("QuestieTracker", function()
         end)
 
         it("should expand when tracker is collapsed", function()
-            Questie.db.char.isTrackerExpanded = false
+            QuestieSmazak.db.char.isTrackerExpanded = false
             QuestieTracker.Expand = spy.new(function() end)
 
             QuestieTracker.ToggleTracker()
@@ -806,7 +806,7 @@ describe("QuestieTracker", function()
         end)
 
         it("should do nothing when tracker is disabled", function()
-            Questie.db.profile.trackerEnabled = false
+            QuestieSmazak.db.profile.trackerEnabled = false
             QuestieTracker.Collapse = spy.new(function() end)
             QuestieTracker.Expand = spy.new(function() end)
 
@@ -819,7 +819,7 @@ describe("QuestieTracker", function()
 
     describe("HandleZoneChanged", function()
         it("should collapse the tracker when entering an instance with minimize enabled", function()
-            Questie.db.profile.minimizeTrackerInInstances = true
+            QuestieSmazak.db.profile.minimizeTrackerInInstances = true
             _G.IsInInstance = function() return true end
             QuestieTracker.Collapse = spy.new(function() end)
 
@@ -829,8 +829,8 @@ describe("QuestieTracker", function()
         end)
 
         it("should not claim ownership of an already-manually-minimized tracker when entering an instance, so it is not auto-expanded on leaving", function()
-            Questie.db.profile.minimizeTrackerInInstances = true
-            Questie.db.char.isTrackerExpanded = false -- manually minimized by the player before entering
+            QuestieSmazak.db.profile.minimizeTrackerInInstances = true
+            QuestieSmazak.db.char.isTrackerExpanded = false -- manually minimized by the player before entering
             _G.IsInInstance = function() return true end
             QuestieTracker.Collapse = spy.new(function() end)
 
@@ -846,7 +846,7 @@ describe("QuestieTracker", function()
         end)
 
         it("should queue the collapse via QuestieCombatQueue instead of calling it directly", function()
-            Questie.db.profile.minimizeTrackerInInstances = true
+            QuestieSmazak.db.profile.minimizeTrackerInInstances = true
             _G.IsInInstance = function() return true end
             QuestieCombatQueue.Queue = spy.new(function() end)
             QuestieTracker.Collapse = spy.new(function() end)
@@ -858,7 +858,7 @@ describe("QuestieTracker", function()
         end)
 
         it("should hide the tracker directly when entering an instance with hide enabled", function()
-            Questie.db.profile.hideTrackerInInstances = true
+            QuestieSmazak.db.profile.hideTrackerInInstances = true
             _G.IsInInstance = function() return true end
             QuestieTracker.Hide = spy.new(function() end)
 
@@ -868,8 +868,8 @@ describe("QuestieTracker", function()
         end)
 
         it("should do nothing when the tracker is disabled, even if in an instance with minimize enabled", function()
-            Questie.db.profile.trackerEnabled = false
-            Questie.db.profile.minimizeTrackerInInstances = true
+            QuestieSmazak.db.profile.trackerEnabled = false
+            QuestieSmazak.db.profile.minimizeTrackerInInstances = true
             _G.IsInInstance = function() return true end
             QuestieTracker.Collapse = spy.new(function() end)
 
@@ -879,14 +879,14 @@ describe("QuestieTracker", function()
         end)
 
         it("should do nothing when leaving an instance while the tracker is disabled, even if previously minimized", function()
-            Questie.db.profile.minimizeTrackerInInstances = true
+            QuestieSmazak.db.profile.minimizeTrackerInInstances = true
             _G.IsInInstance = function() return true end
             QuestieTracker.HandleZoneChanged() -- entered instance, minimizedByInstance is now true
 
-            Questie.db.profile.trackerEnabled = false
+            QuestieSmazak.db.profile.trackerEnabled = false
             _G.IsInInstance = function() return false end
             _G.UnitIsGhost = function() return false end
-            Questie.db.char.isTrackerExpanded = false
+            QuestieSmazak.db.char.isTrackerExpanded = false
             QuestieTracker.Expand = spy.new(function() end)
 
             QuestieTracker.HandleZoneChanged()
@@ -895,13 +895,13 @@ describe("QuestieTracker", function()
         end)
 
         it("should expand the tracker when leaving an instance after having been minimized", function()
-            Questie.db.profile.minimizeTrackerInInstances = true
+            QuestieSmazak.db.profile.minimizeTrackerInInstances = true
             _G.IsInInstance = function() return true end
             QuestieTracker.HandleZoneChanged() -- entered instance, minimizedByInstance is now true
 
             _G.IsInInstance = function() return false end
             _G.UnitIsGhost = function() return false end
-            Questie.db.char.isTrackerExpanded = false
+            QuestieSmazak.db.char.isTrackerExpanded = false
             QuestieTracker.Expand = spy.new(function() end)
 
             QuestieTracker.HandleZoneChanged()
@@ -910,7 +910,7 @@ describe("QuestieTracker", function()
         end)
 
         it("should show the tracker when leaving an instance after having been hidden", function()
-            Questie.db.profile.hideTrackerInInstances = true
+            QuestieSmazak.db.profile.hideTrackerInInstances = true
             _G.IsInInstance = function() return true end
             QuestieTracker.HandleZoneChanged() -- entered instance, hiddenByInstance is now true
 
@@ -923,14 +923,14 @@ describe("QuestieTracker", function()
         end)
 
         it("should not expand when leaving an instance if minimize was turned off in the meantime", function()
-            Questie.db.profile.minimizeTrackerInInstances = true
+            QuestieSmazak.db.profile.minimizeTrackerInInstances = true
             _G.IsInInstance = function() return true end
             QuestieTracker.HandleZoneChanged() -- entered instance, minimizedByInstance is now true
 
-            Questie.db.profile.minimizeTrackerInInstances = false
+            QuestieSmazak.db.profile.minimizeTrackerInInstances = false
             _G.IsInInstance = function() return false end
             _G.UnitIsGhost = function() return false end
-            Questie.db.char.isTrackerExpanded = false
+            QuestieSmazak.db.char.isTrackerExpanded = false
             QuestieTracker.Expand = spy.new(function() end)
 
             QuestieTracker.HandleZoneChanged()
@@ -939,13 +939,13 @@ describe("QuestieTracker", function()
         end)
 
         it("should not expand when leaving an instance while the player is a ghost", function()
-            Questie.db.profile.minimizeTrackerInInstances = true
+            QuestieSmazak.db.profile.minimizeTrackerInInstances = true
             _G.IsInInstance = function() return true end
             QuestieTracker.HandleZoneChanged() -- entered instance, minimizedByInstance is now true
 
             _G.IsInInstance = function() return false end
             _G.UnitIsGhost = function() return true end
-            Questie.db.char.isTrackerExpanded = false
+            QuestieSmazak.db.char.isTrackerExpanded = false
             QuestieTracker.Expand = spy.new(function() end)
 
             QuestieTracker.HandleZoneChanged()
@@ -954,11 +954,11 @@ describe("QuestieTracker", function()
         end)
 
         it("should not show when leaving an instance if hide was turned off in the meantime", function()
-            Questie.db.profile.hideTrackerInInstances = true
+            QuestieSmazak.db.profile.hideTrackerInInstances = true
             _G.IsInInstance = function() return true end
             QuestieTracker.HandleZoneChanged() -- entered instance, hiddenByInstance is now true
 
-            Questie.db.profile.hideTrackerInInstances = false
+            QuestieSmazak.db.profile.hideTrackerInInstances = false
             _G.IsInInstance = function() return false end
             QuestieTracker.Show = spy.new(function() end)
 
@@ -981,7 +981,7 @@ describe("QuestieTracker", function()
 
     describe("OnMinimizeInInstancesChanged", function()
         it("should collapse the tracker when enabled while in an instance and expanded", function()
-            Questie.db.char.isTrackerExpanded = true
+            QuestieSmazak.db.char.isTrackerExpanded = true
             _G.IsInInstance = function() return true end
             QuestieTracker.Collapse = spy.new(function() end)
 
@@ -1000,11 +1000,11 @@ describe("QuestieTracker", function()
         end)
 
         it("should expand the tracker when disabled after it claimed ownership of the collapse", function()
-            Questie.db.char.isTrackerExpanded = true
+            QuestieSmazak.db.char.isTrackerExpanded = true
             _G.IsInInstance = function() return true end
             QuestieTracker.OnMinimizeInInstancesChanged(true) -- claims ownership
 
-            Questie.db.char.isTrackerExpanded = false
+            QuestieSmazak.db.char.isTrackerExpanded = false
             QuestieTracker.Expand = spy.new(function() end)
 
             QuestieTracker.OnMinimizeInInstancesChanged(false)
@@ -1013,7 +1013,7 @@ describe("QuestieTracker", function()
         end)
 
         it("should not expand the tracker when disabled if it never claimed ownership (manually minimized)", function()
-            Questie.db.char.isTrackerExpanded = false -- already manually minimized
+            QuestieSmazak.db.char.isTrackerExpanded = false -- already manually minimized
             _G.IsInInstance = function() return true end
             QuestieTracker.OnMinimizeInInstancesChanged(true) -- does not claim ownership
 
@@ -1077,8 +1077,8 @@ describe("QuestieTracker", function()
         end)
 
         it("should collapse the tracker when entering combat with minimize enabled and expanded", function()
-            Questie.db.profile.minimizeTrackerInCombat = true
-            Questie.db.char.isTrackerExpanded = true
+            QuestieSmazak.db.profile.minimizeTrackerInCombat = true
+            QuestieSmazak.db.char.isTrackerExpanded = true
             QuestieTracker.Collapse = spy.new(function() end)
 
             QuestieTracker.HandleCombatStarted()
@@ -1087,7 +1087,7 @@ describe("QuestieTracker", function()
         end)
 
         it("should hide the tracker when entering combat with hide enabled", function()
-            Questie.db.profile.hideTrackerInCombat = true
+            QuestieSmazak.db.profile.hideTrackerInCombat = true
             QuestieTracker.Hide = spy.new(function() end)
 
             QuestieTracker.HandleCombatStarted()
@@ -1096,7 +1096,7 @@ describe("QuestieTracker", function()
         end)
 
         it("should re-collapse when entering combat while already in an instance with minimize enabled", function()
-            Questie.db.profile.minimizeTrackerInInstances = true
+            QuestieSmazak.db.profile.minimizeTrackerInInstances = true
             _G.IsInInstance = function() return true end
             QuestieTracker.Collapse = spy.new(function() end)
 
@@ -1106,8 +1106,8 @@ describe("QuestieTracker", function()
         end)
 
         it("should expand the tracker when leaving combat after it was minimized due to combat", function()
-            Questie.db.profile.minimizeTrackerInCombat = true
-            Questie.db.char.isTrackerExpanded = true
+            QuestieSmazak.db.profile.minimizeTrackerInCombat = true
+            QuestieSmazak.db.char.isTrackerExpanded = true
             QuestieTracker.HandleCombatStarted() -- entered combat, claims ownership
 
             QuestieTracker.Expand = spy.new(function() end)
@@ -1118,9 +1118,9 @@ describe("QuestieTracker", function()
         end)
 
         it("should not expand when leaving combat while still in an instance that also wants it minimized", function()
-            Questie.db.profile.minimizeTrackerInCombat = true
-            Questie.db.profile.minimizeTrackerInInstances = true
-            Questie.db.char.isTrackerExpanded = true
+            QuestieSmazak.db.profile.minimizeTrackerInCombat = true
+            QuestieSmazak.db.profile.minimizeTrackerInInstances = true
+            QuestieSmazak.db.char.isTrackerExpanded = true
             _G.IsInInstance = function() return true end
             QuestieTracker.HandleCombatStarted() -- entered combat, claims ownership
 
@@ -1132,7 +1132,7 @@ describe("QuestieTracker", function()
         end)
 
         it("should show the tracker when leaving combat after it was hidden due to combat", function()
-            Questie.db.profile.hideTrackerInCombat = true
+            QuestieSmazak.db.profile.hideTrackerInCombat = true
             QuestieTracker.HandleCombatStarted() -- entered combat, claims ownership
 
             QuestieTracker.Show = spy.new(function() end)
@@ -1143,8 +1143,8 @@ describe("QuestieTracker", function()
         end)
 
         it("should not show when leaving combat while still in an instance that also wants it hidden", function()
-            Questie.db.profile.hideTrackerInCombat = true
-            Questie.db.profile.hideTrackerInInstances = true
+            QuestieSmazak.db.profile.hideTrackerInCombat = true
+            QuestieSmazak.db.profile.hideTrackerInInstances = true
             _G.IsInInstance = function() return true end
             QuestieTracker.HandleCombatStarted() -- entered combat, claims ownership
 
@@ -1156,8 +1156,8 @@ describe("QuestieTracker", function()
         end)
 
         it("should queue an Update when leaving combat after minimize was active due to combat", function()
-            Questie.db.profile.minimizeTrackerInCombat = true
-            Questie.db.char.isTrackerExpanded = true
+            QuestieSmazak.db.profile.minimizeTrackerInCombat = true
+            QuestieSmazak.db.char.isTrackerExpanded = true
             QuestieTracker.HandleCombatStarted()
 
             QuestieCombatQueue.Queue = spy.new(function() end)
@@ -1170,11 +1170,11 @@ describe("QuestieTracker", function()
         it(
             "should transfer minimize ownership from combat to instance when entering an instance while minimized by combat, so leaving the instance later still expands",
             function()
-                Questie.db.profile.minimizeTrackerInCombat = true
-                Questie.db.profile.minimizeTrackerInInstances = true
-                Questie.db.char.isTrackerExpanded = true
+                QuestieSmazak.db.profile.minimizeTrackerInCombat = true
+                QuestieSmazak.db.profile.minimizeTrackerInInstances = true
+                QuestieSmazak.db.char.isTrackerExpanded = true
                 _G.IsInInstance = function() return false end
-                QuestieTracker.Collapse = spy.new(function() Questie.db.char.isTrackerExpanded = false end)
+                QuestieTracker.Collapse = spy.new(function() QuestieSmazak.db.char.isTrackerExpanded = false end)
 
                 QuestieTracker.HandleCombatStarted() -- combat starts outside the instance, claims ownership via minimizedByCombat
 
@@ -1192,11 +1192,11 @@ describe("QuestieTracker", function()
             end)
 
         it("should keep minimize ownership with instance when entering combat while minimized by instance, so leaving the instance still expands", function()
-            Questie.db.profile.minimizeTrackerInCombat = true
-            Questie.db.profile.minimizeTrackerInInstances = true
-            Questie.db.char.isTrackerExpanded = true
+            QuestieSmazak.db.profile.minimizeTrackerInCombat = true
+            QuestieSmazak.db.profile.minimizeTrackerInInstances = true
+            QuestieSmazak.db.char.isTrackerExpanded = true
             _G.IsInInstance = function() return true end
-            QuestieTracker.Collapse = spy.new(function() Questie.db.char.isTrackerExpanded = false end)
+            QuestieTracker.Collapse = spy.new(function() QuestieSmazak.db.char.isTrackerExpanded = false end)
 
             QuestieTracker.HandleZoneChanged() -- enters the instance, claims ownership via minimizedByInstance
 
@@ -1214,8 +1214,8 @@ describe("QuestieTracker", function()
 
         it("should transfer hide ownership from combat to instance when entering an instance while hidden by combat, so leaving the instance later still shows",
             function()
-                Questie.db.profile.hideTrackerInCombat = true
-                Questie.db.profile.hideTrackerInInstances = true
+                QuestieSmazak.db.profile.hideTrackerInCombat = true
+                QuestieSmazak.db.profile.hideTrackerInInstances = true
                 _G.IsInInstance = function() return false end
 
                 QuestieTracker.HandleCombatStarted() -- combat starts outside the instance, claims ownership via hiddenByCombat
@@ -1233,8 +1233,8 @@ describe("QuestieTracker", function()
             end)
 
         it("should keep hide ownership with instance when entering combat while hidden by instance, so leaving the instance still shows", function()
-            Questie.db.profile.hideTrackerInCombat = true
-            Questie.db.profile.hideTrackerInInstances = true
+            QuestieSmazak.db.profile.hideTrackerInCombat = true
+            QuestieSmazak.db.profile.hideTrackerInInstances = true
             _G.IsInInstance = function() return true end
 
             QuestieTracker.HandleZoneChanged() -- enters the instance, claims ownership via hiddenByInstance
@@ -1253,7 +1253,7 @@ describe("QuestieTracker", function()
 
     describe("OnMinimizeInCombatChanged", function()
         it("should collapse the tracker when enabled while in combat and expanded", function()
-            Questie.db.char.isTrackerExpanded = true
+            QuestieSmazak.db.char.isTrackerExpanded = true
             _G.InCombatLockdown = function() return true end
             QuestieTracker.Collapse = spy.new(function() end)
 
@@ -1272,7 +1272,7 @@ describe("QuestieTracker", function()
         end)
 
         it("should expand the tracker when disabled after it claimed ownership of the collapse", function()
-            Questie.db.char.isTrackerExpanded = true
+            QuestieSmazak.db.char.isTrackerExpanded = true
             _G.InCombatLockdown = function() return true end
             QuestieTracker.OnMinimizeInCombatChanged(true) -- claims ownership
 
@@ -1284,7 +1284,7 @@ describe("QuestieTracker", function()
         end)
 
         it("should not expand the tracker when disabled if it never claimed ownership (manually minimized)", function()
-            Questie.db.char.isTrackerExpanded = false -- already manually minimized
+            QuestieSmazak.db.char.isTrackerExpanded = false -- already manually minimized
             _G.InCombatLockdown = function() return true end
             QuestieTracker.OnMinimizeInCombatChanged(true) -- does not claim ownership, tracker was not expanded
 
@@ -1297,12 +1297,12 @@ describe("QuestieTracker", function()
 
         it("should not expand when disabled while still minimized for an instance, and should transfer ownership so leaving the instance still expands",
             function()
-                Questie.db.profile.minimizeTrackerInCombat = true
-                Questie.db.profile.minimizeTrackerInInstances = true
-                Questie.db.char.isTrackerExpanded = true
+                QuestieSmazak.db.profile.minimizeTrackerInCombat = true
+                QuestieSmazak.db.profile.minimizeTrackerInInstances = true
+                QuestieSmazak.db.char.isTrackerExpanded = true
                 _G.InCombatLockdown = function() return true end
                 _G.IsInInstance = function() return false end
-                QuestieTracker.Collapse = spy.new(function() Questie.db.char.isTrackerExpanded = false end)
+                QuestieTracker.Collapse = spy.new(function() QuestieSmazak.db.char.isTrackerExpanded = false end)
 
                 QuestieTracker.OnMinimizeInCombatChanged(true) -- combat claims ownership, outside any instance
 
@@ -1362,11 +1362,11 @@ describe("QuestieTracker", function()
         end)
 
         it("should not clear instance-hidden state when disabling hide-in-combat while still hidden by an instance", function()
-            Questie.db.profile.hideTrackerInInstances = true
+            QuestieSmazak.db.profile.hideTrackerInInstances = true
             _G.IsInInstance = function() return true end
             QuestieTracker.HandleZoneChanged() -- legitimately hidden by the instance
 
-            Questie.db.profile.hideTrackerInCombat = true
+            QuestieSmazak.db.profile.hideTrackerInCombat = true
             _G.InCombatLockdown = function() return true end
             QuestieTracker.OnHideInCombatChanged(true) -- also hidden by combat now
 
@@ -1382,8 +1382,8 @@ describe("QuestieTracker", function()
         end)
 
         it("should not show when disabled while still hidden for an instance, and should transfer ownership so leaving the instance still shows", function()
-            Questie.db.profile.hideTrackerInCombat = true
-            Questie.db.profile.hideTrackerInInstances = true
+            QuestieSmazak.db.profile.hideTrackerInCombat = true
+            QuestieSmazak.db.profile.hideTrackerInInstances = true
             _G.InCombatLockdown = function() return true end
             _G.IsInInstance = function() return false end
 
@@ -1408,22 +1408,22 @@ describe("QuestieTracker", function()
     describe("Collapse and Expand", function()
         it("should guard against calling when conditions are not met", function()
             -- Test that Collapse does nothing when tracker is already collapsed
-            Questie.db.char.isTrackerExpanded = false
+            QuestieSmazak.db.char.isTrackerExpanded = false
             _G.InCombatLockdown = function() return false end
 
             -- This should be a no-op since isTrackerExpanded is false (guard fails)
             QuestieTracker:Collapse()
-            assert.is_false(Questie.db.char.isTrackerExpanded)
+            assert.is_false(QuestieSmazak.db.char.isTrackerExpanded)
         end)
 
         it("should guard against calling when conditions are not met (expand)", function()
             -- Test that Expand does nothing when tracker is already expanded
-            Questie.db.char.isTrackerExpanded = true
+            QuestieSmazak.db.char.isTrackerExpanded = true
             _G.InCombatLockdown = function() return false end
 
             -- This should be a no-op since isTrackerExpanded is true (guard fails)
             QuestieTracker:Expand()
-            assert.is_true(Questie.db.char.isTrackerExpanded)
+            assert.is_true(QuestieSmazak.db.char.isTrackerExpanded)
         end)
     end)
 end)

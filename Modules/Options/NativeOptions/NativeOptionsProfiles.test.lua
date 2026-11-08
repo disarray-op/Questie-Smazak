@@ -7,16 +7,16 @@ describe("native profile options", function()
     local Popup, items, currentProfile
 
     before_each(function()
-        originalDb = Questie.db
-        originalSetIcons = Questie.SetIcons
+        originalDb = QuestieSmazak.db
+        originalSetIcons = QuestieSmazak.SetIcons
         originalStrtrim, originalStrlenutf8 = _G.strtrim, _G.strlenutf8
         _G.strtrim = function(text) return (text:gsub("^%s+", ""):gsub("%s+$", "")) end
         _G.strlenutf8 = string.len
 
         callbacks = {}
         currentProfile = "Current"
-        Questie.SetIcons = function() end
-        Questie.db = {
+        QuestieSmazak.SetIcons = function() end
+        QuestieSmazak.db = {
             profile = {DBMHUDZoom = 80, DBMHUDRefresh = 0.05},
             keys = {},
             RegisterCallback = function(_, event, handler) callbacks[event] = handler end,
@@ -27,30 +27,30 @@ describe("native profile options", function()
             DeleteProfile = spy.new(function() end),
         }
 
-        Popup = QuestieLoader:ImportModule("QuestiePopup")
+        Popup = QuestieSmazakLoader:ImportModule("QuestiePopup")
         Popup.Dialogs = {}
         Popup.Show = spy.new(function() end)
-        QuestieOptionsEngine = QuestieLoader:ImportModule("QuestieOptionsEngine")
+        QuestieOptionsEngine = QuestieSmazakLoader:ImportModule("QuestieOptionsEngine")
         QuestieOptionsEngine.tabs = {}
         QuestieOptionsEngine.RefreshStates = spy.new(function() end)
 
-        AvailableQuests = QuestieLoader:ImportModule("AvailableQuests")
+        AvailableQuests = QuestieSmazakLoader:ImportModule("AvailableQuests")
         AvailableQuests.ResetLevelRequirementCache = spy.new(function() end)
-        QuestieNameplate = QuestieLoader:ImportModule("QuestieNameplate")
+        QuestieNameplate = QuestieSmazakLoader:ImportModule("QuestieNameplate")
         QuestieNameplate.RedrawIcons = spy.new(function() end)
         QuestieNameplate.RedrawFrameIcon = spy.new(function() end)
-        QuestieDBMIntegration = QuestieLoader:ImportModule("QuestieDBMIntegration")
+        QuestieDBMIntegration = QuestieSmazakLoader:ImportModule("QuestieDBMIntegration")
         QuestieDBMIntegration.ChangeZoomLevel = spy.new(function() end)
         QuestieDBMIntegration.ChangeRefreshRate = spy.new(function() end)
-        QuestieTracker = QuestieLoader:ImportModule("QuestieTracker")
+        QuestieTracker = QuestieSmazakLoader:ImportModule("QuestieTracker")
         QuestieTracker.Update = spy.new(function() end)
         QuestieTracker.UpdateFormatting = spy.new(function() end)
-        QuestieMap = QuestieLoader:ImportModule("QuestieMap")
+        QuestieMap = QuestieSmazakLoader:ImportModule("QuestieMap")
         QuestieMap.RescaleIcons = spy.new(function() end)
         QuestieMap.RescaleTownsfolkIcons = spy.new(function() end)
-        QuestieQuest = QuestieLoader:ImportModule("QuestieQuest")
+        QuestieQuest = QuestieSmazakLoader:ImportModule("QuestieQuest")
         QuestieQuest.SmoothReset = spy.new(function() end)
-        MinimapIcon = QuestieLoader:ImportModule("MinimapIcon")
+        MinimapIcon = QuestieSmazakLoader:ImportModule("MinimapIcon")
         MinimapIcon.RefreshProfile = spy.new(function() end)
 
         dofile("Modules/Options/NativeOptions/NativeOptionsProfiles.lua")
@@ -58,8 +58,8 @@ describe("native profile options", function()
     end)
 
     after_each(function()
-        Questie.db = originalDb
-        Questie.SetIcons = originalSetIcons
+        QuestieSmazak.db = originalDb
+        QuestieSmazak.SetIcons = originalSetIcons
         _G.strtrim, _G.strlenutf8 = originalStrtrim, originalStrlenutf8
     end)
 
@@ -96,35 +96,35 @@ describe("native profile options", function()
         it("should switch to a picked profile and leave applying it to the callback", function()
             items.existing_profiles.set("Other")
 
-            assert.spy(Questie.db.SetProfile).was.called(1)
-            assert.are.equal("Other", Questie.db.SetProfile.calls[1].vals[2])
+            assert.spy(QuestieSmazak.db.SetProfile).was.called(1)
+            assert.are.equal("Other", QuestieSmazak.db.SetProfile.calls[1].vals[2])
             assert.spy(QuestieQuest.SmoothReset).was.not_called()
         end)
 
         it("should do nothing when picking the current profile", function()
             items.existing_profiles.set("Current")
 
-            assert.spy(Questie.db.SetProfile).was.not_called()
+            assert.spy(QuestieSmazak.db.SetProfile).was.not_called()
         end)
 
         it("should create a profile from a trimmed name", function()
             items.new_profile.set("  New  ")
 
-            assert.spy(Questie.db.SetProfile).was.called(1)
-            assert.are.equal("New", Questie.db.SetProfile.calls[1].vals[2])
+            assert.spy(QuestieSmazak.db.SetProfile).was.called(1)
+            assert.are.equal("New", QuestieSmazak.db.SetProfile.calls[1].vals[2])
         end)
 
         it("should refuse a blank profile name", function()
             items.new_profile.set("   ")
 
-            assert.spy(Questie.db.SetProfile).was.not_called()
+            assert.spy(QuestieSmazak.db.SetProfile).was.not_called()
         end)
 
         it("should copy from a picked profile and leave applying it to the callback", function()
             items.copy_profile.set("Other")
 
-            assert.spy(Questie.db.CopyProfile).was.called(1)
-            assert.are.equal("Other", Questie.db.CopyProfile.calls[1].vals[2])
+            assert.spy(QuestieSmazak.db.CopyProfile).was.called(1)
+            assert.are.equal("Other", QuestieSmazak.db.CopyProfile.calls[1].vals[2])
             assert.spy(QuestieQuest.SmoothReset).was.not_called()
         end)
 
@@ -143,11 +143,11 @@ describe("native profile options", function()
 
             items.delete_button.func()
             assert.spy(Popup.Show).was.called_with("QUESTIE_PROFILE_DELETE_CONFIRM")
-            assert.spy(Questie.db.DeleteProfile).was.not_called()
+            assert.spy(QuestieSmazak.db.DeleteProfile).was.not_called()
 
             Popup.Dialogs.QUESTIE_PROFILE_DELETE_CONFIRM.OnAccept()
-            assert.spy(Questie.db.DeleteProfile).was.called(1)
-            assert.are.equal("Other", Questie.db.DeleteProfile.calls[1].vals[2])
+            assert.spy(QuestieSmazak.db.DeleteProfile).was.called(1)
+            assert.are.equal("Other", QuestieSmazak.db.DeleteProfile.calls[1].vals[2])
         end)
 
         it("should never delete the current profile, even if it became current after being picked", function()
@@ -156,7 +156,7 @@ describe("native profile options", function()
 
             Popup.Dialogs.QUESTIE_PROFILE_DELETE_CONFIRM.OnAccept()
 
-            assert.spy(Questie.db.DeleteProfile).was.not_called()
+            assert.spy(QuestieSmazak.db.DeleteProfile).was.not_called()
         end)
     end)
 end)

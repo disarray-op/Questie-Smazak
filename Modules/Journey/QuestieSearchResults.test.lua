@@ -46,10 +46,10 @@ describe("QuestieSearchResults selection", function()
 
     before_each(function()
         originals = {
-            Questie = _G.Questie, LibStub = _G.LibStub, CreateFrame = _G.CreateFrame,
+            QuestieSmazak = _G.QuestieSmazak, LibStub = _G.LibStub, CreateFrame = _G.CreateFrame,
             IsShiftKeyDown = _G.IsShiftKeyDown, ChatEdit_InsertLink = _G.ChatEdit_InsertLink,
         }
-        _G.Questie = {db = {char = {complete = {}}, profile = {}}}
+        _G.QuestieSmazak = {db = {char = {complete = {}}, profile = {}}}
         _G.LibStub = function() return {Create = CreateWidget} end
         _G.CreateFrame = function() return {SetOwner = function() end} end
         _G.IsShiftKeyDown = function() return false end
@@ -58,32 +58,32 @@ describe("QuestieSearchResults selection", function()
         quest = {Id = 92517, name = "The Criminal Element"}
 
         dofile("Localization/l10n.lua")
-        QuestieLoader:ImportModule("QuestieJourneyUtils").Spacer = function() end
-        QuestieLoader:ImportModule("QuestieLink").GetQuestLinkStringById = function(id)
+        QuestieSmazakLoader:ImportModule("QuestieJourneyUtils").Spacer = function() end
+        QuestieSmazakLoader:ImportModule("QuestieLink").GetQuestLinkStringById = function(id)
             return "quest:" .. id
         end
-        local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+        local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
         QuestieDB.QueryQuestSingle = function() return quest.name end
         QuestieDB.QueryNPCSingle = function() return "Constable Aonda" end
         QuestieDB.GetQuest = function(id)
             assert.equals(92517, id)
             return quest
         end
-        local QuestieSearch = QuestieLoader:ImportModule("QuestieSearch")
+        local QuestieSearch = QuestieSmazakLoader:ImportModule("QuestieSearch")
         QuestieSearch.LastResult = {query = "", quest = {}, npc = {}, object = {}, item = {}}
         QuestieSearch.ByID = function(_, id)
             QuestieSearch.LastResult = {query = id, quest = {[id] = true}, npc = {[id] = true}, object = {}, item = {}}
         end
-        QuestDetailsFrame = QuestieLoader:ImportModule("QuestDetailsFrame")
+        QuestDetailsFrame = QuestieSmazakLoader:ImportModule("QuestDetailsFrame")
         QuestDetailsFrame.Draw = spy.new(function() end)
 
         dofile("Modules/Journey/QuestieSearchResults.lua")
-        QuestieSearchResults = QuestieLoader:ImportModule("QuestieSearchResults")
+        QuestieSearchResults = QuestieSmazakLoader:ImportModule("QuestieSearchResults")
         QuestieSearchResults:DrawSearchTab(CreateWidget(nil, "SimpleGroup"))
     end)
 
     after_each(function()
-        _G.Questie, _G.LibStub, _G.CreateFrame = originals.Questie, originals.LibStub, originals.CreateFrame
+        _G.QuestieSmazak, _G.LibStub, _G.CreateFrame = originals.QuestieSmazak, originals.LibStub, originals.CreateFrame
         _G.IsShiftKeyDown, _G.ChatEdit_InsertLink = originals.IsShiftKeyDown, originals.ChatEdit_InsertLink
     end)
 

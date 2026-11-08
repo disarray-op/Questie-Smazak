@@ -116,17 +116,17 @@ describe("QuestieProfilerReport", function()
     -- No frame mocks, no timer, no tooltip. That the report model needs none of them is the property this
     -- file exists to keep: every number the window prints is decided here, against plain tables.
     before_each(function()
-        QuestieLoader._modules.Profiler = NewProfilerStub()
-        Profiler = QuestieLoader:ImportModule("Profiler")
+        QuestieSmazakLoader._modules.Profiler = NewProfilerStub()
+        Profiler = QuestieSmazakLoader:ImportModule("Profiler")
 
-        QuestieLoader._modules.ProfilerReport = nil
+        QuestieSmazakLoader._modules.ProfilerReport = nil
         dofile("Modules/Profiler/QuestieProfilerReport.lua")
-        ProfilerReport = QuestieLoader:ImportModule("ProfilerReport")
+        ProfilerReport = QuestieSmazakLoader:ImportModule("ProfilerReport")
     end)
 
     after_each(function()
-        QuestieLoader._modules.Profiler = nil
-        QuestieLoader._modules.ProfilerReport = nil
+        QuestieSmazakLoader._modules.Profiler = nil
+        QuestieSmazakLoader._modules.ProfilerReport = nil
     end)
 
     describe("FormatDuration", function()
@@ -196,7 +196,7 @@ describe("QuestieProfilerReport", function()
             assert.are_same(5892, row.calls)
         end)
 
-        it("does not mark one of Questie's own functions as a library row", function()
+        it("does not mark one of QuestieSmazak's own functions as a library row", function()
             AddFunctionEntry("QuestieMap.DrawWorldIcon", 100, 2)
 
             assert.is_false(FindRow(BuildReport(), "QuestieMap.DrawWorldIcon").isLibrary)
@@ -325,7 +325,7 @@ describe("QuestieProfilerReport", function()
             -- The staircase: sorted by cost, bar length has to agree with row order. A per-species scale was
             -- tried and broke exactly this, drawing a mid-sized file longer than a larger function above it.
             Profiler.fileLoadTime["Localization/lookups/lookupZones.lua"] = 200
-            Profiler.fileLoadTime["Questie.lua"] = 76
+            Profiler.fileLoadTime["QuestieSmazak.lua"] = 76
             AddFunctionEntry("QuestieDB.GetQuest", 90, 1)
             AddFunctionEntry("QuestieDB.GetNPC", 62, 1)
             AddThreadJobEntry("ThreadLib job: _DrawAvailableQuest", 300, 3, 40)
@@ -364,27 +364,27 @@ describe("QuestieProfilerReport", function()
             -- of the 2944 KB one, and time-based bars drew the smaller allocation nearly ten times longer.
             Profiler.fileLoadTime["Localization/lookups/lookupZones.lua"] = 659
             Profiler.fileLoadMemory["Localization/lookups/lookupZones.lua"] = 18092
-            Profiler.fileLoadTime["Questie.lua"] = 66
-            Profiler.fileLoadMemory["Questie.lua"] = 5500
+            Profiler.fileLoadTime["QuestieSmazak.lua"] = 66
+            Profiler.fileLoadMemory["QuestieSmazak.lua"] = 5500
             Profiler.fileLoadTime["embeds.xml"] = 635
             Profiler.fileLoadMemory["embeds.xml"] = 2944
 
             local report = BuildReport({sortKey = "memory", descending = true})
 
             assert.are_same(1, HeatShare(report, "Localization/lookups/lookupZones.lua", "memory"))
-            assert.is_true(HeatShare(report, "Questie.lua", "memory")
+            assert.is_true(HeatShare(report, "QuestieSmazak.lua", "memory")
                 > HeatShare(report, "embeds.xml", "memory"))
         end)
 
         it("draws no heat for an interval in which the collector freed memory", function()
-            Profiler.fileLoadTime["Questie.lua"] = 10
-            Profiler.fileLoadMemory["Questie.lua"] = -50
+            Profiler.fileLoadTime["QuestieSmazak.lua"] = 10
+            Profiler.fileLoadMemory["QuestieSmazak.lua"] = -50
             Profiler.fileLoadTime["embeds.xml"] = 10
             Profiler.fileLoadMemory["embeds.xml"] = 100
 
             local report = BuildReport({sortKey = "memory", descending = true})
 
-            assert.are_same(0, HeatShare(report, "Questie.lua", "memory"))
+            assert.are_same(0, HeatShare(report, "QuestieSmazak.lua", "memory"))
         end)
 
         it("scales calls against the largest visible call count", function()
@@ -413,7 +413,7 @@ describe("QuestieProfilerReport", function()
 
         it("measures a file against the file load listed", function()
             Profiler.fileLoadTime["Localization/lookups/lookupZones.lua"] = 150
-            Profiler.fileLoadTime["Questie.lua"] = 50
+            Profiler.fileLoadTime["QuestieSmazak.lua"] = 50
 
             local report = BuildReport()
 
@@ -421,14 +421,14 @@ describe("QuestieProfilerReport", function()
         end)
 
         it("keeps each species on its own denominator", function()
-            Profiler.fileLoadTime["Questie.lua"] = 40
+            Profiler.fileLoadTime["QuestieSmazak.lua"] = 40
             AddFunctionEntry("Alpha.Work", 10, 1, 10)
             AddThreadJobEntry("ThreadLib job: _DrawAvailableQuest", 600, 3, 40)
 
             local report = BuildReport()
 
             -- Each is the only row of its kind, so each accounts for all of it.
-            assert.are_same(1, FindRow(report, "Questie.lua").share)
+            assert.are_same(1, FindRow(report, "QuestieSmazak.lua").share)
             assert.are_same(1, FindRow(report, "Alpha.Work").share)
             assert.are_same(1, FindRow(report, "ThreadLib job: _DrawAvailableQuest").share)
         end)
@@ -799,11 +799,11 @@ describe("QuestieProfilerReport", function()
         end)
 
         it("keeps ThreadLib job identities intact", function()
-            AddThreadJobEntry("ThreadLib job: [Interface/AddOns/Questie/Modules/QuestieInit.lua]:395", 600, 3, 40)
+            AddThreadJobEntry("ThreadLib job: [Interface/AddOns/QuestieSmazak/Modules/QuestieInit.lua]:395", 600, 3, 40)
 
             local report = BuildReport({grouped = true})
 
-            assert.are_same({"ThreadLib job: [Interface/AddOns/Questie/Modules/QuestieInit.lua]:395"}, RowKeys(report))
+            assert.are_same({"ThreadLib job: [Interface/AddOns/QuestieSmazak/Modules/QuestieInit.lua]:395"}, RowKeys(report))
         end)
 
         it("keeps ThreadLib job and resume counts when folding", function()

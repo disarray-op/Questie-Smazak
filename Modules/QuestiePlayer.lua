@@ -1,15 +1,15 @@
 ---@class QuestiePlayer
 ---@field numberOfGroupMembers number @The number of players currently in the group
 ---@field faction number @"Horde" or "Alliance"
-local QuestiePlayer = QuestieLoader:CreateModule("QuestiePlayer");
+local QuestiePlayer = QuestieSmazakLoader:CreateModule("QuestiePlayer");
 local _QuestiePlayer = QuestiePlayer.private
 -------------------------
 --Import modules.
 -------------------------
 ---@type ZoneDB
-local ZoneDB = QuestieLoader:ImportModule("ZoneDB")
+local ZoneDB = QuestieSmazakLoader:ImportModule("ZoneDB")
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 
 _QuestiePlayer.playerLevel = -1
 local playerRaceFlag = 255 -- dummy default value to always return race not matching, corrected in init
@@ -61,7 +61,7 @@ end
 ---@return boolean isMaxLevel
 function QuestiePlayer.IsMaxLevel()
     local level = QuestiePlayer.GetPlayerLevel()
-    return (Questie.IsMoP and level == 90) or (Questie.IsCata and level == 85) or (Questie.IsWotlk and level == 80) or (Questie.IsTBC and level == 70) or (Questie.IsClassic and level == 60)
+    return (QuestieSmazak.IsMoP and level == 90) or (QuestieSmazak.IsCata and level == 85) or (QuestieSmazak.IsWotlk and level == 80) or (QuestieSmazak.IsTBC and level == 70) or (QuestieSmazak.IsClassic and level == 60)
 end
 
 ---@return string

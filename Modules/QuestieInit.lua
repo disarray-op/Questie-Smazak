@@ -1,121 +1,121 @@
 ---@class QuestieInit
-local QuestieInit = QuestieLoader:CreateModule("QuestieInit")
+local QuestieInit = QuestieSmazakLoader:CreateModule("QuestieInit")
 local _QuestieInit = QuestieInit.private
 
 ---@type ThreadLib
-local ThreadLib = QuestieLoader:ImportModule("ThreadLib")
+local ThreadLib = QuestieSmazakLoader:ImportModule("ThreadLib")
 ---@type Expansions
-local Expansions = QuestieLoader:ImportModule("Expansions")
+local Expansions = QuestieSmazakLoader:ImportModule("Expansions")
 
 ---@type QuestEventHandler
-local QuestEventHandler = QuestieLoader:ImportModule("QuestEventHandler")
+local QuestEventHandler = QuestieSmazakLoader:ImportModule("QuestEventHandler")
 ---@type QuestieAPI
-local QuestieAPI = QuestieLoader:ImportModule("QuestieAPI")
+local QuestieAPI = QuestieSmazakLoader:ImportModule("QuestieAPI")
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 ---@type ZoneDB
-local ZoneDB = QuestieLoader:ImportModule("ZoneDB")
+local ZoneDB = QuestieSmazakLoader:ImportModule("ZoneDB")
 ---@type Migration
-local Migration = QuestieLoader:ImportModule("Migration")
+local Migration = QuestieSmazakLoader:ImportModule("Migration")
 ---@type QuestieProfessions
-local QuestieProfessions = QuestieLoader:ImportModule("QuestieProfessions")
+local QuestieProfessions = QuestieSmazakLoader:ImportModule("QuestieProfessions")
 ---@type QuestieTracker
-local QuestieTracker = QuestieLoader:ImportModule("QuestieTracker")
+local QuestieTracker = QuestieSmazakLoader:ImportModule("QuestieTracker")
 ---@type QuestieMap
-local QuestieMap = QuestieLoader:ImportModule("QuestieMap")
+local QuestieMap = QuestieSmazakLoader:ImportModule("QuestieMap")
 ---@type QuestieLib
-local QuestieLib = QuestieLoader:ImportModule("QuestieLib")
+local QuestieLib = QuestieSmazakLoader:ImportModule("QuestieLib")
 ---@type QuestiePlayer
-local QuestiePlayer = QuestieLoader:ImportModule("QuestiePlayer")
+local QuestiePlayer = QuestieSmazakLoader:ImportModule("QuestiePlayer")
 ---@type QuestieMenu
-local QuestieMenu = QuestieLoader:ImportModule("QuestieMenu")
+local QuestieMenu = QuestieSmazakLoader:ImportModule("QuestieMenu")
 ---@type QuestieQuest
-local QuestieQuest = QuestieLoader:ImportModule("QuestieQuest")
+local QuestieQuest = QuestieSmazakLoader:ImportModule("QuestieQuest")
 ---@type IsleOfQuelDanas
-local IsleOfQuelDanas = QuestieLoader:ImportModule("IsleOfQuelDanas")
+local IsleOfQuelDanas = QuestieSmazakLoader:ImportModule("IsleOfQuelDanas")
 ---@type EventHandler
-local EventHandler = QuestieLoader:ImportModule("EventHandler")
+local EventHandler = QuestieSmazakLoader:ImportModule("EventHandler")
 ---@type QuestieJourney
-local QuestieJourney = QuestieLoader:ImportModule("QuestieJourney")
+local QuestieJourney = QuestieSmazakLoader:ImportModule("QuestieJourney")
 ---@type HBDHooks
-local HBDHooks = QuestieLoader:ImportModule("HBDHooks")
+local HBDHooks = QuestieSmazakLoader:ImportModule("HBDHooks")
 ---@type GamepadMapHover
-local GamepadMapHover = QuestieLoader:ImportModule("GamepadMapHover")
+local GamepadMapHover = QuestieSmazakLoader:ImportModule("GamepadMapHover")
 ---@type ChatFilter
-local ChatFilter = QuestieLoader:ImportModule("ChatFilter")
+local ChatFilter = QuestieSmazakLoader:ImportModule("ChatFilter")
 ---@type QuestieShutUp
-local QuestieShutUp = QuestieLoader:ImportModule("QuestieShutUp")
+local QuestieShutUp = QuestieSmazakLoader:ImportModule("QuestieShutUp")
 ---@type Hooks
-local Hooks = QuestieLoader:ImportModule("Hooks")
+local Hooks = QuestieSmazakLoader:ImportModule("Hooks")
 ---@type QuestieValidateGameCache
-local QuestieValidateGameCache = QuestieLoader:ImportModule("QuestieValidateGameCache")
+local QuestieValidateGameCache = QuestieSmazakLoader:ImportModule("QuestieValidateGameCache")
 ---@type MinimapIcon
-local MinimapIcon = QuestieLoader:ImportModule("MinimapIcon")
+local MinimapIcon = QuestieSmazakLoader:ImportModule("MinimapIcon")
 ---@type DailyQuestComms
-local DailyQuestComms = QuestieLoader:ImportModule("DailyQuestComms")
+local DailyQuestComms = QuestieSmazakLoader:ImportModule("DailyQuestComms")
 ---@type CommsVisibility
-local CommsVisibility = QuestieLoader:ImportModule("CommsVisibility")
+local CommsVisibility = QuestieSmazakLoader:ImportModule("CommsVisibility")
 ---@type QuestieComms
-local QuestieComms = QuestieLoader:ImportModule("QuestieComms");
+local QuestieComms = QuestieSmazakLoader:ImportModule("QuestieComms");
 ---@type QuestieOptions
-local QuestieOptions = QuestieLoader:ImportModule("QuestieOptions");
+local QuestieOptions = QuestieSmazakLoader:ImportModule("QuestieOptions");
 ---@type QuestieCoords
-local QuestieCoords = QuestieLoader:ImportModule("QuestieCoords");
+local QuestieCoords = QuestieSmazakLoader:ImportModule("QuestieCoords");
 ---@type QuestieTooltips
-local QuestieTooltips = QuestieLoader:ImportModule("QuestieTooltips");
+local QuestieTooltips = QuestieSmazakLoader:ImportModule("QuestieTooltips");
 ---@type QuestieLink
-local QuestieLink = QuestieLoader:ImportModule("QuestieLink");
+local QuestieLink = QuestieSmazakLoader:ImportModule("QuestieLink");
 ---@type QuestieDBMIntegration
-local QuestieDBMIntegration = QuestieLoader:ImportModule("QuestieDBMIntegration");
+local QuestieDBMIntegration = QuestieSmazakLoader:ImportModule("QuestieDBMIntegration");
 ---@type TrackerQuestTimers
-local TrackerQuestTimers = QuestieLoader:ImportModule("TrackerQuestTimers")
+local TrackerQuestTimers = QuestieSmazakLoader:ImportModule("TrackerQuestTimers")
 ---@type ChallengeModeTimer
-local ChallengeModeTimer = QuestieLoader:ImportModule("ChallengeModeTimer")
+local ChallengeModeTimer = QuestieSmazakLoader:ImportModule("ChallengeModeTimer")
 ---@type QuestieCombatQueue
-local QuestieCombatQueue = QuestieLoader:ImportModule("QuestieCombatQueue")
+local QuestieCombatQueue = QuestieSmazakLoader:ImportModule("QuestieCombatQueue")
 ---@type QuestieSlash
-local QuestieSlash = QuestieLoader:ImportModule("QuestieSlash")
+local QuestieSlash = QuestieSmazakLoader:ImportModule("QuestieSlash")
 ---@type QuestXP
-local QuestXP = QuestieLoader:ImportModule("QuestXP")
+local QuestXP = QuestieSmazakLoader:ImportModule("QuestXP")
 ---@type Tutorial
-local Tutorial = QuestieLoader:ImportModule("Tutorial")
+local Tutorial = QuestieSmazakLoader:ImportModule("Tutorial")
 ---@type Phasing
-local Phasing = QuestieLoader:ImportModule("Phasing")
+local Phasing = QuestieSmazakLoader:ImportModule("Phasing")
 ---@type WorldMapButton
-local WorldMapButton = QuestieLoader:ImportModule("WorldMapButton")
+local WorldMapButton = QuestieSmazakLoader:ImportModule("WorldMapButton")
 ---@type AvailableQuests
-local AvailableQuests = QuestieLoader:ImportModule("AvailableQuests")
+local AvailableQuests = QuestieSmazakLoader:ImportModule("AvailableQuests")
 ---@type DailyQuests
-local DailyQuests = QuestieLoader:ImportModule("DailyQuests")
+local DailyQuests = QuestieSmazakLoader:ImportModule("DailyQuests")
 ---@type SeasonOfDiscovery
-local SeasonOfDiscovery = QuestieLoader:ImportModule("SeasonOfDiscovery")
+local SeasonOfDiscovery = QuestieSmazakLoader:ImportModule("SeasonOfDiscovery")
 ---@type WatchFrameHook
-local WatchFrameHook = QuestieLoader:ImportModule("WatchFrameHook")
+local WatchFrameHook = QuestieSmazakLoader:ImportModule("WatchFrameHook")
 ---@type QuestLogCache
-local QuestLogCache = QuestieLoader:ImportModule("QuestLogCache")
+local QuestLogCache = QuestieSmazakLoader:ImportModule("QuestLogCache")
 ---@type ContentPhases
-local ContentPhases = QuestieLoader:ImportModule("ContentPhases")
+local ContentPhases = QuestieSmazakLoader:ImportModule("ContentPhases")
 ---@type DropDB
-local DropDB = QuestieLoader:ImportModule("DropDB")
+local DropDB = QuestieSmazakLoader:ImportModule("DropDB")
 ---@type QuestieAnnounce
-local QuestieAnnounce = QuestieLoader:ImportModule("QuestieAnnounce")
+local QuestieAnnounce = QuestieSmazakLoader:ImportModule("QuestieAnnounce")
 ---@type CommsEncoding
-local CommsEncoding = QuestieLoader:ImportModule("CommsEncoding")
+local CommsEncoding = QuestieSmazakLoader:ImportModule("CommsEncoding")
 ---@type QuestieDB
-local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
 ---@type VersionCheckDB
-local VersionCheckDB = QuestieLoader:ImportModule("VersionCheckDB")
+local VersionCheckDB = QuestieSmazakLoader:ImportModule("VersionCheckDB")
 ---@type QuestieCorrections
-local QuestieCorrections = QuestieLoader:ImportModule("QuestieCorrections")
+local QuestieCorrections = QuestieSmazakLoader:ImportModule("QuestieCorrections")
 ---@type Townsfolk
-local Townsfolk = QuestieLoader:ImportModule("Townsfolk")
+local Townsfolk = QuestieSmazakLoader:ImportModule("Townsfolk")
 ---@type QuestieEvent
-local QuestieEvent = QuestieLoader:ImportModule("QuestieEvent")
+local QuestieEvent = QuestieSmazakLoader:ImportModule("QuestieEvent")
 
 ---@type QuestieStatus
-local QuestieStatus = QuestieLoader:ImportModule("QuestieStatus")
+local QuestieStatus = QuestieSmazakLoader:ImportModule("QuestieStatus")
 ---@type SourceModeStatus
-local SourceModeStatus = QuestieLoader:ImportModule("SourceModeStatus")
+local SourceModeStatus = QuestieSmazakLoader:ImportModule("SourceModeStatus")
 
 local coYield = coroutine.yield
 local startupFailed = false
@@ -125,16 +125,16 @@ local addonLoadedTicker, loginTicker
 local function _StopStartup(id, report, action)
     if startupFailed then return end
     startupFailed = true
-    Questie.started = false
-    if Questie.API then Questie.API.isReady = false end
+    QuestieSmazak.started = false
+    if QuestieSmazak.API then QuestieSmazak.API.isReady = false end
     if addonLoadedTicker then addonLoadedTicker:Cancel() end
     if loginTicker then loginTicker:Cancel() end
     -- Lua errors can be nil or mutable objects; capture text before tooltip formatting.
     QuestieStatus.Set(id, {
         severity = QuestieStatus.Severity.Error,
-        message = "Questie could not start: %s",
+        message = "QuestieSmazak could not start: %s",
         args = {tostring(report)},
-        action = action or "Update Questie and QuestieDB, then reload the UI.",
+        action = action or "Update QuestieSmazak and QuestieDB, then reload the UI.",
     })
 end
 
@@ -146,7 +146,7 @@ local function _StopOnSupportFailure(valid, report)
     if valid == false then
         if not startupFailed then
             _StopStartup("startup.support-validation", report)
-            Questie.Error(report)
+            QuestieSmazak.Error(report)
         end
         return true
     end
@@ -162,9 +162,9 @@ QuestieInit.Stages = {}
 ---@async
 QuestieInit.Stages[1] = function() -- run as a coroutine
     if startupFailed then return false end
-    Questie.Debug(Questie.DEBUG_CRITICAL, "[QuestieInit:Stage1] Starting the real init.")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_CRITICAL, "[QuestieInit:Stage1] Starting the real init.")
 
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieInit:Stage1] UI Locale initializing.")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieInit:Stage1] UI Locale initializing.")
     -- This needs to happen after ADDON_LOADED.
     l10n.InitializeUILocale()
 
@@ -176,41 +176,41 @@ QuestieInit.Stages[1] = function() -- run as a coroutine
     end
 
     if type(LibQuestieDB.l10n) ~= "table" or type(LibQuestieDB.l10n.SetCorrection) ~= "function" then
-        local report = "Questie requires QuestieDB localization corrections. Update QuestieDB."
+        local report = "QuestieSmazak requires QuestieDB localization corrections. Update QuestieDB."
         _StopStartup("startup.provider-localization", report)
         error(report, 0)
     end
 
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieInit:Stage1] Entity data preloading.")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieInit:Stage1] Entity data preloading.")
     -- After the provider gates, before the steps below: locale overrides and Policy Correction
     -- writes read entity IDs, which would otherwise load several types in one Source mode resume.
     QuestieDB.PreloadEntityData()
 
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieInit:Stage1] Entity locale forwarding.")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieInit:Stage1] Entity locale forwarding.")
     -- Entity localization is provider-owned; the effective UI locale is forwarded outside l10n.
     local effectiveLocale = l10n:GetUILocale()
     LibQuestieDB.l10n.SetLocale(effectiveLocale)
     l10n.PublishLocaleOverrideEntityNames()
     coYield()
 
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieInit:Stage1] Questie policy initializing.")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieInit:Stage1] QuestieSmazak policy initializing.")
     -- Blacklists plus the static Policy Correction slots (gathering nodes, Content Phase).
     QuestieCorrections.Initialize()
     coYield()
 
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieInit:Stage1] QuestieDB initializing.")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieInit:Stage1] QuestieDB initializing.")
     -- Binds the ID maps and resets the caches against the applied composed view; queries and
     -- Objective Order were bound when QuestieDB.lua loaded.
     if _StopOnSupportFailure(QuestieDB.Initialize()) then return false end
     coYield()
 
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieInit:Stage1] Townsfolk building.")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieInit:Stage1] Townsfolk building.")
     -- Rebuilt from composed reads on every login until the provider exposes a stable data revision.
     Townsfolk.Initialize()
     Townsfolk:BuildCharacterTownsfolk()
     coYield()
 
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieInit:Stage1] QuestieEvent initializing.")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieInit:Stage1] QuestieEvent initializing.")
     -- After QuestieDB, so the calendar callback's Darkmoon apply refreshes bound pointers and caches.
     QuestieEvent.Initialize()
     coYield()
@@ -220,11 +220,11 @@ end
 ---@return false|nil stopped
 QuestieInit.Stages[2] = function()
     if startupFailed then return false end
-    Questie.Debug(Questie.DEBUG_INFO, "[QuestieInit:Stage2] Stage 2 start.")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_INFO, "[QuestieInit:Stage2] Stage 2 start.")
 
     local objectDB = LibQuestieDB.Object
     if type(objectDB) ~= "table" or type(objectDB.BuildNameIndexAsync) ~= "function" then
-        local report = "Questie requires QuestieDB asynchronous Object name indexing. Update QuestieDB."
+        local report = "QuestieSmazak requires QuestieDB asynchronous Object name indexing. Update QuestieDB."
         _StopStartup("startup.provider-object-index", report)
         error(report, 0)
     end
@@ -233,12 +233,12 @@ QuestieInit.Stages[2] = function()
     -- are hidden. Warm the provider index after locale and policy setup, not on the first hover.
     -- Require yielding builds to avoid the reported script timeout; smaller Hardcore batches
     -- keep each resume short. The provider returns only when the complete index is ready.
-    objectDB.BuildNameIndexAsync(Questie.IsHardcore and 250 or 1000)
+    objectDB.BuildNameIndexAsync(QuestieSmazak.IsHardcore and 250 or 1000)
 
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieInit:Stage2] QuestiePlayer initializing.")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieInit:Stage2] QuestiePlayer initializing.")
     QuestiePlayer:Initialize()
     coYield()
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieInit:Stage2] QuestieJourney initializing.")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieInit:Stage2] QuestieJourney initializing.")
     QuestieJourney:Initialize()
 
     local keepWaiting = true
@@ -246,7 +246,7 @@ QuestieInit.Stages[2] = function()
     -- In this case we still need to continue the initialization process, even though a specific quest might be bugged
     C_Timer.After(3, function()
         if keepWaiting then
-            Questie.Debug(Questie.DEBUG_CRITICAL, "[QuestieInit:Stage2] Timeout waiting for Game Cache validation. Continuing.")
+            QuestieSmazak.Debug(QuestieSmazak.DEBUG_CRITICAL, "[QuestieInit:Stage2] Timeout waiting for Game Cache validation. Continuing.")
             keepWaiting = false
         end
     end)
@@ -256,29 +256,29 @@ QuestieInit.Stages[2] = function()
         coYield()
     end
     keepWaiting = false
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieInit:Stage2] Game cache good.")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieInit:Stage2] Game cache good.")
 end
 
 QuestieInit.Stages[3] = function() -- run as a coroutine
     if startupFailed then return false end
-    Questie.Debug(Questie.DEBUG_INFO, "[QuestieInit:Stage3] Stage 3 start.")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_INFO, "[QuestieInit:Stage3] Stage 3 start.")
 
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieInit:Stage3] QuestieTooltips initializing.")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieInit:Stage3] QuestieTooltips initializing.")
     QuestieTooltips:Initialize()
 
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieInit:Stage3] QuestieLink initializing.")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieInit:Stage3] QuestieLink initializing.")
     QuestieLink.Initialize()
 
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieInit:Stage3] DropDB initializing.")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieInit:Stage3] DropDB initializing.")
     if _StopOnSupportFailure(DropDB:Initialize()) then return false end
 
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieInit:Stage3] Timers initializing.")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieInit:Stage3] Timers initializing.")
     TrackerQuestTimers:Initialize()
     if Expansions.Current >= Expansions.MoP then
         ChallengeModeTimer.Initialize()
     end
 
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieInit:Stage3] QuestieMap initializing.")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieInit:Stage3] QuestieMap initializing.")
     QuestieMap:InitializeQueue()
 
     coYield()
@@ -289,20 +289,20 @@ QuestieInit.Stages[3] = function() -- run as a coroutine
     local cacheMiss, _, questIdsChecked = QuestLogCache.CheckForChanges(nil)
 
     if cacheMiss then
-        Questie.Debug(Questie.DEBUG_CRITICAL, "QuestieInit: Game Cache did not fill in time, waiting for valid cache.")
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_CRITICAL, "QuestieInit: Game Cache did not fill in time, waiting for valid cache.")
         questIdsChecked = QuestieInit.WaitForValidGameCache()
     end
 
     QuestEventHandler.InitQuestLogStates(questIdsChecked)
     coYield()
 
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieInit:Stage3] Hydrating quest log for the first time.")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieInit:Stage3] Hydrating quest log for the first time.")
     QuestieQuest:GetAllQuestIds()
     coYield()
 
     QuestieCombatQueue.Initialize()
 
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieInit:Stage3] QuestieTracker initializing.")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieInit:Stage3] QuestieTracker initializing.")
     QuestieTracker.Initialize()
     Hooks:HookQuestLogTitle()
     coYield()
@@ -310,19 +310,19 @@ QuestieInit.Stages[3] = function() -- run as a coroutine
     QuestEventHandler:Initialize()
     coYield()
 
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieInit:Stage3] QuestieComms initializing.")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieInit:Stage3] QuestieComms initializing.")
     CommsEncoding.Init()
     CommsVisibility:Initialize()
     DailyQuestComms.Initialize()
-    if (not Questie.IsClassic) then
+    if (not QuestieSmazak.IsClassic) then
         -- There are no random daily quests on Era, HC or SoD so we skip this
         DailyQuestComms.RequestUnavailableDailyQuests(true)
     end
     QuestieComms:Initialize()
     coYield()
 
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieInit:Stage3] QuestieDBM initializing.")
-    if Questie.db.profile.dbmHUDEnable then
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieInit:Stage3] QuestieDBM initializing.")
+    if QuestieSmazak.db.profile.dbmHUDEnable then
         QuestieDBMIntegration:EnableHUD()
     end
 
@@ -335,59 +335,59 @@ QuestieInit.Stages[3] = function() -- run as a coroutine
 
     local dateToday = date("%y-%m-%d")
 
-    if (not Questie.IsSoD) and Questie.db.profile.showAQWarEffortQuests and ((not Questie.db.profile.aqWarningPrintDate) or (Questie.db.profile.aqWarningPrintDate < dateToday)) then
-        Questie.db.profile.aqWarningPrintDate = dateToday
+    if (not QuestieSmazak.IsSoD) and QuestieSmazak.db.profile.showAQWarEffortQuests and ((not QuestieSmazak.db.profile.aqWarningPrintDate) or (QuestieSmazak.db.profile.aqWarningPrintDate < dateToday)) then
+        QuestieSmazak.db.profile.aqWarningPrintDate = dateToday
         C_Timer.After(2, function()
             print("|cffff0000-----------------------------|r")
-            Questie:Print("|cffff0000" ..
-                l10n("The AQ War Effort quests are shown for you. If your server is done you can hide those quests in the Icons settings of Questie!") .. "|r");
+            QuestieSmazak:Print("|cffff0000" ..
+                l10n("The AQ War Effort quests are shown for you. If your server is done you can hide those quests in the Icons settings of QuestieSmazak!") .. "|r");
             print("|cffff0000-----------------------------|r")
         end)
     end
 
-    if Questie.IsTBC and ContentPhases.activePhases.TBC == 5 and (not Questie.db.profile.isIsleOfQuelDanasPhaseReminderDisabled) then
+    if QuestieSmazak.IsTBC and ContentPhases.activePhases.TBC == 5 and (not QuestieSmazak.db.profile.isIsleOfQuelDanasPhaseReminderDisabled) then
         C_Timer.After(2, function()
-            Questie:Print(l10n("Current active phase of Isle of Quel'Danas is '%s'. Check the General settings to change the phase or disable this message.",
-                IsleOfQuelDanas.localizedPhaseNames[Questie.db.global.isleOfQuelDanasPhase]))
+            QuestieSmazak:Print(l10n("Current active phase of Isle of Quel'Danas is '%s'. Check the General settings to change the phase or disable this message.",
+                IsleOfQuelDanas.localizedPhaseNames[QuestieSmazak.db.global.isleOfQuelDanasPhase]))
         end)
     end
 
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieInit:Stage3] QuestieMenu initializing.")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieInit:Stage3] QuestieMenu initializing.")
     coYield()
     QuestieMenu:OnLogin()
 
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieInit:Stage3] DailyQuests initializing.")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieInit:Stage3] DailyQuests initializing.")
     coYield()
     DailyQuests.Initialize()
 
     coYield()
-    if Questie.db.profile.debugEnabled then
-        QuestieLoader:PopulateGlobals()
+    if QuestieSmazak.db.profile.debugEnabled then
+        QuestieSmazakLoader:PopulateGlobals()
     end
 
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieInit:Stage1] Tutorial initializing.")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieInit:Stage1] Tutorial initializing.")
     Tutorial.Initialize()
     coYield()
 
     if startupFailed then return false end
-    Questie.started = true
+    QuestieSmazak.started = true
 
-    -- We only update this if Questie fully loads to make sure we don't update it on crashes/fast reloads
+    -- We only update this if QuestieSmazak fully loads to make sure we don't update it on crashes/fast reloads
     QuestieLib.UpdateLastKnownDailyReset()
 
     -- register events that rely on questie being initialized
     EventHandler:RegisterLateEvents()
 
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieInit:Stage3] Drawing available quests.")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieInit:Stage3] Drawing available quests.")
     -- Last, because it runs for a while and must not block the rest of the init.
     AvailableQuests.CalculateAndDrawAll()
 
-    -- Let other addons know that Questie is ready
+    -- Let other addons know that QuestieSmazak is ready
     if startupFailed then return false end
-    Questie.API.isReady = true
+    QuestieSmazak.API.isReady = true
     QuestieAPI.PropagateOnReady()
 
-    Questie.Debug(Questie.DEBUG_CRITICAL, "[QuestieInit:Stage3] Questie init done.")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_CRITICAL, "[QuestieInit:Stage3] QuestieSmazak init done.")
 end
 
 -- End of QuestieInit.Stages ******************************************************
@@ -399,7 +399,7 @@ end
 function _QuestieInit.StartStageCoroutine()
     for i = 1, #QuestieInit.Stages do
         if startupFailed or QuestieInit.Stages[i]() == false then return false end
-        Questie.Debug(Questie.DEBUG_INFO, "[QuestieInit:StartStageCoroutine] Stage " .. i .. " done.")
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_INFO, "[QuestieInit:StartStageCoroutine] Stage " .. i .. " done.")
         coYield()
     end
 end
@@ -411,14 +411,14 @@ function QuestieInit.OnAddonLoaded()
 
     local sourceMode = SourceModeStatus.Update()
 
-    -- Keep the provider banner unless Questie's replacement UI has registered successfully.
+    -- Keep the provider banner unless QuestieSmazak's replacement UI has registered successfully.
     local statusUIReady = MinimapIcon:Init() == true
     local modeIndicator = LibQuestieDB and LibQuestieDB.ModeIndicator
     if sourceMode and statusUIReady and modeIndicator and type(modeIndicator.Hide) == "function" then
         modeIndicator.Hide()
     end
 
-    Questie.SetIcons()
+    QuestieSmazak.SetIcons()
 
     Migration:Migrate()
 
@@ -431,10 +431,10 @@ function QuestieInit.OnAddonLoaded()
     addonLoadedTicker = ThreadLib.Thread(function()
         if startupFailed then return end
         HBDHooks:Init()
-        if Questie.IsForever then
+        if QuestieSmazak.IsForever then
             GamepadMapHover.Initialize()
         end
-        QuestieShutUp:ToggleFilters(Questie.db.profile.questieShutUp)
+        QuestieShutUp:ToggleFilters(QuestieSmazak.db.profile.questieShutUp)
         QuestieCoords:Initialize()
         QuestieSlash.RegisterSlashCommands()
 
@@ -446,7 +446,7 @@ function QuestieInit.OnAddonLoaded()
 
     Phasing.Initialize()
 
-    if Questie.IsSoD then
+    if QuestieSmazak.IsSoD then
         SeasonOfDiscovery.Initialize()
     end
 end
@@ -459,15 +459,15 @@ function QuestieInit:Init()
         _StopStartup("startup.login", err, "Reload the UI. If the problem persists, report this error.")
     end)
 
-    if Questie.db.profile.trackerEnabled then
+    if QuestieSmazak.db.profile.trackerEnabled then
         -- This needs to be called ASAP otherwise tracked Achievements in the Blizzard WatchFrame shows upon login
         WatchFrameHook.Hide()
 
         if Expansions.Current < Expansions.Wotlk and ScrollFrame_OnScrollRangeChanged then
             -- Need to hook this ASAP otherwise the scroll bars show up
             hooksecurefunc("ScrollFrame_OnScrollRangeChanged", function()
-                if TrackedQuestsScrollFrame then
-                    TrackedQuestsScrollFrame.ScrollBar:Hide()
+                if QuestieSmazakTrackedQuestsScrollFrame then
+                    QuestieSmazakTrackedQuestsScrollFrame.ScrollBar:Hide()
                 end
             end)
         end
@@ -487,7 +487,7 @@ function QuestieInit.WaitForValidGameCache()
         local cacheMiss, _, newQuestIdsChecked = QuestLogCache.CheckForChanges(nil)
         if (not cacheMiss) or retries >= 3 then
             if retries == 3 then
-                Questie.Debug(Questie.DEBUG_CRITICAL, "QuestieInit: Game Cache did not become valid in 3 seconds, continuing with initialization.")
+                QuestieSmazak.Debug(QuestieSmazak.DEBUG_CRITICAL, "QuestieInit: Game Cache did not become valid in 3 seconds, continuing with initialization.")
             end
             doWait = false
             timer:Cancel()

@@ -1,12 +1,12 @@
 ---@class SeasonOfDiscovery
-local SeasonOfDiscovery = QuestieLoader:CreateModule("SeasonOfDiscovery")
+local SeasonOfDiscovery = QuestieSmazakLoader:CreateModule("SeasonOfDiscovery")
 -------------------------
 --Import modules.
 -------------------------
 ---@type QuestieDB
-local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
 ---@type ContentPhases
-local ContentPhases = QuestieLoader:ImportModule("ContentPhases")
+local ContentPhases = QuestieSmazakLoader:ImportModule("ContentPhases")
 
 local runeQuestsInSoD = {-- List quests here to have them flagged as Rune quests in Season of Discovery
     [1470]  = 1, -- Warlock Metamorphosis Part 1
@@ -622,11 +622,11 @@ function SeasonOfDiscovery.Initialize()
         ContentPhases.activePhases.SoD = 4
     else
         phaseDetected = false
-        Questie.Debug(Questie.DEBUG_CRITICAL,
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_CRITICAL,
             "[SeasonOfDiscovery] Automatic phase detection failed, phase remains as " .. tostring(ContentPhases.activePhases.SoD))
     end
     if phaseDetected then
-        Questie.Debug(Questie.DEBUG_INFO, "[SeasonOfDiscovery] Phase automatically detected as " .. tostring(ContentPhases.activePhases.SoD))
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_INFO, "[SeasonOfDiscovery] Phase automatically detected as " .. tostring(ContentPhases.activePhases.SoD))
     end
 end
 
@@ -643,13 +643,13 @@ function QuestieDB.IsRuneAndShouldBeHidden(questId)
         return false
     end
 
-    if (not Questie.db.profile.showSoDRunes) then
+    if (not QuestieSmazak.db.profile.showSoDRunes) then
         return true
     elseif questId == 91000 or questId == 91001 then
         return false -- Rune Broker quests are always shown
     end
 
-    local showRunesOfPhase = Questie.db.profile.showRunesOfPhase
+    local showRunesOfPhase = QuestieSmazak.db.profile.showRunesOfPhase
     local phaseOfRuneQuest = runeQuestsInSoD[questId]
 
     if showRunesOfPhase["phase" .. phaseOfRuneQuest] ~= nil then

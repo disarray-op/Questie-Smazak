@@ -1,56 +1,56 @@
 ---@type QuestieCompat
-local QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+local QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
 
 ---@class TrackerUtils
-local TrackerUtils = QuestieLoader:ImportModule("TrackerUtils")
+local TrackerUtils = QuestieSmazakLoader:ImportModule("TrackerUtils")
 -------------------------
 --Import QuestieTracker modules.
 -------------------------
 ---@type QuestieTracker
-local QuestieTracker = QuestieLoader:ImportModule("QuestieTracker")
+local QuestieTracker = QuestieSmazakLoader:ImportModule("QuestieTracker")
 ---@type Sorter
-local Sorter = QuestieLoader:ImportModule("Sorter")
+local Sorter = QuestieSmazakLoader:ImportModule("Sorter")
 ---@type TrackerLinePool
-local TrackerLinePool = QuestieLoader:ImportModule("TrackerLinePool")
+local TrackerLinePool = QuestieSmazakLoader:ImportModule("TrackerLinePool")
 ---@type TrackerLayout
-local TrackerLayout = QuestieLoader:ImportModule("TrackerLayout")
+local TrackerLayout = QuestieSmazakLoader:ImportModule("TrackerLayout")
 ---@type AchievementTracking
-local AchievementTracking = QuestieLoader:ImportModule("AchievementTracking")
+local AchievementTracking = QuestieSmazakLoader:ImportModule("AchievementTracking")
 ---@type TrackerData
-local TrackerData = QuestieLoader:ImportModule("TrackerData")
+local TrackerData = QuestieSmazakLoader:ImportModule("TrackerData")
 ---@type TrackerRecipes
-local TrackerRecipes = QuestieLoader:ImportModule("TrackerRecipes")
+local TrackerRecipes = QuestieSmazakLoader:ImportModule("TrackerRecipes")
 ---@type TrackerMapEligibility
-local TrackerMapEligibility = QuestieLoader:ImportModule("TrackerMapEligibility")
+local TrackerMapEligibility = QuestieSmazakLoader:ImportModule("TrackerMapEligibility")
 ---@type TrackerFadeTicker
-local TrackerFadeTicker = QuestieLoader:ImportModule("TrackerFadeTicker")
+local TrackerFadeTicker = QuestieSmazakLoader:ImportModule("TrackerFadeTicker")
 ---@type QuestieCombatQueue
-local QuestieCombatQueue = QuestieLoader:ImportModule("QuestieCombatQueue")
+local QuestieCombatQueue = QuestieSmazakLoader:ImportModule("QuestieCombatQueue")
 -------------------------
---Import Questie modules.
+--Import QuestieSmazak modules.
 -------------------------
 ---@type Expansions
-local Expansions = QuestieLoader:ImportModule("Expansions")
+local Expansions = QuestieSmazakLoader:ImportModule("Expansions")
 ---@type ActiveQuests
-local ActiveQuests = QuestieLoader:ImportModule("ActiveQuests")
+local ActiveQuests = QuestieSmazakLoader:ImportModule("ActiveQuests")
 ---@type QuestieDB
-local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
 ---@type QuestieMap
-local QuestieMap = QuestieLoader:ImportModule("QuestieMap")
+local QuestieMap = QuestieSmazakLoader:ImportModule("QuestieMap")
 ---@type QuestieCoords
-local QuestieCoords = QuestieLoader:ImportModule("QuestieCoords")
+local QuestieCoords = QuestieSmazakLoader:ImportModule("QuestieCoords")
 ---@type ZoneDB
-local ZoneDB = QuestieLoader:ImportModule("ZoneDB")
+local ZoneDB = QuestieSmazakLoader:ImportModule("ZoneDB")
 ---@type DistanceUtils
-local DistanceUtils = QuestieLoader:ImportModule("DistanceUtils")
+local DistanceUtils = QuestieSmazakLoader:ImportModule("DistanceUtils")
 ---@type QuestieLib
-local QuestieLib = QuestieLoader:ImportModule("QuestieLib")
+local QuestieLib = QuestieSmazakLoader:ImportModule("QuestieLib")
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 ---@type QuestieWaypoints
-local QuestieWaypoints = QuestieLoader:ImportModule("QuestieWaypoints")
+local QuestieWaypoints = QuestieSmazakLoader:ImportModule("QuestieWaypoints")
 ---@type FocusedQuestgiver
-local FocusedQuestgiver = QuestieLoader:ImportModule("FocusedQuestgiver")
+local FocusedQuestgiver = QuestieSmazakLoader:ImportModule("FocusedQuestgiver")
 
 
 local IsAddOnLoaded = QuestieCompat.IsAddOnLoaded
@@ -101,8 +101,8 @@ local _QuestLogScrollBar = (QuestLogListScrollFrame and QuestLogListScrollFrame.
 ---@param quest table The table provided by QuestieDB.GetQuest(questId)
 function TrackerUtils:ShowQuestLog(quest)
     -- Opening it from addon code taints Forever's gamepad bindings, which leads to a crash
-    if Questie.IsForever and InputUtil and InputUtil.IsGamepadUIEnabled() then
-        Questie:Print(l10n("Opening the quest log from Questie is disabled in controller mode. Open it with your controller instead."))
+    if QuestieSmazak.IsForever and InputUtil and InputUtil.IsGamepadUIEnabled() then
+        QuestieSmazak:Print(l10n("Opening the quest log from QuestieSmazak is disabled in controller mode. Open it with your controller instead."))
         return
     end
 
@@ -113,7 +113,7 @@ function TrackerUtils:ShowQuestLog(quest)
         if not InCombatLockdown() then
             QuestMapFrame_OpenToQuestDetails(quest.Id)
         else
-            Questie:Print(l10n("Can't open Quest Log while in combat. Open it manually."))
+            QuestieSmazak:Print(l10n("Can't open Quest Log while in combat. Open it manually."))
         end
         return
     end
@@ -135,7 +135,7 @@ function TrackerUtils:ShowQuestLog(quest)
                 QuestLogEx:Maximize()
             end
         else
-            Questie:Print(l10n("Can't open Quest Log while in combat. Open it manually."))
+            QuestieSmazak:Print(l10n("Can't open Quest Log while in combat. Open it manually."))
         end
     end
 
@@ -149,11 +149,11 @@ end
 ---@param y number Y coordinate
 function TrackerUtils:SetTomTomTarget(title, zone, x, y)
     if TomTom and TomTom.AddWaypoint then
-        if Questie.db.char._tom_waypoint and TomTom.RemoveWaypoint then -- remove old waypoint
-            TomTom:RemoveWaypoint(Questie.db.char._tom_waypoint)
+        if QuestieSmazak.db.char._tom_waypoint and TomTom.RemoveWaypoint then -- remove old waypoint
+            TomTom:RemoveWaypoint(QuestieSmazak.db.char._tom_waypoint)
         end
         local uiMapId = ZoneDB:GetUiMapIdByAreaId(zone)
-        Questie.db.char._tom_waypoint = TomTom:AddWaypoint(uiMapId, x / 100, y / 100, {title = title, crazy = true, from = "Questie"})
+        QuestieSmazak.db.char._tom_waypoint = TomTom:AddWaypoint(uiMapId, x / 100, y / 100, {title = title, crazy = true, from = "QuestieSmazak"})
     end
 end
 
@@ -557,7 +557,7 @@ local function GetZoneNameByIDFallback(zoneId)
         end
     end
 
-    Questie.Debug(Questie.DEBUG_CRITICAL, "[GetZoneNameByIDFallback]: Unable to find a zone name for zoneId", zoneId)
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_CRITICAL, "[GetZoneNameByIDFallback]: Unable to find a zone name for zoneId", zoneId)
 
     return l10n("Unknown Zone")
 end
@@ -595,7 +595,7 @@ function TrackerUtils:GetCategoryNameByID(catId)
     return "Unknown Category"
 end
 
----Clears Blizzard super tracking only when it points at the quest Questie focused, so other super tracking stays.
+---Clears Blizzard super tracking only when it points at the quest QuestieSmazak focused, so other super tracking stays.
 ---@param questId QuestId
 local function _ClearSuperTrackedQuest(questId)
     if QuestieCompat.GetSuperTrackedQuestID() == questId then
@@ -605,7 +605,7 @@ end
 
 function TrackerUtils:UnFocus()
     -- reset HideIcons to match savedvariable state
-    if (not Questie.db.char.TrackerFocus) then
+    if (not QuestieSmazak.db.char.TrackerFocus) then
         return
     end
 
@@ -617,7 +617,7 @@ function TrackerUtils:UnFocus()
         if quest then
             quest.FadeIcons = nil
             if next(quest.Objectives) then
-                if Questie.db.char.TrackerHiddenQuests[quest.Id] then
+                if QuestieSmazak.db.char.TrackerHiddenQuests[quest.Id] then
                     quest.HideIcons = true
                     quest.FadeIcons = nil
                 else
@@ -629,8 +629,8 @@ function TrackerUtils:UnFocus()
     end
 
     -- Clear the focus first: the super tracking change may notify TrackerSuperTrack right away.
-    local focus = Questie.db.char.TrackerFocus
-    Questie.db.char.TrackerFocus = nil
+    local focus = QuestieSmazak.db.char.TrackerFocus
+    QuestieSmazak.db.char.TrackerFocus = nil
     _ClearSuperTrackedQuest(focus)
 end
 
@@ -643,11 +643,11 @@ function TrackerUtils:FocusQuest(questId, expectedQuest)
         return false
     end
 
-    if Questie.db.char.TrackerFocus and Questie.db.char.TrackerFocus ~= questId then
+    if QuestieSmazak.db.char.TrackerFocus and QuestieSmazak.db.char.TrackerFocus ~= questId then
         TrackerUtils:UnFocus()
     end
 
-    Questie.db.char.TrackerFocus = questId
+    QuestieSmazak.db.char.TrackerFocus = questId
     if QuestieCompat.GetSuperTrackedQuestID() ~= questId then
         QuestieCompat.SetSuperTrackedQuestID(questId)
     end
@@ -712,7 +712,7 @@ end
 --- If the sorting method is not byZone, it will return a custom zone name based on the sorting type.
 local function _GetZoneName(zoneOrSort, questId, nativeHeader)
     local zoneName
-    local sortObj = Questie.db.profile.trackerSortObjectives
+    local sortObj = QuestieSmazak.db.profile.trackerSortObjectives
     if sortObj == "byZone" or sortObj == "byZonePlayerProximity" or sortObj == "byZonePlayerProximityReversed" then
         if nativeHeader then
             return nativeHeader
@@ -727,7 +727,7 @@ local function _GetZoneName(zoneOrSort, questId, nativeHeader)
         else
             -- The quest has no explicit zone or category. Fallback to "Unknown Zone"
             zoneName = "Unknown Zone"
-            Questie.Debug(Questie.DEBUG_CRITICAL, "[TrackerUtils:_GetZoneName] zoneOrSort", zoneOrSort, "of quest", questId, "is not in the Database!")
+            QuestieSmazak.Debug(QuestieSmazak.DEBUG_CRITICAL, "[TrackerUtils:_GetZoneName] zoneOrSort", zoneOrSort, "of quest", questId, "is not in the Database!")
         end
     else
         -- Let's create custom Zones based on Sorting type.
@@ -762,7 +762,7 @@ function TrackerUtils:GetSortedQuestIds()
     local sortedQuestIds = {}
     ---@type table<QuestId, QuestSortDetails>
     local questDetails = {}
-    local sortObj = Questie.db.profile.trackerSortObjectives
+    local sortObj = QuestieSmazak.db.profile.trackerSortObjectives
 
     -- Update quest objectives
     for questId, quest in pairs(TrackerData.GetQuests()) do
@@ -888,12 +888,12 @@ function TrackerUtils:GetSortedQuestIds()
 
         if not questZoneProximityTimer and not IsInInstance() then
             -- Check location often and update if you've moved
-            Questie.Debug(Questie.DEBUG_DEVELOP, "[TrackerUtils:GetSortedQuestIds] - Zone Proximity Timer Started!")
+            QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[TrackerUtils:GetSortedQuestIds] - Zone Proximity Timer Started!")
 
             local playerPosition
             questZoneProximityTimer = C_Timer.NewTicker(5.0, function()
                 if IsInInstance() and questZoneProximityTimer then
-                    Questie.Debug(Questie.DEBUG_DEVELOP, "[TrackerUtils:GetSortedQuestIds] - Zone Proximity Timer Stopped!")
+                    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[TrackerUtils:GetSortedQuestIds] - Zone Proximity Timer Stopped!")
                     questZoneProximityTimer:Cancel()
                     questZoneProximityTimer = nil
                 else
@@ -901,7 +901,7 @@ function TrackerUtils:GetSortedQuestIds()
                     if position then
                         local distance = playerPosition and QuestieLib.Euclid(position.x, position.y, playerPosition.x, playerPosition.y)
                         if not distance or distance > 0.01 then -- Position has changed
-                            Questie.Debug(Questie.DEBUG_SPAM, "[TrackerUtils:GetSortedQuestIds] - Zone Proximity Timer Updated!")
+                            QuestieSmazak.Debug(QuestieSmazak.DEBUG_SPAM, "[TrackerUtils:GetSortedQuestIds] - Zone Proximity Timer Updated!")
                             playerPosition = position
                             local orderCopy = {}
 
@@ -923,8 +923,8 @@ function TrackerUtils:GetSortedQuestIds()
 
                             QuestieCombatQueue:Queue(function()
                                 -- Don't update tracker if we're in a pet battle
-                                if Expansions.Current >= Expansions.MoP and Questie.db.profile.hideTrackerInPetBattles and C_PetBattles and C_PetBattles.IsInBattle() then
-                                    Questie.Debug(Questie.DEBUG_DEVELOP, "[TrackerUtils] Skipped zone proximity timer tracker update - in pet battle")
+                                if Expansions.Current >= Expansions.MoP and QuestieSmazak.db.profile.hideTrackerInPetBattles and C_PetBattles and C_PetBattles.IsInBattle() then
+                                    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[TrackerUtils] Skipped zone proximity timer tracker update - in pet battle")
                                     return
                                 end
                                 TrackerUtils.FilterProximityTimer = true
@@ -1003,12 +1003,12 @@ function TrackerUtils:GetSortedQuestIds()
 
         if not questProximityTimer and not IsInInstance() then
             -- Check location often and update if you've moved
-            Questie.Debug(Questie.DEBUG_DEVELOP, "[TrackerUtils:GetSortedQuestIds] - Proximity Timer Started!")
+            QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[TrackerUtils:GetSortedQuestIds] - Proximity Timer Started!")
 
             local playerPosition
             questProximityTimer = C_Timer.NewTicker(5.0, function()
                 if IsInInstance() and questProximityTimer then
-                    Questie.Debug(Questie.DEBUG_DEVELOP, "[TrackerUtils:GetSortedQuestIds] - Proximity Timer Stopped!")
+                    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[TrackerUtils:GetSortedQuestIds] - Proximity Timer Stopped!")
                     questProximityTimer:Cancel()
                     questProximityTimer = nil
                 else
@@ -1016,7 +1016,7 @@ function TrackerUtils:GetSortedQuestIds()
                     if position then
                         local distance = playerPosition and QuestieLib.Euclid(position.x, position.y, playerPosition.x, playerPosition.y)
                         if not distance or distance > 0.01 then -- Position has changed
-                            Questie.Debug(Questie.DEBUG_SPAM, "[TrackerUtils:GetSortedQuestIds] - Proximity Timer Updated!")
+                            QuestieSmazak.Debug(QuestieSmazak.DEBUG_SPAM, "[TrackerUtils:GetSortedQuestIds] - Proximity Timer Updated!")
                             playerPosition = position
                             local orderCopy = {}
 
@@ -1038,8 +1038,8 @@ function TrackerUtils:GetSortedQuestIds()
 
                             QuestieCombatQueue:Queue(function()
                                 -- Don't update tracker if we're in a pet battle
-                                if Expansions.Current >= Expansions.MoP and Questie.db.profile.hideTrackerInPetBattles and C_PetBattles and C_PetBattles.IsInBattle() then
-                                    Questie.Debug(Questie.DEBUG_DEVELOP, "[TrackerUtils] Skipped proximity timer tracker update - in pet battle")
+                                if Expansions.Current >= Expansions.MoP and QuestieSmazak.db.profile.hideTrackerInPetBattles and C_PetBattles and C_PetBattles.IsInBattle() then
+                                    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[TrackerUtils] Skipped proximity timer tracker update - in pet battle")
                                     return
                                 end
                                 TrackerUtils.FilterProximityTimer = true
@@ -1054,14 +1054,14 @@ function TrackerUtils:GetSortedQuestIds()
 
 
     if (sortObj ~= strmatch(sortObj, "byProximity.*")) and questProximityTimer and questProximityTimer ~= nil then
-        Questie.Debug(Questie.DEBUG_DEVELOP, "[TrackerUtils:GetSortedQuestIds] - Proximity Timer Stopped!")
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[TrackerUtils:GetSortedQuestIds] - Proximity Timer Stopped!")
         questProximityTimer:Cancel()
         TrackerUtils.FilterProximityTimer = nil
         questProximityTimer = nil
     end
 
     if (sortObj ~= strmatch(sortObj, "byZonePlayerProximity.*")) and questZoneProximityTimer and questZoneProximityTimer ~= nil then
-        Questie.Debug(Questie.DEBUG_DEVELOP, "[TrackerUtils:GetSortedQuestIds] - Zone Proximity Timer Stopped!")
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[TrackerUtils:GetSortedQuestIds] - Zone Proximity Timer Stopped!")
         questZoneProximityTimer:Cancel()
         TrackerUtils.FilterProximityTimer = nil
         questZoneProximityTimer = nil
@@ -1085,10 +1085,10 @@ end
 
 function TrackerUtils:UpdateVoiceOverPlayButtons()
     if self:IsVoiceOverLoaded() then
-        if Questie_BaseFrame.isSizing == true or Questie_BaseFrame.isMoving == true then
-            Questie.Debug(Questie.DEBUG_SPAM, "[TrackerUtils:UpdateVoiceOverPlayButtons]")
+        if QuestieSmazak_BaseFrame.isSizing == true or QuestieSmazak_BaseFrame.isMoving == true then
+            QuestieSmazak.Debug(QuestieSmazak.DEBUG_SPAM, "[TrackerUtils:UpdateVoiceOverPlayButtons]")
         else
-            Questie.Debug(Questie.DEBUG_INFO, "[TrackerUtils:UpdateVoiceOverPlayButtons]")
+            QuestieSmazak.Debug(QuestieSmazak.DEBUG_INFO, "[TrackerUtils:UpdateVoiceOverPlayButtons]")
         end
 
         for i = 1, 75 do
@@ -1184,8 +1184,8 @@ function TrackerUtils.AddQuestItemButtons(quest, complete, line, questItemButton
             end
 
             -- If the Quest is minimized show the Expand Quest button
-            if Questie.db.char.collapsedQuests[questId] then
-                if Questie.db.profile.collapseCompletedQuests and isMinimizable then
+            if QuestieSmazak.db.char.collapsedQuests[questId] then
+                if QuestieSmazak.db.profile.collapseCompletedQuests and isMinimizable then
                     line.expandQuest:Hide()
                 else
                     line.expandQuest:Show()
@@ -1203,7 +1203,7 @@ function TrackerUtils.AddQuestItemButtons(quest, complete, line, questItemButton
             -- If the Quest Zone or Quest is minimized then set UIParent and hide buttons since the buttons are normally attached to the Quest frame.
             -- If buttons are left attached to the Quest frame and if the Tracker frame is hidden in combat, then it would also try and hide the
             -- buttons which you can't do in combat. This helps avoid violating the Blizzard SecureActionButtonTemplate restrictions relating to combat.
-            if Questie.db.char.collapsedZones[line.expandZone.zoneId] or Questie.db.char.collapsedQuests[questId] then
+            if QuestieSmazak.db.char.collapsedZones[line.expandZone.zoneId] or QuestieSmazak.db.char.collapsedQuests[questId] then
                 button:SetParent(UIParent)
                 button:Hide()
             end
@@ -1238,7 +1238,7 @@ function TrackerUtils.AddQuestItemButtons(quest, complete, line, questItemButton
                     secondaryButton:SetParent(line)
                     secondaryButton:Show()
 
-                    if Questie.db.char.collapsedZones[line.expandZone.zoneId] or Questie.db.char.collapsedQuests[questId] then
+                    if QuestieSmazak.db.char.collapsedZones[line.expandZone.zoneId] or QuestieSmazak.db.char.collapsedQuests[questId] then
                         secondaryButton:SetParent(UIParent)
                         secondaryButton:Hide()
                     end
@@ -1248,7 +1248,7 @@ function TrackerUtils.AddQuestItemButtons(quest, complete, line, questItemButton
             -- Show button when primary button was not added (e.g. the requiredSourceItems are not in the bag yet)
             line.expandQuest:Show()
         end
-    elseif (Questie.db.profile.collapseCompletedQuests and isMinimizable) then
+    elseif (QuestieSmazak.db.profile.collapseCompletedQuests and isMinimizable) then
         -- Hide button if quest complete or failed
         line.expandQuest:Hide()
     else
@@ -1273,7 +1273,7 @@ function TrackerUtils.HasQuest()
             hasQuest = false
         end
     else
-        if not Questie.db.profile.trackerShowCompleteQuests then
+        if not QuestieSmazak.db.profile.trackerShowCompleteQuests then
             local isTrackingIncompleteQuest = false
             for _, quest in pairs(TrackerData.GetQuests()) do
                 if QuestieTracker.IsTrackedByQuestie(quest.Id)
@@ -1299,6 +1299,6 @@ function TrackerUtils.HasQuest()
         hasQuest = true
     end
 
-    Questie.Debug(Questie.DEBUG_SPAM, "[TrackerUtils.HasQuest] - ", hasQuest)
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_SPAM, "[TrackerUtils.HasQuest] - ", hasQuest)
     return hasQuest
 end

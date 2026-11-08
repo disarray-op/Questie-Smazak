@@ -1,9 +1,9 @@
 ---@class QuestieQuestBlacklist
-local QuestieQuestBlacklist = QuestieLoader:CreateModule("QuestieQuestBlacklist")
+local QuestieQuestBlacklist = QuestieSmazakLoader:CreateModule("QuestieQuestBlacklist")
 ---@type ContentPhases
-local ContentPhases = QuestieLoader:ImportModule("ContentPhases")
+local ContentPhases = QuestieSmazakLoader:ImportModule("ContentPhases")
 ---@type Expansions
-local Expansions = QuestieLoader:ImportModule("Expansions")
+local Expansions = QuestieSmazakLoader:ImportModule("Expansions")
 
 local HIDE_ON_MAP = "HIDE_ON_MAP"
 
@@ -5022,8 +5022,8 @@ function QuestieQuestBlacklist:Load()
         [9228] = Expansions.Current >= Expansions.Cata, -- Removed with cata
         [9231] = Expansions.Current >= Expansions.Cata, -- Removed with cata
         [9248] = Expansions.Current >= Expansions.Cata, -- Removed with cata
-        [9250] = ((Expansions.Current >= Expansions.Wotlk) and (not Questie.IsTitanReforged)), -- Removed with Wotlk
-        [9251] = ((Expansions.Current >= Expansions.Wotlk) and (not Questie.IsTitanReforged)), -- Removed with Wotlk
+        [9250] = ((Expansions.Current >= Expansions.Wotlk) and (not QuestieSmazak.IsTitanReforged)), -- Removed with Wotlk
+        [9251] = ((Expansions.Current >= Expansions.Wotlk) and (not QuestieSmazak.IsTitanReforged)), -- Removed with Wotlk
         [9257] = Expansions.Current >= Expansions.Wotlk, -- Removed with Wotlk
         [9269] = Expansions.Current >= Expansions.Wotlk, -- Removed with Wotlk
         [9270] = Expansions.Current >= Expansions.Wotlk, -- Removed with Wotlk
@@ -6279,7 +6279,7 @@ function QuestieQuestBlacklist:Load()
         [31278] = true, -- Hidden quest
         [31280] = true, -- Hidden quest
         [31284] = true, -- Hidden quest
-        [31289] = not Questie.IsChinaRegion, -- Seems available on Chinese MoP
+        [31289] = not QuestieSmazak.IsChinaRegion, -- Seems available on Chinese MoP
         [31292] = true, -- Hidden quest
         [31304] = true, -- Hidden quest
         [31305] = true, -- Hidden quest
@@ -7103,20 +7103,20 @@ function QuestieQuestBlacklist:Load()
         [96383] = HIDE_ON_MAP, -- Legacy Reward: Spectral Bear Cub -- todo fix
     }
 
-    if Questie.IsSoD then
-        Questie.Debug(Questie.DEBUG_DEVELOP, "Blacklisting quests for SoD...")
+    if QuestieSmazak.IsSoD then
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "Blacklisting quests for SoD...")
         questsToBlacklist = ContentPhases.BlacklistSoDQuestsByPhase(questsToBlacklist, ContentPhases.activePhases.SoD)
-    elseif Questie.IsTBC then
-        Questie.Debug(Questie.DEBUG_DEVELOP, "Blacklisting quests for TBC...")
+    elseif QuestieSmazak.IsTBC then
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "Blacklisting quests for TBC...")
         questsToBlacklist = ContentPhases.BlacklistTbcQuestsByPhase(questsToBlacklist, ContentPhases.activePhases.TBC)
-    elseif Questie.IsAnniversaryEra or Questie.IsAnniversaryHardcore then
-        Questie.Debug(Questie.DEBUG_DEVELOP, "Blacklisting quests for Anniversary Era/Hardcore...")
+    elseif QuestieSmazak.IsAnniversaryEra or QuestieSmazak.IsAnniversaryHardcore then
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "Blacklisting quests for Anniversary Era/Hardcore...")
         questsToBlacklist = ContentPhases.BlacklistAnniversaryQuestsByPhase(questsToBlacklist, ContentPhases.activePhases.Anniversary)
-    elseif Questie.IsSoM then
-        Questie.Debug(Questie.DEBUG_DEVELOP, "Blacklisting quests for SoM...")
+    elseif QuestieSmazak.IsSoM then
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "Blacklisting quests for SoM...")
         questsToBlacklist = ContentPhases.BlacklistSoMQuestsByPhase(questsToBlacklist, ContentPhases.activePhases.SoM)
-    elseif Questie.IsMoP then
-        Questie.Debug(Questie.DEBUG_DEVELOP, "Blacklisting quests for MoP...")
+    elseif QuestieSmazak.IsMoP then
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "Blacklisting quests for MoP...")
         questsToBlacklist = ContentPhases.BlacklistMoPQuestsByPhase(questsToBlacklist, ContentPhases.activePhases.MoP)
     end
 
@@ -7756,7 +7756,7 @@ function QuestieQuestBlacklist.LoadAutoBlacklistWotlk()
 
         -- Eastern Kingdoms -> Isle Of Queldanas (0 -> 4080)
         [11517] = true, --* Report to Nasuun (https://www.wowhead.com/wotlk/quest=11517) (Retail Data)
-        [11534] = not Questie.IsTitanReforged , --* Report to Nasuun (https://www.wowhead.com/wotlk/quest=11534) (Retail Data)
+        [11534] = not QuestieSmazak.IsTitanReforged , --* Report to Nasuun (https://www.wowhead.com/wotlk/quest=11534) (Retail Data)
         [11552] = true, --* Rohendor, the Second Gate (https://www.wowhead.com/wotlk/quest=11552) (Retail Data)
         [11553] = true, --* Archonisus, the Final Gate (https://www.wowhead.com/wotlk/quest=11553) (Retail Data)
 --      [24522] = true, --* Journey To The Sunwell (https://www.wowhead.com/wotlk/quest=24522) (Retail Data)
@@ -7938,7 +7938,7 @@ end
 
 ---@return table<QuestId, boolean>
 function QuestieQuestBlacklist.LoadAutoBlacklistIsTitanReforged()
-    Questie.Debug(Questie.DEBUG_DEVELOP, "Blacklisting quests for Titan Reforged...")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "Blacklisting quests for Titan Reforged...")
     return {
         -- Professions
         [14103] = true, -- Titanium Powder

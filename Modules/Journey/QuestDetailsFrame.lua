@@ -1,31 +1,31 @@
 ---@class QuestDetailsFrame
-local QuestDetailsFrame = QuestieLoader:CreateModule("QuestDetailsFrame")
+local QuestDetailsFrame = QuestieSmazakLoader:CreateModule("QuestDetailsFrame")
 
 -------------------------
 --Import modules.
 -------------------------
 ---@type QuestieJourneyUtils
-local QuestieJourneyUtils = QuestieLoader:ImportModule("QuestieJourneyUtils")
+local QuestieJourneyUtils = QuestieSmazakLoader:ImportModule("QuestieJourneyUtils")
 ---@type QuestieJourney
-local QuestieJourney = QuestieLoader:ImportModule("QuestieJourney")
+local QuestieJourney = QuestieSmazakLoader:ImportModule("QuestieJourney")
 ---@type QuestieSearchResults
-local QuestieSearchResults = QuestieLoader:ImportModule("QuestieSearchResults")
+local QuestieSearchResults = QuestieSmazakLoader:ImportModule("QuestieSearchResults")
 ---@type QuestieDB
-local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
 ---@type QuestieReputation
-local QuestieReputation = QuestieLoader:ImportModule("QuestieReputation")
+local QuestieReputation = QuestieSmazakLoader:ImportModule("QuestieReputation")
 ---@type QuestieCorrections
-local QuestieCorrections = QuestieLoader:ImportModule("QuestieCorrections")
+local QuestieCorrections = QuestieSmazakLoader:ImportModule("QuestieCorrections")
 ---@type TrackerUtils
-local TrackerUtils = QuestieLoader:ImportModule("TrackerUtils")
+local TrackerUtils = QuestieSmazakLoader:ImportModule("TrackerUtils")
 ---@type QuestieLib
-local QuestieLib = QuestieLoader:ImportModule("QuestieLib")
+local QuestieLib = QuestieSmazakLoader:ImportModule("QuestieLib")
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 ---@type QuestieQuest
-local QuestieQuest = QuestieLoader:ImportModule("QuestieQuest")
+local QuestieQuest = QuestieSmazakLoader:ImportModule("QuestieQuest")
 ---@type QuestieProfessions
-local QuestieProfessions = QuestieLoader:ImportModule("QuestieProfessions")
+local QuestieProfessions = QuestieSmazakLoader:ImportModule("QuestieProfessions")
 
 local AceGUI = LibStub("AceGUI-3.0")
 
@@ -49,9 +49,9 @@ local function rec(theTable, ret, indent)
 end
 
 local function recurseTable(theTable, theKeys)
-    local ret = Questie:Colorize('Raw data (shown because debug is enabled):\n\n', 'red')
+    local ret = QuestieSmazak:Colorize('Raw data (shown because debug is enabled):\n\n', 'red')
     for key, _ in pairs(theKeys) do
-        ret = ret..Questie:Colorize(key, 'yellow')..': '
+        ret = ret..QuestieSmazak:Colorize(key, 'yellow')..': '
         local t = type(theTable[key])
         if t == 'nil' then
             ret = ret..'nil'
@@ -136,7 +136,7 @@ local function GetLevelDifficultyRanges(questLevel, questMinLevel)
 
     -- Gray Level based on level range.
     if (questLevel ~= -1) then
-        if Questie.IsClassic then
+        if QuestieSmazak.IsClassic then
             -- values observed on wowhead
             if (questLevel <= 4) then
                 gray = questLevel + 5
@@ -241,7 +241,7 @@ local function GetDifficultyString(questLevel, questMinLevel)
         diffStr = diffStr .. "|cFFC0C0C0[".. gray .."]|r "
     end
 
-    return Questie:Colorize(l10n('Difficulty Range: %s', diffStr), 'yellow')
+    return QuestieSmazak:Colorize(l10n('Difficulty Range: %s', diffStr), 'yellow')
 end
 
 ---Takes a frame and adds a paragraph with a header text and a list of links to other search results
@@ -308,7 +308,7 @@ function QuestDetailsFrame:Draw(container, quest)
 
     -- Complete checkbox (disabled/read-only)
     local completedCheckbox = AceGUI:Create("CheckBox")
-    completedCheckbox:SetValue(Questie.db.char.complete[quest.Id])
+    completedCheckbox:SetValue(QuestieSmazak.db.char.complete[quest.Id])
     completedCheckbox:SetLabel(l10n("Complete"))
     completedCheckbox:SetDisabled(true)
     completedCheckbox:SetHeight(16)
@@ -316,10 +316,10 @@ function QuestDetailsFrame:Draw(container, quest)
     completedCheckbox:SetFullWidth(true)
     container:AddChild(completedCheckbox)
 
-    -- Hidden by Questie checkbox (disabled/read-only)
+    -- Hidden by QuestieSmazak checkbox (disabled/read-only)
     local hiddenByQuestieCheckbox = AceGUI:Create("CheckBox")
     hiddenByQuestieCheckbox:SetValue(QuestieCorrections.hiddenQuests[quest.Id])
-    hiddenByQuestieCheckbox:SetLabel(l10n("Hidden by Questie"))
+    hiddenByQuestieCheckbox:SetLabel(l10n("Hidden by QuestieSmazak"))
     hiddenByQuestieCheckbox:SetDisabled(true)
     hiddenByQuestieCheckbox:SetHeight(16)
     hiddenByQuestieCheckbox.text:SetFontObject(GameFontHighlightSmall)
@@ -330,11 +330,11 @@ function QuestDetailsFrame:Draw(container, quest)
     local hideQuestCheckbox = AceGUI:Create("CheckBox")
     hideQuestCheckbox.questId = quest.Id
     hideQuestCheckbox:SetLabel(l10n("Hidden"))
-    hideQuestCheckbox:SetValue(Questie.db.char.hidden[quest.Id] ~= nil)
+    hideQuestCheckbox:SetValue(QuestieSmazak.db.char.hidden[quest.Id] ~= nil)
     hideQuestCheckbox.text:SetFontObject(GameFontHighlightSmall)
     hideQuestCheckbox:SetFullWidth(true)
     hideQuestCheckbox:SetCallback("OnValueChanged", function(frame)
-        if Questie.db.char.hidden[frame.questId] ~= nil then
+        if QuestieSmazak.db.char.hidden[frame.questId] ~= nil then
             QuestieQuest:UnhideQuest(frame.questId)
         else
             QuestieQuest:HideQuest(frame.questId)
@@ -362,17 +362,17 @@ function QuestDetailsFrame:Draw(container, quest)
 
     -- Generic Quest Information
 
-    local questIdLabel = CreateLabel(Questie:Colorize(l10n("Quest ID") .. l10n(": "), "yellow") .. quest.Id, true)
+    local questIdLabel = CreateLabel(QuestieSmazak:Colorize(l10n("Quest ID") .. l10n(": "), "yellow") .. quest.Id, true)
     container:AddChild(questIdLabel)
 
     local questLevel = QuestieLib.GetEffectiveQuestLevel(quest.Id)
-    local levelLabel = CreateLabel(Questie:Colorize(l10n("Quest Level") .. l10n(": "), "yellow") .. questLevel, true)
+    local levelLabel = CreateLabel(QuestieSmazak:Colorize(l10n("Quest Level") .. l10n(": "), "yellow") .. questLevel, true)
     container:AddChild(levelLabel)
 
     -- We need to query this so we don't get wrong results for -1 type quests
     local requiredLevel = QuestieDB.QueryQuestSingle(quest.Id, "requiredLevel")
     local questDbLevel = QuestieDB.QueryQuestSingle(quest.Id, "questLevel")
-    local minLevelLabel = CreateLabel(Questie:Colorize(l10n("Required Level") .. l10n(": "), 'yellow') .. requiredLevel, true)
+    local minLevelLabel = CreateLabel(QuestieSmazak:Colorize(l10n("Required Level") .. l10n(": "), 'yellow') .. requiredLevel, true)
     container:AddChild(minLevelLabel)
 
     -- Required Race / Faction
@@ -383,7 +383,7 @@ function QuestDetailsFrame:Draw(container, quest)
         if requiredRaces == QuestieDB.raceKeys.ALL_ALLIANCE or requiredRaces == QuestieDB.raceKeys.ALL_HORDE then
             requiredLabel = "Required Faction"
         end
-        local reqRacesLabel = CreateLabel(Questie:Colorize(l10n(requiredLabel) .. l10n(": "), 'yellow') .. reqRaces, true)
+        local reqRacesLabel = CreateLabel(QuestieSmazak:Colorize(l10n(requiredLabel) .. l10n(": "), 'yellow') .. reqRaces, true)
         container:AddChild(reqRacesLabel)
     end
 
@@ -391,7 +391,7 @@ function QuestDetailsFrame:Draw(container, quest)
     local requiredClasses = QuestieDB.QueryQuestSingle(quest.Id, "requiredClasses")
     local reqClasses = QuestieLib:GetClassString(requiredClasses)
     if (reqClasses ~= "") then
-        local reqClassesLabel = CreateLabel(Questie:Colorize(l10n("Required Class") .. l10n(": "), 'yellow') .. reqClasses, true)
+        local reqClassesLabel = CreateLabel(QuestieSmazak:Colorize(l10n("Required Class") .. l10n(": "), 'yellow') .. reqClasses, true)
         container:AddChild(reqClassesLabel)
     end
 
@@ -431,7 +431,7 @@ function QuestDetailsFrame:Draw(container, quest)
     end
 
     if #professionParts > 0 then
-        local label = Questie:Colorize(l10n("Required Profession") .. l10n(": "), 'yellow')
+        local label = QuestieSmazak:Colorize(l10n("Required Profession") .. l10n(": "), 'yellow')
         local professionString
         if #professionParts == 1 then
             professionString = label .. professionParts[1]
@@ -447,37 +447,37 @@ function QuestDetailsFrame:Draw(container, quest)
 
     local reputationRewardString = GetReputationRewardString(quest.Id)
     if reputationRewardString then
-        local labelText = Questie:Colorize(l10n("Reputation Reward") .. l10n(": "), 'yellow') .. Questie:Colorize(reputationRewardString, "reputationBlue")
+        local labelText = QuestieSmazak:Colorize(l10n("Reputation Reward") .. l10n(": "), 'yellow') .. QuestieSmazak:Colorize(reputationRewardString, "reputationBlue")
         local reputationRewardLabel = CreateLabel(labelText, true)
         container:AddChild(reputationRewardLabel)
     end
 
     local breadcrumbForQuestId = QuestieDB.QueryQuestSingle(quest.Id, "breadcrumbForQuestId")
     if breadcrumbForQuestId and breadcrumbForQuestId ~= 0 then
-        local completedStatus = Questie.db.char.complete[quest.Id] and Questie:Colorize(YES, 'green') or Questie:Colorize(NO, 'red')
-        local completedLabel = CreateLabel(Questie:Colorize(l10n("Completed") .. l10n(": "), 'yellow') .. completedStatus, true)
+        local completedStatus = QuestieSmazak.db.char.complete[quest.Id] and QuestieSmazak:Colorize(YES, 'green') or QuestieSmazak:Colorize(NO, 'red')
+        local completedLabel = CreateLabel(QuestieSmazak:Colorize(l10n("Completed") .. l10n(": "), 'yellow') .. completedStatus, true)
         container:AddChild(completedLabel)
     end
 
     if QuestieDB.IsRepeatable(quest.Id) then
         if QuestieDB.IsDailyQuest(quest.Id) then
-            local dailyLabel = CreateLabel(Questie:Colorize(l10n("Repeatable")..l10n(": "), 'yellow') .. l10n("Daily"), true)
+            local dailyLabel = CreateLabel(QuestieSmazak:Colorize(l10n("Repeatable")..l10n(": "), 'yellow') .. l10n("Daily"), true)
             container:AddChild(dailyLabel)
         elseif QuestieDB.IsWeeklyQuest(quest.Id) then
-            local weeklyLabel = CreateLabel(Questie:Colorize(l10n("Repeatable")..l10n(": "), 'yellow') .. l10n("Weekly"), true)
+            local weeklyLabel = CreateLabel(QuestieSmazak:Colorize(l10n("Repeatable")..l10n(": "), 'yellow') .. l10n("Weekly"), true)
             container:AddChild(weeklyLabel)
         elseif QuestieDB.IsMonthlyQuest(quest.Id) then
-            local monthlyLabel = CreateLabel(Questie:Colorize(l10n("Repeatable")..l10n(": "), 'yellow') .. l10n("Monthly"), true)
+            local monthlyLabel = CreateLabel(QuestieSmazak:Colorize(l10n("Repeatable")..l10n(": "), 'yellow') .. l10n("Monthly"), true)
             container:AddChild(monthlyLabel)
         else
-            local repeatableLabel = CreateLabel(Questie:Colorize(l10n("Repeatable"), 'yellow'), true)
+            local repeatableLabel = CreateLabel(QuestieSmazak:Colorize(l10n("Repeatable"), 'yellow'), true)
             container:AddChild(repeatableLabel)
         end
     end
 
     local eligibilityText, shouldShowDoableLabel = QuestieDB.IsDoableVerbose(quest.Id, false, true, true)
     if shouldShowDoableLabel then
-        local eligibilityTextLabel = CreateLabel(Questie:Colorize(l10n("Doable") .. l10n(": "), 'yellow') .. eligibilityText, true)
+        local eligibilityTextLabel = CreateLabel(QuestieSmazak:Colorize(l10n("Doable") .. l10n(": "), 'yellow') .. eligibilityText, true)
         container:AddChild(eligibilityTextLabel)
     end
 
@@ -848,7 +848,7 @@ function QuestDetailsFrame:Draw(container, quest)
         container.content:SetHeight(10000)
     end
 
-    if Questie.db.profile.debugEnabled then
+    if QuestieSmazak.db.profile.debugEnabled then
         QuestieJourneyUtils:Spacer(container)
         QuestieJourneyUtils:AddLine(container, recurseTable(quest, QuestieDB.questKeys))
     end

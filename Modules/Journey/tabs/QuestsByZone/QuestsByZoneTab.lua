@@ -1,21 +1,21 @@
 ---@type QuestieJourney
-local QuestieJourney = QuestieLoader:CreateModule("QuestieJourney")
+local QuestieJourney = QuestieSmazakLoader:CreateModule("QuestieJourney")
 local _QuestieJourney = QuestieJourney.private
 -------------------------
 --Import modules.
 -------------------------
 ---@type QuestieJourneyUtils
-local QuestieJourneyUtils = QuestieLoader:ImportModule("QuestieJourneyUtils")
+local QuestieJourneyUtils = QuestieSmazakLoader:ImportModule("QuestieJourneyUtils")
 ---@type QuestiePlayer
-local QuestiePlayer = QuestieLoader:ImportModule("QuestiePlayer")
+local QuestiePlayer = QuestieSmazakLoader:ImportModule("QuestiePlayer")
 ---@type QuestieProfessions
-local QuestieProfessions = QuestieLoader:ImportModule("QuestieProfessions")
+local QuestieProfessions = QuestieSmazakLoader:ImportModule("QuestieProfessions")
 ---@type QuestieDB
-local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
 ---@type ZoneDB
-local ZoneDB = QuestieLoader:ImportModule("ZoneDB")
+local ZoneDB = QuestieSmazakLoader:ImportModule("ZoneDB")
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 
 local AceGUI = LibStub("AceGUI-3.0")
 
@@ -109,7 +109,7 @@ _CreateContinentDropdown = function()
         selectedContinentId = questCategoryKeys.NORTHREND
     elseif currentContinentId == 870 then -- Pandaria
         selectedContinentId = questCategoryKeys.PANDARIA
-    elseif currentContinentId == 947 and Questie.IsForever then -- Azeroth
+    elseif currentContinentId == 947 and QuestieSmazak.IsForever then -- Azeroth
         selectedContinentId = questCategoryKeys.ZEPHRAS_ISLE
     elseif l10n.zoneLookup[currentContinentId] then -- Dungeon
         selectedContinentId = questCategoryKeys.DUNGEONS

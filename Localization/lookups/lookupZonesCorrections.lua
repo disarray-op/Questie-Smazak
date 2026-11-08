@@ -1,7 +1,7 @@
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 ---@type Expansions
-local Expansions = QuestieLoader:ImportModule("Expansions")
+local Expansions = QuestieSmazakLoader:ImportModule("Expansions")
 
 -- This file is used to add corrections/changes to the lookupZones.lua which contains data for Era up to WotLK.
 -- For example, it applies all the changes that were made to the zones in Cataclysm and also add all zones that were added in Mists of Pandaria.

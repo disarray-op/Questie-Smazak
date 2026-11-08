@@ -1,11 +1,11 @@
 ---@type QuestieTooltips
-local QuestieTooltips = QuestieLoader:ImportModule("QuestieTooltips");
+local QuestieTooltips = QuestieSmazakLoader:ImportModule("QuestieTooltips");
 local _QuestieTooltips = QuestieTooltips.private
 
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 ---@type QuestieDB
-local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
 
 local lastGuid
 
@@ -16,7 +16,7 @@ local function _IsSecret(value)
 end
 
 function _QuestieTooltips:AddUnitDataToTooltip()
-    if (self.IsForbidden and self:IsForbidden()) or (not Questie.db.profile.enableTooltips) then
+    if (self.IsForbidden and self:IsForbidden()) or (not QuestieSmazak.db.profile.enableTooltips) then
         return
     end
 
@@ -39,7 +39,7 @@ function _QuestieTooltips:AddUnitDataToTooltip()
         lastGuid ~= guid
     ) then
         QuestieTooltips.lastGametooltipUnit = name
-        if Questie.db.profile.enableTooltipsNPCID then
+        if QuestieSmazak.db.profile.enableTooltipsNPCID then
             GameTooltip:AddDoubleLine(l10n("NPC ID"), "|cFFFFFFFF" .. npcId .. "|r")
         end
 
@@ -53,8 +53,8 @@ function _QuestieTooltips:AddUnitDataToTooltip()
     elseif (type == "Player") then
         local _, serverid, playerid = strsplit("-", guid or "");
         QuestieTooltips.lastGametooltipUnit = name
-        if Questie.devChars[serverid] and tContains(Questie.devChars[serverid], playerid) then
-            GameTooltip:AddLine("|T" .. "Interface\\AddOns\\Questie\\Icons\\questie.png" .. ":0|t |cnIQ5:" .. l10n("Questie Developer") .. "|r")
+        if QuestieSmazak.devChars[serverid] and tContains(QuestieSmazak.devChars[serverid], playerid) then
+            GameTooltip:AddLine("|T" .. "Interface\\AddOns\\QuestieSmazak\\Icons\\questie.png" .. ":0|t |cnIQ5:" .. l10n("QuestieSmazak Developer") .. "|r")
         end
     end
     lastGuid = guid;
@@ -64,7 +64,7 @@ end
 local checkedQuestStartItems = {} -- cache item IDs that were already checked if they start a quest
 local lastItemId = 0;
 function _QuestieTooltips:AddItemDataToTooltip()
-    if (self.IsForbidden and self:IsForbidden()) or (not Questie.db.profile.enableTooltips) then
+    if (self.IsForbidden and self:IsForbidden()) or (not QuestieSmazak.db.profile.enableTooltips) then
         return
     end
 
@@ -84,7 +84,7 @@ function _QuestieTooltips:AddItemDataToTooltip()
         QuestieTooltips.lastFrameName ~= self:GetName()
     ) then
         QuestieTooltips.lastGametooltipItem = name
-        if Questie.db.profile.enableTooltipsItemID then
+        if QuestieSmazak.db.profile.enableTooltipsItemID then
             -- A clicked item link shows in ItemRefTooltip; its ID belongs there, not on the hover tooltip.
             self:AddDoubleLine(l10n("Item ID"), "|cFFFFFFFF" .. itemId .. "|r")
         end
@@ -120,8 +120,8 @@ end
 ---@param spellId any @Possibly secret on Forever
 ---@return nil
 function _QuestieTooltips.AddSpellIdToTooltip(tooltip, spellId)
-    if (tooltip.IsForbidden and tooltip:IsForbidden()) or (not Questie.db.profile.enableTooltips)
-        or (not Questie.db.profile.enableTooltipsSpellID) then
+    if (tooltip.IsForbidden and tooltip:IsForbidden()) or (not QuestieSmazak.db.profile.enableTooltips)
+        or (not QuestieSmazak.db.profile.enableTooltipsSpellID) then
         return
     end
 
@@ -140,7 +140,7 @@ end
 ---@param playerZone AreaId
 ---@return nil
 function _QuestieTooltips.AddObjectDataToTooltip(name, playerZone)
-    if (not Questie.db.profile.enableTooltips) or (not name) then
+    if (not QuestieSmazak.db.profile.enableTooltips) or (not name) then
         return
     end
 
@@ -148,10 +148,10 @@ function _QuestieTooltips.AddObjectDataToTooltip(name, playerZone)
     -- Login Initialization warms the provider index.
     local ids = LibQuestieDB.Object.IdsByName(name)
     local count = ids and #ids or 0
-    if Questie.db.profile.enableTooltipsObjectID then
+    if QuestieSmazak.db.profile.enableTooltipsObjectID then
         if count == 1 then
             GameTooltip:AddDoubleLine(l10n("Object ID"), "|cFFFFFFFF" .. ids[1] .. "|r")
-        elseif count > 10 and (not Questie.db.profile.debugEnabled) then
+        elseif count > 10 and (not QuestieSmazak.db.profile.debugEnabled) then
             GameTooltip:AddDoubleLine(l10n("Object ID"), "|cFFFFFFFF" .. ids[1] .. " (10+)|r")
         elseif count > 1 then
             GameTooltip:AddDoubleLine(l10n("Object ID"), "|cFFFFFFFF" .. ids[1] .. " (" .. count .. ")|r")

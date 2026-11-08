@@ -12,37 +12,37 @@ describe("ChatFilter", function()
     local QuestieDB
 
     before_each(function()
-        addFilterMock = stub(QuestieLoader:ImportModule("QuestieCompat"), "AddMessageEventFilter")
-        Questie.started = true
-        Questie.db.profile = {
+        addFilterMock = stub(QuestieSmazakLoader:ImportModule("QuestieCompat"), "AddMessageEventFilter")
+        QuestieSmazak.started = true
+        QuestieSmazak.db.profile = {
             trackerShowQuestLevel = true,
         }
-        Questie.db.char = {
+        QuestieSmazak.db.char = {
             complete = {},
         }
 
-        QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+        QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
         QuestieDB.QuestPointers = {[74] = true}
         QuestieDB.IsComplete = function() return 0 end
         QuestieDB.IsRepeatable = function() return false end
         QuestieDB.IsPvPQuest = function() return false end
 
         dofile("Modules/Libs/QuestieLib.lua")
-        local QuestieLib = QuestieLoader:ImportModule("QuestieLib")
+        local QuestieLib = QuestieSmazakLoader:ImportModule("QuestieLib")
         QuestieLib.GetEffectiveQuestLevel = function() return 28 end
         QuestieLib.GetLevelString = function() return "[28] " end
         QuestieLib.PrintDifficultyColor = function(_, _, ...) return "|cffffffff" end
 
-        local QuestieEvent = QuestieLoader:ImportModule("QuestieEvent")
+        local QuestieEvent = QuestieSmazakLoader:ImportModule("QuestieEvent")
         QuestieEvent.IsEventQuest = function() return false end
 
-        QuestieLink = QuestieLoader:ImportModule("QuestieLink")
+        QuestieLink = QuestieSmazakLoader:ImportModule("QuestieLink")
         QuestieLink.GetQuestHyperLink = function(_, questId, senderGUID)
             return "|Hquestie:" .. questId .. ":" .. (senderGUID or "0") .. "|h[The Legend of Stalvan]|h"
         end
 
         dofile("Modules/QuestLinks/ChatFilter.lua")
-        ChatFilter = QuestieLoader:ImportModule("ChatFilter")
+        ChatFilter = QuestieSmazakLoader:ImportModule("ChatFilter")
 
         _G.HaveQuestData = function() return true end
         _G.C_QuestLog = {GetQuestObjectives = function() return {} end}
@@ -63,7 +63,7 @@ describe("ChatFilter", function()
     end)
 
     describe("Filter", function()
-        it("should replace native Blizzard quest links with Questie format", function()
+        it("should replace native Blizzard quest links with QuestieSmazak format", function()
             local msg = "Check out this quest: |cffffff00|Hquest:74:28|h[The Legend of Stalvan]|h|r"
             local chatFrame = {historyBuffer = {elements = {1}}}
 
@@ -108,7 +108,7 @@ describe("ChatFilter", function()
             assert.is_equal("Quest: |Hquestie:74:TEST_GUID_123|h[The Legend of Stalvan]|h", filteredMsg)
         end)
 
-        it("should replace Questie bracketed links with Questie hyperlink format", function()
+        it("should replace QuestieSmazak bracketed links with QuestieSmazak hyperlink format", function()
             local msg = "Check out this quest: [[28] The Legend of Stalvan (74)]"
             local chatFrame = {historyBuffer = {elements = {1}}}
 
@@ -118,8 +118,8 @@ describe("ChatFilter", function()
             assert.is_equal("Check out this quest: |Hquestie:74:0|h[The Legend of Stalvan]|h", filteredMsg)
         end)
 
-        it("should replace Questie bracketed links without level with Questie hyperlink format", function()
-            Questie.db.profile.trackerShowQuestLevel = false
+        it("should replace QuestieSmazak bracketed links without level with QuestieSmazak hyperlink format", function()
+            QuestieSmazak.db.profile.trackerShowQuestLevel = false
             local msg = "Check out this quest: [The Legend of Stalvan (74)]"
             local chatFrame = {historyBuffer = {elements = {1}}}
 

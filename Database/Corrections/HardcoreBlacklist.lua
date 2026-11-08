@@ -1,5 +1,5 @@
 ---@class HardcoreBlacklist
-local HardcoreBlacklist = QuestieLoader:CreateModule("HardcoreBlacklist")
+local HardcoreBlacklist = QuestieSmazakLoader:CreateModule("HardcoreBlacklist")
 
 
 ---@return table<QuestId, boolean>

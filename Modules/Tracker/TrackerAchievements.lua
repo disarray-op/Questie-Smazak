@@ -1,9 +1,9 @@
 -- Turns the game's tracked achievements into the display data used by the tracker's achievement section.
 ---@class TrackerAchievements
-local TrackerAchievements = QuestieLoader:CreateModule("TrackerAchievements")
+local TrackerAchievements = QuestieSmazakLoader:CreateModule("TrackerAchievements")
 
 ---@type QuestieDB
-local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
 
 ---@class TrackerAchievementCriteria
 ---@field Text string
@@ -88,7 +88,7 @@ local function _GetCriteriaList(achievementId, description)
     local criteriaList = {}
     for criteriaIndex = 1, numCriteria do
         local criteria = _GetCriteria(achievementId, criteriaIndex, description)
-        if (not Questie.db.profile.hideCompletedAchieveObjectives) or (not criteria.Completed) then
+        if (not QuestieSmazak.db.profile.hideCompletedAchieveObjectives) or (not criteria.Completed) then
             criteriaList[#criteriaList + 1] = criteria
         end
     end

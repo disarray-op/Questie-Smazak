@@ -8,17 +8,17 @@ describe("SupportValidation", function()
 
     before_each(function()
         mock = LoadQuestieDBMock()
-        originalQuestie = _G.Questie
-        _G.Questie = {IsForever = false}
+        originalQuestie = _G.QuestieSmazak
+        _G.QuestieSmazak = {IsForever = false}
         originalMetadata, originalAddOns = _G.GetAddOnMetadata, _G.C_AddOns
         _G.GetAddOnMetadata = nil
         _G.C_AddOns = nil
         dofile("Database/SupportValidation.lua")
-        validation = QuestieLoader:ImportModule("SupportValidation")
+        validation = QuestieSmazakLoader:ImportModule("SupportValidation")
     end)
 
     after_each(function()
-        _G.Questie = originalQuestie
+        _G.QuestieSmazak = originalQuestie
         _G.GetAddOnMetadata, _G.C_AddOns = originalMetadata, originalAddOns
     end)
 
@@ -97,7 +97,7 @@ describe("SupportValidation", function()
         local zones
 
         before_each(function()
-            Questie.IsForever = true
+            QuestieSmazak.IsForever = true
             zones = EraZones()
             zones.areaIdToUiMapId[16593] = 2521
             zones.uiMapIdToAreaId = {[1429] = 12, [1414] = 10073, [2521] = 16593}
@@ -128,7 +128,7 @@ describe("SupportValidation", function()
         end
 
         it("still rejects missing legacy suppression on ordinary Era", function()
-            Questie.IsForever = false
+            QuestieSmazak.IsForever = false
             local valid, report = validation.ValidateZones(zones, 1)
             assert.is_false(valid)
             assert.matches("consumer flavor: Era", report, 1, true)
@@ -285,27 +285,27 @@ describe("SupportValidation", function()
         it("reports " .. mode .. " with consumer flavor and unknown metadata", function()
             mock.lib.readMode = mode
             local _, report = validation.ValidateQuestXP({}, 5)
-            assert.matches("Questie support-data validation failed. Initialization stopped.", report, 1, true)
+            assert.matches("QuestieSmazak support-data validation failed. Initialization stopped.", report, 1, true)
             assert.matches("Dataset: QuestXP; consumer flavor: MoP; provider readMode: " .. mode, report, 1, true)
-            assert.matches("Questie version: unknown; QuestieDB version: unknown", report, 1, true)
+            assert.matches("QuestieSmazak version: unknown; QuestieDB version: unknown", report, 1, true)
         end)
     end
 
     it("uses modern addon version metadata when available", function()
         _G.C_AddOns = {GetAddOnMetadata = function(addon, key)
             assert.are_equal("Version", key)
-            return ({Questie = "v11", QuestieDB = "v2"})[addon]
+            return ({QuestieSmazak = "v11", QuestieDB = "v2"})[addon]
         end}
         local _, report = validation.ValidateQuestXP({}, 1)
-        assert.matches("Questie version: v11; QuestieDB version: v2", report, 1, true)
+        assert.matches("QuestieSmazak version: v11; QuestieDB version: v2", report, 1, true)
     end)
 
     it("uses legacy addon metadata and handles a missing provider version", function()
         _G.GetAddOnMetadata = function(addon)
-            return ({Questie = "v11"})[addon]
+            return ({QuestieSmazak = "v11"})[addon]
         end
         local _, report = validation.ValidateQuestXP({}, 1)
-        assert.matches("Questie version: v11; QuestieDB version: unknown", report, 1, true)
+        assert.matches("QuestieSmazak version: v11; QuestieDB version: unknown", report, 1, true)
     end)
     it("reports malformed drop rows with their actual types", function()
         local valid, report = validation.ValidateDropTables({[981] = false}, {[182] = "bad"}, {[725] = false}, "cmangos", 1)

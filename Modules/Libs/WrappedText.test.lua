@@ -82,7 +82,7 @@ describe("WrappedText", function()
             originalQuestLogObjectivesText = _G["QuestLogObjectivesText"]
 
             dofile("Modules/Libs/utf8.lua")
-            utf8 = QuestieLoader:ImportModule("utf8")
+            utf8 = QuestieSmazakLoader:ImportModule("utf8")
             _G["QuestLogObjectivesText"] = {
                 GetWidth = function() return 275 end,
                 GetFont = function() return "Font", 12, "" end,
@@ -92,7 +92,7 @@ describe("WrappedText", function()
             }
 
             dofile("Modules/Libs/WrappedText.lua")
-            WrappedText = QuestieLoader:ImportModule("WrappedText")
+            WrappedText = QuestieSmazakLoader:ImportModule("WrappedText")
         end)
 
         after_each(function()
@@ -201,7 +201,7 @@ describe("WrappedText", function()
         end)
 
         it("should keep leading texture escapes intact when wrapping reputation reward text", function()
-            local reputationTexture = "|TInterface\\Addons\\Questie\\Icons\\reputation.blp:14:14:2:0|t"
+            local reputationTexture = "|TInterface\\Addons\\QuestieSmazak\\Icons\\reputation.blp:14:14:2:0|t"
             local text = reputationTexture .. " +150 Warsong Outriders / +100 Orgrimmar"
             local lines = WrappedText:TextWrap(text, "", false, 20)
 
@@ -210,7 +210,7 @@ describe("WrappedText", function()
         end)
 
         it("should use texture width when choosing wrap position", function()
-            local reputationTexture = "|TInterface\\Addons\\Questie\\Icons\\reputation.blp:14:4:2:0|t"
+            local reputationTexture = "|TInterface\\Addons\\QuestieSmazak\\Icons\\reputation.blp:14:4:2:0|t"
             local text = reputationTexture .. "abcdef"
             local lines = WrappedText:TextWrap(text, "", false, 6)
 
@@ -219,7 +219,7 @@ describe("WrappedText", function()
         end)
 
         it("should preserve color escapes around texture escapes", function()
-            local reputationTexture = "|TInterface\\Addons\\Questie\\Icons\\reputation.blp:14:14:2:0|t"
+            local reputationTexture = "|TInterface\\Addons\\QuestieSmazak\\Icons\\reputation.blp:14:14:2:0|t"
             local lines = WrappedText:TextWrap("|cFFFF0000" .. reputationTexture .. "abcdef|r", "", false, 16)
 
             assert.are_same({
@@ -229,7 +229,7 @@ describe("WrappedText", function()
         end)
 
         it("should use single-size texture width when choosing wrap position", function()
-            local reputationTexture = "|TInterface\\Addons\\Questie\\Icons\\reputation.blp:14|t"
+            local reputationTexture = "|TInterface\\Addons\\QuestieSmazak\\Icons\\reputation.blp:14|t"
             local text = reputationTexture .. "abcdef"
             local lines = WrappedText:TextWrap(text, "", false, 16)
 
@@ -237,7 +237,7 @@ describe("WrappedText", function()
         end)
 
         it("should use raw texture width when combining a trailing word", function()
-            local reputationTexture = "|TInterface\\Addons\\Questie\\Icons\\reputation.blp:4:4:2:0|t"
+            local reputationTexture = "|TInterface\\Addons\\QuestieSmazak\\Icons\\reputation.blp:4:4:2:0|t"
             local text = reputationTexture .. " alpha"
             local lines = WrappedText:TextWrap(text, "", true, 5)
 
@@ -245,7 +245,7 @@ describe("WrappedText", function()
         end)
 
         it("should not combine a trailing texture as a single CJK glyph", function()
-            local reputationTexture = "|TInterface\\Addons\\Questie\\Icons\\reputation.blp:1:1:2:0|t"
+            local reputationTexture = "|TInterface\\Addons\\QuestieSmazak\\Icons\\reputation.blp:1:1:2:0|t"
             local text = "ab" .. reputationTexture
             local lines = WrappedText:TextWrap(text, "", true, 2)
 

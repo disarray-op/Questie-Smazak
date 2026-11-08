@@ -34,33 +34,33 @@ describe("TrackerMenu", function()
         _G.CLOSE = "Close"
         _G.GetLocale = function() return "enUS" end
         _G.GetAchievementInfo = function(id) return id, "Achievement " .. id end
-        colorizeOriginal = Questie.Colorize
-        Questie.Colorize = function(_, text) return text end
+        colorizeOriginal = QuestieSmazak.Colorize
+        QuestieSmazak.Colorize = function(_, text) return text end
 
         local fixture = dofile("cli/testData/addonDialog/PopupUIHarness.lua")
         local _, errors, _, private = fixture.NewEnvironment()
         dialogErrors = errors
-        assert(loadfile("Modules/Libs/QuestiePopup.lua"))("Questie", private)
-        Popup = QuestieLoader:ImportModule("QuestiePopup")
+        assert(loadfile("Modules/Libs/QuestiePopup.lua"))("QuestieSmazak", private)
+        Popup = QuestieSmazakLoader:ImportModule("QuestiePopup")
 
-        QuestieLoader:ImportModule("QuestieTracker")
-        QuestieLoader:ImportModule("TrackerBaseFrame")
+        QuestieSmazakLoader:ImportModule("QuestieTracker")
+        QuestieSmazakLoader:ImportModule("TrackerBaseFrame")
 
-        TrackerUtils = QuestieLoader:ImportModule("TrackerUtils")
+        TrackerUtils = QuestieSmazakLoader:ImportModule("TrackerUtils")
         TrackerUtils.UnFocus = function() end
         TrackerUtils.ShowObjectiveOnMap = function() end
 
-        QuestieLoader:ImportModule("QuestieLink")
-        QuestieLoader:ImportModule("QuestieCombatQueue")
-        QuestieLoader:ImportModule("QuestieLib")
-        TrackerData = QuestieLoader:ImportModule("TrackerData")
+        QuestieSmazakLoader:ImportModule("QuestieLink")
+        QuestieSmazakLoader:ImportModule("QuestieCombatQueue")
+        QuestieSmazakLoader:ImportModule("QuestieLib")
+        TrackerData = QuestieSmazakLoader:ImportModule("TrackerData")
         getQuestOriginal = TrackerData.GetQuest
         -- Nested blocks stub this per test; after_each restores it for the whole file.
         getColoredQuestNameOriginal = TrackerData.GetColoredQuestName
         TrackerData.GetQuest = function(id) return {name = "Quest " .. id} end
-        QuestieLoader:ImportModule("DistanceUtils")
+        QuestieSmazakLoader:ImportModule("DistanceUtils")
 
-        QuestieQuest = QuestieLoader:ImportModule("QuestieQuest")
+        QuestieQuest = QuestieSmazakLoader:ImportModule("QuestieQuest")
         QuestieQuest.ToggleQuestNotes = function() end
 
         _G.StaticPopupDialogs = {}
@@ -73,7 +73,7 @@ describe("TrackerMenu", function()
             end
         }
 
-        Questie.db = {
+        QuestieSmazak.db = {
             char = {
                 TrackerHiddenObjectives = {},
                 TrackerHiddenQuests = {},
@@ -87,11 +87,11 @@ describe("TrackerMenu", function()
         dofile("Localization/l10n.lua")
         dofile("Modules/Tracker/TrackerMapEligibility.lua")
         displayQuests = {}
-        TrackerData = QuestieLoader:ImportModule("TrackerData")
+        TrackerData = QuestieSmazakLoader:ImportModule("TrackerData")
         TrackerData.RefreshQuest = spy.new(function(id) return displayQuests[id] end)
 
         dofile("Modules/Tracker/LinePool/TrackerMenu.lua")
-        TrackerMenu = QuestieLoader:ImportModule("TrackerMenu")
+        TrackerMenu = QuestieSmazakLoader:ImportModule("TrackerMenu")
     end)
 
     after_each(function()
@@ -99,14 +99,14 @@ describe("TrackerMenu", function()
         for name, value in pairs(globalOriginals) do
             _G[name] = value
         end
-        Questie.Colorize = colorizeOriginal
+        QuestieSmazak.Colorize = colorizeOriginal
         TrackerData.GetQuest = getQuestOriginal
         TrackerData.GetColoredQuestName = getColoredQuestNameOriginal
     end)
 
     describe("Blizzard-first quest menus", function()
         before_each(function()
-            TrackerData = QuestieLoader:ImportModule("TrackerData")
+            TrackerData = QuestieSmazakLoader:ImportModule("TrackerData")
             TrackerData.GetColoredQuestName = function(quest) return quest.name end
         end)
 
@@ -145,7 +145,7 @@ describe("TrackerMenu", function()
             objectiveMenu[2].func()
             assert.is_true(originalObjective.HideIcons)
             assert.is_nil(objective.HideIcons)
-            assert.is_true(Questie.db.char.TrackerHiddenObjectives["100 2"])
+            assert.is_true(QuestieSmazak.db.char.TrackerHiddenObjectives["100 2"])
 
             assert.are.equal("Show on Map", objectiveMenu[3].text)
             objectiveMenu[3].func()
@@ -159,7 +159,7 @@ describe("TrackerMenu", function()
             TrackerUtils.ShowQuestObjectivesOnMap = function(_, objectives) shown = objectives end
             TrackerUtils.UnFocus = spy.new(function() end)
             QuestieQuest.ToggleQuestNotes = spy.new(function() end)
-            Questie.db.char.TrackerFocus = "100 1"
+            QuestieSmazak.db.char.TrackerFocus = "100 1"
             local wolves = {Index = 1, HideIcons = true, spawnList = {{Spawns = {}}}}
             local bears = {Index = 2, spawnList = {{Spawns = {}}}}
             local unlocated = {Index = 3, spawnList = {}}
@@ -250,13 +250,13 @@ describe("TrackerMenu", function()
                 SpecialObjectives = {}, IsComplete = function() return 0 end,
             }
             displayQuests[100] = display
-            Questie.db.char.TrackerFocus = 11
+            QuestieSmazak.db.char.TrackerFocus = 11
             QuestieQuest.ToggleQuestNotes = spy.new(function() end)
             TrackerUtils.UnFocus = spy.new(function() end)
             TrackerUtils.ShowObjectiveOnMap = spy.new(function() end)
             TrackerUtils.ShowFinisherOnMap = spy.new(function() end)
             TrackerUtils.SetTomTomTarget = spy.new(function() end)
-            distance = QuestieLoader:ImportModule("DistanceUtils")
+            distance = QuestieSmazakLoader:ImportModule("DistanceUtils")
             distance.GetNearestObjective = spy.new(function() return {50, 50}, 12, "Wolf" end)
         end)
 
@@ -275,7 +275,7 @@ describe("TrackerMenu", function()
 
             assert.is_true(originalObjective.HideIcons)
             assert.is_nil(replacement.HideIcons)
-            assert.are.equal(11, Questie.db.char.TrackerFocus)
+            assert.are.equal(11, QuestieSmazak.db.char.TrackerFocus)
             assert.spy(QuestieQuest.ToggleQuestNotes).was.not_called()
             assert.spy(TrackerUtils.UnFocus).was.not_called()
             assert.spy(TrackerUtils.ShowObjectiveOnMap).was.not_called()
@@ -294,7 +294,7 @@ describe("TrackerMenu", function()
             menu[3].func()
 
             assert.is_true(originalObjective.HideIcons)
-            assert.are.equal(11, Questie.db.char.TrackerFocus)
+            assert.are.equal(11, QuestieSmazak.db.char.TrackerFocus)
             assert.spy(QuestieQuest.ToggleQuestNotes).was.not_called()
             assert.spy(TrackerUtils.UnFocus).was.not_called()
             assert.spy(TrackerUtils.ShowObjectiveOnMap).was.not_called()
@@ -330,7 +330,7 @@ describe("TrackerMenu", function()
             menu[1].func()
 
             assert.is_true(originalObjective.HideIcons)
-            assert.are.equal(11, Questie.db.char.TrackerFocus)
+            assert.are.equal(11, QuestieSmazak.db.char.TrackerFocus)
             assert.spy(TrackerUtils.UnFocus).was.not_called()
             assert.spy(QuestieQuest.ToggleQuestNotes).was.not_called()
             assert.spy(TrackerUtils.ShowQuestObjectivesOnMap).was.not_called()
@@ -339,13 +339,13 @@ describe("TrackerMenu", function()
         it("keeps quest focus and icons untouched when nothing hides the objectives", function()
             TrackerUtils.ShowQuestObjectivesOnMap = spy.new(function() end)
             originalObjective.HideIcons = nil
-            Questie.db.char.TrackerFocus = 100
+            QuestieSmazak.db.char.TrackerFocus = 100
             local menu = {}
             TrackerMenu.addShowQuestObjectivesOnMapOption(menu, originalQuest)
 
             menu[1].func()
 
-            assert.are.equal(100, Questie.db.char.TrackerFocus)
+            assert.are.equal(100, QuestieSmazak.db.char.TrackerFocus)
             assert.spy(TrackerUtils.UnFocus).was.not_called()
             assert.spy(QuestieQuest.ToggleQuestNotes).was.not_called()
             assert.spy(TrackerUtils.ShowQuestObjectivesOnMap).was.called(1)
@@ -381,7 +381,7 @@ describe("TrackerMenu", function()
             end)
 
             it("unfocuses the quest from an open menu and offers Unfocus in a rebuilt one", function()
-                Questie.db.char.TrackerFocus = 100
+                QuestieSmazak.db.char.TrackerFocus = 100
                 QuestieQuest.ToggleQuestNotes = spy.new(function() end)
                 local openMenu = {}
                 TrackerMenu.addFocusUnfocusOption(openMenu, originalQuest)
@@ -394,10 +394,10 @@ describe("TrackerMenu", function()
             end)
 
             it("does not clear a newer focus from an open menu", function()
-                Questie.db.char.TrackerFocus = 100
+                QuestieSmazak.db.char.TrackerFocus = 100
                 local openMenu = {}
                 TrackerMenu.addFocusUnfocusOption(openMenu, originalQuest)
-                Questie.db.char.TrackerFocus = 200
+                QuestieSmazak.db.char.TrackerFocus = 200
 
                 openMenu[1].func()
 
@@ -406,13 +406,13 @@ describe("TrackerMenu", function()
 
             it("shows hidden quest icons from a rebuilt menu but does not offer hiding them", function()
                 originalQuest.HideIcons = true
-                Questie.db.char.TrackerHiddenQuests[100] = true
+                QuestieSmazak.db.char.TrackerHiddenQuests[100] = true
 
                 local labels = _Labels(TrackerMenu:GetMenuForQuest(display))
                 labels["Show Icons"].func()
 
                 assert.is_nil(originalQuest.HideIcons)
-                assert.is_nil(Questie.db.char.TrackerHiddenQuests[100])
+                assert.is_nil(QuestieSmazak.db.char.TrackerHiddenQuests[100])
                 assert.spy(QuestieQuest.ToggleQuestNotes).was.called_with(true)
                 assert.is_nil(_Labels(TrackerMenu:GetMenuForQuest(display))["Hide Icons"])
             end)
@@ -476,9 +476,9 @@ describe("TrackerMenu", function()
             _G.QuestMapFrame = {IsShown = function() return true end}
             _G.StaticPopup_Show = spy.new(function() end)
             _G.StaticPopup_Hide = function() end
-            compat = QuestieLoader:ImportModule("QuestieCompat")
+            compat = QuestieSmazakLoader:ImportModule("QuestieCompat")
             compat.QuestLog_Update = spy.new(function() end)
-            tracker = QuestieLoader:ImportModule("QuestieTracker")
+            tracker = QuestieSmazakLoader:ImportModule("QuestieTracker")
             tracker.UntrackQuestId = spy.new(function() end)
         end)
 
@@ -545,7 +545,7 @@ describe("TrackerMenu", function()
             menu[1].func()
 
             assert.is_true(objective.HideIcons)
-            assert.is_true(Questie.db.char.TrackerHiddenObjectives["100 1"])
+            assert.is_true(QuestieSmazak.db.char.TrackerHiddenObjectives["100 1"])
             assert.spy(toggleSpy).was.called_with(false)
         end)
 
@@ -569,7 +569,7 @@ describe("TrackerMenu", function()
             menu[1].func()
 
             assert.is_nil(objective.HideIcons)
-            assert.is_nil(Questie.db.char.TrackerHiddenObjectives["100 1"])
+            assert.is_nil(QuestieSmazak.db.char.TrackerHiddenObjectives["100 1"])
             assert.spy(toggleSpy).was.called_with(true)
         end)
     end)
@@ -594,7 +594,7 @@ describe("TrackerMenu", function()
             menu[1].func()
 
             assert.is_true(quest.HideIcons)
-            assert.is_true(Questie.db.char.TrackerHiddenQuests[200])
+            assert.is_true(QuestieSmazak.db.char.TrackerHiddenQuests[200])
             assert.spy(toggleSpy).was.called_with(false)
         end)
 
@@ -617,7 +617,7 @@ describe("TrackerMenu", function()
             menu[1].func()
 
             assert.is_nil(quest.HideIcons)
-            assert.is_nil(Questie.db.char.TrackerHiddenQuests[200])
+            assert.is_nil(QuestieSmazak.db.char.TrackerHiddenQuests[200])
             assert.spy(toggleSpy).was.called_with(true)
         end)
     end)
@@ -634,13 +634,13 @@ describe("TrackerMenu", function()
 
             local toggleSpy = spy.new(function() end)
             QuestieQuest.ToggleQuestNotes = toggleSpy
-            Questie.db.char.TrackerHiddenObjectives["300 1"] = true
+            QuestieSmazak.db.char.TrackerHiddenObjectives["300 1"] = true
 
             TrackerMenu.addShowObjectivesOnMapOption(menu, quest, objective)
             menu[1].func()
 
             assert.is_nil(objective.HideIcons)
-            assert.is_nil(Questie.db.char.TrackerHiddenObjectives["300 1"])
+            assert.is_nil(QuestieSmazak.db.char.TrackerHiddenObjectives["300 1"])
             assert.spy(toggleSpy).was.called_with(true)
         end)
 
@@ -656,13 +656,13 @@ describe("TrackerMenu", function()
             local toggleSpy = spy.new(function() end)
             QuestieQuest.ToggleQuestNotes = toggleSpy
 
-            Questie.db.char.TrackerHiddenQuests[300] = true
+            QuestieSmazak.db.char.TrackerHiddenQuests[300] = true
 
             TrackerMenu.addShowObjectivesOnMapOption(menu, quest, objective)
             menu[1].func()
 
             assert.is_nil(quest.HideIcons)
-            assert.is_nil(Questie.db.char.TrackerHiddenQuests[300])
+            assert.is_nil(QuestieSmazak.db.char.TrackerHiddenQuests[300])
             assert.spy(toggleSpy).was.called_with(true)
         end)
 
@@ -719,7 +719,7 @@ describe("TrackerMenu", function()
         before_each(function()
             originalStaticPopupShow = _G.StaticPopup_Show
             _G.StaticPopup_Show = spy.new(function() end)
-            compat = QuestieLoader:ImportModule("QuestieCompat")
+            compat = QuestieSmazakLoader:ImportModule("QuestieCompat")
             originalDisplayMessage = compat.ActionStatus_DisplayMessage
             compat.ActionStatus_DisplayMessage = spy.new(function() end)
 
@@ -732,7 +732,7 @@ describe("TrackerMenu", function()
                 TrackerMenu[name] = noop
             end
             TrackerData.GetColoredQuestName = function() return "Quest" end
-            QuestieLoader:ImportModule("AchievementTracking").IsTracked = function() return false end
+            QuestieSmazakLoader:ImportModule("AchievementTracking").IsTracked = function() return false end
         end)
 
         after_each(function()
@@ -740,7 +740,7 @@ describe("TrackerMenu", function()
             compat.ActionStatus_DisplayMessage = originalDisplayMessage
         end)
 
-        it("opens Questie's dialog from the quest menu instead of a Blizzard popup", function()
+        it("opens QuestieSmazak's dialog from the quest menu instead of a Blizzard popup", function()
             local menu = TrackerMenu:GetMenuForQuest(_TrackerQuest(783))
             findEntry(menu).func()
 
@@ -755,7 +755,7 @@ describe("TrackerMenu", function()
             assert.same({}, dialogErrors)
         end)
 
-        it("opens Questie's dialog from the achievement menu instead of a Blizzard popup", function()
+        it("opens QuestieSmazak's dialog from the achievement menu instead of a Blizzard popup", function()
             local menu = TrackerMenu:GetMenuForAchievement({Id = 42})
             findEntry(menu).func()
 
@@ -775,14 +775,14 @@ describe("TrackerMenu", function()
 
             before_each(function()
                 originalSmartNavigation = _G.SmartNavigation
-                originalIsMoP = Questie.IsMoP
-                originalIsForever = Questie.IsForever
+                originalIsMoP = QuestieSmazak.IsMoP
+                originalIsForever = QuestieSmazak.IsForever
             end)
 
             after_each(function()
                 _G.SmartNavigation = originalSmartNavigation
-                Questie.IsMoP = originalIsMoP
-                Questie.IsForever = originalIsForever
+                QuestieSmazak.IsMoP = originalIsMoP
+                QuestieSmazak.IsForever = originalIsForever
             end)
 
             local function openQuestDialog()
@@ -800,7 +800,7 @@ describe("TrackerMenu", function()
             end
 
             it("selects the URL on Forever while Blizzard's controller navigation is hidden", function()
-                Questie.IsForever = true
+                QuestieSmazak.IsForever = true
                 setSmartNavigationShown(false)
 
                 local editBox = openQuestDialog()
@@ -811,7 +811,7 @@ describe("TrackerMenu", function()
             end)
 
             it("selects the URL on the first click instead while Blizzard's controller navigation is shown", function()
-                Questie.IsForever = true
+                QuestieSmazak.IsForever = true
                 setSmartNavigationShown(true)
 
                 local editBox = openQuestDialog()
@@ -823,7 +823,7 @@ describe("TrackerMenu", function()
             end)
 
             it("clears the click handler when a later dialog can select the URL itself", function()
-                Questie.IsForever = true
+                QuestieSmazak.IsForever = true
                 setSmartNavigationShown(true)
                 openQuestDialog()
                 Popup.Hide("QUESTIE_WOWHEAD_URL")
@@ -835,8 +835,8 @@ describe("TrackerMenu", function()
             end)
 
             it("always selects the URL on other flavors", function()
-                Questie.IsMoP = true
-                Questie.IsForever = false
+                QuestieSmazak.IsMoP = true
+                QuestieSmazak.IsForever = false
                 setSmartNavigationShown(true)
 
                 local menu = TrackerMenu:GetMenuForQuest(_TrackerQuest(783))
@@ -859,7 +859,7 @@ describe("TrackerMenu", function()
             local queued
 
             before_each(function()
-                QuestieCombatQueue = QuestieLoader:ImportModule("QuestieCombatQueue")
+                QuestieCombatQueue = QuestieSmazakLoader:ImportModule("QuestieCombatQueue")
                 originalQueue = QuestieCombatQueue.Queue
                 originalInCombatLockdown = _G.InCombatLockdown
                 queued = {}

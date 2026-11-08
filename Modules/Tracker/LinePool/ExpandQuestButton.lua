@@ -1,22 +1,22 @@
 ---@class ExpandQuestButton
-local ExpandQuestButton = QuestieLoader:CreateModule("ExpandQuestButton")
+local ExpandQuestButton = QuestieSmazakLoader:CreateModule("ExpandQuestButton")
 
 ---@type QuestieTracker
-local QuestieTracker = QuestieLoader:ImportModule("QuestieTracker") -- TODO: Remove this explicit dependency
+local QuestieTracker = QuestieSmazakLoader:ImportModule("QuestieTracker") -- TODO: Remove this explicit dependency
 ---@type TrackerFadeTicker
-local TrackerFadeTicker = QuestieLoader:ImportModule("TrackerFadeTicker")
+local TrackerFadeTicker = QuestieSmazakLoader:ImportModule("TrackerFadeTicker")
 ---@type QuestieCombatQueue
-local QuestieCombatQueue = QuestieLoader:ImportModule("QuestieCombatQueue")
+local QuestieCombatQueue = QuestieSmazakLoader:ImportModule("QuestieCombatQueue")
 ---@type Expansions
-local Expansions = QuestieLoader:ImportModule("Expansions")
+local Expansions = QuestieSmazakLoader:ImportModule("Expansions")
 
 ---@param index number
 ---@param parent TrackerLineFrame
 ---@return Button
 function ExpandQuestButton.New(index, parent)
-    local trackerFontSizeQuest = Questie.db.profile.trackerFontSizeQuest
+    local trackerFontSizeQuest = QuestieSmazak.db.profile.trackerFontSizeQuest
 
-    local expandQuest = CreateFrame("Button", "linePool.expandQuest" .. index, parent)
+    local expandQuest = CreateFrame("Button", "QuestieSmazaklinePool.expandQuest" .. index, parent)
     expandQuest.texture = expandQuest:CreateTexture(nil, "OVERLAY", nil, 0)
     expandQuest.texture:SetWidth(trackerFontSizeQuest)
     expandQuest.texture:SetHeight(trackerFontSizeQuest)
@@ -39,8 +39,8 @@ function ExpandQuestButton.New(index, parent)
             self.texture:SetTexture(texture)
             -- The icon itself added on top brightens it while hovered
             self:SetHighlightTexture(texture, "ADD")
-            self:SetWidth(Questie.db.profile.trackerFontSizeQuest + 3)
-            self:SetHeight(Questie.db.profile.trackerFontSizeQuest + 3)
+            self:SetWidth(QuestieSmazak.db.profile.trackerFontSizeQuest + 3)
+            self:SetHeight(QuestieSmazak.db.profile.trackerFontSizeQuest + 3)
         end
     end
 
@@ -51,24 +51,24 @@ function ExpandQuestButton.New(index, parent)
     expandQuest:SetScript("OnClick", function(self)
         if self.mode == 1 then
             self:SetMode(0)
-            Questie.Debug(Questie.DEBUG_DEVELOP, "[TrackerLine:expandQuest] - Minimize")
+            QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[TrackerLine:expandQuest] - Minimize")
         else
             self:SetMode(1)
-            Questie.Debug(Questie.DEBUG_DEVELOP, "[TrackerLine:expandQuest] - Maximize")
+            QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[TrackerLine:expandQuest] - Maximize")
         end
-        if Questie.db.char.collapsedQuests[self.questId] then
-            Questie.db.char.collapsedQuests[self.questId] = nil
+        if QuestieSmazak.db.char.collapsedQuests[self.questId] then
+            QuestieSmazak.db.char.collapsedQuests[self.questId] = nil
 
             -- This keeps both tables in sync so we can use them to maintain Min/Max states.
-            if Questie.db.char.minAllQuestsInZone[self.zoneId] and Questie.db.char.minAllQuestsInZone[self.zoneId][self.questId] then
-                Questie.db.char.minAllQuestsInZone[self.zoneId][self.questId] = nil
+            if QuestieSmazak.db.char.minAllQuestsInZone[self.zoneId] and QuestieSmazak.db.char.minAllQuestsInZone[self.zoneId][self.questId] then
+                QuestieSmazak.db.char.minAllQuestsInZone[self.zoneId][self.questId] = nil
             end
         else
-            Questie.db.char.collapsedQuests[self.questId] = true
+            QuestieSmazak.db.char.collapsedQuests[self.questId] = true
 
             -- This keeps both tables in sync so we can use them to maintain Min/Max states.
-            if Questie.db.char.minAllQuestsInZone[self.zoneId] then
-                Questie.db.char.minAllQuestsInZone[self.zoneId][self.questId] = true
+            if QuestieSmazak.db.char.minAllQuestsInZone[self.zoneId] then
+                QuestieSmazak.db.char.minAllQuestsInZone[self.zoneId][self.questId] = true
             end
         end
         QuestieCombatQueue:Queue(function()
@@ -80,7 +80,7 @@ function ExpandQuestButton.New(index, parent)
         parent:HookScript("OnUpdate", parent.OnUpdate)
     end
 
-    if Questie.db.profile.trackerFadeMinMaxButtons then
+    if QuestieSmazak.db.profile.trackerFadeMinMaxButtons then
         expandQuest:SetAlpha(0)
     end
 

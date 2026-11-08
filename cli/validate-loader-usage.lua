@@ -9,7 +9,7 @@ local TOC_PATHS = {
     "Questie_Mists.toc",
 }
 
-print("\n\27[36mChecking QuestieLoader module call sites...\27[0m")
+print("\n\27[36mChecking QuestieSmazakLoader module call sites...\27[0m")
 
 local findings = LoaderUsage.ScanTocs(TOC_PATHS)
 for _, bindingFinding in ipairs(LoaderUsage.ScanBindingsXml("Bindings.xml")) do
@@ -35,11 +35,11 @@ if knownCount > 0 then
 end
 
 if #newFindings == 0 then
-    print("\27[32mNo new runtime QuestieLoader calls.\27[0m")
+    print("\27[32mNo new runtime QuestieSmazakLoader calls.\27[0m")
     os.exit(0)
 end
 
-print(string.format("\n\27[31m%d runtime QuestieLoader call(s) found outside a file's main chunk:\27[0m",
+print(string.format("\n\27[31m%d runtime QuestieSmazakLoader call(s) found outside a file's main chunk:\27[0m",
     #newFindings))
 for _, finding in ipairs(newFindings) do
     local location = string.format("  %s:%d", finding.path, finding.lineNumber)
@@ -55,14 +55,14 @@ for _, finding in ipairs(newFindings) do
     end
 end
 print("")
-print("Why this fails: QuestieLoader measures addon file load by the gap between module calls, charging it to")
+print("Why this fails: QuestieSmazakLoader measures addon file load by the gap between module calls, charging it to")
 print("the file that opened the interval. A call from inside a function reopens that interval under the")
 print("calling file's name and charges it everything that runs next, silently misattributing load cost.")
 print("")
 print("The fix: import once at file scope, then use the local inside the function.")
 print("")
 print("    ---@type QuestieDB")
-print("    local QuestieDB = QuestieLoader:ImportModule(\"QuestieDB\")   <-- column zero, with the other imports")
+print("    local QuestieDB = QuestieSmazakLoader:ImportModule(\"QuestieDB\")   <-- column zero, with the other imports")
 print("")
 print("    function Something.Update()")
 print("        local quest = QuestieDB.GetQuest(questId)             <-- use the local, do not import again")

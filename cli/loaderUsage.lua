@@ -1,7 +1,7 @@
--- Finds QuestieLoader:CreateModule / ImportModule calls that are made from inside a function body rather
+-- Finds QuestieSmazakLoader:CreateModule / ImportModule calls that are made from inside a function body rather
 -- than from a file's main chunk.
 --
--- Why this matters: QuestieLoader times addon file load by measuring the gap between consecutive module
+-- Why this matters: QuestieSmazakLoader times addon file load by measuring the gap between consecutive module
 -- calls, attributing it to the file that opened the interval. A call made at runtime - from an init routine,
 -- an event handler, a lazy import - reopens that interval under the calling file's name and charges it
 -- whatever happens to run next. That is not hypothetical: installing the profiler's hooks was once reported
@@ -60,17 +60,17 @@ function LoaderUsage.JudgedFragment(line)
     -- contrived line holding "--" inside a string is skipped, which no call site in the addon looks like.
     local code = string.gsub(line, "%-%-.*$", "")
 
-    -- QuestieLoader.lua declaring its own methods, which read exactly like calls to them.
-    if string.match(code, "function%s+QuestieLoader[:.]") then
+    -- QuestieSmazakLoader.lua declaring its own methods, which read exactly like calls to them.
+    if string.match(code, "function%s+QuestieSmazakLoader[:.]") then
         return nil
     end
     -- Method-call form, colon or dot: both reach the same functions.
-    local _, callParenthesis = string.find(code, "QuestieLoader[:.][CI][a-z]*Module%s*%(")
+    local _, callParenthesis = string.find(code, "QuestieSmazakLoader[:.][CI][a-z]*Module%s*%(")
     if callParenthesis then
         return string.sub(line, 1, callParenthesis) .. ")\n"
     end
     -- The bracket-indexed form has no call to cut at, so the whole line is judged.
-    if string.match(code, "QuestieLoader%s*%[") then
+    if string.match(code, "QuestieSmazakLoader%s*%[") then
         return line .. "\n"
     end
     return nil

@@ -1,15 +1,15 @@
 ---@type QuestieEvent
-local QuestieEvent = QuestieLoader:ImportModule("QuestieEvent")
+local QuestieEvent = QuestieSmazakLoader:ImportModule("QuestieEvent")
 ---@type Expansions
-local Expansions = QuestieLoader:ImportModule("Expansions")
+local Expansions = QuestieSmazakLoader:ImportModule("Expansions")
 
 local tinsert = table.insert
 local eventQuests = QuestieEvent.eventQuests
 
 -- TBC quests
--- tinsert(eventQuests, {"Brewfest", 11117, nil, nil, nil, nil, Questie.IsEURegion}) -- Catch the Wild Wolpertinger! -- apparently not available anymore on US servers either
--- tinsert(eventQuests, {"Brewfest", 11118, nil, nil, nil, nil, Questie.IsEURegion}) -- Pink Elekks On Parade -- apparently not available anymore on US servers either
--- tinsert(eventQuests, {"Brewfest", 11120, nil, nil, nil, nil, Questie.IsEURegion}) -- Pink Elekks On Parade -- apparently not available anymore on US servers either
+-- tinsert(eventQuests, {"Brewfest", 11117, nil, nil, nil, nil, QuestieSmazak.IsEURegion}) -- Catch the Wild Wolpertinger! -- apparently not available anymore on US servers either
+-- tinsert(eventQuests, {"Brewfest", 11118, nil, nil, nil, nil, QuestieSmazak.IsEURegion}) -- Pink Elekks On Parade -- apparently not available anymore on US servers either
+-- tinsert(eventQuests, {"Brewfest", 11120, nil, nil, nil, nil, QuestieSmazak.IsEURegion}) -- Pink Elekks On Parade -- apparently not available anymore on US servers either
 tinsert(eventQuests, {"Brewfest", 11122}) -- There and Back Again
 tinsert(eventQuests, {"Brewfest", 11293}) -- Bark for the Barleybrews!
 tinsert(eventQuests, {"Brewfest", 11294}) -- Bark for the Thunderbrews!
@@ -20,7 +20,7 @@ tinsert(eventQuests, {"Brewfest", 11408}) -- Bark for T'chali's Voodoo Brewery!
 tinsert(eventQuests, {"Brewfest", 11409}) -- Now This is Ram Racing... Almost.
 tinsert(eventQuests, {"Brewfest", 11412}) -- There and Back Again
 -- tinsert(eventQuests, {"Brewfest", 11419, nil, nil, nil, nil, Expansions.Current >= Expansions.Wotlk}) -- Brewfest Riding Rams -- was not able to find it on TBC Anniversary
--- tinsert(eventQuests, {"Brewfest", 11431, nil, nil, nil, nil, Questie.IsEURegion}) -- Catch the Wild Wolpertinger! -- apparently not available anymore on US servers either
+-- tinsert(eventQuests, {"Brewfest", 11431, nil, nil, nil, nil, QuestieSmazak.IsEURegion}) -- Catch the Wild Wolpertinger! -- apparently not available anymore on US servers either
 tinsert(eventQuests, {"Brewfest", 11441, nil, nil, nil, nil, Expansions.Current == Expansions.Tbc}) -- Brewfest! -- was not able to find it on TBC Anniversary
 tinsert(eventQuests, {"Brewfest", 11442}) -- Welcome to Brewfest!
 tinsert(eventQuests, {"Brewfest", 11446, nil, nil, nil, nil, Expansions.Current == Expansions.Tbc}) -- Brewfest! -- was not able to find it on TBC Anniversary

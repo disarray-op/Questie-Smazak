@@ -17,7 +17,7 @@ describe("ThreadLib", function()
         _G.debugstack = function() return "" end
 
         dofile("Modules/Libs/ThreadLib.lua")
-        ThreadLib = QuestieLoader:ImportModule("ThreadLib")
+        ThreadLib = QuestieSmazakLoader:ImportModule("ThreadLib")
     end)
 
     local function tick()
@@ -41,7 +41,7 @@ describe("ThreadLib", function()
         it("should call errorCallback when the coroutine errors", function()
             local errorCallback = spy.new(function() end)
 
-            Questie.Error = function() end -- suppress output
+            QuestieSmazak.Error = function() end -- suppress output
 
             ThreadLib.Thread(function() error("boom") end, 0, nil, nil, errorCallback)
 
@@ -53,7 +53,7 @@ describe("ThreadLib", function()
         it("should not call callbackFunction when the coroutine errors", function()
             local callback = spy.new(function() end)
 
-            Questie.Error = function() end
+            QuestieSmazak.Error = function() end
 
             ThreadLib.Thread(function() error("boom") end, 0, nil, callback, function() end)
 
@@ -87,7 +87,7 @@ describe("ThreadLib profiling callbacks", function()
     local tickerCallbacks
     local cancelledTickers
     local originalTimerAPI = _G.C_Timer
-    local originalQuestieError = _G.Questie.Error
+    local originalQuestieError = _G.QuestieSmazak.Error
     local originalDebugStack = _G.debugstack
 
     before_each(function()
@@ -105,16 +105,16 @@ describe("ThreadLib profiling callbacks", function()
                 return ticker
             end,
         }
-        _G.Questie.Error = function() end
+        _G.QuestieSmazak.Error = function() end
         _G.debugstack = function() return "test stack" end
 
         dofile("Modules/Libs/ThreadLib.lua")
-        ThreadLib = QuestieLoader:ImportModule("ThreadLib")
+        ThreadLib = QuestieSmazakLoader:ImportModule("ThreadLib")
     end)
 
     after_each(function()
         _G.C_Timer = originalTimerAPI
-        _G.Questie.Error = originalQuestieError
+        _G.QuestieSmazak.Error = originalQuestieError
         _G.debugstack = originalDebugStack
     end)
 
@@ -164,7 +164,7 @@ describe("ThreadLib profiling callbacks", function()
         local afterSuccess
         local afterStatus
         local reportedError
-        _G.Questie.Error = function(prefix, message)
+        _G.QuestieSmazak.Error = function(prefix, message)
             reportedError = {prefix, message}
         end
         ThreadLib.SetProfilingCallbacks({}, {
@@ -188,7 +188,7 @@ describe("ThreadLib profiling callbacks", function()
 
     it("isolates throwing profiling callbacks from scheduler completion", function()
         local callbackErrors = {}
-        _G.Questie.Error = function(message, callbackName, callbackError)
+        _G.QuestieSmazak.Error = function(message, callbackName, callbackError)
             table.insert(callbackErrors, {message, callbackName, callbackError})
         end
         ThreadLib.SetProfilingCallbacks({}, {
@@ -319,7 +319,7 @@ describe("ThreadLib profiling callbacks", function()
         local createdCalls = 0
         local resumeCalls = 0
         -- Captured here and asserted below: the callback runs inside CallProfilingCallback's pcall with
-        -- Questie.Error stubbed out, so an assertion failing in it would be swallowed and the test would pass.
+        -- QuestieSmazak.Error stubbed out, so an assertion failing in it would be swallowed and the test would pass.
         local receivedStack
         local receivedThreadName
         ThreadLib.SetProfilingCallbacks({}, {

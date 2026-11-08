@@ -1,18 +1,18 @@
 ---@class DropDB
-local DropDB = QuestieLoader:CreateModule("DropDB")
+local DropDB = QuestieSmazakLoader:CreateModule("DropDB")
 
 ---@type SupportValidation
-local SupportValidation = QuestieLoader:ImportModule("SupportValidation")
+local SupportValidation = QuestieSmazakLoader:ImportModule("SupportValidation")
 
 -------------------------
 --Import modules.
 -------------------------
 ---@type QuestieDB
-local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 ---@type Expansions
-local Expansions = QuestieLoader:ImportModule("Expansions")
+local Expansions = QuestieSmazakLoader:ImportModule("Expansions")
 
 DropDB.tableWowhead = nil
 DropDB.tablePserver = nil
@@ -29,25 +29,25 @@ DropDB.correctionKeys = { -- all keys must be negative or they'll be parsed as r
 function DropDB:Initialize()
     local QuestieItemDropCorrections = LibQuestieDB.Support.Get("QuestieItemDropCorrections")
     local wowheadModule, pserverModule, pserverField
-    if Questie.IsClassic then
+    if QuestieSmazak.IsClassic then
         -- Classic Wowhead data includes SoD IDs, which Era quests never reference.
         wowheadModule, pserverModule = "QuestieClassicItemDrops", "QuestieClassicItemDrops"
         pserverField, DropDB.sourcePserver = "cmangosData", "cmangos"
-    elseif Questie.IsTBC then
+    elseif QuestieSmazak.IsTBC then
         wowheadModule, pserverModule = "QuestieTBCItemDrops", "QuestieTBCItemDrops"
         pserverField, DropDB.sourcePserver = "cmangosData", "cmangos"
-    elseif Questie.IsWotlk then
+    elseif QuestieSmazak.IsWotlk then
         wowheadModule, pserverModule = "QuestieWotlkItemDrops", "QuestieWotlkItemDrops"
         pserverField, DropDB.sourcePserver = "cmangosData", "cmangos"
-    elseif Questie.IsCata then
+    elseif QuestieSmazak.IsCata then
         wowheadModule, pserverModule = "QuestieCataItemDrops", "QuestieCataItemDrops"
         pserverField, DropDB.sourcePserver = "mangos3Data", "mangos3"
-    elseif Questie.IsMoP then
+    elseif QuestieSmazak.IsMoP then
         -- MoP private-server data is sparse; MoP-only quests use Wowhead instead.
         wowheadModule, pserverModule = "QuestieMopItemDrops", "QuestieCataItemDrops"
         pserverField, DropDB.sourcePserver = "mangos3Data", "mangos3"
     else
-        Questie.Error("ItemDrops: Unknown Expansion!")
+        QuestieSmazak.Error("ItemDrops: Unknown Expansion!")
         return false, "ItemDrops: Unknown Expansion!"
     end
 
@@ -140,10 +140,10 @@ function DropDB.GetItemDroprate(itemId, npcId)
     -- While some private server data might be wrong for quest items, it is generally far more accurate than Wowhead for quest-only items.
     -- For eggregious outliers, we can make manual corrections that take full priority.
 
-    -- It is worth noting that in Questie, we only display item drop data on NPCs that QuestieDB itself believes actually drops the item.
+    -- It is worth noting that in QuestieSmazak, we only display item drop data on NPCs that QuestieDB itself believes actually drops the item.
     -- So if we've manually excluded an NPC from dropping the item in QuestieDB corrections (like for a rare mob), then even if that drop
-    -- data exists in our drop data DB, it won't ever actually be shown on NPC tooltips, because Questie itself doesn't think it should.
-    -- This function will still return data for those NPCs in case external addons request it, Questie simply won't ever ask this function to.
+    -- data exists in our drop data DB, it won't ever actually be shown on NPC tooltips, because QuestieSmazak itself doesn't think it should.
+    -- This function will still return data for those NPCs in case external addons request it, QuestieSmazak simply won't ever ask this function to.
 
     if DropDB.tableCorrections and DropDB.tableCorrections[itemId] and DropDB.tableCorrections[itemId][npcId] then
         if DropDB.tableCorrections[itemId][npcId] >= 0 then -- If the correction is not a reference, use its value
@@ -157,7 +157,7 @@ function DropDB.GetItemDroprate(itemId, npcId)
             return {DropDB.tablePserver[itemId][npcId],DropDB.sourcePserver}
         end
 
-        Questie.Debug(Questie.DEBUG_CRITICAL,
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_CRITICAL,
             "ItemDrops: Correction data for item " .. tostring(itemId) .. " dropped by NPC " .. tostring(npcId) .. " was invalid!")
     end
 

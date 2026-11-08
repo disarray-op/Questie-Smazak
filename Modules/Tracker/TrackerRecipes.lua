@@ -1,6 +1,6 @@
 -- Reads profession recipes tracked through Blizzard's recipe tracking (C_TradeSkillUI) for display in the tracker.
 ---@class TrackerRecipes
-local TrackerRecipes = QuestieLoader:CreateModule("TrackerRecipes")
+local TrackerRecipes = QuestieSmazakLoader:CreateModule("TrackerRecipes")
 
 ---@class TrackerRecipeReagent
 ---@field ItemId number|nil Nil for currency reagents

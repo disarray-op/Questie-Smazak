@@ -3,7 +3,7 @@
 ---Quads in the units the caller draws in (WaypointRenderer), and Nearest finds the path under the
 ---cursor (WaypointMap, WaypointMinimap).
 ---@class WaypointGeometry
-local WaypointGeometry = QuestieLoader:CreateModule("WaypointGeometry")
+local WaypointGeometry = QuestieSmazakLoader:CreateModule("WaypointGeometry")
 
 ---@class WaypointPoint
 ---@field x number Map percentage, 0-100.

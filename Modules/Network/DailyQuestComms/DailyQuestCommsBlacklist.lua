@@ -1,5 +1,5 @@
 ---@class DailyQuestCommsBlacklist
-local DailyQuestCommsBlacklist = QuestieLoader:CreateModule("DailyQuestCommsBlacklist")
+local DailyQuestCommsBlacklist = QuestieSmazakLoader:CreateModule("DailyQuestCommsBlacklist")
 
 -- These quests are excluded from broadcasting and incoming broadcasts are rejected for them.
 ---@type table<QuestId, boolean>
@@ -31,7 +31,7 @@ end
 ---@param questIds QuestId[] @The original list of quest IDs.
 ---@return QuestId[] @A new list with blacklisted quest IDs removed.
 function DailyQuestCommsBlacklist.FilterQuestIds(questIds)
-    if (not Questie.IsSoD) then
+    if (not QuestieSmazak.IsSoD) then
         return questIds
     end
 

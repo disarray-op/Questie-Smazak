@@ -1,7 +1,7 @@
 ---@class IsleOfQuelDanas
-local IsleOfQuelDanas = QuestieLoader:CreateModule("IsleOfQuelDanas")
+local IsleOfQuelDanas = QuestieSmazakLoader:CreateModule("IsleOfQuelDanas")
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 
 
 IsleOfQuelDanas.MAX_ISLE_OF_QUEL_DANAS_PHASES = 9
@@ -25,7 +25,7 @@ end
 ---@return boolean
 function IsleOfQuelDanas.CheckForActivePhase(questId)
     local isleQuests = IsleOfQuelDanas.quests
-    if isleQuests[1][questId] and isleQuests[Questie.db.global.isleOfQuelDanasPhase][questId] then
+    if isleQuests[1][questId] and isleQuests[QuestieSmazak.db.global.isleOfQuelDanasPhase][questId] then
         -- The accepted quest is one from the Isle Of Quel'Danas
         local phaseToSwitchTo = 2
         for i = 2, IsleOfQuelDanas.MAX_ISLE_OF_QUEL_DANAS_PHASES do
@@ -36,8 +36,8 @@ function IsleOfQuelDanas.CheckForActivePhase(questId)
             end
         end
 
-        Questie:Print(l10n("You picked up a quest from '%s'. Automatically switching to this phase...", IsleOfQuelDanas.localizedPhaseNames[phaseToSwitchTo]))
-        Questie.db.global.isleOfQuelDanasPhase = phaseToSwitchTo
+        QuestieSmazak:Print(l10n("You picked up a quest from '%s'. Automatically switching to this phase...", IsleOfQuelDanas.localizedPhaseNames[phaseToSwitchTo]))
+        QuestieSmazak.db.global.isleOfQuelDanasPhase = phaseToSwitchTo
         return true
     end
     return false

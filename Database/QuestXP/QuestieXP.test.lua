@@ -6,7 +6,7 @@ describe("QuestXP support data", function()
     local QuestXP, mock, playerLevel
 
     before_each(function()
-        QuestieLoader:ImportModule("SupportValidation").ValidateQuestXP = function() return true end
+        QuestieSmazakLoader:ImportModule("SupportValidation").ValidateQuestXP = function() return true end
         mock = LoadQuestieDBMock()
         mock.supportModules.QuestXP.db = {[101] = {20, 1000}, [102] = {-1, 1000}, [103] = {20, 0}}
         playerLevel = 20
@@ -16,11 +16,11 @@ describe("QuestXP support data", function()
         _G.IsSpellKnown = function() return false end
         _G.IsInInstance = function() return false end
         _G.floor = math.floor
-        Questie.IsSoD = false
-        local Expansions = QuestieLoader:ImportModule("Expansions")
+        QuestieSmazak.IsSoD = false
+        local Expansions = QuestieSmazakLoader:ImportModule("Expansions")
         Expansions.Current = Expansions.Era
         dofile("Database/QuestXP/QuestieXP.lua")
-        QuestXP = QuestieLoader:ImportModule("QuestXP")
+        QuestXP = QuestieSmazakLoader:ImportModule("QuestXP")
     end)
 
     it("adjusts the published XP for player level without changing the shared row", function()
@@ -38,8 +38,8 @@ describe("QuestXP support data", function()
             originalInCombatLockdown = _G.InCombatLockdown
             originalRewardMoney = _G.GetQuestLogRewardMoney
             originalUnitAura = _G.UnitAura
-            originalIsForever = Questie.IsForever
-            Questie.IsForever = true
+            originalIsForever = QuestieSmazak.IsForever
+            QuestieSmazak.IsForever = true
             _G.InCombatLockdown = function() return false end
             _G.UnitAura = spy.new(function(_, index)
                 if index == 1 then return nil, nil, nil, nil, nil, nil, nil, nil, nil, 46668 end
@@ -50,7 +50,7 @@ describe("QuestXP support data", function()
             _G.InCombatLockdown = originalInCombatLockdown
             _G.GetQuestLogRewardMoney = originalRewardMoney
             _G.UnitAura = originalUnitAura
-            Questie.IsForever = originalIsForever
+            QuestieSmazak.IsForever = originalIsForever
         end)
 
         it("omits XP buff bonuses during Forever combat and reads buffs again afterward", function()
@@ -67,7 +67,7 @@ describe("QuestXP support data", function()
         end)
 
         it("keeps Classic XP buff calculations active during combat", function()
-            Questie.IsForever = false
+            QuestieSmazak.IsForever = false
             _G.InCombatLockdown = function() return true end
 
             assert.are.equal(1100, QuestXP:GetQuestLogRewardXP(101))
@@ -75,8 +75,8 @@ describe("QuestXP support data", function()
         end)
 
         it("preserves SoD combat bonuses and quest exclusions", function()
-            Questie.IsForever = false
-            Questie.IsSoD = true
+            QuestieSmazak.IsForever = false
+            QuestieSmazak.IsSoD = true
             _G.InCombatLockdown = function() return true end
             _G.GetQuestLogRewardMoney = function() return 100 end
             _G.UnitAura = function(_, index)
@@ -92,7 +92,7 @@ describe("QuestXP support data", function()
     it("reports missing support during initialization instead of failing to load", function()
         mock.supportModules.QuestXP = nil
         local validator = spy.new(function() return false, "Missing QuestXP support" end)
-        QuestieLoader:ImportModule("SupportValidation").ValidateQuestXP = validator
+        QuestieSmazakLoader:ImportModule("SupportValidation").ValidateQuestXP = validator
 
         dofile("Database/QuestXP/QuestieXP.lua")
         local valid, report = QuestXP.Init()
@@ -100,13 +100,13 @@ describe("QuestXP support data", function()
         assert.is_nil(QuestXP.db)
         assert.is_false(valid)
         assert.are_equal("Missing QuestXP support", report)
-        assert.spy(validator).was.called_with(nil, QuestieLoader:ImportModule("Expansions").Era)
+        assert.spy(validator).was.called_with(nil, QuestieSmazakLoader:ImportModule("Expansions").Era)
     end)
 
     it("reports non-table support during initialization instead of failing to load", function()
         mock.supportModules.QuestXP = 42
         local validator = spy.new(function() return false, "Invalid QuestXP support" end)
-        QuestieLoader:ImportModule("SupportValidation").ValidateQuestXP = validator
+        QuestieSmazakLoader:ImportModule("SupportValidation").ValidateQuestXP = validator
 
         dofile("Database/QuestXP/QuestieXP.lua")
         local valid, report = QuestXP.Init()
@@ -114,7 +114,7 @@ describe("QuestXP support data", function()
         assert.is_nil(QuestXP.db)
         assert.is_false(valid)
         assert.are_equal("Invalid QuestXP support", report)
-        assert.spy(validator).was.called_with(nil, QuestieLoader:ImportModule("Expansions").Era)
+        assert.spy(validator).was.called_with(nil, QuestieSmazakLoader:ImportModule("Expansions").Era)
     end)
 
     it("preserves max-level suppression and the ignorePlayerLevel option", function()
@@ -130,7 +130,7 @@ describe("QuestXP support data", function()
     end)
 
     it("still applies the guild perk to provider XP", function()
-        local Expansions = QuestieLoader:ImportModule("Expansions")
+        local Expansions = QuestieSmazakLoader:ImportModule("Expansions")
         Expansions.Current = Expansions.Wotlk
         _G.IsSpellKnown = function(spellId) return spellId == 78632 end
         QuestXP.Init()
@@ -138,14 +138,14 @@ describe("QuestXP support data", function()
         assert.are_same({20, 1000}, mock.supportModules.QuestXP.db[101])
     end)
     it("validates the bound raw XP even when debug is disabled and before reading player perks", function()
-        Questie.db.profile.debugEnabled = false
+        QuestieSmazak.db.profile.debugEnabled = false
         local bound = {[999] = {1, 2}}
         QuestXP.db = bound
         local validator = spy.new(function() return false, "XP report" end)
-        QuestieLoader:ImportModule("SupportValidation").ValidateQuestXP = validator
+        QuestieSmazakLoader:ImportModule("SupportValidation").ValidateQuestXP = validator
         local perks = spy.new(function() return true end)
         _G.IsSpellKnown = perks
-        QuestieLoader:ImportModule("Expansions").Current = 3
+        QuestieSmazakLoader:ImportModule("Expansions").Current = 3
         local valid, report = QuestXP.Init()
         assert.is_false(valid)
         assert.are_equal("XP report", report)

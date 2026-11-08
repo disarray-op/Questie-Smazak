@@ -12,7 +12,7 @@ describe("WaypointGeometry", function()
 
     before_each(function()
         dofile("Modules/Map/Waypoints/WaypointGeometry.lua")
-        WaypointGeometry = QuestieLoader:ImportModule("WaypointGeometry")
+        WaypointGeometry = QuestieSmazakLoader:ImportModule("WaypointGeometry")
     end)
 
     describe("BuildPolylines", function()

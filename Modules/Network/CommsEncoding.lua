@@ -1,5 +1,5 @@
 --[[
-CommsEncoding owns Questie's modern typed-prefix wire encoding:
+CommsEncoding owns QuestieSmazak's modern typed-prefix wire encoding:
 
     Lua payload table
         -> C_EncodingUtil.SerializeCBOR(payload)
@@ -11,10 +11,10 @@ addon-channel-safe byte escaping so binary compressed payloads can travel throug
 ]]
 ---@class CommsEncoding : QuestieModule
 ---@field MAX_ENCODED_PAYLOAD_BYTES number
-local CommsEncoding = QuestieLoader:CreateModule("CommsEncoding")
+local CommsEncoding = QuestieSmazakLoader:CreateModule("CommsEncoding")
 
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 
 local type = type
 
@@ -65,7 +65,7 @@ function CommsEncoding.Init()
     CommsEncoding.hasCodecSupport = _HasCodecSupport()
 
     if (not CommsEncoding.hasCodecSupport) then
-        Questie.Error("Client does not have Codec support", l10n("Please report this on Github or Discord!"))
+        QuestieSmazak.Error("Client does not have Codec support", l10n("Please report this on Github or Discord!"))
     end
 end
 

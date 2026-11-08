@@ -1,13 +1,13 @@
 ---@type QuestieCompat
-local QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+local QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
 
 ---@class TrackerQuestTimers
-local TrackerQuestTimers = QuestieLoader:CreateModule("TrackerQuestTimers")
+local TrackerQuestTimers = QuestieSmazakLoader:CreateModule("TrackerQuestTimers")
 
 ---@type QuestieTracker
-local QuestieTracker = QuestieLoader:ImportModule("QuestieTracker")
+local QuestieTracker = QuestieSmazakLoader:ImportModule("QuestieTracker")
 ---@type Expansions
-local Expansions = QuestieLoader:ImportModule("Expansions")
+local Expansions = QuestieSmazakLoader:ImportModule("Expansions")
 
 local LSM30 = LibStub("LibSharedMedia-3.0")
 
@@ -17,15 +17,15 @@ local QuestTimerFrame = QuestTimerFrame or WatchFrame
 local timer
 
 function TrackerQuestTimers:Initialize()
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[TrackerQuestTimers:Initialize]")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[TrackerQuestTimers:Initialize]")
 
-    if QuestieTracker.started or (not Questie.db.profile.trackerEnabled) then
+    if QuestieTracker.started or (not QuestieSmazak.db.profile.trackerEnabled) then
         return
     end
 
     if QuestTimerFrame then
         QuestTimerFrame:HookScript("OnShow", function()
-            if Questie.db.profile.trackerEnabled and (not QuestieTracker.disableHooks) then
+            if QuestieSmazak.db.profile.trackerEnabled and (not QuestieTracker.disableHooks) then
                 TrackerQuestTimers:HideBlizzardTimer()
             end
         end)
@@ -126,15 +126,15 @@ function TrackerQuestTimers:UpdateTimerFrame()
         timer = nil
     end
 
-    if timer and (Questie.db.profile.trackerEnabled and Questie.db.char.isTrackerExpanded and (QuestieTracker.disableHooks ~= true)) then
+    if timer and (QuestieSmazak.db.profile.trackerEnabled and QuestieSmazak.db.char.isTrackerExpanded and (QuestieTracker.disableHooks ~= true)) then
         local timeRemainingString = TrackerQuestTimers:GetRemainingTimeByQuestId(timer.questId)
         if timeRemainingString ~= nil then
-            Questie.Debug(Questie.DEBUG_SPAM, "[TrackerQuestTimers:UpdateTimerFrame] - ", timeRemainingString)
+            QuestieSmazak.Debug(QuestieSmazak.DEBUG_SPAM, "[TrackerQuestTimers:UpdateTimerFrame] - ", timeRemainingString)
 
-            timer.frame.label:SetFont(LSM30:Fetch("font", Questie.db.profile.trackerFontObjective), Questie.db.profile.trackerFontSizeObjective, Questie.db.profile.trackerFontOutline)
-            timer.frame.label:SetText(Questie:Colorize(timeRemainingString, "lightBlue"))
+            timer.frame.label:SetFont(LSM30:Fetch("font", QuestieSmazak.db.profile.trackerFontObjective), QuestieSmazak.db.profile.trackerFontSizeObjective, QuestieSmazak.db.profile.trackerFontOutline)
+            timer.frame.label:SetText(QuestieSmazak:Colorize(timeRemainingString, "lightBlue"))
         else
-            Questie.Debug(Questie.DEBUG_SPAM, "[TrackerQuestTimers] Quest Timer Expired!")
+            QuestieSmazak.Debug(QuestieSmazak.DEBUG_SPAM, "[TrackerQuestTimers] Quest Timer Expired!")
             timer.frame.label:SetText("")
             timer = nil
             return

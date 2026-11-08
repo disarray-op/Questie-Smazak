@@ -23,12 +23,12 @@ describe("DistanceUtils", function()
             __call = function() return HBDMock end
         })
 
-        ZoneDB = QuestieLoader:ImportModule("ZoneDB")
-        QuestieDB = QuestieLoader:ImportModule("QuestieDB")
-        QuestieLib = QuestieLoader:ImportModule("QuestieLib")
+        ZoneDB = QuestieSmazakLoader:ImportModule("ZoneDB")
+        QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
+        QuestieLib = QuestieSmazakLoader:ImportModule("QuestieLib")
 
         dofile("Modules/Libs/DistanceUtils.lua")
-        DistanceUtils = QuestieLoader:ImportModule("DistanceUtils")
+        DistanceUtils = QuestieSmazakLoader:ImportModule("DistanceUtils")
     end)
 
     describe("GetNearestSpawn", function()
@@ -129,7 +129,7 @@ describe("DistanceUtils", function()
         end)
 
         it("should error once when dungeon location is not found", function()
-            _G.Questie.Error = spy.new(function() end)
+            _G.QuestieSmazak.Error = spy.new(function() end)
             ZoneDB.GetDungeonLocation = spy.new(function()
                 return nil
             end)
@@ -140,8 +140,8 @@ describe("DistanceUtils", function()
             DistanceUtils.GetNearestSpawn(spawns)
             DistanceUtils.GetNearestSpawn(spawns)
 
-            assert.spy(_G.Questie.Error).was.called(1)
-            assert.spy(_G.Questie.Error).was.called_with("No dungeon location found for zoneId:", 2, "Please report this on Github or Discord!")
+            assert.spy(_G.QuestieSmazak.Error).was.called(1)
+            assert.spy(_G.QuestieSmazak.Error).was.called_with("No dungeon location found for zoneId:", 2, "Please report this on Github or Discord!")
         end)
     end)
 
@@ -344,7 +344,7 @@ describe("DistanceUtils", function()
     end)
 
     describe("GetNearestSpawnForQuest", function()
-        it("uses the finisher for additional Questie completion", function()
+        it("uses the finisher for additional QuestieSmazak completion", function()
             local quest = {
                 IsComplete = function() return 0 end,
                 isComplete = true,

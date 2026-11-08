@@ -1,14 +1,14 @@
 ---@class DebugFunctions
-local DebugFunctions = QuestieLoader:CreateModule("DebugFunctions")
+local DebugFunctions = QuestieSmazakLoader:CreateModule("DebugFunctions")
 
 ---@type QuestieDB
-local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
 ---@type QuestieQuest
-local QuestieQuest = QuestieLoader:ImportModule("QuestieQuest")
+local QuestieQuest = QuestieSmazakLoader:ImportModule("QuestieQuest")
 ---@type QuestLogCache
-local QuestLogCache = QuestieLoader:ImportModule("QuestLogCache")
+local QuestLogCache = QuestieSmazakLoader:ImportModule("QuestLogCache")
 ---@type ThreadLib
-local ThreadLib = QuestieLoader:ImportModule("ThreadLib")
+local ThreadLib = QuestieSmazakLoader:ImportModule("ThreadLib")
 
 -- This is a collection of functions that are useful for debugging purposes.
 -- They are not intended to be used in production code.

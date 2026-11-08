@@ -1,5 +1,5 @@
 ---@class QuestieJourneyFactions
-local QuestieJourneyFactions = QuestieLoader:CreateModule("QuestieJourneyFactions")
+local QuestieJourneyFactions = QuestieSmazakLoader:CreateModule("QuestieJourneyFactions")
 
 local factionIDs = LibQuestieDB.Enum.factionIDs
 

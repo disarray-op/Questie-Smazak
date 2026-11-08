@@ -1,16 +1,16 @@
 dofile("setupTests.lua")
 dofile("Modules/Quest/ActiveQuests.lua")
 ---@type ActiveQuests
-local ActiveQuests = QuestieLoader:ImportModule("ActiveQuests")
+local ActiveQuests = QuestieSmazakLoader:ImportModule("ActiveQuests")
 
 describe("TrackerQuestieBehavior", function()
     local Behavior, QuestieDB, QuestieEvent
     local displayQuest, cached, originalQuestieQuest, originalObjective
 
     before_each(function()
-        Questie.db.profile = {}
-        QuestieDB = QuestieLoader:ImportModule("QuestieDB")
-        QuestieEvent = QuestieLoader:ImportModule("QuestieEvent")
+        QuestieSmazak.db.profile = {}
+        QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
+        QuestieEvent = QuestieSmazakLoader:ImportModule("QuestieEvent")
         QuestieDB.IsComplete = spy.new(function() return 0 end)
         QuestieDB.IsPvPQuest = spy.new(function() return true end)
         QuestieEvent.IsEventQuest = spy.new(function() return false end)
@@ -31,7 +31,7 @@ describe("TrackerQuestieBehavior", function()
             [3] = {text = "Wolf slain: 2/5", type = "monster", numFulfilled = 2, numRequired = 5},
         }}
         dofile("Modules/Tracker/TrackerQuestieBehavior.lua")
-        Behavior = QuestieLoader:ImportModule("TrackerQuestieBehavior")
+        Behavior = QuestieSmazakLoader:ImportModule("TrackerQuestieBehavior")
     end)
 
     it("attaches map data by native index despite differing IDs without replacing live display data", function()
@@ -199,7 +199,7 @@ describe("TrackerQuestieBehavior", function()
         assert.is_false(displayQuest.isComplete)
     end)
 
-    it("reads title flags from known Questie data when formatting is requested", function()
+    it("reads title flags from known QuestieSmazak data when formatting is requested", function()
         originalQuestieQuest.IsRepeatable = true
         Behavior.Apply(displayQuest, cached)
         assert.spy(QuestieDB.IsPvPQuest).was.not_called()

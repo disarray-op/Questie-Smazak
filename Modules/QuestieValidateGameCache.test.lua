@@ -6,11 +6,11 @@ describe("QuestieValidateGameCache", function()
     local originalGetTitle, originalGetNumEntries, originalError
 
     before_each(function()
-        compat = QuestieLoader:ImportModule("QuestieCompat")
+        compat = QuestieSmazakLoader:ImportModule("QuestieCompat")
         originalGetTitle, originalGetNumEntries = compat.GetQuestLogTitle, compat.GetNumQuestLogEntries
         originalCreateFrame, originalHaveQuestData, originalQuestLog = _G.CreateFrame, _G.HaveQuestData, _G.C_QuestLog
-        originalError = Questie.Error
-        Questie.Error = spy.new(function() end)
+        originalError = QuestieSmazak.Error
+        QuestieSmazak.Error = spy.new(function() end)
         objectives = {}
         onEvent = nil
         compat.GetQuestLogTitle = function(index)
@@ -31,11 +31,11 @@ describe("QuestieValidateGameCache", function()
         end
         dofile("Modules/Libs/QuestieLib.lua")
         dofile("Modules/QuestieValidateGameCache.lua")
-        Validator = QuestieLoader:ImportModule("QuestieValidateGameCache")
+        Validator = QuestieSmazakLoader:ImportModule("QuestieValidateGameCache")
     end)
 
     after_each(function()
-        Questie.Error = originalError
+        QuestieSmazak.Error = originalError
         compat.GetQuestLogTitle, compat.GetNumQuestLogEntries = originalGetTitle, originalGetNumEntries
         _G.CreateFrame, _G.HaveQuestData, _G.C_QuestLog = originalCreateFrame, originalHaveQuestData, originalQuestLog
     end)

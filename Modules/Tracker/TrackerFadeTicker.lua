@@ -1,12 +1,12 @@
 ---@class TrackerFadeTicker
-local TrackerFadeTicker = QuestieLoader:CreateModule("TrackerFadeTicker")
+local TrackerFadeTicker = QuestieSmazakLoader:CreateModule("TrackerFadeTicker")
 -------------------------
 --Import QuestieTracker modules.
 -------------------------
 ---@type TrackerUtils
-local TrackerUtils = QuestieLoader:ImportModule("TrackerUtils")
+local TrackerUtils = QuestieSmazakLoader:ImportModule("TrackerUtils")
 ---@type TrackerLinePool
-local TrackerLinePool = QuestieLoader:ImportModule("TrackerLinePool")
+local TrackerLinePool = QuestieSmazakLoader:ImportModule("TrackerLinePool")
 
 local fadeTicker
 local fadeTickerDirection
@@ -30,36 +30,36 @@ function TrackerFadeTicker.Start()
                     fadeTickerValue = fadeTickerValue + 0.02
 
                     -- Un-fade the background and border(if enabled)
-                    if (Questie.db.char.isTrackerExpanded and Questie.db.profile.trackerBackdropEnabled and Questie.db.profile.trackerBackdropFader) then
-                        local c = Questie.db.profile.trackerBackdropColor
+                    if (QuestieSmazak.db.char.isTrackerExpanded and QuestieSmazak.db.profile.trackerBackdropEnabled and QuestieSmazak.db.profile.trackerBackdropFader) then
+                        local c = QuestieSmazak.db.profile.trackerBackdropColor
                         trackerBaseFrame:SetBackdropColor(c.r, c.g, c.b, math.min(c.a, fadeTickerValue * 3.3))
-                        if Questie.db.profile.trackerBorderEnabled then
+                        if QuestieSmazak.db.profile.trackerBorderEnabled then
                             trackerBaseFrame:SetBackdropBorderColor(1, 1, 1, math.min(c.a, fadeTickerValue * 3.3))
                         end
                     end
 
-                    -- Un-fade the Questie Icon
-                    if (Questie.db.char.isTrackerExpanded and not Questie.db.profile.trackerHeaderEnabled) then
+                    -- Un-fade the QuestieSmazak Icon
+                    if (QuestieSmazak.db.char.isTrackerExpanded and not QuestieSmazak.db.profile.trackerHeaderEnabled) then
                         trackerHeaderFrame.questieIcon:SetAlpha(fadeTickerValue * 3.3)
                     end
 
                     -- Un-fade the re-sizer
-                    if (Questie.db.char.isTrackerExpanded and not Questie.db.profile.sizerHidden) then
+                    if (QuestieSmazak.db.char.isTrackerExpanded and not QuestieSmazak.db.profile.sizerHidden) then
                         trackerBaseFrame.sizer:SetAlpha(fadeTickerValue * 3.3)
                     end
 
                     -- Un-fade the minimize buttons
-                    if (Questie.db.char.isTrackerExpanded and Questie.db.profile.trackerFadeMinMaxButtons) then
+                    if (QuestieSmazak.db.char.isTrackerExpanded and QuestieSmazak.db.profile.trackerFadeMinMaxButtons) then
                         TrackerLinePool.SetAllExpandQuestAlpha(fadeTickerValue * 3.3)
                     end
 
                     -- Un-fade the quest focus buttons
-                    if (Questie.db.char.isTrackerExpanded and Questie.db.profile.trackerFadeQuestFocusButtons) then
+                    if (QuestieSmazak.db.char.isTrackerExpanded and QuestieSmazak.db.profile.trackerFadeQuestFocusButtons) then
                         TrackerLinePool.SetAllQuestFocusAlpha(fadeTickerValue * 3.3)
                     end
 
                     -- Un-fade the quest item buttons
-                    if (Questie.db.char.isTrackerExpanded and Questie.db.profile.trackerFadeQuestItemButtons) then
+                    if (QuestieSmazak.db.char.isTrackerExpanded and QuestieSmazak.db.profile.trackerFadeQuestItemButtons) then
                         TrackerLinePool.SetAllItemButtonAlpha(fadeTickerValue * 3.3)
                     end
                 else
@@ -78,36 +78,36 @@ function TrackerFadeTicker.Start()
                     end
 
                     -- Fade the background and border(if enabled)
-                    if (Questie.db.char.isTrackerExpanded and Questie.db.profile.trackerBackdropEnabled and Questie.db.profile.trackerBackdropFader) then
-                        local c = Questie.db.profile.trackerBackdropColor
+                    if (QuestieSmazak.db.char.isTrackerExpanded and QuestieSmazak.db.profile.trackerBackdropEnabled and QuestieSmazak.db.profile.trackerBackdropFader) then
+                        local c = QuestieSmazak.db.profile.trackerBackdropColor
                         trackerBaseFrame:SetBackdropColor(c.r, c.g, c.b, math.min(c.a, fadeTickerValue * 3.3))
-                        if Questie.db.profile.trackerBorderEnabled then
+                        if QuestieSmazak.db.profile.trackerBorderEnabled then
                             trackerBaseFrame:SetBackdropBorderColor(1, 1, 1, math.min(c.a, fadeTickerValue * 3.3))
                         end
                     end
 
-                    -- Fade the Questie Icon
-                    if (Questie.db.char.isTrackerExpanded and not Questie.db.profile.trackerHeaderEnabled) then
+                    -- Fade the QuestieSmazak Icon
+                    if (QuestieSmazak.db.char.isTrackerExpanded and not QuestieSmazak.db.profile.trackerHeaderEnabled) then
                         trackerHeaderFrame.questieIcon:SetAlpha(fadeTickerValue * 3.3)
                     end
 
                     -- Fade the re-sizer
-                    if (Questie.db.char.isTrackerExpanded and not Questie.db.profile.sizerHidden) then
+                    if (QuestieSmazak.db.char.isTrackerExpanded and not QuestieSmazak.db.profile.sizerHidden) then
                         trackerBaseFrame.sizer:SetAlpha(fadeTickerValue * 3.3)
                     end
 
                     -- Fade the minimize buttons
-                    if (Questie.db.char.isTrackerExpanded and Questie.db.profile.trackerFadeMinMaxButtons) then
+                    if (QuestieSmazak.db.char.isTrackerExpanded and QuestieSmazak.db.profile.trackerFadeMinMaxButtons) then
                         TrackerLinePool.SetAllExpandQuestAlpha(fadeTickerValue * 3.3)
                     end
 
                     -- Fade the quest focus buttons
-                    if (Questie.db.char.isTrackerExpanded and Questie.db.profile.trackerFadeQuestFocusButtons) then
+                    if (QuestieSmazak.db.char.isTrackerExpanded and QuestieSmazak.db.profile.trackerFadeQuestFocusButtons) then
                         TrackerLinePool.SetAllQuestFocusAlpha(fadeTickerValue * 3.3)
                     end
 
                     -- Fade the quest item buttons
-                    if (Questie.db.char.isTrackerExpanded and Questie.db.profile.trackerFadeQuestItemButtons) then
+                    if (QuestieSmazak.db.char.isTrackerExpanded and QuestieSmazak.db.profile.trackerFadeQuestItemButtons) then
                         TrackerLinePool.SetAllItemButtonAlpha(fadeTickerValue * 3.3)
                     end
                 else

@@ -1,20 +1,20 @@
 ---@class WorldMapButton
 ---@field Initialize function
-local WorldMapButton = QuestieLoader:CreateModule("WorldMapButton")
+local WorldMapButton = QuestieSmazakLoader:CreateModule("WorldMapButton")
 
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 ---@type QuestieLib
-local QuestieLib = QuestieLoader:ImportModule("QuestieLib")
+local QuestieLib = QuestieSmazakLoader:ImportModule("QuestieLib")
 ---@type QuestieQuest
-local QuestieQuest = QuestieLoader:ImportModule("QuestieQuest")
+local QuestieQuest = QuestieSmazakLoader:ImportModule("QuestieQuest")
 ---@type QuestieMenu
-local QuestieMenu = QuestieLoader:ImportModule("QuestieMenu")
+local QuestieMenu = QuestieSmazakLoader:ImportModule("QuestieMenu")
 ---@type QuestieOptionsEngine
-local QuestieOptionsEngine = QuestieLoader:ImportModule("QuestieOptionsEngine")
+local QuestieOptionsEngine = QuestieSmazakLoader:ImportModule("QuestieOptionsEngine")
 
 local KButtons = LibStub("Krowi_WorldMapButtons-1.4")
-if Questie.IsForever then
+if QuestieSmazak.IsForever then
     -- Krowi classifies version 1.x as the old Classic map. Forever has modern overlay buttons;
     -- its old-map workaround reparents them away from the map and breaks GetMapID/TriggerEvent.
     KButtons.HasNoOverlay = false
@@ -26,13 +26,13 @@ local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 local mapButton
 
 function WorldMapButton.Initialize()
-    mapButton = KButtons:Add("QuestieWorldMapButtonTemplate", "BUTTON")
+    mapButton = KButtons:Add("QuestieSmazakWorldMapButtonTemplate", "BUTTON")
 
-    Questie.WorldMap = {
+    QuestieSmazak.WorldMap = {
         Button = mapButton
     }
 
-    WorldMapButton.Toggle(Questie.db.profile.mapShowHideEnabled)
+    WorldMapButton.Toggle(QuestieSmazak.db.profile.mapShowHideEnabled)
 end
 
 ---@param shouldShow boolean
@@ -51,21 +51,21 @@ local function UpdateTooltip(self)
     tooltip:SetOwner(self, "ANCHOR_NONE");
     tooltip:ClearLines()
     tooltip:SetPoint("TOPRIGHT", self, "BOTTOMRIGHT", 0, 0);
-    tooltip:AddDoubleLine(Questie:Colorize("Questie", 'gold'), Questie:Colorize(QuestieLib:GetAddonVersionString(), 'gray'))
+    tooltip:AddDoubleLine(QuestieSmazak:Colorize("Questie-Smazak", 'gold'), QuestieSmazak:Colorize(QuestieLib:GetAddonVersionString(), 'gray'))
     tooltip:AddLine(" ")
-    local toggleLabel = Questie.db.profile.enabled and l10n('Hide Questie') or l10n('Show Questie')
-    tooltip:AddDoubleLine(Questie:Colorize(l10n('Left Click'), 'lightBlue'), Questie:Colorize(toggleLabel, 'white'))
-    tooltip:AddDoubleLine(Questie:Colorize(l10n('Right Click'), 'lightBlue'), Questie:Colorize(l10n('Toggle Menu'), 'white'))
+    local toggleLabel = QuestieSmazak.db.profile.enabled and l10n('Hide QuestieSmazak') or l10n('Show QuestieSmazak')
+    tooltip:AddDoubleLine(QuestieSmazak:Colorize(l10n('Left Click'), 'lightBlue'), QuestieSmazak:Colorize(toggleLabel, 'white'))
+    tooltip:AddDoubleLine(QuestieSmazak:Colorize(l10n('Right Click'), 'lightBlue'), QuestieSmazak:Colorize(l10n('Toggle Menu'), 'white'))
     tooltip:Show()
 end
 
-QuestieWorldMapButtonMixin = {
+QuestieSmazakWorldMapButtonMixin = {
     OnLoad = function() end,
     OnHide = function() end,
     OnMouseDown = function(_, button)
         if button == "LeftButton" then
-            Questie.db.profile.enabled = (not Questie.db.profile.enabled)
-            QuestieQuest:ToggleNotes(Questie.db.profile.enabled)
+            QuestieSmazak.db.profile.enabled = (not QuestieSmazak.db.profile.enabled)
+            QuestieQuest:ToggleNotes(QuestieSmazak.db.profile.enabled)
             if GameTooltip:IsShown() and GameTooltip:GetOwner() == mapButton then
                 UpdateTooltip(mapButton)
             end

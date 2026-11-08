@@ -24,15 +24,15 @@ describe("QuestieFramePool", function()
     end
 
     before_each(function()
-        QuestieLoader:ImportModule("QuestiePopup").Dialogs = {}
+        QuestieSmazakLoader:ImportModule("QuestiePopup").Dialogs = {}
         _G.tremove = table.remove
         _G.tinsert = table.insert
-        local QuestieFrame = QuestieLoader:ImportModule("QuestieFrame")
+        local QuestieFrame = QuestieSmazakLoader:ImportModule("QuestieSmazakFrame")
         QuestieFrame.CreateIconFrame = function(frameId) return CreateFakeFrame(frameId) end
         QuestieFrame.EnsureRightClickPassThrough = function() end
 
         dofile("Modules/FramePool/QuestieFramePool.lua")
-        QuestieFramePool = QuestieLoader:ImportModule("QuestieFramePool")
+        QuestieFramePool = QuestieSmazakLoader:ImportModule("QuestieFramePool")
     end)
 
     describe("UnloadFrame", function()

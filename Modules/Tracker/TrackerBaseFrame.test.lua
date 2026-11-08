@@ -1,12 +1,12 @@
 dofile("setupTests.lua")
 
 ---@type QuestieTracker
-local QuestieTracker = QuestieLoader:ImportModule("QuestieTracker")
+local QuestieTracker = QuestieSmazakLoader:ImportModule("QuestieTracker")
 QuestieTracker.Enable = spy.new(function() end)
 QuestieTracker.Disable = spy.new(function() end)
 
 dofile("Modules/Tracker/TrackerBaseFrame.lua")
-local TrackerBaseFrame = QuestieLoader:ImportModule("TrackerBaseFrame")
+local TrackerBaseFrame = QuestieSmazakLoader:ImportModule("TrackerBaseFrame")
 
 describe("TrackerBaseFrame", function()
     describe("OnProfileChange", function()
@@ -16,8 +16,8 @@ describe("TrackerBaseFrame", function()
         end)
 
         it("should not error when the tracker was never created and stays disabled", function()
-            Questie.db.profile.trackerEnabled = false
-            Questie.db.profile.TrackerLocation = {"TOPLEFT", nil, "TOPLEFT", 0, 0}
+            QuestieSmazak.db.profile.trackerEnabled = false
+            QuestieSmazak.db.profile.TrackerLocation = {"TOPLEFT", nil, "TOPLEFT", 0, 0}
 
             assert.has_no.errors(function()
                 TrackerBaseFrame:OnProfileChange()
@@ -27,7 +27,7 @@ describe("TrackerBaseFrame", function()
         end)
 
         it("should enable the tracker when it was never created and is now enabled", function()
-            Questie.db.profile.trackerEnabled = true
+            QuestieSmazak.db.profile.trackerEnabled = true
 
             TrackerBaseFrame:OnProfileChange()
 

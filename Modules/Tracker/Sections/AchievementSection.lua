@@ -1,21 +1,21 @@
 ---@class AchievementSection
-local AchievementSection = QuestieLoader:CreateModule("AchievementSection")
+local AchievementSection = QuestieSmazakLoader:CreateModule("AchievementSection")
 
 ---@type AchievementTracking
-local AchievementTracking = QuestieLoader:ImportModule("AchievementTracking")
+local AchievementTracking = QuestieSmazakLoader:ImportModule("AchievementTracking")
 ---@type LineBuilder
-local LineBuilder = QuestieLoader:ImportModule("LineBuilder")
+local LineBuilder = QuestieSmazakLoader:ImportModule("LineBuilder")
 ---@type TrackerAchievements
-local TrackerAchievements = QuestieLoader:ImportModule("TrackerAchievements")
+local TrackerAchievements = QuestieSmazakLoader:ImportModule("TrackerAchievements")
 ---@type QuestieLib
-local QuestieLib = QuestieLoader:ImportModule("QuestieLib")
+local QuestieLib = QuestieSmazakLoader:ImportModule("QuestieLib")
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 
 local ZONE_NAME = "Achievements"
 
 function AchievementSection.Draw()
-    local objectiveColor = Questie.db.profile.trackerColorObjectives
+    local objectiveColor = QuestieSmazak.db.profile.trackerColorObjectives
     local line, zoneCheck
 
     -- Tracked achievements are listed under their own "Zone" called Achievements.
@@ -44,9 +44,9 @@ function AchievementSection.Draw()
         end
 
         -- Add Achievements
-        if (not Questie.db.char.collapsedZones[ZONE_NAME]) then
+        if (not QuestieSmazak.db.char.collapsedZones[ZONE_NAME]) then
             local title = achieve.Name
-            if Questie.db.profile.enableTooltipsQuestID then
+            if QuestieSmazak.db.profile.enableTooltipsQuestID then
                 title = title .. " (" .. achieve.Id .. ")"
             end
 
@@ -92,7 +92,7 @@ function AchievementSection.Draw()
                         end
 
                         -- Criteria without progress show a mark instead
-                        if (not criteria.Progress) and (not Questie.db.profile.hideCompletedAchieveObjectives) and (not objectiveColor or objectiveColor == "white") then
+                        if (not criteria.Progress) and (not QuestieSmazak.db.profile.hideCompletedAchieveObjectives) and (not objectiveColor or objectiveColor == "white") then
                             line.criteriaMark:SetCriteria(criteria.Completed)
 
                             if line.criteriaMark.mode == true then

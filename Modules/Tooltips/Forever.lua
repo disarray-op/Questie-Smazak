@@ -1,10 +1,10 @@
 ---@class Forever
-local Forever = QuestieLoader:CreateModule("Forever")
+local Forever = QuestieSmazakLoader:CreateModule("Forever")
 
 ---@type QuestieLib
-local QuestieLib = QuestieLoader:ImportModule("QuestieLib")
+local QuestieLib = QuestieSmazakLoader:ImportModule("QuestieLib")
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 
 ---Renders the native quest rows of one tooltip rebuild. Objective rows belong to the most recent title row.
 ---@class ForeverFormatter
@@ -20,18 +20,18 @@ local function _IsPublicTable(value)
 end
 
 local function _ColoredQuestName(questId)
-    return QuestieLib:GetColoredQuestName(questId, Questie.db.profile.enableTooltipsQuestLevel, true)
+    return QuestieLib:GetColoredQuestName(questId, QuestieSmazak.db.profile.enableTooltipsQuestLevel, true)
 end
 
--- Unknown quests keep Blizzard's title. A readable ID still allows Questie's normal title lookup.
+-- Unknown quests keep Blizzard's title. A readable ID still allows QuestieSmazak's normal title lookup.
 local function _UnknownTitle(questId, title)
     if not _IsSecret(questId) and type(questId) == "number" then
         local found, name = pcall(_ColoredQuestName, questId)
         if found then return name end
     end
-    local format = Questie.db.profile.enableTooltipsQuestLevel and "[??] %s" or "%s"
+    local format = QuestieSmazak.db.profile.enableTooltipsQuestLevel and "[??] %s" or "%s"
     local id = "???"
-    if Questie.db.profile.enableTooltipsQuestID then
+    if QuestieSmazak.db.profile.enableTooltipsQuestID then
         format = format .. " " .. l10n("(") .. "%s" .. l10n(")")
         if _IsSecret(questId) or type(questId) == "number" then id = questId end
     end
@@ -46,7 +46,7 @@ end
 local unknownFormatter = {Title = _UnknownTitle, Objective = _PlainObjective}
 
 local function _CanSelect()
-    return Questie.IsForever and Enum and Enum.CollationStrength and Enum.CollationStrength.Identical
+    return QuestieSmazak.IsForever and Enum and Enum.CollationStrength and Enum.CollationStrength.Identical
         and Enum.NormalizationForm and Enum.NormalizationForm.Nfc
         and C_Intl and type(C_Intl.CompareStrings) == "function" and type(C_Intl.IsNormalized) == "function"
         and C_StringUtil and type(C_StringUtil.TruncateWhenZero) == "function" and type(C_StringUtil.WrapString) == "function"
@@ -81,7 +81,7 @@ local function _GetObjectives(questId)
 end
 
 local function _GetCandidate(questId, colorsObjectives)
-    -- A quest missing from Questie's database keeps Blizzard's title but can still color its objectives.
+    -- A quest missing from QuestieSmazak's database keeps Blizzard's title but can still color its objectives.
     local found, title = pcall(_ColoredQuestName, questId)
     -- An unavailable objective list only loses objective colors, not the quest's title.
     local listed, objectives = false, nil
@@ -159,7 +159,7 @@ local function _SelectObjective(candidates, selection, text)
 end
 
 ---@param guid any
----@return string? fullName The party member's name, like Questie Comms keys it. Nil for yourself and non-members.
+---@return string? fullName The party member's name, like QuestieSmazak Comms keys it. Nil for yourself and non-members.
 local function _GetPartyMemberName(guid)
     if _IsSecret(guid) or type(guid) ~= "string" or guid == UnitGUID("player") then return nil end
     for index = 1, GetNumSubgroupMembers() do
@@ -183,7 +183,7 @@ end
 ---@return table<number, table<string, NativePartyObjective[]>>? progress By quest ID and member name. Nil if unreadable.
 function Forever.GetNativePartyProgress(lines)
     local lineTypes = Enum and Enum.TooltipDataLineType
-    if not (Questie.IsForever and lineTypes and _IsPublicTable(lines)) then return nil end
+    if not (QuestieSmazak.IsForever and lineTypes and _IsPublicTable(lines)) then return nil end
 
     local progress, objectives = {}, nil
     local questId

@@ -13,12 +13,12 @@ describe("QuestieNameplate removal", function()
         for _, name in ipairs(globalNames) do
             savedGlobals[name] = _G[name]
         end
-        originalIsForever = Questie.IsForever
-        Questie.IsForever = true
-        Questie.db.profile.nameplateEnabled = true
-        Questie.db.profile.nameplateScale = 1
-        Questie.db.profile.nameplateX = 0
-        Questie.db.profile.nameplateY = 0
+        originalIsForever = QuestieSmazak.IsForever
+        QuestieSmazak.IsForever = true
+        QuestieSmazak.db.profile.nameplateEnabled = true
+        QuestieSmazak.db.profile.nameplateScale = 1
+        QuestieSmazak.db.profile.nameplateX = 0
+        QuestieSmazak.db.profile.nameplateY = 0
         guids = {nameplate1 = firstGuid, nameplate2 = secondGuid}
         _G.UnitGUID = function(token) return guids[token] end
         _G.UnitName = function() return "Creature" end
@@ -44,7 +44,7 @@ describe("QuestieNameplate removal", function()
             return frame
         end
         dofile("Modules/QuestieNameplate.lua")
-        QuestieNameplate = QuestieLoader:ImportModule("QuestieNameplate")
+        QuestieNameplate = QuestieSmazakLoader:ImportModule("QuestieNameplate")
         QuestieNameplate.GetIcon = spy.new(function() return "quest-icon" end)
     end)
 
@@ -52,7 +52,7 @@ describe("QuestieNameplate removal", function()
         for _, name in ipairs(globalNames) do
             _G[name] = savedGlobals[name]
         end
-        Questie.IsForever = originalIsForever
+        QuestieSmazak.IsForever = originalIsForever
     end)
 
     for _, state in ipairs({"restricted identity", "disabled icons", "inside instance"}) do
@@ -61,7 +61,7 @@ describe("QuestieNameplate removal", function()
             QuestieNameplate:NameplateCreated("nameplate2")
             _G.UnitGUID = function() error("Removal must not query the disappearing unit's identity") end
             if state == "disabled icons" then
-                Questie.db.profile.nameplateEnabled = false
+                QuestieSmazak.db.profile.nameplateEnabled = false
             elseif state == "inside instance" then
                 _G.IsInInstance = function() return true end
             end

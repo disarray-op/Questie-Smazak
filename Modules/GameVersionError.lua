@@ -1,17 +1,17 @@
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 
 -- No timeres or other fancy stuff as 1.12 client is very limited.
 
 -- StaticPopup has very limited width, so text is split to many lines.
 local msg = {
-    l10n("You're trying to use Questie addon"),
+    l10n("You're trying to use QuestieSmazak addon"),
     l10n("on an unsupported WoW game client!"),
 
     l10n("WoW \"retail\" and private servers"),
     l10n("are not supported."),
 
-    l10n("Questie only supports"),
+    l10n("QuestieSmazak only supports"),
     l10n("WoW Classic (Era/Cataclysm)!"),
 }
 

@@ -61,28 +61,28 @@ describe("Townsfolk", function()
     before_each(function()
         mock = LoadQuestieDBMock()
         LibQuestieDB = mock.lib
-        QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+        QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
         npcKeys, itemKeys, objectKeys = QuestieDB.npcKeys, QuestieDB.itemKeys, QuestieDB.objectKeys
         QuestieDB.npcFlags = NPC_FLAGS
         QuestieDB.factionTemplate = {}
 
-        Expansions = QuestieLoader:ImportModule("Expansions")
+        Expansions = QuestieSmazakLoader:ImportModule("Expansions")
         originalExpansion = Expansions.Current
-        originalIsClassic = Questie.IsClassic
-        originalIsSoD = Questie.IsSoD
+        originalIsClassic = QuestieSmazak.IsClassic
+        originalIsSoD = QuestieSmazak.IsSoD
         originalUnitLevel = _G.UnitLevel
         Expansions.Current = Expansions.Era
-        Questie.IsClassic = true
-        Questie.IsSoD = false
-        Questie.db.global = {}
-        Questie.db.char = {}
+        QuestieSmazak.IsClassic = true
+        QuestieSmazak.IsSoD = false
+        QuestieSmazak.db.global = {}
+        QuestieSmazak.db.char = {}
         _G.UnitLevel = function() return 60 end
 
         dofile("Modules/QuestieProfessions.lua")
-        QuestieProfessions = QuestieLoader:ImportModule("QuestieProfessions")
+        QuestieProfessions = QuestieSmazakLoader:ImportModule("QuestieProfessions")
         professionKeys = QuestieProfessions.professionKeys
         dofile("Modules/QuestieMenu/Townsfolk.lua")
-        Townsfolk = QuestieLoader:ImportModule("Townsfolk")
+        Townsfolk = QuestieSmazakLoader:ImportModule("Townsfolk")
         -- The curated ID lists live in sibling files; Townsfolk only filters them against the database.
         Townsfolk.GetWeaponTrainers = function() return {2003, 2999} end
         Townsfolk.SetProfessionTrainerIds(professionKeys.BLACKSMITHING, {2001, 2999})
@@ -132,8 +132,8 @@ describe("Townsfolk", function()
 
     after_each(function()
         Expansions.Current = originalExpansion
-        Questie.IsClassic = originalIsClassic
-        Questie.IsSoD = originalIsSoD
+        QuestieSmazak.IsClassic = originalIsClassic
+        QuestieSmazak.IsSoD = originalIsSoD
         _G.UnitLevel = originalUnitLevel
     end)
 
@@ -199,11 +199,11 @@ describe("Townsfolk", function()
 
             Townsfolk:BuildCharacterTownsfolk()
 
-            assert.are_same("DRUID", Questie.db.char.townsfolkClass)
-            assert.are_same({5001}, Questie.db.char.townsfolk["Spirit Healer"])
-            assert.are_same({6001}, Questie.db.char.townsfolk["Mailbox"])
-            assert.are_same({4002}, Questie.db.char.townsfolk["Class Trainer"])
-            assert.are_same({}, Questie.db.char.vendorList)
+            assert.are_same("DRUID", QuestieSmazak.db.char.townsfolkClass)
+            assert.are_same({5001}, QuestieSmazak.db.char.townsfolk["Spirit Healer"])
+            assert.are_same({6001}, QuestieSmazak.db.char.townsfolk["Mailbox"])
+            assert.are_same({4002}, QuestieSmazak.db.char.townsfolk["Class Trainer"])
+            assert.are_same({}, QuestieSmazak.db.char.vendorList)
         end)
     end)
 
@@ -228,7 +228,7 @@ describe("Townsfolk", function()
 
             Townsfolk.PostBoot()
 
-            local vendorList = Questie.db.char.vendorList
+            local vendorList = QuestieSmazak.db.char.vendorList
             assert.are_same({8001}, vendorList["Reagents"])
             assert.are_same({8001}, vendorList["Drink"])
             assert.are_same({}, vendorList["Ammo"])

@@ -16,10 +16,10 @@ skip("DailyQuestComms", function()
     local DailyQuestComms
 
     before_each(function()
-        Questie.RegisterComm = function() end
-        AvailableQuests = QuestieLoader:ImportModule("AvailableQuests")
+        QuestieSmazak.RegisterComm = function() end
+        AvailableQuests = QuestieSmazakLoader:ImportModule("AvailableQuests")
 
-        CommsEncoding = QuestieLoader:ImportModule("CommsEncoding")
+        CommsEncoding = QuestieSmazakLoader:ImportModule("CommsEncoding")
         CommsEncoding.hasCodecSupport = true
         CommsEncoding.EncodePayload = function() return "eventAsSerializedString" end
         CommsEncoding.DecodePayload = function() return {} end
@@ -42,31 +42,31 @@ skip("DailyQuestComms", function()
 
         _G.math.random = function() return 0 end
 
-        DailyQuestCommsBlacklist = QuestieLoader:ImportModule("DailyQuestCommsBlacklist")
+        DailyQuestCommsBlacklist = QuestieSmazakLoader:ImportModule("DailyQuestCommsBlacklist")
         DailyQuestCommsBlacklist.FilterQuestIds = function(questIds) return questIds end
 
         dofile("Modules/Network/DailyQuestComms/DailyQuestComms.lua")
-        DailyQuestComms = QuestieLoader:ImportModule("DailyQuestComms")
+        DailyQuestComms = QuestieSmazakLoader:ImportModule("DailyQuestComms")
         DailyQuestComms.Initialize()
     end)
 
     describe("Initialize", function()
         it("should not register comm when codec support is unavailable", function()
-            Questie.RegisterComm = spy.new(function() end)
+            QuestieSmazak.RegisterComm = spy.new(function() end)
             CommsEncoding.hasCodecSupport = false
 
             DailyQuestComms.Initialize()
 
-            assert.spy(Questie.RegisterComm).was.not_called()
+            assert.spy(QuestieSmazak.RegisterComm).was.not_called()
         end)
 
         it("should register comm when codec support is available", function()
-            Questie.RegisterComm = spy.new(function() end)
+            QuestieSmazak.RegisterComm = spy.new(function() end)
             CommsEncoding.hasCodecSupport = true
 
             DailyQuestComms.Initialize()
 
-            assert.spy(Questie.RegisterComm).was.called_with(Questie, "QuestieDailiesV2", DailyQuestComms.OnCommReceived)
+            assert.spy(QuestieSmazak.RegisterComm).was.called_with(QuestieSmazak, "QuestieDailiesV2", DailyQuestComms.OnCommReceived)
         end)
     end)
 
@@ -273,7 +273,7 @@ skip("DailyQuestComms", function()
             local npcId = 111
             local questIds = {222, 333}
             AvailableQuests.GetUnavailableDailyQuests = function() return {[npcId] = questIds} end
-            Questie.SendCommMessage = spy.new(function() end)
+            QuestieSmazak.SendCommMessage = spy.new(function() end)
             CommsEncoding.EncodePayload = function() return "eventAsSerializedString" end
             _G.IsInGuild = function() return true end
 
@@ -288,14 +288,14 @@ skip("DailyQuestComms", function()
 
             DailyQuestComms.OnCommReceived("QuestieDailiesV2", "eventAsSerializedString", "GUILD", "SomeSender")
 
-            assert.spy(Questie.SendCommMessage).was.called_with(Questie, "QuestieDailiesV2", "eventAsSerializedString", "GUILD")
+            assert.spy(QuestieSmazak.SendCommMessage).was.called_with(QuestieSmazak, "QuestieDailiesV2", "eventAsSerializedString", "GUILD")
         end)
 
         it("should only answer on the request's distribution when the response timer fires", function()
             local npcId = 111
             local questIds = {222, 333}
             AvailableQuests.GetUnavailableDailyQuests = function() return {[npcId] = questIds} end
-            Questie.SendCommMessage = spy.new(function() end)
+            QuestieSmazak.SendCommMessage = spy.new(function() end)
             CommsEncoding.EncodePayload = function() return "eventAsSerializedString" end
             _G.IsInGuild = function() return true end
 
@@ -310,13 +310,13 @@ skip("DailyQuestComms", function()
 
             DailyQuestComms.OnCommReceived("QuestieDailiesV2", "eventAsSerializedString", "PARTY", "SomeSender")
 
-            assert.spy(Questie.SendCommMessage).was.called_with(Questie, "QuestieDailiesV2", "eventAsSerializedString", "PARTY")
-            assert.spy(Questie.SendCommMessage).was.not_called_with(Questie, "QuestieDailiesV2", "eventAsSerializedString", "GUILD")
+            assert.spy(QuestieSmazak.SendCommMessage).was.called_with(QuestieSmazak, "QuestieDailiesV2", "eventAsSerializedString", "PARTY")
+            assert.spy(QuestieSmazak.SendCommMessage).was.not_called_with(QuestieSmazak, "QuestieDailiesV2", "eventAsSerializedString", "GUILD")
         end)
 
         it("should not broadcast when GetUnavailableDailyQuests returns empty", function()
             AvailableQuests.GetUnavailableDailyQuests = function() return {} end
-            Questie.SendCommMessage = spy.new(function() end)
+            QuestieSmazak.SendCommMessage = spy.new(function() end)
             CommsEncoding.EncodePayload = spy.new(function() return "eventAsSerializedString" end)
             _G.IsInGuild = function() return true end
 
@@ -330,7 +330,7 @@ skip("DailyQuestComms", function()
 
             DailyQuestComms.OnCommReceived("QuestieDailiesV2", "eventAsSerializedString", "GUILD", "SomeSender")
 
-            assert.spy(Questie.SendCommMessage).was.not_called()
+            assert.spy(QuestieSmazak.SendCommMessage).was.not_called()
         end)
 
         it("should cancel pending response timer when HideDailyQuests is received from a peer", function()
@@ -792,189 +792,189 @@ skip("DailyQuestComms", function()
             _G.IsInGuild = function() return true end
             _G.IsInRaid = function() return false end
             _G.IsInGroup = function() return false end
-            Questie.SendCommMessage = spy.new(function() end)
+            QuestieSmazak.SendCommMessage = spy.new(function() end)
             CommsEncoding.EncodePayload = function() return "eventAsSerializedString" end
 
             DailyQuestComms.BroadcastUnavailableDailyQuests(1234, {5678, 91011})
 
-            assert.spy(Questie.SendCommMessage).was.called_with(Questie, "QuestieDailiesV2", "eventAsSerializedString", "GUILD")
+            assert.spy(QuestieSmazak.SendCommMessage).was.called_with(QuestieSmazak, "QuestieDailiesV2", "eventAsSerializedString", "GUILD")
         end)
 
         it("should broadcast only to party when in a party and not in a guild", function()
             _G.IsInGuild = function() return false end
             _G.IsInRaid = function() return false end
             _G.IsInGroup = function() return true end
-            Questie.SendCommMessage = spy.new(function() end)
+            QuestieSmazak.SendCommMessage = spy.new(function() end)
             CommsEncoding.EncodePayload = function() return "eventAsSerializedString" end
 
             DailyQuestComms.BroadcastUnavailableDailyQuests(1234, {5678, 91011})
 
-            assert.spy(Questie.SendCommMessage).was.called_with(Questie, "QuestieDailiesV2", "eventAsSerializedString", "PARTY")
+            assert.spy(QuestieSmazak.SendCommMessage).was.called_with(QuestieSmazak, "QuestieDailiesV2", "eventAsSerializedString", "PARTY")
         end)
 
         it("should broadcast only to raid when in a raid and not in a guild", function()
             _G.IsInGuild = function() return false end
             _G.IsInRaid = function() return true end
             _G.IsInGroup = function() return false end
-            Questie.SendCommMessage = spy.new(function() end)
+            QuestieSmazak.SendCommMessage = spy.new(function() end)
             CommsEncoding.EncodePayload = function() return "eventAsSerializedString" end
 
             DailyQuestComms.BroadcastUnavailableDailyQuests(1234, {5678, 91011})
 
-            assert.spy(Questie.SendCommMessage).was.called_with(Questie, "QuestieDailiesV2", "eventAsSerializedString", "RAID")
+            assert.spy(QuestieSmazak.SendCommMessage).was.called_with(QuestieSmazak, "QuestieDailiesV2", "eventAsSerializedString", "RAID")
         end)
 
         it("should broadcast to guild and raid when in a raid", function()
             _G.IsInGuild = function() return true end
             _G.IsInRaid = function() return true end
             _G.IsInGroup = function() return false end
-            Questie.SendCommMessage = spy.new(function() end)
+            QuestieSmazak.SendCommMessage = spy.new(function() end)
             CommsEncoding.EncodePayload = function() return "eventAsSerializedString" end
 
             DailyQuestComms.BroadcastUnavailableDailyQuests(1234, {5678, 91011})
 
-            assert.spy(Questie.SendCommMessage).was.called_with(Questie, "QuestieDailiesV2", "eventAsSerializedString", "GUILD")
-            assert.spy(Questie.SendCommMessage).was.called_with(Questie, "QuestieDailiesV2", "eventAsSerializedString", "RAID")
+            assert.spy(QuestieSmazak.SendCommMessage).was.called_with(QuestieSmazak, "QuestieDailiesV2", "eventAsSerializedString", "GUILD")
+            assert.spy(QuestieSmazak.SendCommMessage).was.called_with(QuestieSmazak, "QuestieDailiesV2", "eventAsSerializedString", "RAID")
         end)
 
         it("should broadcast to guild and party when in a party", function()
             _G.IsInGuild = function() return true end
             _G.IsInRaid = function() return false end
             _G.IsInGroup = function() return true end
-            Questie.SendCommMessage = spy.new(function() end)
+            QuestieSmazak.SendCommMessage = spy.new(function() end)
             CommsEncoding.EncodePayload = function() return "eventAsSerializedString" end
 
             DailyQuestComms.BroadcastUnavailableDailyQuests(1234, {5678, 91011})
 
-            assert.spy(Questie.SendCommMessage).was.called_with(Questie, "QuestieDailiesV2", "eventAsSerializedString", "GUILD")
-            assert.spy(Questie.SendCommMessage).was.called_with(Questie, "QuestieDailiesV2", "eventAsSerializedString", "PARTY")
+            assert.spy(QuestieSmazak.SendCommMessage).was.called_with(QuestieSmazak, "QuestieDailiesV2", "eventAsSerializedString", "GUILD")
+            assert.spy(QuestieSmazak.SendCommMessage).was.called_with(QuestieSmazak, "QuestieDailiesV2", "eventAsSerializedString", "PARTY")
         end)
 
         it("should not broadcast when not in a guild, raid or party", function()
             _G.IsInGuild = function() return false end
             _G.IsInRaid = function() return false end
             _G.IsInGroup = function() return false end
-            Questie.SendCommMessage = spy.new(function() end)
+            QuestieSmazak.SendCommMessage = spy.new(function() end)
             CommsEncoding.EncodePayload = function() return "eventAsSerializedString" end
 
             DailyQuestComms.BroadcastUnavailableDailyQuests(1234, {5678, 91011})
 
-            assert.spy(Questie.SendCommMessage).was.not_called()
+            assert.spy(QuestieSmazak.SendCommMessage).was.not_called()
         end)
 
         it("should not broadcast when EncodePayload returns nil", function()
             _G.IsInGuild = function() return true end
-            Questie.SendCommMessage = spy.new(function() end)
+            QuestieSmazak.SendCommMessage = spy.new(function() end)
             CommsEncoding.EncodePayload = function() return nil end
 
             DailyQuestComms.BroadcastUnavailableDailyQuests(1234, {5678, 91011})
 
-            assert.spy(Questie.SendCommMessage).was.not_called()
+            assert.spy(QuestieSmazak.SendCommMessage).was.not_called()
         end)
     end)
 
     describe("AnswerUnavailableDailyQuests", function()
         it("should answer on the given distribution", function()
-            Questie.SendCommMessage = spy.new(function() end)
+            QuestieSmazak.SendCommMessage = spy.new(function() end)
             CommsEncoding.EncodePayload = function() return "eventAsSerializedString" end
 
             DailyQuestComms.AnswerUnavailableDailyQuests(1234, {5678, 91011}, "PARTY")
 
-            assert.spy(Questie.SendCommMessage).was.called_with(Questie, "QuestieDailiesV2", "eventAsSerializedString", "PARTY")
+            assert.spy(QuestieSmazak.SendCommMessage).was.called_with(QuestieSmazak, "QuestieDailiesV2", "eventAsSerializedString", "PARTY")
         end)
 
         it("should answer on the given distribution for guild requests", function()
-            Questie.SendCommMessage = spy.new(function() end)
+            QuestieSmazak.SendCommMessage = spy.new(function() end)
             CommsEncoding.EncodePayload = function() return "eventAsSerializedString" end
 
             DailyQuestComms.AnswerUnavailableDailyQuests(1234, {5678, 91011}, "GUILD")
 
-            assert.spy(Questie.SendCommMessage).was.called_with(Questie, "QuestieDailiesV2", "eventAsSerializedString", "GUILD")
+            assert.spy(QuestieSmazak.SendCommMessage).was.called_with(QuestieSmazak, "QuestieDailiesV2", "eventAsSerializedString", "GUILD")
         end)
 
         it("should not answer when EncodePayload returns nil", function()
-            Questie.SendCommMessage = spy.new(function() end)
+            QuestieSmazak.SendCommMessage = spy.new(function() end)
             CommsEncoding.EncodePayload = function() return nil end
 
             DailyQuestComms.AnswerUnavailableDailyQuests(1234, {5678, 91011}, "PARTY")
 
-            assert.spy(Questie.SendCommMessage).was.not_called()
+            assert.spy(QuestieSmazak.SendCommMessage).was.not_called()
         end)
     end)
 
     describe("RequestUnavailableDailyQuests", function()
         it("should send to guild when in a guild", function()
             _G.IsInGuild = function() return true end
-            Questie.SendCommMessage = spy.new(function() end)
+            QuestieSmazak.SendCommMessage = spy.new(function() end)
             CommsEncoding.EncodePayload = function() return "eventAsSerializedString" end
 
             DailyQuestComms.RequestUnavailableDailyQuests(true)
 
-            assert.spy(Questie.SendCommMessage).was.called_with(Questie, "QuestieDailiesV2", "eventAsSerializedString", "GUILD")
+            assert.spy(QuestieSmazak.SendCommMessage).was.called_with(QuestieSmazak, "QuestieDailiesV2", "eventAsSerializedString", "GUILD")
         end)
 
         it("should send to party when in a party", function()
             _G.IsInGroup = function() return true end
-            Questie.SendCommMessage = spy.new(function() end)
+            QuestieSmazak.SendCommMessage = spy.new(function() end)
             CommsEncoding.EncodePayload = function() return "eventAsSerializedString" end
 
             DailyQuestComms.RequestUnavailableDailyQuests(true)
 
-            assert.spy(Questie.SendCommMessage).was.called_with(Questie, "QuestieDailiesV2", "eventAsSerializedString", "PARTY")
+            assert.spy(QuestieSmazak.SendCommMessage).was.called_with(QuestieSmazak, "QuestieDailiesV2", "eventAsSerializedString", "PARTY")
         end)
 
         it("should send to raid when in a raid", function()
             _G.IsInRaid = function() return true end
-            Questie.SendCommMessage = spy.new(function() end)
+            QuestieSmazak.SendCommMessage = spy.new(function() end)
             CommsEncoding.EncodePayload = function() return "eventAsSerializedString" end
 
             DailyQuestComms.RequestUnavailableDailyQuests(true)
 
-            assert.spy(Questie.SendCommMessage).was.called_with(Questie, "QuestieDailiesV2", "eventAsSerializedString", "RAID")
+            assert.spy(QuestieSmazak.SendCommMessage).was.called_with(QuestieSmazak, "QuestieDailiesV2", "eventAsSerializedString", "RAID")
         end)
 
         it("should not send when not in a guild, raid or party", function()
-            Questie.SendCommMessage = spy.new(function() end)
+            QuestieSmazak.SendCommMessage = spy.new(function() end)
             CommsEncoding.EncodePayload = function() return "eventAsSerializedString" end
 
             DailyQuestComms.RequestUnavailableDailyQuests(true)
 
-            assert.spy(Questie.SendCommMessage).was.not_called()
+            assert.spy(QuestieSmazak.SendCommMessage).was.not_called()
         end)
 
         it("should not send when EncodePayload returns nil", function()
             _G.IsInGuild = function() return true end
-            Questie.SendCommMessage = spy.new(function() end)
+            QuestieSmazak.SendCommMessage = spy.new(function() end)
             CommsEncoding.EncodePayload = function() return nil end
 
             DailyQuestComms.RequestUnavailableDailyQuests(true)
 
-            assert.spy(Questie.SendCommMessage).was.not_called()
+            assert.spy(QuestieSmazak.SendCommMessage).was.not_called()
         end)
 
         it("should not ask the guild when askGuild is false", function()
             _G.IsInGuild = function() return true end
             _G.IsInRaid = function() return false end
             _G.IsInGroup = function() return true end
-            Questie.SendCommMessage = spy.new(function() end)
+            QuestieSmazak.SendCommMessage = spy.new(function() end)
             CommsEncoding.EncodePayload = function() return "eventAsSerializedString" end
 
             DailyQuestComms.RequestUnavailableDailyQuests(false)
 
-            assert.spy(Questie.SendCommMessage).was.called_with(Questie, "QuestieDailiesV2", "eventAsSerializedString", "PARTY")
-            assert.spy(Questie.SendCommMessage).was.not_called_with(Questie, "QuestieDailiesV2", "eventAsSerializedString", "GUILD")
+            assert.spy(QuestieSmazak.SendCommMessage).was.called_with(QuestieSmazak, "QuestieDailiesV2", "eventAsSerializedString", "PARTY")
+            assert.spy(QuestieSmazak.SendCommMessage).was.not_called_with(QuestieSmazak, "QuestieDailiesV2", "eventAsSerializedString", "GUILD")
         end)
 
         it("should not send anything when askGuild is false and not in a group", function()
             _G.IsInGuild = function() return true end
             _G.IsInRaid = function() return false end
             _G.IsInGroup = function() return false end
-            Questie.SendCommMessage = spy.new(function() end)
+            QuestieSmazak.SendCommMessage = spy.new(function() end)
             CommsEncoding.EncodePayload = function() return "eventAsSerializedString" end
 
             DailyQuestComms.RequestUnavailableDailyQuests(false)
 
-            assert.spy(Questie.SendCommMessage).was.not_called()
+            assert.spy(QuestieSmazak.SendCommMessage).was.not_called()
         end)
 
         it("should include known unavailable quests in the event payload", function()
@@ -984,7 +984,7 @@ skip("DailyQuestComms", function()
                 return {[npcId] = questIds}
             end
             _G.IsInGuild = function() return true end
-            Questie.SendCommMessage = spy.new(function() end)
+            QuestieSmazak.SendCommMessage = spy.new(function() end)
             local capturedEvent
             CommsEncoding.EncodePayload = function(_, event)
                 capturedEvent = event
@@ -1002,7 +1002,7 @@ skip("DailyQuestComms", function()
                 return {}
             end
             _G.IsInGuild = function() return true end
-            Questie.SendCommMessage = spy.new(function() end)
+            QuestieSmazak.SendCommMessage = spy.new(function() end)
             local capturedEvent
             CommsEncoding.EncodePayload = function(_, event)
                 capturedEvent = event

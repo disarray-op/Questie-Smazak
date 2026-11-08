@@ -1,22 +1,22 @@
 ---@class QuestFocusButton
-local QuestFocusButton = QuestieLoader:CreateModule("QuestFocusButton")
+local QuestFocusButton = QuestieSmazakLoader:CreateModule("QuestFocusButton")
 
 ---@type QuestieTracker
-local QuestieTracker = QuestieLoader:ImportModule("QuestieTracker")
+local QuestieTracker = QuestieSmazakLoader:ImportModule("QuestieTracker")
 ---@type TrackerUtils
-local TrackerUtils = QuestieLoader:ImportModule("TrackerUtils")
+local TrackerUtils = QuestieSmazakLoader:ImportModule("TrackerUtils")
 ---@type TrackerMapEligibility
-local TrackerMapEligibility = QuestieLoader:ImportModule("TrackerMapEligibility")
+local TrackerMapEligibility = QuestieSmazakLoader:ImportModule("TrackerMapEligibility")
 ---@type TrackerFadeTicker
-local TrackerFadeTicker = QuestieLoader:ImportModule("TrackerFadeTicker")
+local TrackerFadeTicker = QuestieSmazakLoader:ImportModule("TrackerFadeTicker")
 ---@type QuestieQuest
-local QuestieQuest = QuestieLoader:ImportModule("QuestieQuest")
+local QuestieQuest = QuestieSmazakLoader:ImportModule("QuestieQuest")
 ---@type QuestieCombatQueue
-local QuestieCombatQueue = QuestieLoader:ImportModule("QuestieCombatQueue")
+local QuestieCombatQueue = QuestieSmazakLoader:ImportModule("QuestieCombatQueue")
 ---@type QuestieCompat
-local QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+local QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
 
-local ICON_PATH = "Interface\\AddOns\\Questie\\Icons\\"
+local ICON_PATH = "Interface\\AddOns\\QuestieSmazak\\Icons\\"
 
 QuestFocusButton.TEXTURES = {
     incomplete = ICON_PATH .. "poi_incomplete.png",
@@ -28,7 +28,7 @@ QuestFocusButton.TEXTURES = {
 ---Same size as the quest focus button slot in TrackerLayout.
 ---@return number
 local function _GetButtonSize()
-    return Questie.db.profile.trackerFontSizeQuest + 3
+    return QuestieSmazak.db.profile.trackerFontSizeQuest + 3
 end
 
 ---The quest this button super tracked itself, so it stays focused while following Blizzard is disabled.
@@ -47,18 +47,18 @@ local function _IsSuperTracked(questId)
     if superTrackedQuestId ~= questId then
         return false
     end
-    return Questie.db.profile.trackerFollowSuperTracking or buttonSuperTrackedQuestId == questId
+    return QuestieSmazak.db.profile.trackerFollowSuperTracking or buttonSuperTrackedQuestId == questId
 end
 
----Focused in Questie, or super tracked by Blizzard, which also covers quests missing from the Questie database.
+---Focused in QuestieSmazak, or super tracked by Blizzard, which also covers quests missing from the QuestieSmazak database.
 ---@param questId QuestId
 ---@return boolean
 local function _IsFocused(questId)
-    return Questie.db.char.TrackerFocus == questId or _IsSuperTracked(questId)
+    return QuestieSmazak.db.char.TrackerFocus == questId or _IsSuperTracked(questId)
 end
 
 local function _OnClick(self)
-    if Questie.db.char.TrackerFocus == self.questId then
+    if QuestieSmazak.db.char.TrackerFocus == self.questId then
         TrackerUtils:UnFocus()
         QuestieQuest.ToggleQuestNotes(true)
     elseif _IsSuperTracked(self.questId) then
@@ -70,11 +70,11 @@ local function _OnClick(self)
             TrackerUtils.ShowQuestOnMap(self.questId, self.expectedQuest)
         end
     else
-        -- Questie can not focus the quest, e.g. it is missing from the database; Blizzard super tracking still can.
+        -- QuestieSmazak can not focus the quest, e.g. it is missing from the database; Blizzard super tracking still can.
         buttonSuperTrackedQuestId = self.questId
         QuestieCompat.SetSuperTrackedQuestID(self.questId)
         if WorldMapFrame and WorldMapFrame:IsShown() then
-            -- Without Questie's map data, Blizzard's map of the quest is the best target. There are no Questie icons to flash.
+            -- Without QuestieSmazak's map data, Blizzard's map of the quest is the best target. There are no QuestieSmazak icons to flash.
             local uiMapId = QuestieCompat.GetQuestUiMapID(self.questId)
             if uiMapId then
                 QuestieCompat.OpenWorldMap(uiMapId)
@@ -98,7 +98,7 @@ end
 ---@param parent TrackerLineFrame
 ---@return Button
 function QuestFocusButton.New(index, parent)
-    local button = CreateFrame("Button", "linePool.questFocus" .. index, parent)
+    local button = CreateFrame("Button", "QuestieSmazaklinePool.questFocus" .. index, parent)
     button:SetFrameLevel(100)
     button:EnableMouse(true)
     button:RegisterForClicks("LeftButtonUp")
@@ -112,7 +112,7 @@ function QuestFocusButton.New(index, parent)
         local isFocused = _IsFocused(quest.Id)
         local canFocus = QuestieCompat.IsSuperTrackingSupported() or TrackerMapEligibility.GetCapabilities(quest).canFocusQuest
         -- A focused quest keeps its button even when it lost eligibility, so it can still be unfocused.
-        if (not Questie.db.profile.trackerShowQuestFocusButtons) or (not (canFocus or isFocused)) then
+        if (not QuestieSmazak.db.profile.trackerShowQuestFocusButtons) or (not (canFocus or isFocused)) then
             self:Hide()
             return
         end
@@ -136,7 +136,7 @@ function QuestFocusButton.New(index, parent)
     button:SetScript("OnEnter", _OnEnter)
     button:SetScript("OnLeave", _OnLeave)
 
-    if Questie.db.profile.trackerFadeQuestFocusButtons then
+    if QuestieSmazak.db.profile.trackerFadeQuestFocusButtons then
         button:SetAlpha(0)
     end
 

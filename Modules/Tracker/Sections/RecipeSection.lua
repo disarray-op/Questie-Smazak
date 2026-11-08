@@ -1,14 +1,14 @@
 ---@class RecipeSection
-local RecipeSection = QuestieLoader:CreateModule("RecipeSection")
+local RecipeSection = QuestieSmazakLoader:CreateModule("RecipeSection")
 
 ---@type LineBuilder
-local LineBuilder = QuestieLoader:ImportModule("LineBuilder")
+local LineBuilder = QuestieSmazakLoader:ImportModule("LineBuilder")
 ---@type TrackerRecipes
-local TrackerRecipes = QuestieLoader:ImportModule("TrackerRecipes")
+local TrackerRecipes = QuestieSmazakLoader:ImportModule("TrackerRecipes")
 ---@type QuestieLib
-local QuestieLib = QuestieLoader:ImportModule("QuestieLib")
+local QuestieLib = QuestieSmazakLoader:ImportModule("QuestieLib")
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 
 local ZONE_NAME = "Recipes"
 

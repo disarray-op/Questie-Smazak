@@ -1,5 +1,5 @@
 ---@class ContentPhases
-local ContentPhases = QuestieLoader:CreateModule("ContentPhases")
+local ContentPhases = QuestieSmazakLoader:CreateModule("ContentPhases")
 
 -- TODO: Use API function which hopefully will come in the future
 -- Central place to define the active phases of the different game modes
@@ -13,7 +13,7 @@ ContentPhases.activePhases = {
 
 -- Central place to activate Invasion event
 ContentPhases.IsInvasionActive = {
-    [1] = Questie.IsSoD and true or false, -- Era
+    [1] = QuestieSmazak.IsSoD and true or false, -- Era
     [2] = false, -- TBC
-    [3] = false, -- Wotlk - Remember Questie.IsTitanReforged is WotLK technically
+    [3] = false, -- Wotlk - Remember QuestieSmazak.IsTitanReforged is WotLK technically
 }

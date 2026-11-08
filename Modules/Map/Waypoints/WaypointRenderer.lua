@@ -3,12 +3,12 @@
 ---container. Each path is one view frame with one pooled texture per segment, plus two fills at
 ---each sharp turn and a cap at each sharp turn, turn back and open end.
 ---@class WaypointRenderer
-local WaypointRenderer = QuestieLoader:CreateModule("WaypointRenderer")
+local WaypointRenderer = QuestieSmazakLoader:CreateModule("WaypointRenderer")
 
 ---@type WaypointGeometry
-local WaypointGeometry = QuestieLoader:ImportModule("WaypointGeometry")
+local WaypointGeometry = QuestieSmazakLoader:ImportModule("WaypointGeometry")
 ---@type QuestieLib
-local QuestieLib = QuestieLoader:ImportModule("QuestieLib")
+local QuestieLib = QuestieSmazakLoader:ImportModule("QuestieLib")
 
 ---How a drawn path looks. Units are the canvas's own, before its scale.
 ---@class WaypointStyle
@@ -220,7 +220,7 @@ local function _DrawLines(self, view)
     -- Rounded corners pass a patrol's points at most waypointSmoothing half line widths away, and
     -- trimming adds TRIMMING more. Up to a setting of 0.875, the default 0.75 included, the true path
     -- stays under the line at every zoom, and up to about 1.2 under it or its soft edge.
-    local smoothing = Questie.db.profile.waypointSmoothing * halfWidth
+    local smoothing = QuestieSmazak.db.profile.waypointSmoothing * halfWidth
     local acquired, lines, fills, caps = false, 0, 0, 0
     for _, run in ipairs(view.waypointRuns) do
         -- Curves are fitted to the quads, fade included, so no two of their pieces overlap.

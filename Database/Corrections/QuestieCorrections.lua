@@ -1,24 +1,24 @@
 ---@class QuestieCorrections
-local QuestieCorrections = QuestieLoader:CreateModule("QuestieCorrections")
+local QuestieCorrections = QuestieSmazakLoader:CreateModule("QuestieCorrections")
 
 ---@type Expansions
-local Expansions = QuestieLoader:ImportModule("Expansions")
+local Expansions = QuestieSmazakLoader:ImportModule("Expansions")
 ---@type QuestieDB
-local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
 ---@type QuestieTBCPolicyCorrections
-local QuestieTBCPolicyCorrections = QuestieLoader:ImportModule("QuestieTBCPolicyCorrections")
+local QuestieTBCPolicyCorrections = QuestieSmazakLoader:ImportModule("QuestieTBCPolicyCorrections")
 ---@type QuestieQuestBlacklist
-local QuestieQuestBlacklist = QuestieLoader:ImportModule("QuestieQuestBlacklist")
+local QuestieQuestBlacklist = QuestieSmazakLoader:ImportModule("QuestieQuestBlacklist")
 ---@type QuestieNPCBlacklist
-local QuestieNPCBlacklist = QuestieLoader:ImportModule("QuestieNPCBlacklist")
+local QuestieNPCBlacklist = QuestieSmazakLoader:ImportModule("QuestieNPCBlacklist")
 ---@type QuestieItemBlacklist
-local QuestieItemBlacklist = QuestieLoader:ImportModule("QuestieItemBlacklist")
+local QuestieItemBlacklist = QuestieSmazakLoader:ImportModule("QuestieItemBlacklist")
 ---@type HardcoreBlacklist
-local HardcoreBlacklist = QuestieLoader:ImportModule("HardcoreBlacklist")
+local HardcoreBlacklist = QuestieSmazakLoader:ImportModule("HardcoreBlacklist")
 ---@type BlacklistFilter
-local BlacklistFilter = QuestieLoader:ImportModule("BlacklistFilter")
+local BlacklistFilter = QuestieSmazakLoader:ImportModule("BlacklistFilter")
 ---@type IsleOfQuelDanas
-local IsleOfQuelDanas = QuestieLoader:ImportModule("IsleOfQuelDanas")
+local IsleOfQuelDanas = QuestieSmazakLoader:ImportModule("IsleOfQuelDanas")
 
 ---@type table<ItemId, boolean>
 QuestieCorrections.questItemBlacklist = {}
@@ -28,15 +28,15 @@ QuestieCorrections.questNPCBlacklist = {}
 QuestieCorrections.hiddenQuests = {}
 
 ---------------------------------------------------------------------------------------------------
--- Questie Policy Corrections
+-- QuestieSmazak Policy Corrections
 --
 -- QuestieDB composes provider-owned entity corrections cumulatively: Classic on every flavor,
 -- followed by TBC, WotLK, Cata, and MoP where applicable. SoD applies only during its active
 -- season; Titan applies only on the WotLK client during season 109. Those layers exist before
--- Questie writes anything, so Questie publishes no faction, class, race, expansion, SoD, or
+-- QuestieSmazak writes anything, so QuestieSmazak publishes no faction, class, race, expansion, SoD, or
 -- Titan copies.
 --
--- Questie owns a Correction only when choosing it depends on Questie state or policy. Each one
+-- QuestieSmazak owns a Correction only when choosing it depends on QuestieSmazak state or policy. Each one
 -- is a named data slot written through `SetCorrection` below: the write publishes immediately
 -- (the provider recomposes only the written datatype), writing again replaces the slot's rows,
 -- and nil withdraws the slot so the layers underneath show through again. There is no separate
@@ -52,7 +52,7 @@ QuestieCorrections.hiddenQuests = {}
 -- provider under the `QuestieLocalesOverride` owner while resolving the UI locale.
 ---------------------------------------------------------------------------------------------------
 
-local QUESTIE_OWNER = "Questie"
+local QUESTIE_OWNER = "QuestieSmazak"
 
 ---@alias PolicyCorrectionRows table<number, table<integer, unknown>> Entity ID to Database Key Enum index to value.
 
@@ -97,7 +97,7 @@ local function _CallerSource()
     return fallback
 end
 
----Publishes one Questie-owned Policy Correction slot and refreshes Questie's composed views.
+---Publishes one QuestieSmazak-owned Policy Correction slot and refreshes QuestieSmazak's composed views.
 ---
 ---Write-through: the provider recomposes the written datatype immediately — no separate apply.
 ---Pass the slot's full replacement rows every time; nil (or `{}`, which normalizes to it)
@@ -107,7 +107,7 @@ end
 ---Slot names are plain strings: a typo on the withdrawal side creates a second slot and leaves the
 ---original published, so keep the name in one place at the owning module and use it at both ends.
 ---@param datatype "Quest"|"Npc"|"Item"|"Object"
----@param name string Slot name, unique per datatype within owner "Questie".
+---@param name string Slot name, unique per datatype within owner "QuestieSmazak".
 ---@param rows PolicyCorrectionRows|nil
 ---@return nil
 function QuestieCorrections.SetCorrection(datatype, name, rows)
@@ -144,7 +144,7 @@ function QuestieCorrections.SetCorrection(datatype, name, rows)
     QuestieDB.RefreshAfterCorrectionApply(datatype, changedIds)
 end
 
--- Gathering nodes have thousands of spawns that Questie never displays. Exactly these 24 Objects.
+-- Gathering nodes have thousands of spawns that QuestieSmazak never displays. Exactly these 24 Objects.
 ---@type ObjectId[]
 local GATHERING_NODE_OBJECT_IDS = {
     1617, 1618, 1619, 1620, 1621, 1622, 1623, 1624, 1628,
@@ -164,11 +164,11 @@ local function _GatheringNodeDisplayRows()
 end
 
 ---------------------------------------------------------------------------------------------------
--- Blacklist policy plus the static Policy Correction slots. Both express what Questie shows:
--- blacklists by hiding quests Questie-side, Correction slots by changing composed entity rows.
+-- Blacklist policy plus the static Policy Correction slots. Both express what QuestieSmazak shows:
+-- blacklists by hiding quests QuestieSmazak-side, Correction slots by changing composed entity rows.
 ---------------------------------------------------------------------------------------------------
 
----Builds Questie-owned blacklist policy for the active flavor, season, and Content Phase, and
+---Builds QuestieSmazak-owned blacklist policy for the active flavor, season, and Content Phase, and
 ---publishes the Policy Correction slots that need no runtime state beyond this point. Darkmoon,
 ---Item repair, and external locale slots are written later by the modules that own their state.
 ---@return nil
@@ -178,8 +178,8 @@ function QuestieCorrections.Initialize()
     QuestieCorrections.hiddenQuests = BlacklistFilter.filterExpansion(QuestieQuestBlacklist:Load())
 
     -- At the completed Isle state, merge its final quest visibility without overriding explicit policy.
-    if Questie.db.global.isleOfQuelDanasPhase == IsleOfQuelDanas.MAX_ISLE_OF_QUEL_DANAS_PHASES then
-        for questId, hide in pairs(IsleOfQuelDanas.quests[Questie.db.global.isleOfQuelDanasPhase]) do
+    if QuestieSmazak.db.global.isleOfQuelDanasPhase == IsleOfQuelDanas.MAX_ISLE_OF_QUEL_DANAS_PHASES then
+        for questId, hide in pairs(IsleOfQuelDanas.quests[QuestieSmazak.db.global.isleOfQuelDanasPhase]) do
             if QuestieCorrections.hiddenQuests[questId] == nil then
                 QuestieCorrections.hiddenQuests[questId] = hide
             end
@@ -194,7 +194,7 @@ function QuestieCorrections.Initialize()
             end
         end
 
-        if Questie.IsTitanReforged then
+        if QuestieSmazak.IsTitanReforged then
             for questId, hide in pairs(QuestieQuestBlacklist.LoadAutoBlacklistIsTitanReforged()) do
                 if QuestieCorrections.hiddenQuests[questId] == nil then
                     QuestieCorrections.hiddenQuests[questId] = hide
@@ -204,7 +204,7 @@ function QuestieCorrections.Initialize()
     end
 
     -- Hardcore hides battleground and other unavailable quests regardless of earlier policy.
-    if Questie.IsHardcore then
+    if QuestieSmazak.IsHardcore then
         for questId in pairs(HardcoreBlacklist:Load()) do
             QuestieCorrections.hiddenQuests[questId] = true
         end
@@ -212,7 +212,7 @@ function QuestieCorrections.Initialize()
 
     QuestieCorrections.SetCorrection("Object", "GatheringNodeDisplayPolicy", _GatheringNodeDisplayRows())
 
-    -- TBC attunement prerequisites that follow Questie's Content Phase. The Era gate is required:
+    -- TBC attunement prerequisites that follow QuestieSmazak's Content Phase. The Era gate is required:
     -- the rows reference Quests that only exist from TBC on. The active phases are constants
     -- today; a live phase switch would simply re-publish this slot with the producer's new rows.
     if Expansions.Current >= Expansions.Tbc then

@@ -1,18 +1,18 @@
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 
 local commsLocales = {
-    ["A Major patch for Questie exists!"] = {
+    ["A Major patch for QuestieSmazak exists!"] = {
         ["enUS"] = true,
-        ["deDE"] = "Es gibt eine neue Major-Version von Questie!",
-        ["esES"] = "¡Existe un parche importante para Questie!",
-        ["esMX"] = "¡Existe un parche importante para Questie!",
-        ["frFR"] = "Une mise à jour majeure pour Questie est disponible !",
+        ["deDE"] = "Es gibt eine neue Major-Version von QuestieSmazak!",
+        ["esES"] = "¡Existe un parche importante para QuestieSmazak!",
+        ["esMX"] = "¡Existe un parche importante para QuestieSmazak!",
+        ["frFR"] = "Une mise à jour majeure pour QuestieSmazak est disponible !",
         ["koKR"] = "퀘스티의 중요 업데이트가 존재합니다!",
-        ["ptBR"] = "Existe uma atualização importante para o Questie!",
-        ["ruRU"] = "Выпущено важное обновление Questie!",
-        ["zhCN"] = "任务提示插件 Questie 已发布重要的更新版本！",
-        ["zhTW"] = "任務位置提示插件 Questie 已有重要的更新版本！",
+        ["ptBR"] = "Existe uma atualização importante para o QuestieSmazak!",
+        ["ruRU"] = "Выпущено важное обновление QuestieSmazak!",
+        ["zhCN"] = "任务提示插件 QuestieSmazak 已发布重要的更新版本！",
+        ["zhTW"] = "任務位置提示插件 QuestieSmazak 已有重要的更新版本！",
     },
     ["Please update as soon as possible!"] = {
         ["enUS"] = true,
@@ -26,17 +26,17 @@ local commsLocales = {
         ["zhCN"] = "请尽快更新！",
         ["zhTW"] = "請盡快更新！",
     },
-    ["You have an outdated version of Questie!"] = {
+    ["You have an outdated version of QuestieSmazak!"] = {
         ["enUS"] = true,
-        ["deDE"] = "Du hast eine veraltete Questie-Version!",
-        ["esES"] = "¡Tienes una versión desactualizada de Questie!",
-        ["esMX"] = "¡Tienes una versión desactualizada de Questie!",
-        ["frFR"] = "Vous avez une version obsolète de Questie !",
+        ["deDE"] = "Du hast eine veraltete QuestieSmazak-Version!",
+        ["esES"] = "¡Tienes una versión desactualizada de QuestieSmazak!",
+        ["esMX"] = "¡Tienes una versión desactualizada de QuestieSmazak!",
+        ["frFR"] = "Vous avez une version obsolète de QuestieSmazak !",
         ["koKR"] = "오래된 퀘스티 버전을 사용 중입니다",
-        ["ptBR"] = "Você tem uma versão desatualizada de Questie!",
-        ["ruRU"] = "Вы используете устаревшую версию Questie!",
-        ["zhCN"] = "你的任务提示插件 Questie 已经过期！",
-        ["zhTW"] = "你的任務位置提示插件 Questie 已經過期！",
+        ["ptBR"] = "Você tem uma versão desatualizada de QuestieSmazak!",
+        ["ruRU"] = "Вы используете устаревшую версию QuestieSmazak!",
+        ["zhCN"] = "你的任务提示插件 QuestieSmazak 已经过期！",
+        ["zhTW"] = "你的任務位置提示插件 QuestieSmazak 已經過期！",
     },
     ["Please consider updating!"] = {
         ["enUS"] = true,
@@ -74,17 +74,17 @@ local commsLocales = {
         ["zhCN"] = "  你的: v",
         ["zhTW"] = "  你的: v",
     },
-    ["has an incompatible Questie version, QuestieComms won't work!"] = {
+    ["has an incompatible QuestieSmazak version, QuestieComms won't work!"] = {
         ["enUS"] = true,
-        ["deDE"] = "hat eine inkompatible Questie-Version, QuestieComms wird nicht funktionieren!",
-        ["esES"] = "tiene una versión de Questie incompatible, ¡QuestieComms no funcionará!",
-        ["esMX"] = "tiene una versión de Questie incompatible, ¡QuestieComms no funcionará!",
-        ["frFR"] = "a une version incompatible de Questie, QuestieComms ne fonctionnera pas !",
+        ["deDE"] = "hat eine inkompatible QuestieSmazak-Version, QuestieComms wird nicht funktionieren!",
+        ["esES"] = "tiene una versión de QuestieSmazak incompatible, ¡QuestieComms no funcionará!",
+        ["esMX"] = "tiene una versión de QuestieSmazak incompatible, ¡QuestieComms no funcionará!",
+        ["frFR"] = "a une version incompatible de QuestieSmazak, QuestieComms ne fonctionnera pas !",
         ["koKR"] = "호환 되지 않는 퀘스티 버전입니다. 퀘스티와 통신이 안됩니다!",
-        ["ptBR"] = "possui uma versão incompatível de Questie, o QuestieComms não funcionará!",
-        ["ruRU"] = "имеет несовместимую версию Questie, QuestieComms работать не будет!",
+        ["ptBR"] = "possui uma versão incompatível de QuestieSmazak, o QuestieComms não funcionará!",
+        ["ruRU"] = "имеет несовместимую версию QuestieSmazak, QuestieComms работать не будет!",
         ["zhCN"] = "是不兼容版本的任务提示插件 Questie和 QuestieComms 无法使用！",
-        ["zhTW"] = "是不相容版本的任務位置提示插件 Questie，QuestieComms 無法使用！",
+        ["zhTW"] = "是不相容版本的任務位置提示插件 QuestieSmazak，QuestieComms 無法使用！",
     },
 }
 

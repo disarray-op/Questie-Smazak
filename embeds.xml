@@ -1,7 +1,7 @@
 <Ui xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
-    <!-- Names the embedded libraries' load interval after this XML. None of them call QuestieLoader, so
+    <!-- Names the embedded libraries' load interval after this XML. None of them call QuestieSmazakLoader, so
          they cannot be told apart from one another; the stamp draws the boundary where the group starts.-->
-    <Script>QuestieLoader:StampLoadBoundary()</Script>
+    <Script>QuestieSmazakLoader:StampLoadBoundary()</Script>
 
     <Script file="Libs\LibStub\LibStub.lua"/>
     <Script file="Libs\LibDeflate\LibDeflate.lua"/>
@@ -28,7 +28,7 @@
 
     <Script file="Libs\Krowi_WorldMapButtons\Krowi_WorldMapButtons.lua"/>
 
-    <!-- Questie's map and menu libraries. Keep HereBeDragons core before its Pins extension. -->
+    <!-- QuestieSmazak's map and menu libraries. Keep HereBeDragons core before its Pins extension. -->
     <Include file="Libs\LibUIDropDownMenu\LibUIDropDownMenu.xml"/>
     <Script file="Libs\HereBeDragons\HereBeDragons-2.0.lua"/>
     <Script file="Libs\HereBeDragons\HereBeDragons-Pins-2.0.lua"/>

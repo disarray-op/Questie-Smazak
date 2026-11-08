@@ -1,7 +1,7 @@
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 ---@type Expansions
-local Expansions = QuestieLoader:ImportModule("Expansions")
+local Expansions = QuestieSmazakLoader:ImportModule("Expansions")
 
 -- This file contains all zones which are used in Era, TBC and WotLK.
 -- Further expansions add corrections to this file, using a `lookupZonesCorrections.lua` file.

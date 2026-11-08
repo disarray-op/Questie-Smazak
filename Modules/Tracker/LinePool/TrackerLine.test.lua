@@ -41,24 +41,24 @@ describe("TrackerLine untrack click", function()
             end
             return frame
         end
-        Questie.db = {profile = {trackerbindUntrack = "untrack"}}
-        QuestieLoader:ImportModule("TrackerMenu").menuFrame = {IsShown = function() return false end}
-        QuestieLoader:ImportModule("TrackerUtils").IsBindTrue = function(_, binding)
+        QuestieSmazak.db = {profile = {trackerbindUntrack = "untrack"}}
+        QuestieSmazakLoader:ImportModule("TrackerMenu").menuFrame = {IsShown = function() return false end}
+        QuestieSmazakLoader:ImportModule("TrackerUtils").IsBindTrue = function(_, binding)
             return binding == "untrack"
         end
-        QuestieLoader:ImportModule("AchievementCriteriaCheckmark").New = function() return {} end
-        QuestieLoader:ImportModule("ExpandZoneButton").New = function() return {} end
-        QuestieLoader:ImportModule("VoiceOverPlayButton").New = _HookableButton
-        QuestieLoader:ImportModule("SpokenPlayButton").New = _HookableButton
-        QuestieLoader:ImportModule("TrackerUtils").IsSpokenLoaded = function() return false end
-        QuestieLoader:ImportModule("ExpandQuestButton").New = _HookableButton
-        QuestieLoader:ImportModule("QuestFocusButton").New = _HookableButton
-        tracker = QuestieLoader:ImportModule("QuestieTracker")
+        QuestieSmazakLoader:ImportModule("AchievementCriteriaCheckmark").New = function() return {} end
+        QuestieSmazakLoader:ImportModule("ExpandZoneButton").New = function() return {} end
+        QuestieSmazakLoader:ImportModule("VoiceOverPlayButton").New = _HookableButton
+        QuestieSmazakLoader:ImportModule("SpokenPlayButton").New = _HookableButton
+        QuestieSmazakLoader:ImportModule("TrackerUtils").IsSpokenLoaded = function() return false end
+        QuestieSmazakLoader:ImportModule("ExpandQuestButton").New = _HookableButton
+        QuestieSmazakLoader:ImportModule("QuestFocusButton").New = _HookableButton
+        tracker = QuestieSmazakLoader:ImportModule("QuestieTracker")
         tracker.UntrackQuestId = spy.new(function() end)
-        compat = QuestieLoader:ImportModule("QuestieCompat")
+        compat = QuestieSmazakLoader:ImportModule("QuestieCompat")
         compat.QuestLog_Update = spy.new(function() end)
         dofile("Modules/Tracker/LinePool/TrackerLine.lua")
-        TrackerLine = QuestieLoader:ImportModule("TrackerLine")
+        TrackerLine = QuestieSmazakLoader:ImportModule("TrackerLine")
     end)
 
     after_each(function()
@@ -89,7 +89,7 @@ describe("TrackerLine untrack click", function()
 
     it("links a Blizzard-only quest through its display data", function()
         local quest = {Id = 91741, name = "Nibbled-On Book"}
-        local data = QuestieLoader:ImportModule("TrackerData")
+        local data = QuestieSmazakLoader:ImportModule("TrackerData")
         data.GetQuestLink = spy.new(function() return "[Nibbled-On Book]" end)
         _G.IsModifiedClick = function() return true end
         _G.ChatEdit_GetActiveWindow = function() return {} end
@@ -104,8 +104,8 @@ describe("TrackerLine untrack click", function()
     end)
 
     it("routes ctrl-click navigation through the current-eligibility command", function()
-        local utils = QuestieLoader:ImportModule("TrackerUtils")
-        Questie.db.profile.trackerbindSetTomTom = "tomtom"
+        local utils = QuestieSmazakLoader:ImportModule("TrackerUtils")
+        QuestieSmazak.db.profile.trackerbindSetTomTom = "tomtom"
         utils.IsBindTrue = function(_, binding) return binding == "tomtom" end
         utils.SetQuestTomTomTarget = spy.new(function() return false end)
         local original = {Id = 100}
@@ -132,7 +132,7 @@ describe("TrackerLine untrack click", function()
         local recipes
 
         before_each(function()
-            recipes = QuestieLoader:ImportModule("TrackerRecipes")
+            recipes = QuestieSmazakLoader:ImportModule("TrackerRecipes")
             recipes.Untrack = spy.new(function() end)
             recipes.OpenRecipe = spy.new(function() end)
             recipes.GetLink = spy.new(function() return "[Charred Wolf Meat]" end)
@@ -164,8 +164,8 @@ describe("TrackerLine untrack click", function()
         end)
 
         it("should open the recipe", function()
-            Questie.db.profile.trackerbindOpenQuestLog = "open"
-            QuestieLoader:ImportModule("TrackerUtils").IsBindTrue = function(_, binding) return binding == "open" end
+            QuestieSmazak.db.profile.trackerbindOpenQuestLog = "open"
+            QuestieSmazakLoader:ImportModule("TrackerUtils").IsBindTrue = function(_, binding) return binding == "open" end
             local line = TrackerLine.New(1, {}, nil, function() end, function() end, function() end)
             line:SetRecipe({Id = 2538})
             line:SetOnClick("recipe")

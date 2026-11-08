@@ -1,11 +1,11 @@
 ---@type QuestiePopup
-local Popup = QuestieLoader:ImportModule("QuestiePopup")
+local Popup = QuestieSmazakLoader:ImportModule("QuestiePopup")
 
 ---@type QuestieJourney
-local QuestieJourney = QuestieLoader:ImportModule("QuestieJourney")
+local QuestieJourney = QuestieSmazakLoader:ImportModule("QuestieJourney")
 local _QuestieJourney = QuestieJourney.private
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 
 local AceGUI = LibStub("AceGUI-3.0")
 
@@ -34,7 +34,7 @@ local function _GetOtherCharactersWithJourney()
     end
 
     local results = {}
-    for charKey, charData in pairs((QuestieConfig and QuestieConfig.char) or {}) do
+    for charKey, charData in pairs((QuestieSmazakConfig and QuestieSmazakConfig.char) or {}) do
         if charKey ~= currentKey and charData.journey and #charData.journey > 0 then
             results[charKey] = charData.journey
         end
@@ -147,9 +147,9 @@ function QuestieJourney:ShowCharacterBrowserFrame()
         importBtnNative:SetPoint("BOTTOMRIGHT", frame.frame, "BOTTOMRIGHT", -132, 17)
     end
     importBtnNative:SetScript("OnClick", function()
-        local journey = QuestieConfig.char[selectedCharacterName] and QuestieConfig.char[selectedCharacterName].journey
+        local journey = QuestieSmazakConfig.char[selectedCharacterName] and QuestieSmazakConfig.char[selectedCharacterName].journey
         if not journey or not _ValidateJourneyData(journey) then
-            Questie:Print(l10n("Invalid journey data - paste the full exported text."))
+            QuestieSmazak:Print(l10n("Invalid journey data - paste the full exported text."))
             return
         end
         _pendingJourneyImport = journey
@@ -159,8 +159,8 @@ function QuestieJourney:ShowCharacterBrowserFrame()
     frame:AddChild(dropdown)
     frame:Show()
 
-    QuestieImportJourneyFrame = frame
-    table.insert(UISpecialFrames, "QuestieImportJourneyFrame")
+    QuestieSmazakImportJourneyFrame = frame
+    table.insert(UISpecialFrames, "QuestieSmazakImportJourneyFrame")
 end
 
 ---Popup dialog for confirming journey import
@@ -172,12 +172,12 @@ Popup.Dialogs["QUESTIE_JOURNEY_IMPORT_CONFIRM"] = {
     button1 = YES,
     button2 = NO,
     OnAccept = function()
-        Questie.db.char.journey = _pendingJourneyImport
+        QuestieSmazak.db.char.journey = _pendingJourneyImport
         _pendingJourneyImport = nil
         if _journeyCharacterBrowserFrame then
             _journeyCharacterBrowserFrame:Hide()
         end
-        Questie:Print(l10n("Journey imported. Open the My Journey tab to see the changes."))
+        QuestieSmazak:Print(l10n("Journey imported. Open the My Journey tab to see the changes."))
     end,
     OnCancel = function()
         _pendingJourneyImport = nil

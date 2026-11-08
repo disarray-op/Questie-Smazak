@@ -18,7 +18,7 @@ describe("QuestieDebugOffer quest dialogs", function()
         for _, name in ipairs(globalNames) do
             savedGlobals[name] = _G[name]
         end
-        savedPrint = Questie.Print
+        savedPrint = QuestieSmazak.Print
         displayedFrame = nil
         -- This sentinel rejects conversion; it does not emulate the client's secret-value implementation.
         secretGuid = setmetatable({}, {__tostring = function() error("Restricted GUID must not be converted") end})
@@ -51,27 +51,27 @@ describe("QuestieDebugOffer quest dialogs", function()
                 frame[method] = function() end
             end
             frame.SetText = function(self, text) self.text = text end
-            if name == "QuestieDebugOfferFrame" then
+            if name == "QuestieSmazakDebugOfferFrame" then
                 displayedFrame = frame
             end
             return frame
         end
 
         dofile("Localization/l10n.lua")
-        QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+        QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
         QuestieDB.QueryQuestSingle = function() return nil end
-        QuestieLoader:ImportModule("QuestLogCache").questLog_DO_NOT_MODIFY = {[789] = {}}
-        QuestieLoader:ImportModule("QuestieLib").GetAddonVersionString = function() return "test-version" end
-        Questie.Print = spy.new(function() end)
+        QuestieSmazakLoader:ImportModule("QuestLogCache").questLog_DO_NOT_MODIFY = {[789] = {}}
+        QuestieSmazakLoader:ImportModule("QuestieLib").GetAddonVersionString = function() return "test-version" end
+        QuestieSmazak.Print = spy.new(function() end)
         dofile("Modules/QuestieDebugOffer.lua")
-        QuestieDebugOffer = QuestieLoader:ImportModule("QuestieDebugOffer")
+        QuestieDebugOffer = QuestieSmazakLoader:ImportModule("QuestieDebugOffer")
     end)
 
     after_each(function()
         for _, name in ipairs(globalNames) do
             _G[name] = savedGlobals[name]
         end
-        Questie.Print = savedPrint
+        QuestieSmazak.Print = savedPrint
     end)
 
     local function _ReadOffer(index)
@@ -84,7 +84,7 @@ describe("QuestieDebugOffer quest dialogs", function()
 
         QuestieDebugOffer.QuestDialog()
 
-        assert.spy(Questie.Print).was.called(1)
+        assert.spy(QuestieSmazak.Print).was.called(1)
         assert.spy(_G.UnitGUID).was.called_with("questnpc")
         local report = _ReadOffer(1)
         assert.is_truthy(report:find("Questgiver:|r <restricted>", 1, true))
@@ -95,13 +95,13 @@ describe("QuestieDebugOffer quest dialogs", function()
         assert.is_truthy(report:find("Reward Text:|r Thank you, <playername>.", 1, true))
         assert.is_truthy(report:find("Reward XP:|r 100", 1, true))
         assert.is_truthy(report:find("QuestLog:|r 789", 1, true))
-        assert.is_truthy(report:find("Questie:|r test-version", 1, true))
+        assert.is_truthy(report:find("QuestieSmazak:|r test-version", 1, true))
         assert.is_nil(report:find("TestPlayer", 1, true))
 
         _G.UnitGUID = function() return publicGuid end
         QuestieDebugOffer.QuestDialog()
 
-        assert.spy(Questie.Print).was.called(2)
+        assert.spy(QuestieSmazak.Print).was.called(2)
         assert.is_truthy(_ReadOffer(2):find("Questgiver:|r " .. publicGuid, 1, true))
     end)
 
@@ -110,7 +110,7 @@ describe("QuestieDebugOffer quest dialogs", function()
 
         QuestieDebugOffer.QuestDialog()
 
-        assert.spy(Questie.Print).was.called(1)
+        assert.spy(QuestieSmazak.Print).was.called(1)
         assert.is_truthy(_ReadOffer(1):find("Questgiver:|r " .. publicGuid, 1, true))
     end)
 
@@ -119,7 +119,7 @@ describe("QuestieDebugOffer quest dialogs", function()
 
         QuestieDebugOffer.QuestDialog()
 
-        assert.spy(Questie.Print).was.called(1)
+        assert.spy(QuestieSmazak.Print).was.called(1)
         assert.is_truthy(_ReadOffer(1):find("Questgiver:|r nil", 1, true))
     end)
 
@@ -129,7 +129,7 @@ describe("QuestieDebugOffer quest dialogs", function()
 
         QuestieDebugOffer.QuestDialog()
 
-        assert.spy(Questie.Print).was.not_called()
+        assert.spy(QuestieSmazak.Print).was.not_called()
         assert.spy(_G.UnitGUID).was.not_called()
     end)
 end)

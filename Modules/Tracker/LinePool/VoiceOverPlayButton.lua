@@ -1,36 +1,36 @@
 ---@type QuestieCompat
-local QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+local QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
 
 ---@class VoiceOverPlayButton
-local VoiceOverPlayButton = QuestieLoader:CreateModule("VoiceOverPlayButton")
+local VoiceOverPlayButton = QuestieSmazakLoader:CreateModule("VoiceOverPlayButton")
 
 ---@type QuestieTracker
-local QuestieTracker = QuestieLoader:ImportModule("QuestieTracker") -- TODO: Remove this explicit dependency
+local QuestieTracker = QuestieSmazakLoader:ImportModule("QuestieTracker") -- TODO: Remove this explicit dependency
 ---@type TrackerUtils
-local TrackerUtils = QuestieLoader:ImportModule("TrackerUtils")
+local TrackerUtils = QuestieSmazakLoader:ImportModule("TrackerUtils")
 
 ---Shows the stop icon while the quest's VoiceOver sound plays.
 ---@param playButton Button
 local function _UpdateTexture(playButton)
     local button = VoiceOver.QuestOverlayUI.questPlayButtons[playButton.mode]
     local isPlaying = button and button.soundData and VoiceOver.SoundQueue:Contains(button.soundData)
-    playButton:SetNormalTexture(isPlaying and "Interface\\Addons\\Questie\\Icons\\QuestLogStopButton" or "Interface\\Addons\\Questie\\Icons\\QuestLogPlayButton")
+    playButton:SetNormalTexture(isPlaying and "Interface\\Addons\\QuestieSmazak\\Icons\\QuestLogStopButton" or "Interface\\Addons\\QuestieSmazak\\Icons\\QuestLogPlayButton")
 end
 
 ---@param index number
 ---@param parent TrackerLineFrame
 ---@return Button
 function VoiceOverPlayButton.New(index, parent)
-    local playButton = CreateFrame("Button", "linePool.playButton" .. index, parent)
+    local playButton = CreateFrame("Button", "QuestieSmazaklinePool.playButton" .. index, parent)
     playButton:SetFrameLevel(100)
-    playButton:SetNormalTexture("Interface\\Addons\\Questie\\Icons\\QuestLogPlayButton")
+    playButton:SetNormalTexture("Interface\\Addons\\QuestieSmazak\\Icons\\QuestLogPlayButton")
     playButton:SetHighlightTexture("Interface\\BUTTONS\\UI-Panel-MinimizeButton-Highlight")
 
     function playButton:SetPlayButton(questId)
         if questId ~= self.mode then
             self.mode = questId
 
-            if questId and TrackerUtils:IsVoiceOverLoaded() and Questie.db.profile.trackerShowPlayButtons then
+            if questId and TrackerUtils:IsVoiceOverLoaded() and QuestieSmazak.db.profile.trackerShowPlayButtons then
                 _UpdateTexture(self)
                 self:Show()
             else
@@ -82,7 +82,7 @@ function VoiceOverPlayButton.New(index, parent)
                     _UpdateTexture(self)
 
                     -- Move the VoiceOverFrame below the DurabilityFrame if it's present and not already moved
-                    if (Questie.db.profile.stickyDurabilityFrame and DurabilityFrame:IsVisible()) and select(5, VoiceOverFrame:GetPoint()) < -125 then
+                    if (QuestieSmazak.db.profile.stickyDurabilityFrame and DurabilityFrame:IsVisible()) and select(5, VoiceOverFrame:GetPoint()) < -125 then
                         QuestieTracker:UpdateVoiceOverFrame()
                     end
                 end

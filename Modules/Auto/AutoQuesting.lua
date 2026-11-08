@@ -1,19 +1,19 @@
 ---@type QuestieCompat
-local QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+local QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
 
 ---@class AutoQuesting
-local AutoQuesting = QuestieLoader:CreateModule("AutoQuesting")
+local AutoQuesting = QuestieSmazakLoader:CreateModule("AutoQuesting")
 ---@type QuestieDB
-local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 
 local _StartStoppedTalkingTimer, _AllQuestWindowsClosed, _IsAllowedNPC, _IsQuestAllowedToAccept, _IsQuestAllowedToTurnIn
 
 local shouldRunAuto = true
 
 function AutoQuesting.OnQuestDetail()
-    if (not shouldRunAuto) or (not Questie.db.profile.autoAccept.enabled) or AutoQuesting.IsModifierHeld()
+    if (not shouldRunAuto) or (not QuestieSmazak.db.profile.autoAccept.enabled) or AutoQuesting.IsModifierHeld()
         or (not _IsAllowedNPC("questnpc")) or (not _IsQuestAllowedToAccept()) then
         return
     end
@@ -24,26 +24,26 @@ function AutoQuesting.OnQuestDetail()
         return
     end
 
-    if Questie.db.profile.autoAccept.rejectSharedInBattleground and UnitInBattleground("player") then
+    if QuestieSmazak.db.profile.autoAccept.rejectSharedInBattleground and UnitInBattleground("player") then
         local giverGuid = UnitGUID("questnpc")
         local unitType = giverGuid and strsplit("-", giverGuid)
         if unitType == "Player" then
             DeclineQuest()
-            Questie:Print(l10n("Automatically rejected quest shared by player."))
+            QuestieSmazak:Print(l10n("Automatically rejected quest shared by player."))
             return
         end
     end
 
     -- Validate every disabled Auto Accept variant without letting later checks re-allow a rejected quest.
     local doAcceptQuest = true
-    if (not Questie.db.profile.autoAccept.trivial) then
+    if (not QuestieSmazak.db.profile.autoAccept.trivial) then
         local questLevel = QuestieDB.QueryQuestSingle(questId, "questLevel")
         doAcceptQuest = (not QuestieDB.IsTrivial(questLevel))
     end
-    if (not Questie.db.profile.autoAccept.repeatable) then
+    if (not QuestieSmazak.db.profile.autoAccept.repeatable) then
         doAcceptQuest = doAcceptQuest and (not QuestieDB.IsRepeatable(questId))
     end
-    if (not Questie.db.profile.autoAccept.pvp) then
+    if (not QuestieSmazak.db.profile.autoAccept.pvp) then
         doAcceptQuest = doAcceptQuest and (not QuestieDB.IsPvPQuest(questId))
     end
 
@@ -58,7 +58,7 @@ function AutoQuesting.OnQuestGreeting()
         return
     end
 
-    if Questie.db.profile.autocomplete then
+    if QuestieSmazak.db.profile.autocomplete then
         for index = 1, GetNumActiveQuests() do
             local quest, isComplete = GetActiveTitle(index)
             if isComplete then
@@ -68,7 +68,7 @@ function AutoQuesting.OnQuestGreeting()
         end
     end
 
-    if Questie.db.profile.autoAccept.enabled then
+    if QuestieSmazak.db.profile.autoAccept.enabled then
         local availableQuestsCount = GetNumAvailableQuests()
         if availableQuestsCount > 0 then
             -- It is correct to use SelectAvailableQuest, instead of QuestieCompat.SelectAvailableQuest
@@ -84,7 +84,7 @@ function AutoQuesting.OnGossipShow()
         return
     end
 
-    if Questie.db.profile.autocomplete then
+    if QuestieSmazak.db.profile.autocomplete then
         local completeQuests = QuestieCompat.GetActiveQuests()
         if #completeQuests > 0 then
             local firstCompleteQuestIndex = 0
@@ -103,30 +103,30 @@ function AutoQuesting.OnGossipShow()
         end
     end
 
-    if Questie.db.profile.autoAccept.enabled then
+    if QuestieSmazak.db.profile.autoAccept.enabled then
         local availableQuests = QuestieCompat.GetAvailableQuests()
         if #availableQuests > 0 then
             local indexToAccept = 0
 
             -- Skip per-quest filtering only when all Auto Accept variants are allowed.
-            if Questie.db.profile.autoAccept.trivial and Questie.db.profile.autoAccept.repeatable and Questie.db.profile.autoAccept.pvp then
+            if QuestieSmazak.db.profile.autoAccept.trivial and QuestieSmazak.db.profile.autoAccept.repeatable and QuestieSmazak.db.profile.autoAccept.pvp then
                 indexToAccept = 1
             else
                 for i = 1, #availableQuests do
                     local shouldAccept = true
-                    if (not Questie.db.profile.autoAccept.trivial) then
+                    if (not QuestieSmazak.db.profile.autoAccept.trivial) then
                         local isTrivial = availableQuests[i].isTrivial
                         if isTrivial then
                             shouldAccept = false
                         end
                     end
-                    if (not Questie.db.profile.autoAccept.repeatable) then
+                    if (not QuestieSmazak.db.profile.autoAccept.repeatable) then
                         local isRepeatable = availableQuests[i].repeatable
                         if isRepeatable then
                             shouldAccept = false
                         end
                     end
-                    if (not Questie.db.profile.autoAccept.pvp) then
+                    if (not QuestieSmazak.db.profile.autoAccept.pvp) then
                         local isPvP = QuestieDB.IsPvPQuest(availableQuests[i].questID)
                         if isPvP then
                             shouldAccept = false
@@ -156,7 +156,7 @@ function AutoQuesting.OnQuestFinished()
 end
 
 function AutoQuesting.OnQuestProgress()
-    if (not shouldRunAuto) or (not Questie.db.profile.autocomplete) or AutoQuesting.IsModifierHeld()
+    if (not shouldRunAuto) or (not QuestieSmazak.db.profile.autocomplete) or AutoQuesting.IsModifierHeld()
         or (not IsQuestCompletable()) or (not _IsQuestAllowedToTurnIn()) or (not _IsAllowedNPC("questnpc")) then
         return
     end
@@ -165,7 +165,7 @@ function AutoQuesting.OnQuestProgress()
 end
 
 function AutoQuesting.OnQuestAcceptConfirm()
-    if (not Questie.db.profile.autoAccept.enabled) then
+    if (not QuestieSmazak.db.profile.autoAccept.enabled) then
         return
     end
 
@@ -173,7 +173,7 @@ function AutoQuesting.OnQuestAcceptConfirm()
 end
 
 function AutoQuesting.OnQuestComplete()
-    if (not shouldRunAuto) or (not Questie.db.profile.autocomplete) or AutoQuesting.IsModifierHeld()
+    if (not shouldRunAuto) or (not QuestieSmazak.db.profile.autocomplete) or AutoQuesting.IsModifierHeld()
         or GetNumQuestChoices() > 1 or (not _IsQuestAllowedToTurnIn()) or (not _IsAllowedNPC("questnpc")) then
         return
     end
@@ -210,7 +210,7 @@ local bindTruthTable = {
 
 ---@return boolean @True if the modifier key is held down, false otherwise
 function AutoQuesting.IsModifierHeld()
-    local bind = Questie.db.profile.autoModifier
+    local bind = QuestieSmazak.db.profile.autoModifier
     if (not bind) then
         return false
     end

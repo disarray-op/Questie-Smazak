@@ -9,7 +9,7 @@ describe("HandleSetHyperlink", function()
     local QuestieLink
 
     before_each(function()
-        Questie.started = true
+        QuestieSmazak.started = true
 
         _G.ItemRefTooltip = {
             IsShown = function() return false end,
@@ -22,22 +22,22 @@ describe("HandleSetHyperlink", function()
         _G.ShowUIPanel = function() end
         _G.UIParent = {}
 
-        QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+        QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
         QuestieDB.GetQuest = function(questId)
             return {Id = questId}
         end
 
-        QuestieLink = QuestieLoader:ImportModule("QuestieLink")
+        QuestieLink = QuestieSmazakLoader:ImportModule("QuestieLink")
         QuestieLink.CreateQuestTooltip = spy.new(function() end)
 
         dofile("Modules/QuestLinks/HandleSetHyperlink.lua")
-        HandleSetHyperlink = QuestieLoader:ImportModule("HandleSetHyperlink")
+        HandleSetHyperlink = QuestieSmazakLoader:ImportModule("HandleSetHyperlink")
     end)
 
-    it("should delegate to the fallback handler when Questie is not started", function()
+    it("should delegate to the fallback handler when QuestieSmazak is not started", function()
         local fallbackHandler = spy.new(function() end)
         local link = "questie:99999:GUID-0-1234"
-        Questie.started = false
+        QuestieSmazak.started = false
 
         HandleSetHyperlink.Run(ItemRefTooltip, fallbackHandler, link)
 

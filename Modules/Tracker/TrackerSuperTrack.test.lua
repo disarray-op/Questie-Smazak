@@ -9,28 +9,28 @@ describe("TrackerSuperTrack", function()
     local superTrackedQuestId
 
     before_each(function()
-        Questie.db.char.TrackerFocus = nil
+        QuestieSmazak.db.char.TrackerFocus = nil
         superTrackedQuestId = nil
 
-        local QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+        local QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
         QuestieCompat.GetSuperTrackedQuestID = function() return superTrackedQuestId end
-        Questie.db.profile.trackerFollowSuperTracking = true
-        TrackerUtils = QuestieLoader:ImportModule("TrackerUtils")
+        QuestieSmazak.db.profile.trackerFollowSuperTracking = true
+        TrackerUtils = QuestieSmazakLoader:ImportModule("TrackerUtils")
         TrackerUtils.FocusQuest = spy.new(function() return true end)
         TrackerUtils.UnFocus = spy.new(function() end)
-        QuestieQuest = QuestieLoader:ImportModule("QuestieQuest")
+        QuestieQuest = QuestieSmazakLoader:ImportModule("QuestieQuest")
         QuestieQuest.ToggleQuestNotes = spy.new(function() end)
-        QuestieTracker = QuestieLoader:ImportModule("QuestieTracker")
+        QuestieTracker = QuestieSmazakLoader:ImportModule("QuestieTracker")
         QuestieTracker.Update = spy.new(function() end)
-        QuestieLoader:ImportModule("QuestieCombatQueue").Queue = function(_, callback) callback() end
+        QuestieSmazakLoader:ImportModule("QuestieCombatQueue").Queue = function(_, callback) callback() end
 
         dofile("Modules/Tracker/TrackerSuperTrack.lua")
-        TrackerSuperTrack = QuestieLoader:ImportModule("TrackerSuperTrack")
+        TrackerSuperTrack = QuestieSmazakLoader:ImportModule("TrackerSuperTrack")
     end)
 
     describe("OnSuperTrackingChanged", function()
         it("should ignore Blizzard super tracking when following is disabled", function()
-            Questie.db.profile.trackerFollowSuperTracking = false
+            QuestieSmazak.db.profile.trackerFollowSuperTracking = false
             superTrackedQuestId = 123
 
             TrackerSuperTrack.OnSuperTrackingChanged()
@@ -53,7 +53,7 @@ describe("TrackerSuperTrack", function()
 
         it("should only redraw the tracker when the super tracked quest is already focused", function()
             superTrackedQuestId = 123
-            Questie.db.char.TrackerFocus = 123
+            QuestieSmazak.db.char.TrackerFocus = 123
 
             TrackerSuperTrack.OnSuperTrackingChanged()
 
@@ -62,9 +62,9 @@ describe("TrackerSuperTrack", function()
             assert.spy(QuestieTracker.Update).was.called()
         end)
 
-        it("should unfocus the focused quest when Blizzard super tracks a quest Questie can not focus", function()
+        it("should unfocus the focused quest when Blizzard super tracks a quest QuestieSmazak can not focus", function()
             superTrackedQuestId = 123
-            Questie.db.char.TrackerFocus = 99
+            QuestieSmazak.db.char.TrackerFocus = 99
             TrackerUtils.FocusQuest = spy.new(function() return false end)
 
             TrackerSuperTrack.OnSuperTrackingChanged()
@@ -74,7 +74,7 @@ describe("TrackerSuperTrack", function()
             assert.spy(QuestieTracker.Update).was.called()
         end)
 
-        it("should redraw the tracker when Blizzard super tracks a quest Questie can not focus without a focus", function()
+        it("should redraw the tracker when Blizzard super tracks a quest QuestieSmazak can not focus without a focus", function()
             superTrackedQuestId = 123
             TrackerUtils.FocusQuest = spy.new(function() return false end)
 
@@ -85,7 +85,7 @@ describe("TrackerSuperTrack", function()
         end)
 
         it("should unfocus the focused quest when Blizzard clears super tracking", function()
-            Questie.db.char.TrackerFocus = 123
+            QuestieSmazak.db.char.TrackerFocus = 123
 
             TrackerSuperTrack.OnSuperTrackingChanged()
 

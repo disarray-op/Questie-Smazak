@@ -1,26 +1,26 @@
 ---@class ZoneDB
-local ZoneDB = QuestieLoader:CreateModule("ZoneDB")
+local ZoneDB = QuestieSmazakLoader:CreateModule("ZoneDB")
 
 ---@type SupportValidation
-local SupportValidation = QuestieLoader:ImportModule("SupportValidation")
+local SupportValidation = QuestieSmazakLoader:ImportModule("SupportValidation")
 
 local _ZoneDB = ZoneDB.private
 ---@type Expansions
-local Expansions = QuestieLoader:ImportModule("Expansions")
+local Expansions = QuestieSmazakLoader:ImportModule("Expansions")
 ---@type QuestiePlayer
-local QuestiePlayer = QuestieLoader:ImportModule("QuestiePlayer")
+local QuestiePlayer = QuestieSmazakLoader:ImportModule("QuestiePlayer")
 ---@type QuestieDB
-local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
 ---@type QuestieCorrections
-local QuestieCorrections = QuestieLoader:ImportModule("QuestieCorrections")
+local QuestieCorrections = QuestieSmazakLoader:ImportModule("QuestieCorrections")
 ---@type QuestieQuestBlacklist
-local QuestieQuestBlacklist = QuestieLoader:ImportModule("QuestieQuestBlacklist")
+local QuestieQuestBlacklist = QuestieSmazakLoader:ImportModule("QuestieQuestBlacklist")
 ---@type QuestieEvent
-local QuestieEvent = QuestieLoader:ImportModule("QuestieEvent")
+local QuestieEvent = QuestieSmazakLoader:ImportModule("QuestieEvent")
 ---@type QuestieProfessions
-local QuestieProfessions = QuestieLoader:ImportModule("QuestieProfessions")
+local QuestieProfessions = QuestieSmazakLoader:ImportModule("QuestieProfessions")
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 
 -- Provider-owned support: bind at file load because other modules already need the zone IDs.
 -- Keep these tables read-only and leave malformed containers for Initialize to report.
@@ -44,7 +44,7 @@ if type(zoneData) == "table" then
     end
 end
 
--- Initialize decodes the mapping strings into Questie-owned maps before applying overrides.
+-- Initialize decodes the mapping strings into QuestieSmazak-owned maps before applying overrides.
 local areaIdToUiMapId
 local uiMapIdToAreaId
 local subZoneToParentZone
@@ -119,7 +119,7 @@ function ZoneDB.Initialize()
     if not valid then return false, report end
 
     -- Run tests if debug enabled
-    if Questie.db.profile.debugEnabled then
+    if QuestieSmazak.db.profile.debugEnabled then
         _ZoneDB:RunTests()
     end
 
@@ -142,7 +142,7 @@ end
 function ZoneDB:GetUiMapIdByAreaId(areaId)
     local uiMapId = areaIdToUiMapId[areaId]
     if (not uiMapId) then
-        Questie.Debug(Questie.DEBUG_CRITICAL, "No UiMapId found for AreaId: " .. tostring(areaId))
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_CRITICAL, "No UiMapId found for AreaId: " .. tostring(areaId))
     end
 
     return uiMapId
@@ -163,7 +163,7 @@ function ZoneDB:GetAreaIdByUiMapId(uiMapId)
     for areaId in pairs(areaIdToUiMapId) do
         local areaName = C_Map.GetAreaInfo(areaId)
         if mapInfo and mapInfo.name == areaName then
-            Questie.Debug(Questie.DEBUG_DEVELOP, "[ZoneDB:GetAreaIdByUiMapId] : ", "Found AreaId", areaName, ":", areaId, "for UiMapId", mapInfo.name, ":",
+            QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[ZoneDB:GetAreaIdByUiMapId] : ", "Found AreaId", areaName, ":", areaId, "for UiMapId", mapInfo.name, ":",
                 uiMapId, "by name")
             return areaId
         end
@@ -221,7 +221,7 @@ function ZoneDB:GetLocalizedDungeonName(areaId)
     end
 
     if dungeonName then
-        -- The Questie DB has an entry for the area being a dungeon. We still prefer the Blizzard name if found.
+        -- The QuestieSmazak DB has an entry for the area being a dungeon. We still prefer the Blizzard name if found.
         return C_Map.GetAreaInfo(areaId) or dungeonName
     end
     return nil
@@ -486,15 +486,15 @@ end
 function _ZoneDB:RunTests()
     -- Fetch all UiMapIds (WOTLK/TBC, ERA)
     local maps = C_Map.GetMapChildrenInfo(946, nil, true) or C_Map.GetMapChildrenInfo(947, nil, true)
-    Questie.Debug(Questie.DEBUG_CRITICAL, "[" .. Questie:Colorize("ZoneDBTests") .. "] Testing ZoneDB")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_CRITICAL, "[" .. QuestieSmazak:Colorize("ZoneDBTests") .. "] Testing ZoneDB")
     for _, map in pairs(maps) do
         --- We don't care about World, Continent or Cosmic
         if map.mapType ~= Enum.UIMapType.World and map.mapType ~= Enum.UIMapType.Continent and map.mapType ~= Enum.UIMapType.Cosmic then
             local success, result = pcall(ZoneDB.GetAreaIdByUiMapId, ZoneDB, map.mapID)
             if not success then
-                Questie.Error("[ZoneDBTests] ZoneDB.GetAreaIdByUiMapId fails for " .. map.name .. " (" .. map.mapID .. "). Result: " .. result)
+                QuestieSmazak.Error("[ZoneDBTests] ZoneDB.GetAreaIdByUiMapId fails for " .. map.name .. " (" .. map.mapID .. "). Result: " .. result)
             end
         end
     end
-    Questie.Debug(Questie.DEBUG_CRITICAL, "[" .. Questie:Colorize("ZoneDBTests") .. "] Testing ZoneDB done")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_CRITICAL, "[" .. QuestieSmazak:Colorize("ZoneDBTests") .. "] Testing ZoneDB done")
 end

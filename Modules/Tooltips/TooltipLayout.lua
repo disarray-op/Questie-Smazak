@@ -1,11 +1,11 @@
 ---@class TooltipLayout
-local TooltipLayout = QuestieLoader:CreateModule("TooltipLayout")
+local TooltipLayout = QuestieSmazakLoader:CreateModule("TooltipLayout")
 
 -------------------------
 --Import modules.
 -------------------------
 ---@type WrappedText
-local WrappedText = QuestieLoader:ImportModule("WrappedText")
+local WrappedText = QuestieSmazakLoader:ImportModule("WrappedText")
 
 local tinsert = table.insert
 
@@ -210,7 +210,7 @@ local function _GetTooltipDoubleLineGap()
         return tooltipDoubleLineGapAvg
     end
 
-    local tooltipName = "QuestieTooltipLayoutGapMeasureTooltip"
+    local tooltipName = "QuestieSmazakTooltipLayoutGapMeasureTooltip"
     tooltipDoubleLineGapTooltip = tooltipDoubleLineGapTooltip or CreateFrame("GameTooltip", tooltipName, UIParent, "GameTooltipTemplate")
     tooltipDoubleLineGapTooltip:SetOwner(UIParent, "ANCHOR_NONE")
     tooltipDoubleLineGapTooltip:SetPoint("BOTTOMRIGHT", UIParent, "TOPLEFT", -10000, 10000)

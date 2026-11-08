@@ -17,7 +17,7 @@ describe("TrackerQuestTimers", function()
         end
         _G.C_QuestLog = {}
         dofile("Modules/Tracker/TrackerQuestTimers.lua")
-        TrackerQuestTimers = QuestieLoader:ImportModule("TrackerQuestTimers")
+        TrackerQuestTimers = QuestieSmazakLoader:ImportModule("TrackerQuestTimers")
     end)
 
     after_each(function()
@@ -118,10 +118,10 @@ describe("TrackerQuestTimers", function()
         local frame
 
         before_each(function()
-            local QuestieTracker = QuestieLoader:ImportModule("QuestieTracker")
+            local QuestieTracker = QuestieSmazakLoader:ImportModule("QuestieTracker")
             QuestieTracker.disableHooks = nil
-            Questie.db.profile.trackerEnabled = true
-            Questie.db.char.isTrackerExpanded = true
+            QuestieSmazak.db.profile.trackerEnabled = true
+            QuestieSmazak.db.char.isTrackerExpanded = true
             local timers = {{questID = 1, questTimer = 1}}
             _G.C_QuestLog = {GetQuestTimers = function() return timers end}
             _G.SecondsToTime = function() return "1 Sec" end

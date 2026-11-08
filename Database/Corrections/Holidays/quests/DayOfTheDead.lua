@@ -1,5 +1,5 @@
 ---@type QuestieEvent
-local QuestieEvent = QuestieLoader:ImportModule("QuestieEvent")
+local QuestieEvent = QuestieSmazakLoader:ImportModule("QuestieEvent")
 
 local tinsert = table.insert
 local eventQuests = QuestieEvent.eventQuests

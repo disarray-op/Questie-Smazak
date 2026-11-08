@@ -1,5 +1,5 @@
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 
 local tooltipsUILocales = {
     ["You are on this quest"] = {
@@ -134,17 +134,17 @@ local tooltipsUILocales = {
         ["zhCN"] = "完成于",
         ["zhTW"] = "已完成",
     },
-    ["Questie Developer"] = {
+    ["QuestieSmazak Developer"] = {
         ["enUS"] = true,
-        ["deDE"] = "Questie-Entwickler",
-        ["esES"] = "Desarrollador de Questie",
-        ["esMX"] = "Desarrollador de Questie",
-        ["frFR"] = "Développeur de Questie",
+        ["deDE"] = "QuestieSmazak-Entwickler",
+        ["esES"] = "Desarrollador de QuestieSmazak",
+        ["esMX"] = "Desarrollador de QuestieSmazak",
+        ["frFR"] = "Développeur de QuestieSmazak",
         ["koKR"] = "퀘스티 개발자",
-        ["ptBR"] = "Desenvolvedor do Questie",
-        ["ruRU"] = "Разработчик Questie",
-        ["zhCN"] = "Questie 开发者",
-        ["zhTW"] = "Questie 開發者",
+        ["ptBR"] = "Desenvolvedor do QuestieSmazak",
+        ["ruRU"] = "Разработчик QuestieSmazak",
+        ["zhCN"] = "QuestieSmazak 开发者",
+        ["zhTW"] = "QuestieSmazak 開發者",
     }
 }
 

@@ -9,12 +9,12 @@ describe("QuestieClassicPolicyCorrections", function()
 
     before_each(function()
         LoadQuestieDBMetaMock()
-        local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+        local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
 
         dofile("Database/Corrections/QuestiePolicy/classicPolicyCorrections.lua")
-        QuestieClassicPolicyCorrections = QuestieLoader:ImportModule("QuestieClassicPolicyCorrections")
+        QuestieClassicPolicyCorrections = QuestieSmazakLoader:ImportModule("QuestieClassicPolicyCorrections")
 
-        local ZoneDB = QuestieLoader:ImportModule("ZoneDB")
+        local ZoneDB = QuestieSmazakLoader:ImportModule("ZoneDB")
         local npcKeys = QuestieDB.npcKeys
         local zoneIDs = ZoneDB.zoneIDs
 

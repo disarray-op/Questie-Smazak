@@ -1,16 +1,16 @@
--- Owns quest completion and Questie-specific additions to the shared tracker display record.
+-- Owns quest completion and QuestieSmazak-specific additions to the shared tracker display record.
 -- Completion is not optional metadata: every refresh, including a cache miss, is resolved here.
 ---@class TrackerQuestieBehavior
-local TrackerQuestieBehavior = QuestieLoader:CreateModule("TrackerQuestieBehavior")
+local TrackerQuestieBehavior = QuestieSmazakLoader:CreateModule("TrackerQuestieBehavior")
 
 ---@type ActiveQuests
-local ActiveQuests = QuestieLoader:ImportModule("ActiveQuests")
+local ActiveQuests = QuestieSmazakLoader:ImportModule("ActiveQuests")
 ---@type QuestieDB
-local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
 ---@type QuestieEvent
-local QuestieEvent = QuestieLoader:ImportModule("QuestieEvent")
+local QuestieEvent = QuestieSmazakLoader:ImportModule("QuestieEvent")
 
----Resolves quest completion and applies Questie-specific data and exceptions. This is not a second renderer.
+---Resolves quest completion and applies QuestieSmazak-specific data and exceptions. This is not a second renderer.
 ---Only the display record is modified; the cache and original map objects remain owned by their modules.
 ---Call after rebuilding baseline objectives so synthetic steps from a previous refresh cannot accumulate.
 ---@param displayQuest TrackerQuest
@@ -44,7 +44,7 @@ function TrackerQuestieBehavior.Apply(displayQuest, cached, nativeComplete)
         return
     end
 
-    -- Existing Questie completion semantics apply to every cached quest, including database-unknown ones.
+    -- Existing QuestieSmazak completion semantics apply to every cached quest, including database-unknown ones.
     -- Keep the shared helper (and its source-item checks), rather than inventing a second completion rule.
     displayQuest.completionState = QuestieDB.IsComplete(displayQuest.Id)
     local allObjectivesMapped = originalQuestieQuest ~= nil
@@ -66,7 +66,7 @@ function TrackerQuestieBehavior.Apply(displayQuest, cached, nativeComplete)
         end
     end
 
-    -- Questie compatibility exceptions can change the display, unlike location enrichment above.
+    -- QuestieSmazak compatibility exceptions can change the display, unlike location enrichment above.
     -- Preserve the missing-source-item step for quests with no native objectives. An empty list alone
     -- does not justify adding this step or declaring the quest complete.
     if #displayQuest.Objectives == 0 and originalQuestieQuest and originalQuestieQuest.Objectives then
@@ -96,7 +96,7 @@ function TrackerQuestieBehavior.Apply(displayQuest, cached, nativeComplete)
         or (allObjectivesMapped and originalQuestieQuest.isComplete == true)) or false
 end
 
----Questie-specific title traits are separate from the shared level/name/state formatting.
+---QuestieSmazak-specific title traits are separate from the shared level/name/state formatting.
 ---Read them when formatting, as before; do not introduce another metadata cache.
 ---@param displayQuest TrackerQuest
 ---@return boolean? isRepeatable, boolean? isEvent, boolean? isPvP

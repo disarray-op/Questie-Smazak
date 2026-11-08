@@ -1,19 +1,19 @@
 ---@type QuestieCompat
-local QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+local QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
 
 ---@class QuestieJourneyUtils
-local QuestieJourneyUtils = QuestieLoader:CreateModule("QuestieJourneyUtils")
+local QuestieJourneyUtils = QuestieSmazakLoader:CreateModule("QuestieJourneyUtils")
 
 ---@type QuestieDB
-local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
 ---@type QuestieLib
-local QuestieLib = QuestieLoader:ImportModule("QuestieLib")
+local QuestieLib = QuestieSmazakLoader:ImportModule("QuestieLib")
 ---@type WrappedText
-local WrappedText = QuestieLoader:ImportModule("WrappedText")
+local WrappedText = QuestieSmazakLoader:ImportModule("WrappedText")
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 ---@type HandleSetHyperlink
-local HandleSetHyperlink = QuestieLoader:ImportModule("HandleSetHyperlink")
+local HandleSetHyperlink = QuestieSmazakLoader:ImportModule("HandleSetHyperlink")
 
 local GetItemInfo = QuestieCompat.GetItemInfo
 local GetItemIcon = QuestieCompat.GetItemIcon
@@ -83,7 +83,7 @@ function QuestieJourneyUtils.CreateObjectiveText(desc)
             objText = objText .. tostring(desc) .. "\n"
         end
     else
-        objText = Questie:Colorize(l10n('This quest is an automatic completion quest and does not contain an objective.'), 'yellow')
+        objText = QuestieSmazak:Colorize(l10n('This quest is an automatic completion quest and does not contain an objective.'), 'yellow')
     end
 
     return objText
@@ -96,7 +96,7 @@ function QuestieJourneyUtils.ShowJourneyTooltip(self)
 
     local id = tonumber(self:GetUserData('id'))
     local type = self:GetUserData('type')
-    GameTooltip:SetOwner(_G["QuestieJourneyFrame"].frame:GetParent(), "ANCHOR_CURSOR")
+    GameTooltip:SetOwner(_G["QuestieSmazakJourneyFrame"].frame:GetParent(), "ANCHOR_CURSOR")
     if type == "quest" then
         local quest = QuestieDB.GetQuest(id)
         GameTooltip:AddLine("["..quest.level.."] "..quest.name.." ("..id..")")
@@ -136,7 +136,7 @@ function QuestieJourneyUtils.GetInteractiveQuestLabel(quest)
     local label = AceGUI:Create("InteractiveLabel")
     local questId = quest.Id
 
-    label:SetText(QuestieLib:GetColoredQuestName(questId, Questie.db.profile.enableTooltipsQuestLevel, false))
+    label:SetText(QuestieLib:GetColoredQuestName(questId, QuestieSmazak.db.profile.enableTooltipsQuestLevel, false))
     label:SetUserData('id', questId)
     label:SetUserData('type', 'quest')
     label:SetUserData('name', quest.name)

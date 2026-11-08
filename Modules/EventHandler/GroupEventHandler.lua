@@ -1,16 +1,16 @@
 ---@class GroupEventHandler
-local GroupEventHandler = QuestieLoader:CreateModule("GroupEventHandler")
+local GroupEventHandler = QuestieSmazakLoader:CreateModule("GroupEventHandler")
 
 ---@type QuestiePlayer
-local QuestiePlayer = QuestieLoader:ImportModule("QuestiePlayer")
+local QuestiePlayer = QuestieSmazakLoader:ImportModule("QuestiePlayer")
 ---@type QuestieComms
-local QuestieComms = QuestieLoader:ImportModule("QuestieComms")
+local QuestieComms = QuestieSmazakLoader:ImportModule("QuestieComms")
 ---@type CommsVisibility
-local CommsVisibility = QuestieLoader:ImportModule("CommsVisibility")
+local CommsVisibility = QuestieSmazakLoader:ImportModule("CommsVisibility")
 ---@type QuestiePartyObjectives
-local QuestiePartyObjectives = QuestieLoader:ImportModule("QuestiePartyObjectives")
+local QuestiePartyObjectives = QuestieSmazakLoader:ImportModule("QuestiePartyObjectives")
 ---@type DailyQuestComms
-local DailyQuestComms = QuestieLoader:ImportModule("DailyQuestComms")
+local DailyQuestComms = QuestieSmazakLoader:ImportModule("DailyQuestComms")
 
 -- Snapshot of online/offline state for party members who have shared quests, used to decide
 -- whether a GROUP_ROSTER_UPDATE actually requires a party-objective redraw.
@@ -64,7 +64,7 @@ function GroupEventHandler.GroupRosterUpdate()
 end
 
 function GroupEventHandler.GroupJoined()
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[EVENT] GROUP_JOINED")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[EVENT] GROUP_JOINED")
     local checkTimer
     --We want this to be fairly quick.
     checkTimer = C_Timer.NewTicker(0.2, function()
@@ -73,16 +73,16 @@ function GroupEventHandler.GroupJoined()
         local isInRaid = UnitInRaid("raid1")
         if partyPending then
             if (isInParty or isInRaid) then
-                Questie.Debug(Questie.DEBUG_DEVELOP, "[EventHandler] Player joined party/raid, ask for questlogs")
+                QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[EventHandler] Player joined party/raid, ask for questlogs")
                 CommsVisibility:ScheduleSnapshot("GROUP_JOINED")
                 --Request other players log.
-                Questie:SendMessage("QC_ID_REQUEST_FULL_QUESTLIST")
+                QuestieSmazak:SendMessage("QC_ID_REQUEST_FULL_QUESTLIST")
                 -- Ask for unavailable daily quests, only in the current party/raid, not the guild.
                 DailyQuestComms.RequestUnavailableDailyQuests(false)
                 checkTimer:Cancel()
             end
         else
-            Questie.Debug(Questie.DEBUG_DEVELOP, "[EventHandler] Player no longer in a party or pending invite. Cancel timer")
+            QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[EventHandler] Player no longer in a party or pending invite. Cancel timer")
             checkTimer:Cancel()
         end
     end)

@@ -1,14 +1,14 @@
 -- Originally extracted verbatim from Database/Corrections/classicNPCFixes.lua
--- at Questie commit ba0f5acd63cbeb8e5affc5d1990b0d1ee276cd57.
--- Questie keeps this data because Darkmoon location selection is Questie runtime policy.
+-- at QuestieSmazak commit ba0f5acd63cbeb8e5affc5d1990b0d1ee276cd57.
+-- QuestieSmazak keeps this data because Darkmoon location selection is QuestieSmazak runtime policy.
 
 ---@class QuestieClassicPolicyCorrections
-local QuestieClassicPolicyCorrections = QuestieLoader:CreateModule("QuestieClassicPolicyCorrections")
+local QuestieClassicPolicyCorrections = QuestieSmazakLoader:CreateModule("QuestieClassicPolicyCorrections")
 
 ---@type QuestieDB
-local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
 ---@type ZoneDB
-local ZoneDB = QuestieLoader:ImportModule("ZoneDB")
+local ZoneDB = QuestieSmazakLoader:ImportModule("ZoneDB")
 
 ---Darkmoon Faire NPC rows for the `Npc:DarkmoonFaire` slot: every faire NPC placed in Mulgore or
 ---in Elwynn Forest, whichever the calendar selected.

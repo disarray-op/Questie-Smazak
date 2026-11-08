@@ -1,71 +1,71 @@
 ---@type QuestieCompat
-local QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+local QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
 
 ---@class EventHandler
-local EventHandler = QuestieLoader:CreateModule("EventHandler")
+local EventHandler = QuestieSmazakLoader:CreateModule("EventHandler")
 local _EventHandler = {}
 
 -------------------------
 --Import modules.
 -------------------------
 ---@type Expansions
-local Expansions = QuestieLoader:ImportModule("Expansions")
+local Expansions = QuestieSmazakLoader:ImportModule("Expansions")
 ---@type QuestEventHandler
-local QuestEventHandler = QuestieLoader:ImportModule("QuestEventHandler")
+local QuestEventHandler = QuestieSmazakLoader:ImportModule("QuestEventHandler")
 ---@type QuestLogCache
-local QuestLogCache = QuestieLoader:ImportModule("QuestLogCache")
+local QuestLogCache = QuestieSmazakLoader:ImportModule("QuestLogCache")
 ---@type AchievementEventHandler
-local AchievementEventHandler = QuestieLoader:ImportModule("AchievementEventHandler")
+local AchievementEventHandler = QuestieSmazakLoader:ImportModule("AchievementEventHandler")
 ---@type GroupEventHandler
-local GroupEventHandler = QuestieLoader:ImportModule("GroupEventHandler")
+local GroupEventHandler = QuestieSmazakLoader:ImportModule("GroupEventHandler")
 ---@type QuestieJourney
-local QuestieJourney = QuestieLoader:ImportModule("QuestieJourney")
+local QuestieJourney = QuestieSmazakLoader:ImportModule("QuestieJourney")
 ---@type QuestieProfessions
-local QuestieProfessions = QuestieLoader:ImportModule("QuestieProfessions")
+local QuestieProfessions = QuestieSmazakLoader:ImportModule("QuestieProfessions")
 ---@type QuestieTracker
-local QuestieTracker = QuestieLoader:ImportModule("QuestieTracker")
+local QuestieTracker = QuestieSmazakLoader:ImportModule("QuestieTracker")
 ---@type TrackerBaseFrame
-local TrackerBaseFrame = QuestieLoader:ImportModule("TrackerBaseFrame")
+local TrackerBaseFrame = QuestieSmazakLoader:ImportModule("TrackerBaseFrame")
 ---@type TrackerQuestFrame
-local TrackerQuestFrame = QuestieLoader:ImportModule("TrackerQuestFrame")
+local TrackerQuestFrame = QuestieSmazakLoader:ImportModule("TrackerQuestFrame")
 ---@type TrackerRecipes
-local TrackerRecipes = QuestieLoader:ImportModule("TrackerRecipes")
+local TrackerRecipes = QuestieSmazakLoader:ImportModule("TrackerRecipes")
 ---@type TrackerUtils
-local TrackerUtils = QuestieLoader:ImportModule("TrackerUtils")
+local TrackerUtils = QuestieSmazakLoader:ImportModule("TrackerUtils")
 ---@type TrackerSuperTrack
-local TrackerSuperTrack = QuestieLoader:ImportModule("TrackerSuperTrack")
+local TrackerSuperTrack = QuestieSmazakLoader:ImportModule("TrackerSuperTrack")
 ---@type QuestieReputation
-local QuestieReputation = QuestieLoader:ImportModule("QuestieReputation")
+local QuestieReputation = QuestieSmazakLoader:ImportModule("QuestieReputation")
 ---@type QuestieNameplate
-local QuestieNameplate = QuestieLoader:ImportModule("QuestieNameplate")
+local QuestieNameplate = QuestieSmazakLoader:ImportModule("QuestieNameplate")
 ---@type QuestieMap
-local QuestieMap = QuestieLoader:ImportModule("QuestieMap")
+local QuestieMap = QuestieSmazakLoader:ImportModule("QuestieMap")
 ---@type QuestiePlayer
-local QuestiePlayer = QuestieLoader:ImportModule("QuestiePlayer")
+local QuestiePlayer = QuestieSmazakLoader:ImportModule("QuestiePlayer")
 ---@type AutoQuesting
-local AutoQuesting = QuestieLoader:ImportModule("AutoQuesting")
+local AutoQuesting = QuestieSmazakLoader:ImportModule("AutoQuesting")
 ---@type QuestieAnnounce
-local QuestieAnnounce = QuestieLoader:ImportModule("QuestieAnnounce")
+local QuestieAnnounce = QuestieSmazakLoader:ImportModule("QuestieAnnounce")
 ---@type QuestieCombatQueue
-local QuestieCombatQueue = QuestieLoader:ImportModule("QuestieCombatQueue")
+local QuestieCombatQueue = QuestieSmazakLoader:ImportModule("QuestieCombatQueue")
 ---@type QuestieInit
-local QuestieInit = QuestieLoader:ImportModule("QuestieInit")
+local QuestieInit = QuestieSmazakLoader:ImportModule("QuestieInit")
 ---@type MinimapIcon
-local MinimapIcon = QuestieLoader:ImportModule("MinimapIcon")
+local MinimapIcon = QuestieSmazakLoader:ImportModule("MinimapIcon")
 ---@type QuestgiverFrame
-local QuestgiverFrame = QuestieLoader:ImportModule("QuestgiverFrame")
+local QuestgiverFrame = QuestieSmazakLoader:ImportModule("QuestgiverFrame")
 ---@type QuestieDebugOffer
-local QuestieDebugOffer = QuestieLoader:ImportModule("QuestieDebugOffer")
+local QuestieDebugOffer = QuestieSmazakLoader:ImportModule("QuestieDebugOffer")
 ---@type AvailableQuests
-local AvailableQuests = QuestieLoader:ImportModule("AvailableQuests")
+local AvailableQuests = QuestieSmazakLoader:ImportModule("AvailableQuests")
 ---@type QuestieMenu
-local QuestieMenu = QuestieLoader:ImportModule("QuestieMenu")
+local QuestieMenu = QuestieSmazakLoader:ImportModule("QuestieMenu")
 ---@type WatchFrameHook
-local WatchFrameHook = QuestieLoader:ImportModule("WatchFrameHook")
+local WatchFrameHook = QuestieSmazakLoader:ImportModule("WatchFrameHook")
 ---@type AutoCompleteFrame
-local AutoCompleteFrame = QuestieLoader:ImportModule("AutoCompleteFrame")
+local AutoCompleteFrame = QuestieSmazakLoader:ImportModule("AutoCompleteFrame")
 ---@type QuestieOptionsEngine
-local QuestieOptionsEngine = QuestieLoader:ImportModule("QuestieOptionsEngine")
+local QuestieOptionsEngine = QuestieSmazakLoader:ImportModule("QuestieOptionsEngine")
 
 local questAcceptedMessage = string.gsub(ERR_QUEST_ACCEPTED_S, "(%%s)", "(.+)")
 local questCompletedMessage = string.gsub(ERR_QUEST_COMPLETE_S, "(%%s)", "(.+)")
@@ -74,11 +74,11 @@ local questCompletedMessage = string.gsub(ERR_QUEST_COMPLETE_S, "(%%s)", "(.+)")
 local FACTION_STANDING_CHANGED_PATTERN
 
 function EventHandler:RegisterEarlyEvents()
-    Questie:RegisterEvent("PLAYER_LOGIN", _EventHandler.PlayerLogin)
+    QuestieSmazak:RegisterEvent("PLAYER_LOGIN", _EventHandler.PlayerLogin)
 
     local questPOIHandled = false
-    Questie:RegisterEvent("PLAYER_ENTERING_WORLD", function(event, isInitialLogin, isReloadingUi)
-        Questie.Debug(Questie.DEBUG_DEVELOP, "[EVENT] PLAYER_ENTERING_WORLD")
+    QuestieSmazak:RegisterEvent("PLAYER_ENTERING_WORLD", function(event, isInitialLogin, isReloadingUi)
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[EVENT] PLAYER_ENTERING_WORLD")
         if not questPOIHandled then
             if GetCVar("questPOI") == "0" and WorldMapFrame:IsShown() then
                 -- We need to manually hide the map, because having questPOI set to 0 will open it on login, thanks to Blizzard.
@@ -98,16 +98,16 @@ function EventHandler:RegisterEarlyEvents()
 end
 
 function EventHandler:RegisterLateEvents()
-    Questie:RegisterEvent("PLAYER_LEVEL_UP", _EventHandler.PlayerLevelUp)
-    Questie:RegisterEvent("PLAYER_REGEN_DISABLED", _EventHandler.PlayerRegenDisabled)
-    Questie:RegisterEvent("PLAYER_REGEN_ENABLED", _EventHandler.PlayerRegenEnabled)
+    QuestieSmazak:RegisterEvent("PLAYER_LEVEL_UP", _EventHandler.PlayerLevelUp)
+    QuestieSmazak:RegisterEvent("PLAYER_REGEN_DISABLED", _EventHandler.PlayerRegenDisabled)
+    QuestieSmazak:RegisterEvent("PLAYER_REGEN_ENABLED", _EventHandler.PlayerRegenEnabled)
 
     -- Miscellaneous Events
-    Questie:RegisterEvent("MAP_EXPLORATION_UPDATED", _EventHandler.MapExplorationUpdated)
-    Questie:RegisterEvent("MODIFIER_STATE_CHANGED", function(...)
+    QuestieSmazak:RegisterEvent("MAP_EXPLORATION_UPDATED", _EventHandler.MapExplorationUpdated)
+    QuestieSmazak:RegisterEvent("MODIFIER_STATE_CHANGED", function(...)
         _EventHandler.ModifierStateChanged(...)
     end)
-    Questie:RegisterEvent("PLAYER_ALIVE", function(...)
+    QuestieSmazak:RegisterEvent("PLAYER_ALIVE", function(...)
         QuestieTracker:UpdateDurabilityFrame()
         QuestieTracker:UpdateVoiceOverFrame()
 
@@ -120,35 +120,35 @@ function EventHandler:RegisterLateEvents()
     -- Events to update a players professions and reputations
     -- Skill chat can be secret; batch refreshes without retaining the chat arguments.
     local skillUpdatePending = false
-    Questie:RegisterEvent("CHAT_MSG_SKILL", function()
+    QuestieSmazak:RegisterEvent("CHAT_MSG_SKILL", function()
         if skillUpdatePending then
             return
         end
 
         skillUpdatePending = true
-        Questie:ScheduleTimer(function()
+        QuestieSmazak:ScheduleTimer(function()
             skillUpdatePending = false
             _EventHandler.ChatMsgSkill()
         end, 2)
     end)
     -- Learning or unlearning a profession need not print CHAT_MSG_SKILL
-    Questie:RegisterBucketEvent("SKILL_LINES_CHANGED", 2, _EventHandler.ChatMsgSkill)
-    Questie:RegisterBucketEvent("CHAT_MSG_COMBAT_FACTION_CHANGE", 2, function()
+    QuestieSmazak:RegisterBucketEvent("SKILL_LINES_CHANGED", 2, _EventHandler.ChatMsgSkill)
+    QuestieSmazak:RegisterBucketEvent("CHAT_MSG_COMBAT_FACTION_CHANGE", 2, function()
         QuestEventHandler.ReputationChange()
         _EventHandler:ChatMsgCompatFactionChange()
     end)
-    Questie:RegisterEvent("CHAT_MSG_SYSTEM", _EventHandler.ChatMsgSystem)
+    QuestieSmazak:RegisterEvent("CHAT_MSG_SYSTEM", _EventHandler.ChatMsgSystem)
 
     -- Spell objectives
-    Questie:RegisterEvent("NEW_RECIPE_LEARNED", function() -- Needed for some spells that don't necessarily appear in the spellbook, but are definitely spells
-        Questie.Debug(Questie.DEBUG_DEVELOP, "[EVENT] NEW_RECIPE_LEARNED")
+    QuestieSmazak:RegisterEvent("NEW_RECIPE_LEARNED", function() -- Needed for some spells that don't necessarily appear in the spellbook, but are definitely spells
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[EVENT] NEW_RECIPE_LEARNED")
         QuestEventHandler.NewRecipeLearned()
         AvailableQuests.CalculateAndDrawAll()
     end)
 
     -- UI Quest Events
-    Questie:RegisterEvent("UI_INFO_MESSAGE", _EventHandler.UiInfoMessage)
-    Questie:RegisterEvent("QUEST_FINISHED", function()
+    QuestieSmazak:RegisterEvent("UI_INFO_MESSAGE", _EventHandler.UiInfoMessage)
+    QuestieSmazak:RegisterEvent("QUEST_FINISHED", function()
         AutoQuesting.OnQuestFinished()
         if Expansions.Current >= Expansions.Cata then
             -- There might be other quest events which need to finish first, so we wait a bit before checking.
@@ -158,92 +158,92 @@ function EventHandler:RegisterLateEvents()
             end)
         end
     end)
-    Questie:RegisterEvent("QUEST_ACCEPTED", function(_, questLogIndex, questId)
-        if Questie.IsForever then
+    QuestieSmazak:RegisterEvent("QUEST_ACCEPTED", function(_, questLogIndex, questId)
+        if QuestieSmazak.IsForever then
             -- Forever sends only the quest ID; Classic sends the log index followed by the ID.
             questId = questLogIndex
             questLogIndex = QuestieCompat.GetQuestLogIndexByID(questId)
         end
         QuestEventHandler.QuestAccepted(questLogIndex, questId)
     end)
-    Questie:RegisterEvent("QUEST_DETAIL", function() -- When the quest is presented!
+    QuestieSmazak:RegisterEvent("QUEST_DETAIL", function() -- When the quest is presented!
         AvailableQuests.ValidateAvailableQuestsFromQuestDetail()
         AutoQuesting.OnQuestDetail()
-        if Questie.IsSoD or Questie.db.profile.enableBugHintsForAllFlavors then
+        if QuestieSmazak.IsSoD or QuestieSmazak.db.profile.enableBugHintsForAllFlavors then
             QuestieDebugOffer.QuestDialog()
         end
     end)
-    Questie:RegisterEvent("QUEST_PROGRESS", AutoQuesting.OnQuestProgress)
-    Questie:RegisterEvent("GOSSIP_SHOW", function()
+    QuestieSmazak:RegisterEvent("QUEST_PROGRESS", AutoQuesting.OnQuestProgress)
+    QuestieSmazak:RegisterEvent("GOSSIP_SHOW", function()
         AvailableQuests.ValidateAvailableQuestsFromGossipShow()
         AutoQuesting.OnGossipShow()
         QuestgiverFrame.GossipMark()
     end)
-    Questie:RegisterEvent("QUEST_GREETING", function()
+    QuestieSmazak:RegisterEvent("QUEST_GREETING", function()
         AvailableQuests.ValidateAvailableQuestsFromQuestGreeting()
         AutoQuesting.OnQuestGreeting()
         QuestgiverFrame.GreetingMark()
     end)
-    Questie:RegisterEvent("QUEST_ACCEPT_CONFIRM", AutoQuesting.OnQuestAcceptConfirm) -- If an escort quest is taken by people close by
-    Questie:RegisterEvent("GOSSIP_CLOSED", function() -- Called twice when the stopping to talk to an NPC
+    QuestieSmazak:RegisterEvent("QUEST_ACCEPT_CONFIRM", AutoQuesting.OnQuestAcceptConfirm) -- If an escort quest is taken by people close by
+    QuestieSmazak:RegisterEvent("GOSSIP_CLOSED", function() -- Called twice when the stopping to talk to an NPC
         AutoQuesting.OnGossipClosed()
     end)
-    Questie:RegisterEvent("QUEST_COMPLETE", function() -- When complete window shows
+    QuestieSmazak:RegisterEvent("QUEST_COMPLETE", function() -- When complete window shows
         AutoQuesting.OnQuestComplete()
-        if Questie.IsSoD or Questie.db.profile.enableBugHintsForAllFlavors then
+        if QuestieSmazak.IsSoD or QuestieSmazak.db.profile.enableBugHintsForAllFlavors then
             QuestieDebugOffer.QuestDialog()
         end
     end)
-    Questie:RegisterEvent("QUEST_REMOVED", function(_, questId) QuestEventHandler.QuestRemoved(questId) end)
-    Questie:RegisterEvent("QUEST_TURNED_IN", function(_, questId, xpReward, moneyReward) QuestEventHandler.QuestTurnedIn(questId, xpReward, moneyReward) end)
-    Questie:RegisterEvent("QUEST_LOG_UPDATE", function()
+    QuestieSmazak:RegisterEvent("QUEST_REMOVED", function(_, questId) QuestEventHandler.QuestRemoved(questId) end)
+    QuestieSmazak:RegisterEvent("QUEST_TURNED_IN", function(_, questId, xpReward, moneyReward) QuestEventHandler.QuestTurnedIn(questId, xpReward, moneyReward) end)
+    QuestieSmazak:RegisterEvent("QUEST_LOG_UPDATE", function()
         QuestEventHandler.QuestLogUpdate()
         QuestgiverFrame.RecheckGreeting()
         QuestgiverFrame.RecheckGossip()
     end)
-    Questie:RegisterEvent("QUEST_WATCH_UPDATE", function(_, questId) QuestEventHandler.QuestWatchUpdate(questId) end)
+    QuestieSmazak:RegisterEvent("QUEST_WATCH_UPDATE", function(_, questId) QuestEventHandler.QuestWatchUpdate(questId) end)
     if QuestieCompat.IsSuperTrackingSupported() then
-        Questie:RegisterEvent("SUPER_TRACKING_CHANGED", TrackerSuperTrack.OnSuperTrackingChanged)
+        QuestieSmazak:RegisterEvent("SUPER_TRACKING_CHANGED", TrackerSuperTrack.OnSuperTrackingChanged)
     end
-    Questie:RegisterEvent("QUEST_AUTOCOMPLETE", function(_, questId) QuestEventHandler.QuestAutoComplete(questId) end)
-    Questie:RegisterEvent("UNIT_QUEST_LOG_CHANGED", function(_, unitTarget) QuestEventHandler.UnitQuestLogChanged(unitTarget) end)
-    Questie:RegisterEvent("CURRENCY_DISPLAY_UPDATE", function(...)
+    QuestieSmazak:RegisterEvent("QUEST_AUTOCOMPLETE", function(_, questId) QuestEventHandler.QuestAutoComplete(questId) end)
+    QuestieSmazak:RegisterEvent("UNIT_QUEST_LOG_CHANGED", function(_, unitTarget) QuestEventHandler.UnitQuestLogChanged(unitTarget) end)
+    QuestieSmazak:RegisterEvent("CURRENCY_DISPLAY_UPDATE", function(...)
         QuestEventHandler.CurrencyDisplayUpdate(...)
         if TrackerRecipes.HasCurrencyReagents() then
             _EventHandler.UpdateTracker()
         end
     end)
-    Questie:RegisterEvent("CRITERIA_UPDATE", QuestEventHandler.CriteriaUpdate)
-    Questie:RegisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_HIDE", function(_, eventType) QuestEventHandler.PlayerInteractionManagerFrameHide(eventType) end)
+    QuestieSmazak:RegisterEvent("CRITERIA_UPDATE", QuestEventHandler.CriteriaUpdate)
+    QuestieSmazak:RegisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_HIDE", function(_, eventType) QuestEventHandler.PlayerInteractionManagerFrameHide(eventType) end)
 
     -- The client's quest data is stale from PLAYER_LEAVING_WORLD on, and whether LOADING_SCREEN_ENABLED comes before
     -- or after it is not known: either one protects the cache.
-    Questie:RegisterEvent("PLAYER_LEAVING_WORLD", function()
+    QuestieSmazak:RegisterEvent("PLAYER_LEAVING_WORLD", function()
         QuestLogCache.OnLoadingScreenEnabled()
     end)
-    Questie:RegisterEvent("LOADING_SCREEN_ENABLED", function()
+    QuestieSmazak:RegisterEvent("LOADING_SCREEN_ENABLED", function()
         QuestLogCache.OnLoadingScreenEnabled()
     end)
 
-    Questie:RegisterEvent("ZONE_CHANGED_NEW_AREA", function()
-        Questie.Debug(Questie.DEBUG_DEVELOP, "[EVENT] ZONE_CHANGED_NEW_AREA")
+    QuestieSmazak:RegisterEvent("ZONE_CHANGED_NEW_AREA", function()
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[EVENT] ZONE_CHANGED_NEW_AREA")
         QuestieTracker.HandleZoneChanged()
     end)
 
     -- Pet Battle Events (MoP onwards)
     if Expansions.Current >= Expansions.MoP then
-        Questie:RegisterEvent("PET_BATTLE_OPENING_START", function()
-            Questie.Debug(Questie.DEBUG_DEVELOP, "[EVENT] PET_BATTLE_OPENING_START")
-            if Questie.db.profile.trackerEnabled and Questie.db.profile.hideTrackerInPetBattles then
+        QuestieSmazak:RegisterEvent("PET_BATTLE_OPENING_START", function()
+            QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[EVENT] PET_BATTLE_OPENING_START")
+            if QuestieSmazak.db.profile.trackerEnabled and QuestieSmazak.db.profile.hideTrackerInPetBattles then
                 QuestieCombatQueue:Queue(function()
                     QuestieTracker:Hide()
                 end)
             end
         end)
 
-        Questie:RegisterEvent("PET_BATTLE_CLOSE", function()
-            Questie.Debug(Questie.DEBUG_DEVELOP, "[EVENT] PET_BATTLE_CLOSE")
-            if Questie.db.profile.trackerEnabled and Questie.db.profile.hideTrackerInPetBattles then
+        QuestieSmazak:RegisterEvent("PET_BATTLE_CLOSE", function()
+            QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[EVENT] PET_BATTLE_CLOSE")
+            if QuestieSmazak.db.profile.trackerEnabled and QuestieSmazak.db.profile.hideTrackerInPetBattles then
                 QuestieCombatQueue:Queue(function()
                     QuestieTracker:Show()
                 end)
@@ -251,20 +251,20 @@ function EventHandler:RegisterLateEvents()
         end)
 
         -- Additional pet battle events to handle edge cases
-        Questie:RegisterEvent("PET_BATTLE_PET_CHANGED", function()
-            Questie.Debug(Questie.DEBUG_DEVELOP, "[EVENT] PET_BATTLE_PET_CHANGED")
+        QuestieSmazak:RegisterEvent("PET_BATTLE_PET_CHANGED", function()
+            QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[EVENT] PET_BATTLE_PET_CHANGED")
             -- Ensure tracker stays hidden during pet changes/deaths
-            if Questie.db.profile.trackerEnabled and Questie.db.profile.hideTrackerInPetBattles and C_PetBattles and C_PetBattles.IsInBattle() then
+            if QuestieSmazak.db.profile.trackerEnabled and QuestieSmazak.db.profile.hideTrackerInPetBattles and C_PetBattles and C_PetBattles.IsInBattle() then
                 QuestieCombatQueue:Queue(function()
                     QuestieTracker:Hide()
                 end)
             end
         end)
 
-        Questie:RegisterEvent("PET_BATTLE_PET_ROUND_PLAYBACK_COMPLETE", function()
-            Questie.Debug(Questie.DEBUG_DEVELOP, "[EVENT] PET_BATTLE_PET_ROUND_PLAYBACK_COMPLETE")
+        QuestieSmazak:RegisterEvent("PET_BATTLE_PET_ROUND_PLAYBACK_COMPLETE", function()
+            QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[EVENT] PET_BATTLE_PET_ROUND_PLAYBACK_COMPLETE")
             -- Ensure tracker stays hidden during battle round transitions
-            if Questie.db.profile.trackerEnabled and Questie.db.profile.hideTrackerInPetBattles and C_PetBattles and C_PetBattles.IsInBattle() then
+            if QuestieSmazak.db.profile.trackerEnabled and QuestieSmazak.db.profile.hideTrackerInPetBattles and C_PetBattles and C_PetBattles.IsInBattle() then
                 QuestieCombatQueue:Queue(function()
                     QuestieTracker:Hide()
                 end)
@@ -273,33 +273,33 @@ function EventHandler:RegisterLateEvents()
     end
 
     -- UI Achievement Events
-    if Expansions.Current >= Expansions.Wotlk and Questie.db.profile.trackerEnabled then
-        Questie:RegisterEvent("ACHIEVEMENT_EARNED", AchievementEventHandler.AchievementEarned)
+    if Expansions.Current >= Expansions.Wotlk and QuestieSmazak.db.profile.trackerEnabled then
+        QuestieSmazak:RegisterEvent("ACHIEVEMENT_EARNED", AchievementEventHandler.AchievementEarned)
 
-        Questie:RegisterEvent("TRACKED_ACHIEVEMENT_UPDATE", AchievementEventHandler.TrackedAchievementUpdate)
-        Questie:RegisterEvent("TRACKED_ACHIEVEMENT_LIST_CHANGED", function(_, achievementId)
+        QuestieSmazak:RegisterEvent("TRACKED_ACHIEVEMENT_UPDATE", AchievementEventHandler.TrackedAchievementUpdate)
+        QuestieSmazak:RegisterEvent("TRACKED_ACHIEVEMENT_LIST_CHANGED", function(_, achievementId)
             AchievementEventHandler.TrackedAchievementListChanged(achievementId)
         end)
 
         -- This fires pretty often, multiple times for a single Achievement change and also for things most likely not related to Achievements at all.
         -- We use a bucket to hinder this from spamming
-        Questie:RegisterBucketEvent("CRITERIA_UPDATE", 2, AchievementEventHandler.CriteriaUpdate)
+        QuestieSmazak:RegisterBucketEvent("CRITERIA_UPDATE", 2, AchievementEventHandler.CriteriaUpdate)
 
-        Questie:RegisterEvent("CHAT_MSG_MONEY", AchievementEventHandler.ChatMsgMoney)
-        Questie:RegisterEvent("CHAT_MSG_TEXT_EMOTE", AchievementEventHandler.ChatMsgTextEmote)
-        Questie:RegisterEvent("PLAYER_EQUIPMENT_CHANGED", AchievementEventHandler.PlayerEquipmentChanged)
+        QuestieSmazak:RegisterEvent("CHAT_MSG_MONEY", AchievementEventHandler.ChatMsgMoney)
+        QuestieSmazak:RegisterEvent("CHAT_MSG_TEXT_EMOTE", AchievementEventHandler.ChatMsgTextEmote)
+        QuestieSmazak:RegisterEvent("PLAYER_EQUIPMENT_CHANGED", AchievementEventHandler.PlayerEquipmentChanged)
     end
 
     if TrackerRecipes.IsSupported() then
-        Questie:RegisterEvent("TRACKED_RECIPE_UPDATE", _EventHandler.UpdateTracker)
+        QuestieSmazak:RegisterEvent("TRACKED_RECIPE_UPDATE", _EventHandler.UpdateTracker)
         -- A bucket, because QuestieTracker temporarily registers BAG_UPDATE_DELAYED as a plain event for quest items
-        Questie:RegisterBucketEvent("BAG_UPDATE_DELAYED", 0.5, function()
+        QuestieSmazak:RegisterBucketEvent("BAG_UPDATE_DELAYED", 0.5, function()
             if TrackerRecipes.HasTrackedRecipes() then
                 _EventHandler.UpdateTracker()
             end
         end)
         -- C_Item.RequestLoadItemDataByID answers with ITEM_DATA_LOAD_RESULT, not GET_ITEM_INFO_RECEIVED
-        Questie:RegisterEvent("ITEM_DATA_LOAD_RESULT", function(_, itemId, success)
+        QuestieSmazak:RegisterEvent("ITEM_DATA_LOAD_RESULT", function(_, itemId, success)
             if success and TrackerRecipes.OnItemInfoReceived(itemId) then
                 _EventHandler.UpdateTracker()
             end
@@ -308,20 +308,20 @@ function EventHandler:RegisterLateEvents()
 
     if Expansions.Current >= Expansions.MoP then
         -- Challenge Mode and Scenario Events
-        Questie:RegisterEvent("CHALLENGE_MODE_START", function()
-            Questie.Debug(Questie.DEBUG_DEVELOP, "[EVENT] CHALLENGE_MODE_START")
+        QuestieSmazak:RegisterEvent("CHALLENGE_MODE_START", function()
+            QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[EVENT] CHALLENGE_MODE_START")
             QuestieTracker:Update() -- Update the Tracker right away, because players are not infight on start
         end)
 
-        Questie:RegisterEvent("CHALLENGE_MODE_RESET", function()
-            Questie.Debug(Questie.DEBUG_DEVELOP, "[EVENT] CHALLENGE_MODE_RESET")
+        QuestieSmazak:RegisterEvent("CHALLENGE_MODE_RESET", function()
+            QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[EVENT] CHALLENGE_MODE_RESET")
             QuestieCombatQueue:Queue(function()
                 QuestieTracker:Update()
             end)
         end)
 
-        Questie:RegisterEvent("SCENARIO_CRITERIA_UPDATE", function(_, criteriaIndex)
-            Questie.Debug(Questie.DEBUG_DEVELOP, "[EVENT] SCENARIO_CRITERIA_UPDATE")
+        QuestieSmazak:RegisterEvent("SCENARIO_CRITERIA_UPDATE", function(_, criteriaIndex)
+            QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[EVENT] SCENARIO_CRITERIA_UPDATE")
             QuestieTracker.UpdateScenarioLines(criteriaIndex)
             QuestieTracker.UpdateScenarioLines(0) -- Always update 0 index, because that is the trash count
             QuestieCombatQueue:Queue(function()
@@ -329,39 +329,39 @@ function EventHandler:RegisterLateEvents()
             end)
         end)
 
-        Questie:RegisterEvent("SCENARIO_UPDATE", function()
-            Questie.Debug(Questie.DEBUG_DEVELOP, "[EVENT] SCENARIO_UPDATE")
+        QuestieSmazak:RegisterEvent("SCENARIO_UPDATE", function()
+            QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[EVENT] SCENARIO_UPDATE")
             QuestieCombatQueue:Queue(function()
                 QuestieTracker:Update()
             end)
         end)
 
-        Questie:RegisterEvent("SCENARIO_POI_UPDATE", function()
-            Questie.Debug(Questie.DEBUG_DEVELOP, "[EVENT] SCENARIO_POI_UPDATE")
+        QuestieSmazak:RegisterEvent("SCENARIO_POI_UPDATE", function()
+            QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[EVENT] SCENARIO_POI_UPDATE")
             QuestieCombatQueue:Queue(function()
                 QuestieTracker:Update()
             end)
         end)
     end
 
-    -- Questie Debug Offer
-    if Questie.IsSoD or Questie.db.profile.enableBugHintsForAllFlavors then
-        Questie:RegisterEvent("LOOT_OPENED", QuestieDebugOffer.LootWindow)
+    -- QuestieSmazak Debug Offer
+    if QuestieSmazak.IsSoD or QuestieSmazak.db.profile.enableBugHintsForAllFlavors then
+        QuestieSmazak:RegisterEvent("LOOT_OPENED", QuestieDebugOffer.LootWindow)
     end
 
-    if Expansions.Current >= Expansions.Cata and Questie.db.profile.trackerEnabled then
+    if Expansions.Current >= Expansions.Cata and QuestieSmazak.db.profile.trackerEnabled then
         -- This is fired pretty often when an auto complete quest frame is showing. We want the default one to be hidden though.
-        Questie:RegisterEvent("UPDATE_ALL_UI_WIDGETS", function()
+        QuestieSmazak:RegisterEvent("UPDATE_ALL_UI_WIDGETS", function()
             QuestieCombatQueue:Queue(WatchFrameHook.Hide)
         end)
     end
 
-    -- Questie Comms Events
+    -- QuestieSmazak Comms Events
 
     -- Party join event for QuestieComms, Use bucket to hinder this from spamming (Ex someone using a raid invite addon etc)
-    Questie:RegisterBucketEvent("GROUP_ROSTER_UPDATE", 1, GroupEventHandler.GroupRosterUpdate)
-    Questie:RegisterEvent("GROUP_JOINED", GroupEventHandler.GroupJoined)
-    Questie:RegisterEvent("GROUP_LEFT", GroupEventHandler.GroupLeft)
+    QuestieSmazak:RegisterBucketEvent("GROUP_ROSTER_UPDATE", 1, GroupEventHandler.GroupRosterUpdate)
+    QuestieSmazak:RegisterEvent("GROUP_JOINED", GroupEventHandler.GroupJoined)
+    QuestieSmazak:RegisterEvent("GROUP_LEFT", GroupEventHandler.GroupLeft)
 
     -- On a /reload (or login) while already in a group, GROUP_JOINED does not fire, so request party quest logs now;
     -- otherwise we never receive party members' objectives until the group changes.
@@ -370,15 +370,15 @@ function EventHandler:RegisterLateEvents()
     end
 
     -- Nameplate / Target Frame Objective Events
-    Questie:RegisterEvent("NAME_PLATE_UNIT_ADDED", QuestieNameplate.NameplateCreated)
-    Questie:RegisterEvent("NAME_PLATE_UNIT_REMOVED", QuestieNameplate.NameplateDestroyed)
-    Questie:RegisterEvent("PLAYER_TARGET_CHANGED", function(...)
+    QuestieSmazak:RegisterEvent("NAME_PLATE_UNIT_ADDED", QuestieNameplate.NameplateCreated)
+    QuestieSmazak:RegisterEvent("NAME_PLATE_UNIT_REMOVED", QuestieNameplate.NameplateDestroyed)
+    QuestieSmazak:RegisterEvent("PLAYER_TARGET_CHANGED", function(...)
         QuestieNameplate:DrawTargetFrame()
-        --if Questie.IsSoD then QuestieDebugOffer.NPCTarget() end;
+        --if QuestieSmazak.IsSoD then QuestieDebugOffer.NPCTarget() end;
     end)
 
     -- quest announce
-    Questie:RegisterEvent("CHAT_MSG_LOOT", function(_, text, notPlayerName, _, _, playerName)
+    QuestieSmazak:RegisterEvent("CHAT_MSG_LOOT", function(_, text, notPlayerName, _, _, playerName)
         QuestieTracker.QuestItemLooted(_, text)
         QuestieAnnounce.ItemLooted(_, text, notPlayerName, _, _, playerName)
     end)
@@ -386,10 +386,10 @@ end
 
 function _EventHandler:PlayerLogin()
     -- Check config exists
-    if not Questie.db or not QuestieConfig then
-        -- Did you move Questie.db = LibStub("AceDB-3.0"):New("QuestieConfig",.......) out of Questie:OnInitialize() ?
-        Questie.Error("Config DB from saved variables is not loaded and initialized. Please report this issue on Questie github or discord.")
-        error("Config DB from saved variables is not loaded and initialized. Please report this issue on Questie github or discord.")
+    if not QuestieSmazak.db or not QuestieSmazakConfig then
+        -- Did you move QuestieSmazak.db = LibStub("AceDB-3.0"):New("QuestieSmazakConfig",.......) out of QuestieSmazak:OnInitialize() ?
+        QuestieSmazak.Error("Config DB from saved variables is not loaded and initialized. Please report this issue on QuestieSmazak github or discord.")
+        error("Config DB from saved variables is not loaded and initialized. Please report this issue on QuestieSmazak github or discord.")
         return
     end
 
@@ -435,12 +435,12 @@ function _EventHandler:PlayerLogin()
         --? Nothing worked :(
         if replaceCount and replaceCount < 1 then --- Error: Default to match EVERYTHING, because it's better that it works
             FACTION_STANDING_CHANGED_PATTERN = ".+"
-            Questie.Error("Something went wrong with the FACTION_STANDING_CHANGED_PATTERN!")
-            Questie.Error("FACTION_STANDING_CHANGED is set to " .. tostring(FACTION_STANDING_CHANGED) .. ", please report this on GitHub!")
+            QuestieSmazak.Error("Something went wrong with the FACTION_STANDING_CHANGED_PATTERN!")
+            QuestieSmazak.Error("FACTION_STANDING_CHANGED is set to " .. tostring(FACTION_STANDING_CHANGED) .. ", please report this on GitHub!")
         end
     end
 
-    -- Start real Questie init
+    -- Start real QuestieSmazak init
     QuestieInit:Init()
 end
 
@@ -489,8 +489,8 @@ end
 
 --- Fires on MAP_EXPLORATION_UPDATED.
 function _EventHandler:MapExplorationUpdated()
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[EVENT] MAP_EXPLORATION_UPDATED")
-    if Questie.db.profile.hideUnexploredMapIcons then
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[EVENT] MAP_EXPLORATION_UPDATED")
+    if QuestieSmazak.db.profile.hideUnexploredMapIcons then
         QuestieMap.utils.MapExplorationUpdate()
     end
 
@@ -505,7 +505,7 @@ end
 --- Fires when the player levels up
 ---@param level number
 function _EventHandler:PlayerLevelUp(level)
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[EVENT] PLAYER_LEVEL_UP", level)
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[EVENT] PLAYER_LEVEL_UP", level)
 
     QuestiePlayer:SetPlayerLevel(level)
     QuestieJourney:PlayerLevelUp(level)
@@ -527,7 +527,7 @@ function _EventHandler:ModifierStateChanged(key, down)
         -- cause our Tooltips to appear instead and since the mouse isn't over "our" frame, it's not
         -- getting reset properly and getting stuck to the Mouse Cursor.
 
-        -- Questie Map Icons
+        -- QuestieSmazak Map Icons
         if QuestieCompat.MouseIsOver(WorldMapFrame) and WorldMapFrame:IsShown() or QuestieCompat.MouseIsOver(Minimap) then
             if GameTooltip and GameTooltip:IsShown() and GameTooltip._Rebuild then
                 GameTooltip:Hide()
@@ -539,9 +539,9 @@ function _EventHandler:ModifierStateChanged(key, down)
             end
         end
 
-        -- Questie Tracker Sizer
+        -- QuestieSmazak Tracker Sizer
         if QuestieTracker.started then
-            if QuestieCompat.MouseIsOver(Questie_BaseFrame.sizer) then
+            if QuestieCompat.MouseIsOver(QuestieSmazak_BaseFrame.sizer) then
                 if down == 1 then
                     if GameTooltip and GameTooltip:IsShown() and GameTooltip._SizerToolTip then
                         GameTooltip:Hide()
@@ -561,7 +561,7 @@ function _EventHandler:ModifierStateChanged(key, down)
         end
     end
 
-    if Questie.db.profile.trackerLocked then
+    if QuestieSmazak.db.profile.trackerLocked then
         if QuestieTracker.started then
             -- This is a safety catch for race conditions to prevent the Tracker Sizer
             -- from becoming stuck to the mouse pointer when the player releases the
@@ -590,14 +590,14 @@ end
 
 ---Refreshes skill-gated quests after skill chat or skill line changes.
 function _EventHandler:ChatMsgSkill()
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[EVENT] Profession skills changed")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[EVENT] Profession skills changed")
 
     -- Redraw for professions gained or lost as well as skill thresholds crossed.
     local isProfUpdate, isNewProfession = QuestieProfessions:Update()
     if isProfUpdate or isNewProfession then
         AvailableQuests.CalculateAndDrawAll()
     end
-    if Questie.db.profile.townsfolkKnownProfessions then
+    if QuestieSmazak.db.profile.townsfolkKnownProfessions then
         QuestieMenu.RefreshKnownProfessionTrainers()
     end
 
@@ -611,7 +611,7 @@ end
 
 --- Fires when some chat messages about reputations are displayed
 function _EventHandler:ChatMsgCompatFactionChange()
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[EVENT] CHAT_MSG_COMBAT_FACTION_CHANGE")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[EVENT] CHAT_MSG_COMBAT_FACTION_CHANGE")
     local factionChanged, newFaction = QuestieReputation:Update(false)
     if factionChanged or newFaction then
         QuestieCombatQueue:Queue(function()
@@ -625,7 +625,7 @@ end
 local optionsHiddenByCombat, journeyHiddenByCombat = false, false
 
 function _EventHandler:PlayerRegenDisabled()
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[EVENT] PLAYER_REGEN_DISABLED")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[EVENT] PLAYER_REGEN_DISABLED")
 
     -- Let's make sure the frame exists - might be nil if player is in combat upon login
     if QuestieTracker then
@@ -633,10 +633,10 @@ function _EventHandler:PlayerRegenDisabled()
     end
 
     -- Let's make sure the frame exists - might be nil if player is in combat upon login
-    if QuestieConfigFrame then
-        if QuestieConfigFrame:IsShown() then
+    if QuestieSmazakConfigFrame then
+        if QuestieSmazakConfigFrame:IsShown() then
             optionsHiddenByCombat = true
-            QuestieConfigFrame:Hide()
+            QuestieSmazakConfigFrame:Hide()
         end
     end
 
@@ -657,12 +657,12 @@ function _EventHandler:PlayerRegenDisabled()
 end
 
 function _EventHandler:PlayerRegenEnabled()
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[EVENT] PLAYER_REGEN_ENABLED")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[EVENT] PLAYER_REGEN_ENABLED")
 
     QuestieTracker.HandleCombatEnded()
 
     if optionsHiddenByCombat then
-        QuestieConfigFrame:Show()
+        QuestieSmazakConfigFrame:Show()
         optionsHiddenByCombat = false
     end
 

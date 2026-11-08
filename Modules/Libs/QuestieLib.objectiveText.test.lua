@@ -21,7 +21,7 @@ describe("QuestieLib objective formats from Era and Forever GlobalStrings", func
                 _G.QUEST_OBJECTS_FOUND = case.globals.QUEST_OBJECTS_FOUND
 
                 dofile("Modules/Libs/QuestieLib.lua")
-                QuestieLib = QuestieLoader:ImportModule("QuestieLib")
+                QuestieLib = QuestieSmazakLoader:ImportModule("QuestieLib")
             end)
 
             after_each(function()

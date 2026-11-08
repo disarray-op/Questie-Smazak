@@ -1,8 +1,8 @@
 ---@type QuestieCompat
-local QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+local QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
 
 ---@class AutoCompleteFrame
-local AutoCompleteFrame = QuestieLoader:CreateModule("AutoCompleteFrame")
+local AutoCompleteFrame = QuestieSmazakLoader:CreateModule("AutoCompleteFrame")
 
 local LSM30 = LibStub("LibSharedMedia-3.0")
 
@@ -14,7 +14,7 @@ local trackerBaseFrame
 ---@param baseFrame table @The Tracker base frame
 function AutoCompleteFrame.Initialize(baseFrame)
     trackerBaseFrame = baseFrame
-    autoCompleteFrame = CreateFrame("Button", "Questie_AutoComplete_Frame", baseFrame, BackdropTemplateMixin and "BackdropTemplate")
+    autoCompleteFrame = CreateFrame("Button", "QuestieSmazak_AutoComplete_Frame", baseFrame, BackdropTemplateMixin and "BackdropTemplate")
 
     autoCompleteFrame:SetWidth(250)
     autoCompleteFrame:SetHeight(45)
@@ -26,7 +26,7 @@ function AutoCompleteFrame.Initialize(baseFrame)
         insets = { left = 4, right = 4, top = 4, bottom = 4 },
     })
 
-    local c = Questie.db.profile.trackerBackdropColor
+    local c = QuestieSmazak.db.profile.trackerBackdropColor
     autoCompleteFrame:SetBackdropColor(c.r, c.g, c.b, c.a)
     autoCompleteFrame:SetBackdropBorderColor(1, 1, 1, 0)
 
@@ -35,19 +35,19 @@ function AutoCompleteFrame.Initialize(baseFrame)
     icon:SetSize(25, 25);
     icon:SetAlpha(1)
     icon.texture = icon:CreateTexture(nil, "BACKGROUND", nil, 0)
-    icon.texture:SetTexture(Questie.icons["complete"])
+    icon.texture:SetTexture(QuestieSmazak.icons["complete"])
     icon.texture:SetSize(25, 25);
     icon.texture:SetPoint("LEFT", 4, 0)
 
-    local trackerFontSizeZone = Questie.db.profile.trackerFontSizeZone
-    local font = LSM30:Fetch("font", Questie.db.profile.trackerFontZone)
+    local trackerFontSizeZone = QuestieSmazak.db.profile.trackerFontSizeZone
+    local font = LSM30:Fetch("font", QuestieSmazak.db.profile.trackerFontZone)
 
     autoCompleteFrame.questTitle = autoCompleteFrame:CreateFontString(nil, "ARTWORK", "GameFontNormal")
-    autoCompleteFrame.questTitle:SetFont(font, trackerFontSizeZone, Questie.db.profile.trackerFontOutline)
+    autoCompleteFrame.questTitle:SetFont(font, trackerFontSizeZone, QuestieSmazak.db.profile.trackerFontOutline)
     autoCompleteFrame.questTitle:SetPoint("TOP", 0, -10)
 
     autoCompleteFrame.hintText = autoCompleteFrame:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
-    autoCompleteFrame.hintText:SetFont(font, 10, Questie.db.profile.trackerFontOutline)
+    autoCompleteFrame.hintText:SetFont(font, 10, QuestieSmazak.db.profile.trackerFontOutline)
     autoCompleteFrame.hintText:SetText(QUEST_WATCH_POPUP_CLICK_TO_COMPLETE) -- "Click to complete quest"
     autoCompleteFrame.hintText:SetPoint("TOP", 0, -25)
 
@@ -59,7 +59,7 @@ function AutoCompleteFrame.Initialize(baseFrame)
     AutoCompleteFrame.CheckAutoCompleteQuests()
 end
 
--- /run QuestieLoader:ImportModule("AutoCompleteFrame"):ShowAutoComplete(123)
+-- /run QuestieSmazakLoader:ImportModule("AutoCompleteFrame"):ShowAutoComplete(123)
 
 ---@param questId number @The questId to show the auto complete frame for
 function AutoCompleteFrame.ShowAutoComplete(questId)
@@ -86,7 +86,7 @@ function AutoCompleteFrame.ShowAutoComplete(questId)
 end
 
 function AutoCompleteFrame.CheckAutoCompleteQuests()
-    if (not Questie.db.profile.trackerEnabled) then
+    if (not QuestieSmazak.db.profile.trackerEnabled) then
         return
     end
 

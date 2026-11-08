@@ -1,22 +1,22 @@
 ---@class Migration
-local Migration = QuestieLoader:CreateModule("Migration")
+local Migration = QuestieSmazakLoader:CreateModule("Migration")
 ---@type Expansions
-local Expansions = QuestieLoader:ImportModule("Expansions")
+local Expansions = QuestieSmazakLoader:ImportModule("Expansions")
 
 -- add functions to this table to migrate users who have not yet run said function.
 -- make sure to always add to the end of the table as it runs first to last
 local migrationFunctions = {
     [1] = function()
-        -- this is the big Questie v9.0 settings refactor, implementing profiles
-        if Questie.db.char then -- if you actually have previous settings, then on first startup we should notify you of this
-            Questie:Print("[Migration] Migrated Questie for v9.0. This will reset all Questie settings to default. Journey history has been preserved.")
+        -- this is the big QuestieSmazak v9.0 settings refactor, implementing profiles
+        if QuestieSmazak.db.char then -- if you actually have previous settings, then on first startup we should notify you of this
+            QuestieSmazak:Print("[Migration] Migrated QuestieSmazak for v9.0. This will reset all QuestieSmazak settings to default. Journey history has been preserved.")
         end
         -- theres no need to delete old settings, since we read/write to different addresses now;
         -- old settings can linger unused unless you roll back versions, no harm no foul
     end,
     [2] = function()
         -- Blizzard removed some sounds from Era/SoD, which are present in TBC
-        local objectiveSound = Questie.db.profile.objectiveCompleteSoundChoiceName
+        local objectiveSound = QuestieSmazak.db.profile.objectiveCompleteSoundChoiceName
         if Expansions.Current < Expansions.Tbc and
             objectiveSound == "Explosion" or
             objectiveSound == "Shing!" or
@@ -26,10 +26,10 @@ local migrationFunctions = {
             objectiveSound == "Humm" or
             objectiveSound == "Short Circuit"
         then
-            Questie.db.profile.objectiveCompleteSoundChoiceName = "ObjectiveDefault"
+            QuestieSmazak.db.profile.objectiveCompleteSoundChoiceName = "ObjectiveDefault"
         end
 
-        local progressSound = Questie.db.profile.objectiveProgressSoundChoiceName
+        local progressSound = QuestieSmazak.db.profile.objectiveProgressSoundChoiceName
         if Expansions.Current < Expansions.Tbc and
             progressSound == "Explosion" or
             progressSound == "Shing!" or
@@ -39,20 +39,20 @@ local migrationFunctions = {
             progressSound == "Humm" or
             progressSound == "Short Circuit"
         then
-            Questie.db.profile.objectiveProgressSoundChoiceName = "ObjectiveProgress"
+            QuestieSmazak.db.profile.objectiveProgressSoundChoiceName = "ObjectiveProgress"
         end
     end,
     [3] = function()
-        if Questie.IsSoD then
-            if Questie.db.profile.showSoDRunes then
-                Questie.db.profile.showRunesOfPhase = {
+        if QuestieSmazak.IsSoD then
+            if QuestieSmazak.db.profile.showSoDRunes then
+                QuestieSmazak.db.profile.showRunesOfPhase = {
                     phase1 = true,
                     phase2 = false,
                     phase3 = false,
                     phase4 = false,
                 }
             else
-                Questie.db.profile.showRunesOfPhase = {
+                QuestieSmazak.db.profile.showRunesOfPhase = {
                     phase1 = false,
                     phase2 = false,
                     phase3 = false,
@@ -62,167 +62,167 @@ local migrationFunctions = {
         end
     end,
     [4] = function()
-        Questie.db.profile.tutorialShowRunesDone = false
+        QuestieSmazak.db.profile.tutorialShowRunesDone = false
     end,
     [5] = function()
-        Questie.db.profile.enableTooltipsNextInChain = true
+        QuestieSmazak.db.profile.enableTooltipsNextInChain = true
     end,
     [6] = function()
-        Questie.db.profile.tutorialShowRunesDone = false
+        QuestieSmazak.db.profile.tutorialShowRunesDone = false
     end,
     [7] = function()
-        Questie.db.profile.tutorialShowRunesDone = false
+        QuestieSmazak.db.profile.tutorialShowRunesDone = false
     end,
     [8] = function()
-        if Questie.IsSoD then
-            Questie.db.profile.showAQWarEffortQuests = true
+        if QuestieSmazak.IsSoD then
+            QuestieSmazak.db.profile.showAQWarEffortQuests = true
         end
     end,
     [9] = function()
-        Questie.db.profile.autoAccept = {
-            enabled = Questie.db.profile.autoaccept,
-            trivial = Questie.db.profile.acceptTrivial,
+        QuestieSmazak.db.profile.autoAccept = {
+            enabled = QuestieSmazak.db.profile.autoaccept,
+            trivial = QuestieSmazak.db.profile.acceptTrivial,
             repeatable = true,
         }
-        Questie.db.profile.autoaccept = nil
-        Questie.db.profile.acceptTrivial = nil
+        QuestieSmazak.db.profile.autoaccept = nil
+        QuestieSmazak.db.profile.acceptTrivial = nil
     end,
     [10] = function()
         -- The previous release had the default value set to "true", which was incorrect.
-        Questie.db.profile.autoAccept.enabled = false
+        QuestieSmazak.db.profile.autoAccept.enabled = false
     end,
     [11] = function()
-        Questie.db.profile.autoAccept.pvp = true
+        QuestieSmazak.db.profile.autoAccept.pvp = true
     end,
     [12] = function()
-        Questie.db.profile.autoAccept.rejectSharedInBattleground = false
-        Questie.db.profile.tutorialRejectInBattlegroundsDone = false
+        QuestieSmazak.db.profile.autoAccept.rejectSharedInBattleground = false
+        QuestieSmazak.db.profile.tutorialRejectInBattlegroundsDone = false
     end,
     [13] = function()
-        Questie.db.profile.questAnnounceIncompleteBreadcrumb = true
+        QuestieSmazak.db.profile.questAnnounceIncompleteBreadcrumb = true
     end,
     [14] = function()
-        Questie.db.profile.hideTrackerInPetBattles = true
+        QuestieSmazak.db.profile.hideTrackerInPetBattles = true
     end,
     [15] = function()
-        Questie.db.profile.globalTownsfolkScale = 0.6
-        Questie.db.profile.globalMiniMapTownsfolkScale = 0.7
+        QuestieSmazak.db.profile.globalTownsfolkScale = 0.6
+        QuestieSmazak.db.profile.globalMiniMapTownsfolkScale = 0.7
     end,
     [16] = function()
-        if (not Questie.db.global.isleOfQuelDanasPhase) then
+        if (not QuestieSmazak.db.global.isleOfQuelDanasPhase) then
             if Expansions.Current > Expansions.Tbc then
-                Questie.db.global.isleOfQuelDanasPhase = 9 -- Max phase for everything that comes after TBC
+                QuestieSmazak.db.global.isleOfQuelDanasPhase = 9 -- Max phase for everything that comes after TBC
             elseif Expansions.Current == Expansions.Tbc then
-                Questie.db.global.isleOfQuelDanasPhase = 1
+                QuestieSmazak.db.global.isleOfQuelDanasPhase = 1
             end
         end
     end,
     [17] = function()
-        Questie.db.global.unavailableQuestsDeterminedByTalking = {}
+        QuestieSmazak.db.global.unavailableQuestsDeterminedByTalking = {}
         ---@type table<string, number>
-        Questie.db.global.lastKnownDailyReset = {}
+        QuestieSmazak.db.global.lastKnownDailyReset = {}
     end,
     [18] = function()
-        Questie.db.profile.trackerDisableHoverFade = false
+        QuestieSmazak.db.profile.trackerDisableHoverFade = false
     end,
     [19] = function()
         -- Only migrate if the user has a previous migration
-        local previousVersion = Questie.db.profile.migrationVersion or 0
+        local previousVersion = QuestieSmazak.db.profile.migrationVersion or 0
         if previousVersion == 0 then
             return
         end
 
         -- Preserve previous dungeon hide preference for new flag
-        local previousHideInDungeons = Questie.db.profile.hideTrackerInDungeons
+        local previousHideInDungeons = QuestieSmazak.db.profile.hideTrackerInDungeons
 
-        Questie.db.profile.minimizeTrackerInCombat = false
-        Questie.db.profile.minimizeTrackerInDungeons = previousHideInDungeons
-        Questie.db.profile.hideTrackerInCombat = false
-        Questie.db.profile.hideTrackerInDungeons = false
+        QuestieSmazak.db.profile.minimizeTrackerInCombat = false
+        QuestieSmazak.db.profile.minimizeTrackerInDungeons = previousHideInDungeons
+        QuestieSmazak.db.profile.hideTrackerInCombat = false
+        QuestieSmazak.db.profile.hideTrackerInDungeons = false
     end,
     [20] = function()
-        Questie.db.profile.alwaysGlowMinimap = true
+        QuestieSmazak.db.profile.alwaysGlowMinimap = true
     end,
     [21] = function()
-        if Questie.IsTBC then
-            Questie.db.profile.showAQWarEffortQuests = false
+        if QuestieSmazak.IsTBC then
+            QuestieSmazak.db.profile.showAQWarEffortQuests = false
         end
     end,
     [22] = function()
-        local alpha = Questie.db.profile.trackerBackdropAlpha or 1
-        Questie.db.profile.trackerBackdropColor = {r = 0, g = 0, b = 0, a = alpha}
-        Questie.db.profile.trackerBackdropAlpha = nil
+        local alpha = QuestieSmazak.db.profile.trackerBackdropAlpha or 1
+        QuestieSmazak.db.profile.trackerBackdropColor = {r = 0, g = 0, b = 0, a = alpha}
+        QuestieSmazak.db.profile.trackerBackdropAlpha = nil
     end,
     [23] = function()
-        Questie.db.profile.enableTooltipDroprates = true
+        QuestieSmazak.db.profile.enableTooltipDroprates = true
     end,
     [24] = function()
-        Questie.db.profile.trackerWidthRatio = 0.20
+        QuestieSmazak.db.profile.trackerWidthRatio = 0.20
     end,
     [25] = function()
         local playerClass = UnitClassBase("player")
-        if playerClass == "ROGUE" and Questie.db.profile.townsfolkConfig["Reagents"] then
-            Questie.db.profile.townsfolkConfig["Reagents"] = false
-            Questie.db.profile.townsfolkConfig["Poisons"] = true
+        if playerClass == "ROGUE" and QuestieSmazak.db.profile.townsfolkConfig["Reagents"] then
+            QuestieSmazak.db.profile.townsfolkConfig["Reagents"] = false
+            QuestieSmazak.db.profile.townsfolkConfig["Poisons"] = true
         else
-            Questie.db.profile.townsfolkConfig["Poisons"] = false
+            QuestieSmazak.db.profile.townsfolkConfig["Poisons"] = false
         end
     end,
     [26] = function()
-        Questie.db.profile.clusterLevelHotzone = nil
-        Questie.db.profile.objectiveFilterDistance = 2
+        QuestieSmazak.db.profile.clusterLevelHotzone = nil
+        QuestieSmazak.db.profile.objectiveFilterDistance = 2
     end,
     [27] = function()
-        if Questie.db.profile.trackerFontOutline == "None" then
-            Questie.db.profile.trackerFontOutline = ""
+        if QuestieSmazak.db.profile.trackerFontOutline == "None" then
+            QuestieSmazak.db.profile.trackerFontOutline = ""
         end
     end,
     [28] = function()
-        Questie.db.profile.trimObjectiveText = true
+        QuestieSmazak.db.profile.trimObjectiveText = true
     end,
     [29] = function()
-        Questie.db.profile.showQuestXpAtMaxLevel = false
+        QuestieSmazak.db.profile.showQuestXpAtMaxLevel = false
     end,
     [30] = function()
-        Questie.db.profile.autoAccept.abandonBreadcrumbFollowup = false
+        QuestieSmazak.db.profile.autoAccept.abandonBreadcrumbFollowup = false
     end,
     [31] = function()
-        Questie.db.profile.showPartyQuestObjectives = true
+        QuestieSmazak.db.profile.showPartyQuestObjectives = true
     end,
     [32] = function()
-        Questie.db.profile.skipValidation = nil
+        QuestieSmazak.db.profile.skipValidation = nil
     end,
     [33] = function()
         -- trackerFontOutline was previously stored as a localized string (e.g. "None", "无")
         -- because the dropdown used the localized WoW global NONE as a key.
-        local outline = Questie.db.profile.trackerFontOutline
+        local outline = QuestieSmazak.db.profile.trackerFontOutline
         if outline ~= "" and outline ~= "OUTLINE" then
-            Questie.db.profile.trackerFontOutline = ""
+            QuestieSmazak.db.profile.trackerFontOutline = ""
         end
     end,
     [34] = function()
-        Questie.db.profile.enableTooltipsBreadcrumbQuests = false
+        QuestieSmazak.db.profile.enableTooltipsBreadcrumbQuests = false
     end,
     [35] = function()
-        Questie.db.global.lastDailyRequestDate = nil
-        Questie.db.global.lastDailyRequestResetTime = nil
+        QuestieSmazak.db.global.lastDailyRequestDate = nil
+        QuestieSmazak.db.global.lastDailyRequestResetTime = nil
     end,
     [36] = function()
-        Questie.db.global.unavailableDailyQuestsByNpc = {}
+        QuestieSmazak.db.global.unavailableDailyQuestsByNpc = {}
     end,
     [37] = function()
         -- Reserved for the former Titan compiler-storage invalidation migration.
     end,
     [38] = function()
         -- Preserve previous dungeon hide & minimize preference for both new flags
-        local previousMinimizeInInstances = Questie.db.profile.minimizeTrackerInDungeons
-        local previousHideInInstances = Questie.db.profile.hideTrackerInDungeons
+        local previousMinimizeInInstances = QuestieSmazak.db.profile.minimizeTrackerInDungeons
+        local previousHideInInstances = QuestieSmazak.db.profile.hideTrackerInDungeons
 
-        Questie.db.profile.minimizeTrackerInInstances = previousMinimizeInInstances
-        Questie.db.profile.hideTrackerInInstances = previousHideInInstances
+        QuestieSmazak.db.profile.minimizeTrackerInInstances = previousMinimizeInInstances
+        QuestieSmazak.db.profile.hideTrackerInInstances = previousHideInInstances
 
-        Questie.db.profile.minimizeTrackerInDungeons = nil
-        Questie.db.profile.hideTrackerInDungeons = nil
+        QuestieSmazak.db.profile.minimizeTrackerInDungeons = nil
+        QuestieSmazak.db.profile.hideTrackerInDungeons = nil
     end,
     [39] = function()
         -- Compiler payloads existed in the ordinary, SoD, and Titan global scopes.
@@ -242,9 +242,9 @@ local migrationFunctions = {
             "itemPtrs",
         }
         local compilerScopes = {
-            Questie.db.global,
-            Questie.db.global.sod,
-            Questie.db.global.titanReforged,
+            QuestieSmazak.db.global,
+            QuestieSmazak.db.global.sod,
+            QuestieSmazak.db.global.titanReforged,
         }
 
         for _, scope in pairs(compilerScopes) do
@@ -255,27 +255,27 @@ local migrationFunctions = {
             end
         end
 
-        Questie.db.profile.disableDatabaseWarnings = nil
-        Questie.db.char.townsfolkVersion = nil
+        QuestieSmazak.db.profile.disableDatabaseWarnings = nil
+        QuestieSmazak.db.char.townsfolkVersion = nil
     end,
     [40] = function()
         -- Townsfolk lookups moved from SavedVariables to the Townsfolk module; they are rebuilt every login.
-        Questie.db.global.townsfolk = nil
-        Questie.db.global.professionTrainers = nil
-        Questie.db.global.classSpecificTownsfolk = nil
-        Questie.db.global.factionSpecificTownsfolk = nil
-        Questie.db.global.petFoodVendorTypes = nil
+        QuestieSmazak.db.global.townsfolk = nil
+        QuestieSmazak.db.global.professionTrainers = nil
+        QuestieSmazak.db.global.classSpecificTownsfolk = nil
+        QuestieSmazak.db.global.factionSpecificTownsfolk = nil
+        QuestieSmazak.db.global.petFoodVendorTypes = nil
     end,
     [41] = function()
         -- Native wording and counter-free fallbacks no longer have a shortened/full display preference.
-        Questie.db.profile.trimObjectiveText = nil
+        QuestieSmazak.db.profile.trimObjectiveText = nil
     end,
     [42] = function()
-        Questie.db.profile.enableTooltipsSpellID = false
+        QuestieSmazak.db.profile.enableTooltipsSpellID = false
     end,
     [43] = function()
         -- NPC patrol path settings, under Map > Waypoints; the hover area under Advanced > Developer Options.
-        local profile = Questie.db.profile
+        local profile = QuestieSmazak.db.profile
         profile.waypointMapEnabled = true
         profile.waypointMinimapEnabled = true
         profile.waypointWidth = 3
@@ -288,51 +288,51 @@ local migrationFunctions = {
         profile.waypointDebugHover = false
     end,
     [44] = function()
-        Questie.db.profile.trackerShowQuestFocusButtons = true
+        QuestieSmazak.db.profile.trackerShowQuestFocusButtons = true
     end,
     [45] = function()
-        Questie.db.profile.trackerFadeQuestFocusButtons = false
+        QuestieSmazak.db.profile.trackerFadeQuestFocusButtons = false
     end,
     [46] = function()
-        Questie.db.profile.trackerShowPlayButtons = true
+        QuestieSmazak.db.profile.trackerShowPlayButtons = true
     end,
     [47] = function()
-        Questie.db.profile.trackerFollowSuperTracking = false
+        QuestieSmazak.db.profile.trackerFollowSuperTracking = false
     end,
     [48] = function()
-        -- New setting: show Questie in the addon compartment by default, mirroring DBM.
-        Questie.db.profile.minimap = Questie.db.profile.minimap or {hide = false}
-        Questie.db.profile.minimap.showInCompartment = true
+        -- New setting: show QuestieSmazak in the addon compartment by default, mirroring DBM.
+        QuestieSmazak.db.profile.minimap = QuestieSmazak.db.profile.minimap or {hide = false}
+        QuestieSmazak.db.profile.minimap.showInCompartment = true
     end,
     [49] = function()
-        -- The Blizzard quest timer is always hidden now; timed quests are shown in the Questie tracker.
-        Questie.db.profile.showBlizzardQuestTimer = nil
+        -- The Blizzard quest timer is always hidden now; timed quests are shown in the QuestieSmazak tracker.
+        QuestieSmazak.db.profile.showBlizzardQuestTimer = nil
     end,
     [50] = function()
         -- New setting: focusing a quest also shows its quest giver on the map.
-        Questie.db.profile.trackerShowQuestGiverOnFocus = true
+        QuestieSmazak.db.profile.trackerShowQuestGiverOnFocus = true
     end,
 }
 
 function Migration:Migrate()
-    if not Questie.db.profile.migrationVersion then
-        Questie.db.profile.migrationVersion = 0
+    if not QuestieSmazak.db.profile.migrationVersion then
+        QuestieSmazak.db.profile.migrationVersion = 0
     end
 
-    local currentVersion = Questie.db.profile.migrationVersion
+    local currentVersion = QuestieSmazak.db.profile.migrationVersion
     local targetVersion = table.getn(migrationFunctions)
 
     if currentVersion == targetVersion then
-        Questie.Debug(Questie.DEBUG_DEVELOP, "[Migration] Nothing to migrate. Already on latest version:", targetVersion)
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[Migration] Nothing to migrate. Already on latest version:", targetVersion)
         return
     end
 
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[Migration] Starting Questie migration for targetVersion", targetVersion)
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[Migration] Starting QuestieSmazak migration for targetVersion", targetVersion)
 
     while currentVersion < targetVersion do
         currentVersion = currentVersion + 1
         migrationFunctions[currentVersion]()
     end
 
-    Questie.db.profile.migrationVersion = currentVersion
+    QuestieSmazak.db.profile.migrationVersion = currentVersion
 end

@@ -29,11 +29,11 @@ describe("CommsEncoding", function()
     before_each(function()
         loadRealLibDeflate()
 
-        l10n = QuestieLoader:ImportModule("l10n")
+        l10n = QuestieSmazakLoader:ImportModule("l10n")
         setmetatable(l10n, {__call = function(_, key, ...) return key end})
 
         dofile("Modules/Network/CommsEncoding.lua")
-        CommsEncoding = QuestieLoader:ImportModule("CommsEncoding")
+        CommsEncoding = QuestieSmazakLoader:ImportModule("CommsEncoding")
 
         -- Simulate a successful Init so the encode/decode guards pass.
         CommsEncoding.hasCodecSupport = true
@@ -44,20 +44,20 @@ describe("CommsEncoding", function()
 
     it("should raise an error on Init when codec support is unavailable", function()
         _G.LibStub = nil
-        _G.Questie.Error = spy.new(function() end)
+        _G.QuestieSmazak.Error = spy.new(function() end)
         dofile("Libs/LibStub/LibStub.lua")
 
         dofile("Modules/Network/CommsEncoding.lua")
-        CommsEncoding = QuestieLoader:ImportModule("CommsEncoding")
+        CommsEncoding = QuestieSmazakLoader:ImportModule("CommsEncoding")
 
         CommsEncoding.Init()
 
-        assert.spy(Questie.Error).was.called()
+        assert.spy(QuestieSmazak.Error).was.called()
     end)
 
     describe("real LibDeflate addon-channel codec", function()
         it("round-trips binary data and removes null bytes", function()
-            local original = "Questie\000\001binary" .. string.char(128) .. string.char(255)
+            local original = "QuestieSmazak\000\001binary" .. string.char(128) .. string.char(255)
 
             local encoded = LibDeflate:EncodeForWoWAddonChannel(original)
             local decoded = LibDeflate:DecodeForWoWAddonChannel(encoded)

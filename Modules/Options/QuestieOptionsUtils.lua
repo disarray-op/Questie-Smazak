@@ -1,5 +1,5 @@
 ---@class QuestieOptionsUtils
-local QuestieOptionsUtils = QuestieLoader:CreateModule("QuestieOptionsUtils");
+local QuestieOptionsUtils = QuestieSmazakLoader:CreateModule("QuestieOptionsUtils");
 
 ---Keeps settings art from shimmering between texels while a window is dragged at a modified UI scale.
 ---@param texture Texture?
@@ -53,11 +53,11 @@ end
 local _optionsTimer = nil;
 function QuestieOptionsUtils:Delay(time, func, message)
     if(_optionsTimer) then
-        Questie:CancelTimer(_optionsTimer)
+        QuestieSmazak:CancelTimer(_optionsTimer)
         _optionsTimer = nil;
     end
-    _optionsTimer = Questie:ScheduleTimer(function()
+    _optionsTimer = QuestieSmazak:ScheduleTimer(function()
         func()
-        Questie.Debug(Questie.DEBUG_DEVELOP, message)
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, message)
     end, time)
 end

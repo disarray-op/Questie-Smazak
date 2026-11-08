@@ -1,6 +1,6 @@
 -- Focused Contract Version 3 test double for LibQuestieDB.
 --
--- It reproduces only what Questie consumes from QuestieDB: the Contract check, composed entity
+-- It reproduces only what QuestieSmazak consumes from QuestieDB: the Contract check, composed entity
 -- reads, shared ID maps that swap identity only when a republish adds or withdraws an entity,
 -- the owner-scoped Correction registrar, the data-shaped Correction slots (`Corrections.Set`),
 -- provenance, provider locale forwarding, Objective Order tables, and the entity Name index.
@@ -114,7 +114,7 @@ local function LoadQuestieDBMock()
     end
 
     -- Quest `startedBy`, `finishedBy`, and `objectives` read `{}` rather than nil for an entity that
-    -- exists; Questie's Quest projection indexes them unconditionally.
+    -- exists; QuestieSmazak's Quest projection indexes them unconditionally.
     ---@type table<QuestieDBMockDatatype, table<integer, true>>
     local neverNilFields = {
         Quest = {

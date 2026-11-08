@@ -1,7 +1,7 @@
 dofile("setupTests.lua")
 dofile("Modules/Quest/ActiveQuests.lua")
 ---@type ActiveQuests
-local ActiveQuests = QuestieLoader:ImportModule("ActiveQuests")
+local ActiveQuests = QuestieSmazakLoader:ImportModule("ActiveQuests")
 local stub = require("luassert.stub")
 
 describe("QuestFinisher", function()
@@ -28,17 +28,17 @@ describe("QuestFinisher", function()
     local originalError
 
     before_each(function()
-        originalWarning = Questie.Warning
-        originalError = Questie.Error
-        Questie.db.char.complete = {}
-        QuestieDB = QuestieLoader:ImportModule("QuestieDB")
-        ZoneDB = QuestieLoader:ImportModule("ZoneDB")
-        QuestiePlayer = QuestieLoader:ImportModule("QuestiePlayer")
-        QuestieTooltips = QuestieLoader:ImportModule("QuestieTooltips")
-        QuestieMap = QuestieLoader:ImportModule("QuestieMap")
-        QuestieEvent = QuestieLoader:ImportModule("QuestieEvent")
+        originalWarning = QuestieSmazak.Warning
+        originalError = QuestieSmazak.Error
+        QuestieSmazak.db.char.complete = {}
+        QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
+        ZoneDB = QuestieSmazakLoader:ImportModule("ZoneDB")
+        QuestiePlayer = QuestieSmazakLoader:ImportModule("QuestiePlayer")
+        QuestieTooltips = QuestieSmazakLoader:ImportModule("QuestieTooltips")
+        QuestieMap = QuestieSmazakLoader:ImportModule("QuestieMap")
+        QuestieEvent = QuestieSmazakLoader:ImportModule("QuestieEvent")
 
-        isQuestFlaggedCompletedMock = stub(QuestieLoader:ImportModule("QuestieCompat"), "IsQuestFlaggedCompleted",
+        isQuestFlaggedCompletedMock = stub(QuestieSmazakLoader:ImportModule("QuestieCompat"), "IsQuestFlaggedCompleted",
             function() return false end)
         QuestieTooltips.RegisterQuestStartTooltip = spy.new(function() end)
         QuestieDB.IsActiveEventQuest = function() return false end
@@ -57,13 +57,13 @@ describe("QuestFinisher", function()
         QuestieTooltips.lookupByKey = {}
 
         dofile("Modules/Quest/QuestFinisher.lua")
-        QuestFinisher = QuestieLoader:ImportModule("QuestFinisher")
+        QuestFinisher = QuestieSmazakLoader:ImportModule("QuestFinisher")
     end)
 
     after_each(function()
         isQuestFlaggedCompletedMock:revert()
-        Questie.Warning = originalWarning
-        Questie.Error = originalError
+        QuestieSmazak.Warning = originalWarning
+        QuestieSmazak.Error = originalError
     end)
 
     it("should use the name returned by the tooltip registration for a finisher without a name", function()
@@ -109,10 +109,10 @@ describe("QuestFinisher", function()
         assert.spy(QuestieMap.DrawWorldIcon).was.called_with(QuestieMap, _, 2, 60, 60, nil)
 
         local firstIconData = QuestieMap.DrawWorldIcon.calls[1].vals[2]
-        assert.is_equal(Questie.ICON_TYPE_COMPLETE, firstIconData.Icon)
+        assert.is_equal(QuestieSmazak.ICON_TYPE_COMPLETE, firstIconData.Icon)
 
         local secondIconData = QuestieMap.DrawWorldIcon.calls[2].vals[2]
-        assert.is_equal(Questie.ICON_TYPE_COMPLETE, secondIconData.Icon)
+        assert.is_equal(QuestieSmazak.ICON_TYPE_COMPLETE, secondIconData.Icon)
     end)
 
     it("should add object finisher", function()
@@ -145,10 +145,10 @@ describe("QuestFinisher", function()
         assert.spy(QuestieMap.DrawWorldIcon).was.called_with(QuestieMap, _, 2, 60, 60, nil)
 
         local firstIconData = QuestieMap.DrawWorldIcon.calls[1].vals[2]
-        assert.is_equal(Questie.ICON_TYPE_COMPLETE, firstIconData.Icon)
+        assert.is_equal(QuestieSmazak.ICON_TYPE_COMPLETE, firstIconData.Icon)
 
         local secondIconData = QuestieMap.DrawWorldIcon.calls[2].vals[2]
-        assert.is_equal(Questie.ICON_TYPE_COMPLETE, secondIconData.Icon)
+        assert.is_equal(QuestieSmazak.ICON_TYPE_COMPLETE, secondIconData.Icon)
     end)
 
     it("should add mixed finisher", function()
@@ -242,7 +242,7 @@ describe("QuestFinisher", function()
         assert.spy(QuestieMap.DrawWaypoints).was.not_called()
 
         local iconData = QuestieMap.DrawWorldIcon.calls[1].vals[2]
-        assert.is_equal(Questie.ICON_TYPE_COMPLETE, iconData.Icon)
+        assert.is_equal(QuestieSmazak.ICON_TYPE_COMPLETE, iconData.Icon)
     end)
 
     it("should add NPC finisher for PvP quests", function()
@@ -270,7 +270,7 @@ describe("QuestFinisher", function()
         assert.spy(QuestieMap.DrawWorldIcon).was.called_with(QuestieMap, _, 1, 50, 50, nil)
 
         local firstIconData = QuestieMap.DrawWorldIcon.calls[1].vals[2]
-        assert.is_equal(Questie.ICON_TYPE_PVPQUEST_COMPLETE, firstIconData.Icon)
+        assert.is_equal(QuestieSmazak.ICON_TYPE_PVPQUEST_COMPLETE, firstIconData.Icon)
     end)
 
     it("should add NPC finisher for repeatable quests", function()
@@ -297,7 +297,7 @@ describe("QuestFinisher", function()
         assert.spy(QuestieMap.DrawWorldIcon).was.called_with(QuestieMap, _, 1, 50, 50, nil)
 
         local firstIconData = QuestieMap.DrawWorldIcon.calls[1].vals[2]
-        assert.is_equal(Questie.ICON_TYPE_REPEATABLE_COMPLETE, firstIconData.Icon)
+        assert.is_equal(QuestieSmazak.ICON_TYPE_REPEATABLE_COMPLETE, firstIconData.Icon)
     end)
 
     it("should not add finisher if quest is not in the players quest log", function()
@@ -329,7 +329,7 @@ describe("QuestFinisher", function()
 
     it("should not add finisher when quest is already complete", function()
         ActiveQuests.Add(1)
-        Questie.db.char.complete[1] = true
+        QuestieSmazak.db.char.complete[1] = true
         local quest = {
             Id = 1,
             IsComplete = function()
@@ -395,7 +395,7 @@ describe("QuestFinisher", function()
         assert.spy(QuestieMap.DrawWorldIcon).was.called_with(QuestieMap, _, 1, 50, 50, nil)
 
         local iconData = QuestieMap.DrawWorldIcon.calls[1].vals[2]
-        assert.is_equal(Questie.ICON_TYPE_EVENTQUEST_COMPLETE, iconData.Icon)
+        assert.is_equal(QuestieSmazak.ICON_TYPE_EVENTQUEST_COMPLETE, iconData.Icon)
     end)
 
     it("should not add finisher when quest has no finisher", function()
@@ -469,8 +469,8 @@ describe("QuestFinisher", function()
 
     it("should warn and not add a finisher when its NPC is missing in DB", function()
         ActiveQuests.Add(1)
-        Questie.Warning = spy.new(function() end)
-        Questie.Error = spy.new(function() end)
+        QuestieSmazak.Warning = spy.new(function() end)
+        QuestieSmazak.Error = spy.new(function() end)
         QuestieDB.GetNPC = spy.new(function() return nil end)
         QuestieDB.GetObject = spy.new(function() end)
         local quest = {
@@ -490,7 +490,7 @@ describe("QuestFinisher", function()
         assert.spy(QuestieDB.GetObject).was.not_called()
         assert.spy(QuestieMap.DrawWorldIcon).was.not_called()
         assert.spy(QuestieMap.DrawWaypoints).was.not_called()
-        assert.spy(Questie.Warning).was.called_with("Finisher NPC", 123, "for quest:", 1, "is not in the DB")
-        assert.spy(Questie.Error).was.not_called()
+        assert.spy(QuestieSmazak.Warning).was.called_with("Finisher NPC", 123, "for quest:", 1, "is not in the DB")
+        assert.spy(QuestieSmazak.Error).was.not_called()
     end)
 end)

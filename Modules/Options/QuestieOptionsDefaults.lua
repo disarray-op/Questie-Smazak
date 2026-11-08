@@ -1,5 +1,5 @@
 ---@class QuestieOptionsDefaults
-local QuestieOptionsDefaults = QuestieLoader:CreateModule("QuestieOptionsDefaults");
+local QuestieOptionsDefaults = QuestieSmazakLoader:CreateModule("QuestieOptionsDefaults");
 
 function QuestieOptionsDefaults:Load()
     return {
@@ -137,7 +137,7 @@ function QuestieOptionsDefaults:Load()
             trackerHeightRatio = 0.50,
             trackerWidthRatio = 0.20,
 
-            lowLevelStyle = 1, -- Questie.LOWLEVEL_NONE
+            lowLevelStyle = 1, -- QuestieSmazak.LOWLEVEL_NONE
             manualLevelOffset = 7,
             minLevelFilter = 1,
             maxLevelFilter = 10,
@@ -178,7 +178,7 @@ function QuestieOptionsDefaults:Load()
             },
             showQuestsInNpcTooltip = true,
             trackerEnabled = true,
-            ldbDisplayText = "Questie",
+            ldbDisplayText = "Questie-Smazak",
             enableQuestFrameIcons = true,
             loadCustomSounds = false,
             soundDelay = 0.5,

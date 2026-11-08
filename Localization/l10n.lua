@@ -4,16 +4,16 @@
 ---@field zoneCategoryLookup table
 ---@field questCategoryLookup table
 ---@field translations table<string, table<string, string|boolean>>
-local l10n = QuestieLoader:CreateModule("l10n")
+local l10n = QuestieSmazakLoader:CreateModule("l10n")
 local _l10n = {}
 l10n.translations = {}
 
--- Questie owns UI strings and UI locale selection. QuestieDB owns entity localization.
+-- QuestieSmazak owns UI strings and UI locale selection. QuestieDB owns entity localization.
 -- An external translation addon supplies both through the `QUESTIE_LOCALES_OVERRIDE` global, the
--- same contract upstream Questie reads: `locale`, `localeName`, and `translations` for UI strings,
+-- same contract upstream QuestieSmazak reads: `locale`, `localeName`, and `translations` for UI strings,
 -- plus the optional `itemLookup`, `questLookup`, `npcNameLookup`, and `objectLookup` entity
 -- lookups. UI strings stay in this module; the entity lookups are forwarded to QuestieDB as
--- locale-scoped translation slots under their own owner, so one addon build serves both Questie variants.
+-- locale-scoped translation slots under their own owner, so one addon build serves both QuestieSmazak variants.
 
 ---@type fun(): nil
 local _InitializeLocaleOverride
@@ -39,15 +39,15 @@ local supportedLocals = {
     ["zhTW"] = true,
 }
 
----Resolves Questie's UI locale after Saved Variables and external UI translations are available.
+---Resolves QuestieSmazak's UI locale after Saved Variables and external UI translations are available.
 ---@return nil
 function l10n.InitializeUILocale()
     if QUESTIE_LOCALES_OVERRIDE ~= nil then
         _InitializeLocaleOverride()
     end
 
-    if Questie.db.global.questieLocaleDiff then
-        l10n:SetUILocale(Questie.db.global.questieLocale)
+    if QuestieSmazak.db.global.questieLocaleDiff then
+        l10n:SetUILocale(QuestieSmazak.db.global.questieLocale)
     elseif QUESTIE_LOCALES_OVERRIDE ~= nil then
         l10n:SetUILocale(QUESTIE_LOCALES_OVERRIDE.locale)
     else
@@ -74,7 +74,7 @@ end
 
 local format, unpack, tostring = string.format, unpack, tostring
 
----Translates one Questie-owned UI string for the active UI locale.
+---Translates one QuestieSmazak-owned UI string for the active UI locale.
 ---@param key string English translation key and fallback format string.
 ---@param ... unknown Format arguments.
 ---@return string translatedText
@@ -87,16 +87,16 @@ function _l10n:translate(key, ...)
 
     local translationEntry = l10n.translations[key]
     if not translationEntry then
-        if Questie.db.profile.debugEnabled then
-            Questie.Debug(Questie.DEBUG_ELEVATED, "ERROR: Translations for '" .. tostring(key) .. "' are missing completely!")
+        if QuestieSmazak.db.profile.debugEnabled then
+            QuestieSmazak.Debug(QuestieSmazak.DEBUG_ELEVATED, "ERROR: Translations for '" .. tostring(key) .. "' are missing completely!")
         end
         return format(key, unpack(args))
     end
 
     local translationValue = translationEntry[locale]
     if not translationValue then
-        if Questie.db.profile.debugEnabled then
-            Questie.Debug(Questie.DEBUG_ELEVATED, "ERROR: Translations for '" .. tostring(key) .. "' are missing the entry for language", locale, "!")
+        if QuestieSmazak.db.profile.debugEnabled then
+            QuestieSmazak.Debug(QuestieSmazak.DEBUG_ELEVATED, "ERROR: Translations for '" .. tostring(key) .. "' are missing the entry for language", locale, "!")
         end
         return format(key, unpack(args))
     end
@@ -125,7 +125,7 @@ function l10n:GetFallbackLocale(lang)
     return "enUS"
 end
 
----Selects the active locale for Questie-owned UI strings.
+---Selects the active locale for QuestieSmazak-owned UI strings.
 ---@param lang string|nil Requested locale, or the client locale when nil.
 ---@return nil
 function l10n:SetUILocale(lang)
@@ -136,7 +136,7 @@ function l10n:SetUILocale(lang)
     end
 end
 
----Returns the active locale for Questie-owned UI strings.
+---Returns the active locale for QuestieSmazak-owned UI strings.
 ---@return string locale
 function l10n:GetUILocale()
     return locale
@@ -198,7 +198,7 @@ function l10n.PublishLocaleOverrideEntityNames()
         end
     end
 
-    -- Quests: `[questId] = {name, {objective, ...}}`. Generators built before Questie dropped the
+    -- Quests: `[questId] = {name, {objective, ...}}`. Generators built before QuestieSmazak dropped the
     -- description element emit `{name, {description, ...}, {objective, ...}}`, so a third element
     -- is the objectives when present.
     local questKeys, questExists = Meta.QuestMeta.questKeys, LibQuestieDB.Quest.Exists

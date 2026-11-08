@@ -1,5 +1,5 @@
 ---@class CommsRouting : QuestieModule
-local CommsRouting = QuestieLoader:CreateModule("CommsRouting")
+local CommsRouting = QuestieSmazakLoader:CreateModule("CommsRouting")
 
 local groupBroadcastByInput = {
     party = "PARTY",
@@ -17,7 +17,7 @@ local allowedGroupMessageDistributions = {
     WHISPER = true,
 }
 
----Normalizes Questie group types and AceComm group distributions to an AceComm broadcast distribution.
+---Normalizes QuestieSmazak group types and AceComm group distributions to an AceComm broadcast distribution.
 ---@param input string?
 ---@return string?
 function CommsRouting:GetGroupBroadcastDistribution(input)

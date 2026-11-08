@@ -1,12 +1,12 @@
 dofile("setupTests.lua")
 dofile("Modules/Quest/ActiveQuests.lua")
 ---@type ActiveQuests
-local ActiveQuests = QuestieLoader:ImportModule("ActiveQuests")
+local ActiveQuests = QuestieSmazakLoader:ImportModule("ActiveQuests")
 local LoadQuestieDBMock = dofile("test/QuestieDBMock.lua")
 
 -- Issue references:
--- https://github.com/Questie/Questie/issues/6734
--- https://github.com/Questie/Questie/issues/6829
+-- https://github.com/QuestieSmazak/QuestieSmazak/issues/6734
+-- https://github.com/QuestieSmazak/QuestieSmazak/issues/6829
 
 
 describe("Issue 6734 - The quest does not exist in QuestLogCache", function()
@@ -54,7 +54,7 @@ describe("Issue 6734 - The quest does not exist in QuestLogCache", function()
     end
 
     it("should work", function()
-        Questie.db.profile.autoAccept = {
+        QuestieSmazak.db.profile.autoAccept = {
             enabled = false,
             trivial = false,
             repeatable = false,
@@ -83,19 +83,19 @@ describe("Issue 6734 - The quest does not exist in QuestLogCache", function()
         dofile("Modules/Expansions.lua")
 
         dofile("Modules/Quest/QuestLogCache.lua")
-        QuestLogCache = QuestieLoader:ImportModule("QuestLogCache")
+        QuestLogCache = QuestieSmazakLoader:ImportModule("QuestLogCache")
 
         dofile("Modules/QuestieNameplate.lua")
-        QuestieNameplate = QuestieLoader:ImportModule("QuestieNameplate")
+        QuestieNameplate = QuestieSmazakLoader:ImportModule("QuestieNameplate")
         QuestieNameplate.UpdateNameplate = spy.new(function() end)
 
         dofile("Modules/Quest/QuestieQuest.lua")
-        QuestieQuest = QuestieLoader:ImportModule("QuestieQuest")
+        QuestieQuest = QuestieSmazakLoader:ImportModule("QuestieQuest")
         QuestieQuest.SetObjectivesDirty = spy.new(function() end)
         QuestieQuest.UpdateQuest = spy.new(function() end)
 
         dofile("Modules/Quest/Lifecycle/QuestLifecycle.lua")
-        local QuestLifecycle = QuestieLoader:ImportModule("QuestLifecycle")
+        local QuestLifecycle = QuestieSmazakLoader:ImportModule("QuestLifecycle")
         QuestLifecycle.AcceptQuest = spy.new(function(_, questId)
             ActiveQuests.Add(questId, {})
         end)
@@ -104,45 +104,45 @@ describe("Issue 6734 - The quest does not exist in QuestLogCache", function()
         dofile("Modules/QuestiePlayer.lua")
 
         dofile("Modules/Tracker/QuestieTracker.lua")
-        QuestieTracker = QuestieLoader:ImportModule("QuestieTracker")
+        QuestieTracker = QuestieSmazakLoader:ImportModule("QuestieTracker")
         QuestieTracker.UpdateQuestLines = spy.new(function() end)
 
         dofile("Modules/Libs/QuestieLib.lua")
-        QuestieLib = QuestieLoader:ImportModule("QuestieLib")
+        QuestieLib = QuestieSmazakLoader:ImportModule("QuestieLib")
         QuestieLib.CacheItemNames = spy.new(function() end)
 
         dofile("Modules/Libs/QuestieCombatQueue.lua")
-        QuestieCombatQueue = QuestieLoader:ImportModule("QuestieCombatQueue")
+        QuestieCombatQueue = QuestieSmazakLoader:ImportModule("QuestieCombatQueue")
         QuestieCombatQueue.Queue = function() end
 
         dofile("Modules/Sounds.lua")
-        Sounds = QuestieLoader:ImportModule("Sounds")
+        Sounds = QuestieSmazakLoader:ImportModule("Sounds")
         Sounds.PlayObjectiveComplete = spy.new(function() end)
         Sounds.PlayQuestComplete = spy.new(function() end)
 
         dofile("Modules/Journey/QuestieJourney.lua")
-        QuestieJourney = QuestieLoader:ImportModule("QuestieJourney")
+        QuestieJourney = QuestieSmazakLoader:ImportModule("QuestieJourney")
         QuestieJourney.AcceptQuest = spy.new(function() end)
         QuestieJourney.CompleteQuest = spy.new(function() end)
 
         dofile("Modules/QuestieAnnounce.lua")
-        QuestieAnnounce = QuestieLoader:ImportModule("QuestieAnnounce")
+        QuestieAnnounce = QuestieSmazakLoader:ImportModule("QuestieAnnounce")
         QuestieAnnounce.AcceptedQuest = spy.new(function() end)
         QuestieAnnounce.CompletedQuest = spy.new(function() end)
 
         -- QuestieDB binds the provider schema and queries at file load.
         LoadQuestieDBMock()
         dofile("Database/QuestieDB.lua")
-        QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+        QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
         -- The quest is absent from the database: single and bulk reads both return nil, so the
         -- missing-Item repair on accept has nothing to request.
         QuestieDB.QueryQuestSingle = function() return nil end
         QuestieDB.QueryQuest = function() return nil end
 
         dofile("Modules/EventHandler/QuestEventHandler.lua")
-        QuestEventHandler = QuestieLoader:ImportModule("QuestEventHandler")
+        QuestEventHandler = QuestieSmazakLoader:ImportModule("QuestEventHandler")
 
-        local BreadcrumbQuests = QuestieLoader:ImportModule("BreadcrumbQuests")
+        local BreadcrumbQuests = QuestieSmazakLoader:ImportModule("BreadcrumbQuests")
         BreadcrumbQuests.CheckQuestBreadcrumbs = function() end
 
         dofile("Modules/Network/QuestiePartyObjectives.lua")

@@ -26,18 +26,18 @@ describe("native tracker options", function()
         _G.QuestLogFrame = nil
         _G.QuestMapFrame = {IsShown = function() return true end}
         _G.LibStub = function() return {HashTable = function() return {} end} end
-        Questie.db = {profile = {}, char = {}}
-        QuestieOptionsEngine = QuestieLoader:ImportModule("QuestieOptionsEngine")
+        QuestieSmazak.db = {profile = {}, char = {}}
+        QuestieOptionsEngine = QuestieSmazakLoader:ImportModule("QuestieOptionsEngine")
         QuestieOptionsEngine.tabs = {}
-        tracker = QuestieLoader:ImportModule("QuestieTracker")
+        tracker = QuestieSmazakLoader:ImportModule("QuestieTracker")
         tracker.Update = spy.new(function() end)
         tracker.UpdateFormatting = spy.new(function() end)
-        compat = QuestieLoader:ImportModule("QuestieCompat")
+        compat = QuestieSmazakLoader:ImportModule("QuestieCompat")
         isAddOnLoadedMock = stub(compat, "IsAddOnLoaded", function() return false end)
         compat.QuestLog_Update = spy.new(function() end)
-        visibility = QuestieLoader:ImportModule("CommsVisibility")
+        visibility = QuestieSmazakLoader:ImportModule("CommsVisibility")
         visibility.ScheduleSnapshot = spy.new(function() end)
-        trackerUtils = QuestieLoader:ImportModule("TrackerUtils")
+        trackerUtils = QuestieSmazakLoader:ImportModule("TrackerUtils")
         trackerUtils.IsVoiceOverLoaded = trackerUtils.IsVoiceOverLoaded or function() end
         trackerUtils.IsSpokenLoaded = trackerUtils.IsSpokenLoaded or function() end
         isVoiceOverLoadedStub = stub(trackerUtils, "IsVoiceOverLoaded", function() return false end)
@@ -87,21 +87,21 @@ describe("native tracker options", function()
     end)
 
     it("should change the play buttons setting and update the tracker", function()
-        Questie.db.profile.trackerShowPlayButtons = true
+        QuestieSmazak.db.profile.trackerShowPlayButtons = true
         local showPlayButtons = LoadTab().group_tracker_window.items.showPlayButtons
 
         showPlayButtons.set(nil, false)
 
         assert.is_false(showPlayButtons.get())
-        assert.is_false(Questie.db.profile.trackerShowPlayButtons)
+        assert.is_false(QuestieSmazak.db.profile.trackerShowPlayButtons)
         assert.spy(tracker.Update).was.called_with(tracker)
     end)
 
     it("updates the tracker and publishes visibility when only the modern log exists", function()
         LoadTab().group_quests.items.autoTrackQuests.set(nil, true)
 
-        assert.is_true(Questie.db.profile.autoTrackQuests)
-        assert.are.same({}, Questie.db.char.TrackedQuests)
+        assert.is_true(QuestieSmazak.db.profile.autoTrackQuests)
+        assert.are.same({}, QuestieSmazak.db.char.TrackedQuests)
         assert.spy(tracker.Update).was.called_with(tracker)
         assert.spy(visibility.ScheduleSnapshot).was.called_with(visibility, "AUTO_TRACK_QUESTS")
         assert.spy(compat.QuestLog_Update).was.not_called()
@@ -109,11 +109,11 @@ describe("native tracker options", function()
 
     -- Quest-log checks skip unchanged quests, so this setting must request the quest lines itself.
     it("lays out the tracker when always showing it expands a minimized tracker", function()
-        Questie.db.char.isTrackerExpanded = false
+        QuestieSmazak.db.char.isTrackerExpanded = false
 
         LoadTab().group_tracker_window.items.group_header.items.alwaysShowTracker.set(nil, true)
 
-        assert.is_true(Questie.db.char.isTrackerExpanded)
+        assert.is_true(QuestieSmazak.db.char.isTrackerExpanded)
         assert.spy(tracker.Update).was.called_with(tracker)
         assert.spy(tracker.UpdateFormatting).was.called_with(tracker)
     end)
@@ -123,8 +123,8 @@ describe("native tracker options", function()
         local TrackerBaseFrame
 
         before_each(function()
-            TrackerBaseFrame = QuestieLoader:ImportModule("TrackerBaseFrame")
-            Questie.db.profile = {
+            TrackerBaseFrame = QuestieSmazakLoader:ImportModule("TrackerBaseFrame")
+            QuestieSmazak.db.profile = {
                 TrackerHeight = 0,
                 TrackerWidth = 0,
                 trackerBackdropEnabled = false,
@@ -140,11 +140,11 @@ describe("native tracker options", function()
             it("should show the sizing backdrop while dragging " .. key, function()
                 LoadTab().group_tracker_window.items[key].set(nil, 50, true)
 
-                assert.are.equal(0.5, Questie.db.profile[profileKey])
+                assert.are.equal(0.5, QuestieSmazak.db.profile[profileKey])
                 assert.is_true(TrackerBaseFrame.isSizing)
-                assert.is_true(Questie.db.profile.trackerBackdropEnabled)
-                assert.is_true(Questie.db.profile.trackerBorderEnabled)
-                assert.is_false(Questie.db.profile.trackerBackdropFader)
+                assert.is_true(QuestieSmazak.db.profile.trackerBackdropEnabled)
+                assert.is_true(QuestieSmazak.db.profile.trackerBorderEnabled)
+                assert.is_false(QuestieSmazak.db.profile.trackerBackdropFader)
             end)
 
             it("should restore the user's backdrop when dragging " .. key .. " ended", function()
@@ -154,9 +154,9 @@ describe("native tracker options", function()
                 option.set(nil, 50, false)
 
                 assert.is_false(TrackerBaseFrame.isSizing)
-                assert.is_false(Questie.db.profile.trackerBackdropEnabled)
-                assert.is_false(Questie.db.profile.trackerBorderEnabled)
-                assert.is_true(Questie.db.profile.trackerBackdropFader)
+                assert.is_false(QuestieSmazak.db.profile.trackerBackdropEnabled)
+                assert.is_false(QuestieSmazak.db.profile.trackerBorderEnabled)
+                assert.is_true(QuestieSmazak.db.profile.trackerBackdropFader)
             end)
         end
     end)

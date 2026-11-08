@@ -1,35 +1,35 @@
 ---@type QuestieCompat
-local QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+local QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
 
 ---@class AvailableQuests
-local AvailableQuests = QuestieLoader:CreateModule("AvailableQuests")
+local AvailableQuests = QuestieSmazakLoader:CreateModule("AvailableQuests")
 
 ---@type ThreadLib
-local ThreadLib = QuestieLoader:ImportModule("ThreadLib")
+local ThreadLib = QuestieSmazakLoader:ImportModule("ThreadLib")
 ---@type QuestieDB
-local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
 ---@type ZoneDB
-local ZoneDB = QuestieLoader:ImportModule("ZoneDB")
+local ZoneDB = QuestieSmazakLoader:ImportModule("ZoneDB")
 ---@type QuestiePlayer
-local QuestiePlayer = QuestieLoader:ImportModule("QuestiePlayer")
+local QuestiePlayer = QuestieSmazakLoader:ImportModule("QuestiePlayer")
 ---@type ActiveQuests
-local ActiveQuests = QuestieLoader:ImportModule("ActiveQuests")
+local ActiveQuests = QuestieSmazakLoader:ImportModule("ActiveQuests")
 ---@type QuestieMap
-local QuestieMap = QuestieLoader:ImportModule("QuestieMap")
+local QuestieMap = QuestieSmazakLoader:ImportModule("QuestieMap")
 ---@type QuestieTooltips
-local QuestieTooltips = QuestieLoader:ImportModule("QuestieTooltips")
+local QuestieTooltips = QuestieSmazakLoader:ImportModule("QuestieTooltips")
 ---@type QuestieCorrections
-local QuestieCorrections = QuestieLoader:ImportModule("QuestieCorrections")
+local QuestieCorrections = QuestieSmazakLoader:ImportModule("QuestieCorrections")
 ---@type QuestieQuestBlacklist
-local QuestieQuestBlacklist = QuestieLoader:ImportModule("QuestieQuestBlacklist")
+local QuestieQuestBlacklist = QuestieSmazakLoader:ImportModule("QuestieQuestBlacklist")
 ---@type IsleOfQuelDanas
-local IsleOfQuelDanas = QuestieLoader:ImportModule("IsleOfQuelDanas")
+local IsleOfQuelDanas = QuestieSmazakLoader:ImportModule("IsleOfQuelDanas")
 ---@type QuestieLib
-local QuestieLib = QuestieLoader:ImportModule("QuestieLib")
+local QuestieLib = QuestieSmazakLoader:ImportModule("QuestieLib")
 ---@type DailyQuestComms
-local DailyQuestComms = QuestieLoader:ImportModule("DailyQuestComms")
+local DailyQuestComms = QuestieSmazakLoader:ImportModule("DailyQuestComms")
 ---@type DailyQuestCommsBlacklist
-local DailyQuestCommsBlacklist = QuestieLoader:ImportModule("DailyQuestCommsBlacklist")
+local DailyQuestCommsBlacklist = QuestieSmazakLoader:ImportModule("DailyQuestCommsBlacklist")
 
 local GetQuestGreenRange = QuestieCompat.GetQuestGreenRange
 local yield = coroutine.yield
@@ -84,43 +84,43 @@ AvailableQuests.__getPassState = function()
 end
 
 function AvailableQuests.Initialize()
-    Questie.Debug(Questie.DEBUG_DEVELOP, "AvailableQuests: Initialize")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "AvailableQuests: Initialize")
     dungeons = ZoneDB:GetDungeons()
     playerFaction = UnitFactionGroup("player")
 
     local realmName = GetRealmName()
-    if (not Questie.db.global.unavailableQuestsDeterminedByTalking[realmName]) or QuestieLib.DidDailyResetHappenSinceLastLogin() then
-        Questie.db.global.unavailableQuestsDeterminedByTalking[realmName] = {}
+    if (not QuestieSmazak.db.global.unavailableQuestsDeterminedByTalking[realmName]) or QuestieLib.DidDailyResetHappenSinceLastLogin() then
+        QuestieSmazak.db.global.unavailableQuestsDeterminedByTalking[realmName] = {}
     end
-    unavailableQuestsDeterminedByTalking = Questie.db.global.unavailableQuestsDeterminedByTalking[realmName]
+    unavailableQuestsDeterminedByTalking = QuestieSmazak.db.global.unavailableQuestsDeterminedByTalking[realmName]
     AvailableQuests.__unavailableQuestsDeterminedByTalking = unavailableQuestsDeterminedByTalking
 
-    if (not Questie.db.global.unavailableDailyQuestsByNpc[realmName]) or QuestieLib.DidDailyResetHappenSinceLastLogin() then
-        Questie.db.global.unavailableDailyQuestsByNpc[realmName] = {}
+    if (not QuestieSmazak.db.global.unavailableDailyQuestsByNpc[realmName]) or QuestieLib.DidDailyResetHappenSinceLastLogin() then
+        QuestieSmazak.db.global.unavailableDailyQuestsByNpc[realmName] = {}
     end
-    unavailableDailyQuestsByNpc = Questie.db.global.unavailableDailyQuestsByNpc[realmName]
+    unavailableDailyQuestsByNpc = QuestieSmazak.db.global.unavailableDailyQuestsByNpc[realmName]
     AvailableQuests.__unavailableDailyQuestsByNpc = unavailableDailyQuestsByNpc
 
-    if (not Questie.IsClassic) then
+    if (not QuestieSmazak.IsClassic) then
         _ScheduleDailyResetTimer()
     end
 end
 
 --- Clears both unavailable quest tables for the current realm (triggered by daily reset).
 function AvailableQuests.ClearUnavailableDailyQuests()
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[AvailableQuests.ClearUnavailableDailyQuests]")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[AvailableQuests.ClearUnavailableDailyQuests]")
 
     local realmName = GetRealmName()
-    Questie.db.global.unavailableQuestsDeterminedByTalking[realmName] = {}
-    Questie.db.global.unavailableDailyQuestsByNpc[realmName] = {}
-    unavailableQuestsDeterminedByTalking = Questie.db.global.unavailableQuestsDeterminedByTalking[realmName]
-    unavailableDailyQuestsByNpc = Questie.db.global.unavailableDailyQuestsByNpc[realmName]
+    QuestieSmazak.db.global.unavailableQuestsDeterminedByTalking[realmName] = {}
+    QuestieSmazak.db.global.unavailableDailyQuestsByNpc[realmName] = {}
+    unavailableQuestsDeterminedByTalking = QuestieSmazak.db.global.unavailableQuestsDeterminedByTalking[realmName]
+    unavailableDailyQuestsByNpc = QuestieSmazak.db.global.unavailableDailyQuestsByNpc[realmName]
 end
 
 --- Schedules a one-shot timer to fire at the next daily reset time, then reschedules itself for the next reset.
 _ScheduleDailyResetTimer = function()
     local realmName = GetRealmName()
-    local lastKnownReset = Questie.db.global.lastKnownDailyReset[realmName]
+    local lastKnownReset = QuestieSmazak.db.global.lastKnownDailyReset[realmName]
     local now = GetServerTime()
     local delay
 
@@ -177,7 +177,7 @@ local function _StartPass()
         for i = 1, #callbacks do
             local success, err = pcall(callbacks[i])
             if (not success) then
-                Questie.Error("Error in AvailableQuests.CalculateAndDrawAll callback", err)
+                QuestieSmazak.Error("Error in AvailableQuests.CalculateAndDrawAll callback", err)
             end
         end
         -- If another CalculateAndDrawAll arrived while this pass was running, start it now.
@@ -196,7 +196,7 @@ end
 
 ---@param callback function | nil
 function AvailableQuests.CalculateAndDrawAll(callback)
-    Questie.Debug(Questie.DEBUG_INFO, "[AvailableQuests.CalculateAndDrawAll]")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_INFO, "[AvailableQuests.CalculateAndDrawAll]")
 
     if callback then
         pendingCallbacks[#pendingCallbacks + 1] = callback
@@ -218,7 +218,7 @@ function AvailableQuests.DrawAvailableQuest(quest) -- prevent recursion
     --? Some quests can be started by both an NPC and a GameObject
 
     local added = 0
-    local limit = Questie.db.profile.availableIconLimit
+    local limit = QuestieSmazak.db.profile.availableIconLimit
     if quest.Starts.Item then
         local items = quest.Starts.Item
         for i = 1, #items do
@@ -226,7 +226,7 @@ function AvailableQuests.DrawAvailableQuest(quest) -- prevent recursion
 
             if (not item) then
                 -- TODO: This check can be removed once the DB is fixed
-                Questie.Warning("Item not found for quest", quest.Id, "Item ID:", items[i], "- Please report this on Github or Discord!")
+                QuestieSmazak.Warning("Item not found for quest", quest.Id, "Item ID:", items[i], "- Please report this on Github or Discord!")
                 return
             end
 
@@ -259,7 +259,7 @@ function AvailableQuests.DrawAvailableQuest(quest) -- prevent recursion
 
             if (not obj) then
                 -- TODO: This check can be removed once the DB is fixed
-                Questie.Warning("Object not found for quest", quest.Id, "Object ID:", gameObjects[i], "- Please report this on Github or Discord!")
+                QuestieSmazak.Warning("Object not found for quest", quest.Id, "Object ID:", gameObjects[i], "- Please report this on Github or Discord!")
                 return
             end
 
@@ -277,7 +277,7 @@ function AvailableQuests.DrawAvailableQuest(quest) -- prevent recursion
 
             if (not npc) then
                 -- TODO: This check can be removed once the DB is fixed
-                Questie.Warning("NPC not found for quest", quest.Id, "NPC ID:", npcs[i], "- Please report this on Github or Discord!")
+                QuestieSmazak.Warning("NPC not found for quest", quest.Id, "NPC ID:", npcs[i], "- Please report this on Github or Discord!")
                 return
             end
 
@@ -330,7 +330,7 @@ function AvailableQuests.RecreateFailedQuest(quest)
     end, function()
         QuestieTooltips:RemoveQuest(questId)
         AvailableQuests.DrawAvailableQuest(quest)
-        Questie:SendMessage("QC_ID_BROADCAST_QUEST_REMOVE", questId)
+        QuestieSmazak:SendMessage("QC_ID_BROADCAST_QUEST_REMOVE", questId)
     end)
 end
 
@@ -481,7 +481,7 @@ function AvailableQuests.ValidateAvailableQuestsFromQuestGreeting()
     -- Read the greeting lists, not their rendered buttons: Forever uses an unnamed button pool.
     local availableQuestsInGreeting = {}
     local unresolvedQuestInGreeting = false
-    -- Active quests can appear here before QUEST_ACCEPTED updates Questie's quest log.
+    -- Active quests can appear here before QUEST_ACCEPTED updates QuestieSmazak's quest log.
     for i = 1, GetNumActiveQuests() do
         local questId = QuestieCompat.GetQuestGreetingQuestID(i, true, npcGuid)
         if questId > 0 then
@@ -536,7 +536,7 @@ local function _UpdateDrawnAvailableIcons(questId)
             local newIcon = QuestieLib.GetQuestIcon(frame.data.QuestData)
 
             if newIcon ~= frame.data.Icon then
-                frame:UpdateTexture(Questie.usedIcons[newIcon])
+                frame:UpdateTexture(QuestieSmazak.usedIcons[newIcon])
             end
         end
     end
@@ -545,7 +545,7 @@ end
 
 _CalculateAndDrawAvailableQuests = function()
     -- Localize the variables for speeeeed
-    local debugEnabled = Questie.db.profile.debugEnabled
+    local debugEnabled = QuestieSmazak.db.profile.debugEnabled
 
     local questIds = QuestieDB.QuestPointers
 
@@ -553,32 +553,32 @@ _CalculateAndDrawAvailableQuests = function()
     local minLevel = playerLevel - GetQuestGreenRange("player")
     local maxLevel = playerLevel
 
-    if Questie.db.profile.lowLevelStyle == Questie.LOWLEVEL_RANGE then
-        minLevel = Questie.db.profile.minLevelFilter
-        maxLevel = Questie.db.profile.maxLevelFilter
-    elseif Questie.db.profile.lowLevelStyle == Questie.LOWLEVEL_OFFSET then
-        minLevel = playerLevel - Questie.db.profile.manualLevelOffset
+    if QuestieSmazak.db.profile.lowLevelStyle == QuestieSmazak.LOWLEVEL_RANGE then
+        minLevel = QuestieSmazak.db.profile.minLevelFilter
+        maxLevel = QuestieSmazak.db.profile.maxLevelFilter
+    elseif QuestieSmazak.db.profile.lowLevelStyle == QuestieSmazak.LOWLEVEL_OFFSET then
+        minLevel = playerLevel - QuestieSmazak.db.profile.manualLevelOffset
     end
 
-    local completedQuests = Questie.db.char.complete
-    local showRepeatableQuests = Questie.db.profile.showRepeatableQuests
-    local showDungeonQuests = Questie.db.profile.showDungeonQuests
-    local showRaidQuests = Questie.db.profile.showRaidQuests
-    local showPvPQuests = Questie.db.profile.showPvPQuests
-    local showAQWarEffortQuests = Questie.db.profile.showAQWarEffortQuests
+    local completedQuests = QuestieSmazak.db.char.complete
+    local showRepeatableQuests = QuestieSmazak.db.profile.showRepeatableQuests
+    local showDungeonQuests = QuestieSmazak.db.profile.showDungeonQuests
+    local showRaidQuests = QuestieSmazak.db.profile.showRaidQuests
+    local showPvPQuests = QuestieSmazak.db.profile.showPvPQuests
+    local showAQWarEffortQuests = QuestieSmazak.db.profile.showAQWarEffortQuests
 
     local autoBlacklist = QuestieDB.autoBlacklist
     local hiddenQuests = QuestieCorrections.hiddenQuests
-    local hidden = Questie.db.char.hidden
+    local hidden = QuestieSmazak.db.char.hidden
 
     local activeQuests = ActiveQuests.GetAll()
-    local currentIsleOfQuelDanasQuests = IsleOfQuelDanas.quests[Questie.db.profile.isleOfQuelDanasPhase] or {}
+    local currentIsleOfQuelDanasQuests = IsleOfQuelDanas.quests[QuestieSmazak.db.profile.isleOfQuelDanasPhase] or {}
     local aqWarEffortQuests = QuestieQuestBlacklist.AQWarEffortQuests
 
     QuestieDB.activeChildQuests = {} -- Reset here so we don't need to keep track in the quest event system
 
-    local IsClassic = Questie.IsClassic
-    local IsSoD = Questie.IsSoD
+    local IsClassic = QuestieSmazak.IsClassic
+    local IsSoD = QuestieSmazak.IsSoD
 
     -- We create a local function here to improve readability but use the localized variables above.
     -- The order of checks is important here to bring the speed to a max
@@ -757,7 +757,7 @@ _AddStarter = function(starter, quest, tooltipKey, limit)
             return 0
         end
     elseif tooltipKey == "im_" .. starter.id then
-        -- We don't filter items by faction, because Questie can not differentiate neutral NPCs from friendly ones.
+        -- We don't filter items by faction, because QuestieSmazak can not differentiate neutral NPCs from friendly ones.
         -- overwrite tooltipKey, so stuff shows in monster tooltips
         tooltipKey = "m_" .. starter.id
         starterType = "itemFromMonster"
@@ -858,7 +858,7 @@ _HasProperDistanceToAlreadyAddedSpawns = function(coords, alreadyAddedSpawns)
     for _, alreadyAdded in pairs(alreadyAddedSpawns) do
         local distance = QuestieLib.GetSpawnDistance(alreadyAdded, coords)
         -- 28 seems like a good distance. The NPC Denalan in Teldrassil shows both spawns for the quests
-        if distance < Questie.db.profile.spawnFilterDistance then
+        if distance < QuestieSmazak.db.profile.spawnFilterDistance then
             return false
         end
     end
@@ -866,7 +866,7 @@ _HasProperDistanceToAlreadyAddedSpawns = function(coords, alreadyAddedSpawns)
 end
 
 _GetIconScaleForAvailable = function()
-    return Questie.db.profile.availableScale or 1.3
+    return QuestieSmazak.db.profile.availableScale or 1.3
 end
 
 --- Quests outside the player's level capability are never offered by an NPC in the game, so their

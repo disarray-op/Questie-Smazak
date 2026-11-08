@@ -6,7 +6,7 @@ describe("QuestiePlayer", function()
 
     before_each(function()
         dofile("Modules/QuestiePlayer.lua")
-        QuestiePlayer = QuestieLoader:ImportModule("QuestiePlayer")
+        QuestiePlayer = QuestieSmazakLoader:ImportModule("QuestiePlayer")
     end)
 
     describe("race requirements", function()
@@ -110,7 +110,7 @@ describe("QuestiePlayer", function()
         local ZoneDB
 
         before_each(function()
-            ZoneDB = QuestieLoader:ImportModule("ZoneDB")
+            ZoneDB = QuestieSmazakLoader:ImportModule("ZoneDB")
             ZoneDB.GetAreaIdByUiMapId = function(_, uiMapId)
                 return ({[1426] = 1, [1415] = 10074})[uiMapId]
             end
@@ -189,7 +189,7 @@ describe("QuestiePlayer", function()
         end)
 
         it("should return nil if player name is not found", function()
-            _G.UnitInParty = function(name) return name == "Questie" end
+            _G.UnitInParty = function(name) return name == "QuestieSmazak" end
             _G.UnitInRaid = function() return false end
             _G.UnitClass = function() return nil, "PALADIN" end
 

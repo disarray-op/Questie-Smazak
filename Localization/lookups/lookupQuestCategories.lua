@@ -1,5 +1,5 @@
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 
 -- This data comes from QuestSort.dbc/db2
 l10n.questCategoryLookup = {

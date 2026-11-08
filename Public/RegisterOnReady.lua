@@ -1,18 +1,18 @@
 ---@class QuestieAPI
-local QuestieAPI = QuestieLoader:ImportModule("QuestieAPI")
+local QuestieAPI = QuestieSmazakLoader:ImportModule("QuestieAPI")
 
 ---@type fun()[]
 local onReadyCallbacks = {}
 
---- Register a callback to be invoked once Questie.API.isReady becomes true.
+--- Register a callback to be invoked once QuestieSmazak.API.isReady becomes true.
 --- If already ready, the callback is invoked immediately.
 ---@param callback fun()
-function Questie.API.RegisterOnReady(callback)
+function QuestieSmazak.API.RegisterOnReady(callback)
     if type(callback) ~= "function" then
-        error("Questie.API.RegisterOnReady: callback must be a function")
+        error("QuestieSmazak.API.RegisterOnReady: callback must be a function")
     end
 
-    if Questie.API.isReady then
+    if QuestieSmazak.API.isReady then
         xpcall(callback, CallErrorHandler)
         return
     end
@@ -21,7 +21,7 @@ function Questie.API.RegisterOnReady(callback)
 end
 
 function QuestieAPI.PropagateOnReady()
-    if (not Questie.API.isReady) then
+    if (not QuestieSmazak.API.isReady) then
         return
     end
 

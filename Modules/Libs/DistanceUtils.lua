@@ -1,12 +1,12 @@
 ---@class DistanceUtils
-local DistanceUtils = QuestieLoader:CreateModule("DistanceUtils")
+local DistanceUtils = QuestieSmazakLoader:CreateModule("DistanceUtils")
 
 ---@type ZoneDB
-local ZoneDB = QuestieLoader:ImportModule("ZoneDB")
+local ZoneDB = QuestieSmazakLoader:ImportModule("ZoneDB")
 ---@type QuestieDB
-local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
 ---@type QuestieLib
-local QuestieLib = QuestieLoader:ImportModule("QuestieLib")
+local QuestieLib = QuestieSmazakLoader:ImportModule("QuestieLib")
 
 local HBD = LibStub("HereBeDragonsQuestie-2.0")
 
@@ -30,7 +30,7 @@ function DistanceUtils.GetNearestSpawn(spawns)
                 local dungeonLocation = ZoneDB:GetDungeonLocation(zoneId)
                 if (not dungeonLocation) and (not alreadyErroredZoneIds[zoneId]) then
                     alreadyErroredZoneIds[zoneId] = true
-                    Questie.Error("No dungeon location found for zoneId:", zoneId, "Please report this on Github or Discord!")
+                    QuestieSmazak.Error("No dungeon location found for zoneId:", zoneId, "Please report this on Github or Discord!")
                 end
                 for _, location in pairs(dungeonLocation or {}) do
                     local dist = _GetDistance(location[1], location[2], location[3], playerX, playerY, playerI)

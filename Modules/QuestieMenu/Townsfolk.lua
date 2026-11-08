@@ -1,15 +1,15 @@
 ---@type QuestieCompat
-local QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+local QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
 
 ---@class Townsfolk
-local Townsfolk = QuestieLoader:CreateModule("Townsfolk")
+local Townsfolk = QuestieSmazakLoader:CreateModule("Townsfolk")
 
 ---@type QuestieDB
-local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
 ---@type QuestieProfessions
-local QuestieProfessions = QuestieLoader:ImportModule("QuestieProfessions")
+local QuestieProfessions = QuestieSmazakLoader:ImportModule("QuestieProfessions")
 ---@type Expansions
-local Expansions = QuestieLoader:ImportModule("Expansions")
+local Expansions = QuestieSmazakLoader:ImportModule("Expansions")
 
 local playerClass = UnitClassBase("player")
 local playerFaction = UnitFactionGroup("player")
@@ -288,22 +288,22 @@ function Townsfolk.PostBoot() -- post DB boot (use queries here)
         17034, 17026, 17035, 17021, 17038, 17036, 17037, -- DRUID
     }
 
-    if Questie.IsSoD then
+    if QuestieSmazak.IsSoD then
         table.insert(reagents, 212160) -- In SoD the Chronoboon Displacer is sold by reagent vendors
     end
 
     -- populate vendor IDs from db
     if #reagents > 0 then
-        Questie.db.char.vendorList["Reagents"] = _reformatVendors(Townsfolk:PopulateVendors(reagents))
+        QuestieSmazak.db.char.vendorList["Reagents"] = _reformatVendors(Townsfolk:PopulateVendors(reagents))
     end
 
     if Expansions.Current < Expansions.MoP then
         -- Beginning with WotLK, all poison vendors sell all ranks of poison, so Rank 1 of one poison is enough here
         local poisons = Expansions.Current >= Expansions.Wotlk and {2892} or {5140,2928,8924,5173,2930,8923}
-        Questie.db.char.vendorList["Poisons"] = _reformatVendors(Townsfolk:PopulateVendors(poisons))
+        QuestieSmazak.db.char.vendorList["Poisons"] = _reformatVendors(Townsfolk:PopulateVendors(poisons))
     end
 
-    Questie.db.char.vendorList["Trade Goods"] = _reformatVendors(Townsfolk:PopulateVendors({
+    QuestieSmazak.db.char.vendorList["Trade Goods"] = _reformatVendors(Townsfolk:PopulateVendors({
         14256,12810,13463,8845,8846,4234,3713,8170,14341,4389,3357,2453,13464,
         3355,3356,3358,4371,4304,5060,2319,18256,8925,3857,10940,2321,785,4404,2692,
         2605,3372,2320,6217,2449,4399,4364,10938,18567,4382,4289,765,3466,3371,2447,2880,
@@ -313,8 +313,8 @@ function Townsfolk.PostBoot() -- post DB boot (use queries here)
         27532,16082,16083, -- Fishing skill books
         27736,16072,16073, -- Cooking skill books
     }))
-    Questie.db.char.vendorList["Bags"] = _reformatVendors(Townsfolk:PopulateVendors({4496, 4497, 4498, 4499, (Expansions.Current >= Expansions.Tbc) and 30744 or nil}))
-    Questie.db.char.vendorList["Potions"] = _reformatVendors(Townsfolk:PopulateVendors({
+    QuestieSmazak.db.char.vendorList["Bags"] = _reformatVendors(Townsfolk:PopulateVendors({4496, 4497, 4498, 4499, (Expansions.Current >= Expansions.Tbc) and 30744 or nil}))
+    QuestieSmazak.db.char.vendorList["Potions"] = _reformatVendors(Townsfolk:PopulateVendors({
         118, 858, 929, 1710, 3928, 13446, 18839, (Expansions.Current >= Expansions.Tbc) and 22829 or nil, (Expansions.Current >= Expansions.Tbc) and 32947 or nil, (Expansions.Current >= Expansions.Wotlk) and 33447 or nil, (Expansions.Current >= Expansions.Cata) and 57191 or nil, -- Healing Potions
         2455, 3385, 3827, 6149, 13443, 13444, 18841, (Expansions.Current >= Expansions.Tbc) and 22832 or nil, (Expansions.Current >= Expansions.Tbc) and 32948 or nil, (Expansions.Current >= Expansions.Wotlk) and 33448 or nil, (Expansions.Current >= Expansions.Cata) and 57192 or nil, -- Mana Potions
     }))
@@ -322,28 +322,28 @@ function Townsfolk.PostBoot() -- post DB boot (use queries here)
 end
 
 function Townsfolk:BuildCharacterTownsfolk()
-    Questie.db.char.townsfolk = {}
-    Questie.db.char.vendorList = {}
-    Questie.db.char.townsfolkClass = UnitClassBase("player")
+    QuestieSmazak.db.char.townsfolk = {}
+    QuestieSmazak.db.char.vendorList = {}
+    QuestieSmazak.db.char.townsfolkClass = UnitClassBase("player")
 
     for key, npcs in pairs(Townsfolk.factionSpecificTownsfolk[playerFaction]) do
-        Questie.db.char.townsfolk[key] = npcs
+        QuestieSmazak.db.char.townsfolk[key] = npcs
     end
 
     for key, npcs in pairs(Townsfolk.classSpecificTownsfolk[playerClass]) do
-        Questie.db.char.townsfolk[key] = npcs
+        QuestieSmazak.db.char.townsfolk[key] = npcs
     end
 end
 
 local function _UpdatePetFood() -- call on change pet
-    Questie.db.char.vendorList["Pet Food"] = {}
+    QuestieSmazak.db.char.vendorList["Pet Food"] = {}
     -- detect petfood vendors for player's pet
     for _, key in pairs({QuestieCompat.GetStablePetFoodTypes(0)}) do
         if Townsfolk.petFoodVendorTypes[key] then
-            Townsfolk:PopulateVendors(Townsfolk.petFoodVendorTypes[key], Questie.db.char.vendorList["Pet Food"], true)
+            Townsfolk:PopulateVendors(Townsfolk.petFoodVendorTypes[key], QuestieSmazak.db.char.vendorList["Pet Food"], true)
         end
     end
-    Questie.db.char.vendorList["Pet Food"] = _reformatVendors(Questie.db.char.vendorList["Pet Food"])
+    QuestieSmazak.db.char.vendorList["Pet Food"] = _reformatVendors(QuestieSmazak.db.char.vendorList["Pet Food"])
 end
 
 local function _UpdateAmmoVendors() -- call on change weapon
@@ -351,7 +351,7 @@ local function _UpdateAmmoVendors() -- call on change weapon
         return
     end
 
-    Questie.db.char.vendorList["Ammo"] = _reformatVendors(Townsfolk:PopulateVendors({11285,3030,19316,2515,2512,11284,19317,2519,2516,3033,28056,28053,28061,28060}, {}, true))
+    QuestieSmazak.db.char.vendorList["Ammo"] = _reformatVendors(Townsfolk:PopulateVendors({11285,3030,19316,2515,2512,11284,19317,2519,2516,3033,28056,28053,28061,28060}, {}, true))
 end
 
 local function _UpdateFoodDrink()
@@ -363,8 +363,8 @@ local function _UpdateFoodDrink()
         27857,27854,20857,27858,27856,29448,27855,29451,30355,28486,29450,29393,29394,29449,29452
     }
 
-    Questie.db.char.vendorList["Food"] = _reformatVendors(Townsfolk:PopulateVendors(food, {}, true))
-    Questie.db.char.vendorList["Drink"] = _reformatVendors(Townsfolk:PopulateVendors(drink, {}, true))
+    QuestieSmazak.db.char.vendorList["Food"] = _reformatVendors(Townsfolk:PopulateVendors(food, {}, true))
+    QuestieSmazak.db.char.vendorList["Drink"] = _reformatVendors(Townsfolk:PopulateVendors(drink, {}, true))
 end
 
 function Townsfolk:UpdatePlayerVendors() -- call on levelup
@@ -443,7 +443,7 @@ function Townsfolk.GetFactionSpecificMailboxes()
                 tinsert(allianceMailBoxes, id)
             end
         else
-            Questie.Debug(Questie.DEBUG_DEVELOP, "Missing mailbox:", tostring(id))
+            QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "Missing mailbox:", tostring(id))
         end
     end
 

@@ -1,31 +1,31 @@
 ---@type QuestiePopup
-local Popup = QuestieLoader:ImportModule("QuestiePopup")
+local Popup = QuestieSmazakLoader:ImportModule("QuestiePopup")
 
 ---@class QuestieFrame
-local QuestieFrame = QuestieLoader:CreateModule("QuestieFrame")
+local QuestieFrame = QuestieSmazakLoader:CreateModule("QuestieSmazakFrame")
 local _QuestieFrame = QuestieFrame.private
 
 ---@type QuestieMap
-local QuestieMap = QuestieLoader:ImportModule("QuestieMap")
+local QuestieMap = QuestieSmazakLoader:ImportModule("QuestieMap")
 ---@type QuestieDBMIntegration
-local QuestieDBMIntegration = QuestieLoader:ImportModule("QuestieDBMIntegration")
+local QuestieDBMIntegration = QuestieSmazakLoader:ImportModule("QuestieDBMIntegration")
 ---@type QuestieDB
-local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
 ---@type QuestieLink
-local QuestieLink = QuestieLoader:ImportModule("QuestieLink")
+local QuestieLink = QuestieSmazakLoader:ImportModule("QuestieLink")
 ---@type QuestieQuest
-local QuestieQuest = QuestieLoader:ImportModule("QuestieQuest")
+local QuestieQuest = QuestieSmazakLoader:ImportModule("QuestieQuest")
 ---@type QuestieWaypoints
-local QuestieWaypoints = QuestieLoader:ImportModule("QuestieWaypoints")
+local QuestieWaypoints = QuestieSmazakLoader:ImportModule("QuestieWaypoints")
 
 ---@type QuestieLib
-local QuestieLib = QuestieLoader:ImportModule("QuestieLib")
+local QuestieLib = QuestieSmazakLoader:ImportModule("QuestieLib")
 ---@type QuestieCompat
-local QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+local QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
 ---@type QuestieCombatQueue
-local QuestieCombatQueue = QuestieLoader:ImportModule("QuestieCombatQueue")
+local QuestieCombatQueue = QuestieSmazakLoader:ImportModule("QuestieCombatQueue")
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 
 local HBDPins = LibStub("HereBeDragonsQuestie-Pins-2.0")
 
@@ -56,7 +56,7 @@ function QuestieFrame.CreateIconFrame(frameId, OnEnter)
     ---@field isManualIcon boolean
     ---@field data IconData
     ---@field minimapTwin IconFrame? A world map icon's minimap icon; its waypoint paths follow it on the minimap.
-    local newFrame = CreateFrame("Button", "QuestieFrame" .. frameId)
+    local newFrame = CreateFrame("Button", "QuestieSmazakFrame" .. frameId)
     newFrame.frameId = frameId
 
     -- Add the frames to the ignore list of the Minimap Button Bag (MBB) addon
@@ -96,7 +96,7 @@ function QuestieFrame.CreateIconFrame(frameId, OnEnter)
     glowTexture:SetTexelSnappingBias(0)
     glowTexture:SetSnapToPixelGrid(false)
     glowTexture:SetSize(18, 18) -- irrelevant as gets resized when used
-    glowTexture:SetTexture(Questie.icons["glow"]) -- Always same texture
+    glowTexture:SetTexture(QuestieSmazak.icons["glow"]) -- Always same texture
     glowTexture:Hide()
 
     -- Replace SetVertexColor method
@@ -222,7 +222,7 @@ function _QuestieFrame.OnClick(self, button)
                 ChatEdit_InsertLink(QuestieLink.GetQuestLinkStringById(frameData.Id))
             else
                 if frameData.Type == "available" and IsShiftKeyDown() then
-                    local questName = QuestieLib:GetColoredQuestName(frameData.Id, Questie.db.profile.enableTooltipsQuestLevel, false)
+                    local questName = QuestieLib:GetColoredQuestName(frameData.Id, QuestieSmazak.db.profile.enableTooltipsQuestLevel, false)
                     local confirmText = l10n("Are you sure you want to hide the quest '%s'?\nIf this quest isn't actually available, please report it to us!", questName)
                     Popup.Show("QUESTIE_CONFIRMHIDE", confirmText, nil, frameData.Id)
                 elseif frameData.Type == "manual" and IsShiftKeyDown() and (not frameData.ManualTooltipData.disableShiftToRemove) then
@@ -240,14 +240,14 @@ function _QuestieFrame.OnClick(self, button)
         local add = true
 
         -- Remove old waypoint if set
-        if Questie.db.char._tom_waypoint and TomTom.RemoveWaypoint then
-            local waypoint = Questie.db.char._tom_waypoint
+        if QuestieSmazak.db.char._tom_waypoint and TomTom.RemoveWaypoint then
+            local waypoint = QuestieSmazak.db.char._tom_waypoint
             TomTom:RemoveWaypoint(waypoint)
-            add = (waypoint[1] ~= uiMapId or waypoint[2] ~= x or waypoint[3] ~= y or waypoint.title ~= title or waypoint.from ~= "Questie")
+            add = (waypoint[1] ~= uiMapId or waypoint[2] ~= x or waypoint[3] ~= y or waypoint.title ~= title or waypoint.from ~= "QuestieSmazak")
         end
 
         -- Add waypoint
-        Questie.db.char._tom_waypoint = add and TomTom:AddWaypoint(uiMapId, x, y, {title = title, crazy = true, from = "Questie"})
+        QuestieSmazak.db.char._tom_waypoint = add and TomTom:AddWaypoint(uiMapId, x, y, {title = title, crazy = true, from = "QuestieSmazak"})
     end
 end
 
@@ -274,7 +274,7 @@ end
 function _QuestieFrame.BaseOnShow(self)
     local data = self.data
 
-    if ((self.miniMapIcon and Questie.db.profile.alwaysGlowMinimap) or ((not self.miniMapIcon) and Questie.db.profile.alwaysGlowMap)) and
+    if ((self.miniMapIcon and QuestieSmazak.db.profile.alwaysGlowMinimap) or ((not self.miniMapIcon) and QuestieSmazak.db.profile.alwaysGlowMap)) and
         data and data.ObjectiveData and
         data.ObjectiveData.Color and
         (data.Type and (data.Type ~= "available" and data.Type ~= "complete")
@@ -299,12 +299,12 @@ function _QuestieFrame.UpdateTexture(self, texture)
     local alpha
 
     if (self.miniMapIcon) then
-        globalScale = Questie.db.profile.globalMiniMapScale;
-        objectiveColor = Questie.db.profile.questMinimapObjectiveColors;
+        globalScale = QuestieSmazak.db.profile.globalMiniMapScale;
+        objectiveColor = QuestieSmazak.db.profile.questMinimapObjectiveColors;
         alpha = 0;
     else
-        globalScale = Questie.db.profile.globalScale;
-        objectiveColor = Questie.db.profile.questObjectiveColors;
+        globalScale = QuestieSmazak.db.profile.globalScale;
+        objectiveColor = QuestieSmazak.db.profile.questObjectiveColors;
         alpha = 1;
     end
 
@@ -314,9 +314,9 @@ function _QuestieFrame.UpdateTexture(self, texture)
 
     if self.data.StarterType then
         if self.data.StarterType == "itemFromMonster" or self.data.StarterType == "itemFromObject" then
-            self.overlayTexture:SetTexture("Interface/AddOns/Questie/Icons/loot_overlay.png")
+            self.overlayTexture:SetTexture("Interface/AddOns/QuestieSmazak/Icons/loot_overlay.png")
         elseif self.data.StarterType == "Object" then
-            self.overlayTexture:SetTexture("Interface/AddOns/Questie/Icons/object_overlay.png")
+            self.overlayTexture:SetTexture("Interface/AddOns/QuestieSmazak/Icons/object_overlay.png")
         end
         self.overlayTexture:Show()
     else
@@ -326,7 +326,7 @@ function _QuestieFrame.UpdateTexture(self, texture)
 
     --[[if self.data.FinisherType then
         if self.data.FinisherType == "Object" then
-            self.overlayTexture:SetTexture("Interface/AddOns/Questie/Icons/object_overlay.png")
+            self.overlayTexture:SetTexture("Interface/AddOns/QuestieSmazak/Icons/object_overlay.png")
         end
         self.overlayTexture:Show()
     else
@@ -388,8 +388,8 @@ function _QuestieFrame.Unload(self)
     self.shouldBeShowing = nil
     self.faded = nil
     self._hidden_by_flash = nil
-    HBDPins:RemoveMinimapIcon(Questie, self)
-    HBDPins:RemoveWorldMapIcon(Questie, self)
+    HBDPins:RemoveMinimapIcon(QuestieSmazak, self)
+    HBDPins:RemoveWorldMapIcon(QuestieSmazak, self)
     QuestieDBMIntegration:UnregisterHudQuestIcon(tostring(self))
 
     self.texture:SetVertexColor(1, 1, 1, 1)
@@ -418,9 +418,9 @@ function _QuestieFrame.FadeOut(self)
     if not self.faded then
         self.faded = true
         local r, g, b = self.texture:GetVertexColor()
-        self.texture:SetVertexColor(r, g, b, Questie.db.profile.iconFadeLevel)
+        self.texture:SetVertexColor(r, g, b, QuestieSmazak.db.profile.iconFadeLevel)
         r, g, b = self.glowTexture:GetVertexColor()
-        self.glowTexture:SetVertexColor(r, g, b, Questie.db.profile.iconFadeLevel)
+        self.glowTexture:SetVertexColor(r, g, b, QuestieSmazak.db.profile.iconFadeLevel)
         QuestieWaypoints.OwnerChanged(self)
     end
 end
@@ -476,12 +476,12 @@ end
 ---@param self IconFrame
 ---@return boolean @True if the frame/icon should be hidden and :FakeHide() should be called, false otherwise
 function _QuestieFrame.ShouldBeHidden(self)
-    local profile = Questie.db.profile
+    local profile = QuestieSmazak.db.profile
     local data = self.data
     local iconType = data.Type -- v6.5.1 values: available, complete, manual, monster, object, item, event. This function is not called with manual.
     local questId = data.Id
 
-    local IsSoD = Questie.IsSoD
+    local IsSoD = QuestieSmazak.IsSoD
 
     --investigate quest and cache results to minimize DB lookups
     local repeatable = QuestieDB.IsRepeatable(questId)

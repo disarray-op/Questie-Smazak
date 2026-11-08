@@ -16,14 +16,14 @@ describe("QuestieLib", function()
         -- QuestieDB binds the provider schema and queries at file load.
         LoadQuestieDBMock()
         dofile("Database/QuestieDB.lua")
-        QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+        QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
         QuestieDB.GetQuestTagInfo = function() end
         dofile("Localization/l10n.lua")
-        l10n = QuestieLoader:ImportModule("l10n")
+        l10n = QuestieSmazakLoader:ImportModule("l10n")
         l10n.GetUILocale = function() return "enUS" end
 
         dofile("Modules/Libs/QuestieLib.lua")
-        QuestieLib = QuestieLoader:ImportModule("QuestieLib")
+        QuestieLib = QuestieSmazakLoader:ImportModule("QuestieLib")
     end)
 
     describe("difficulty colors", function()
@@ -34,11 +34,11 @@ describe("QuestieLib", function()
         before_each(function()
             originalEnum = _G.Enum
             _G.Enum = {RelativeContentDifficulty = {Trivial = 0, Easy = 1, Fair = 2, Difficult = 3, Impossible = 4}}
-            QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+            QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
             nativeDifficulty = nil
             getDifficultyMock = stub(QuestieCompat, "GetQuestDifficulty", function() return nativeDifficulty end)
             getGreenRangeMock = stub(QuestieCompat, "GetQuestGreenRange", function() return 5 end)
-            getPlayerLevelMock = stub(QuestieLoader:ImportModule("QuestiePlayer"), "GetPlayerLevel", function() return 7 end)
+            getPlayerLevelMock = stub(QuestieSmazakLoader:ImportModule("QuestiePlayer"), "GetPlayerLevel", function() return 7 end)
             dofile("Modules/Libs/QuestieLib.lua")
         end)
 
@@ -118,7 +118,7 @@ describe("QuestieLib", function()
                 end)
                 repeatableMock = stub(QuestieDB, "IsRepeatable", function() return false end)
                 pvpMock = stub(QuestieDB, "IsPvPQuest", function() return false end)
-                eventMock = stub(QuestieLoader:ImportModule("QuestieEvent"), "IsEventQuest", function() return false end)
+                eventMock = stub(QuestieSmazakLoader:ImportModule("QuestieEvent"), "IsEventQuest", function() return false end)
             end)
 
             after_each(function()
@@ -143,7 +143,7 @@ describe("QuestieLib", function()
         local getMetadataMock
 
         before_each(function()
-            getMetadataMock = stub(QuestieLoader:ImportModule("QuestieCompat"), "GetAddOnMetadata",
+            getMetadataMock = stub(QuestieSmazakLoader:ImportModule("QuestieCompat"), "GetAddOnMetadata",
                 function() return "11.2.3" end)
             dofile("Modules/Libs/QuestieLib.lua")
         end)
@@ -155,7 +155,7 @@ describe("QuestieLib", function()
         it("shares cached metadata between the displayed version and numeric version", function()
             assert.are.equal("v11.2.3", QuestieLib:GetAddonVersionString())
             assert.are.same({11, 2, 3}, {QuestieLib:GetAddonVersionInfo()})
-            assert.spy(getMetadataMock).was.called_with("Questie", "Version")
+            assert.spy(getMetadataMock).was.called_with("QuestieSmazak", "Version")
             assert.spy(getMetadataMock).was.called(1)
         end)
     end)
@@ -460,7 +460,7 @@ describe("QuestieLib", function()
             originalOptionalTemplate = _G.OPTIONAL_QUEST_OBJECTIVE_DESCRIPTION
             _G.OPTIONAL_QUEST_OBJECTIVE_DESCRIPTION = "%s（可选）"
             _G.QUEST_MONSTERS_KILLED = "%2$d/%3$d %1$s slain"
-            debugMock = stub(Questie, "Debug")
+            debugMock = stub(QuestieSmazak, "Debug")
             dofile("Modules/Libs/QuestieLib.lua")
         end)
 
@@ -474,7 +474,7 @@ describe("QuestieLib", function()
             local objective = {text = "Read the book. （可选）", type = "event"}
 
             assert.is_false(QuestieLib.IsObjectiveDataLoaded(objective))
-            assert.spy(debugMock).was.called_with(Questie.DEBUG_DEVELOP,
+            assert.spy(debugMock).was.called_with(QuestieSmazak.DEBUG_DEVELOP,
                 "[QuestieLib.IsObjectiveDataLoaded] Rejected trailing ASCII space:", '"Read the book. （可选）"')
             assert.spy(debugMock).was.called(1)
         end)
@@ -483,7 +483,7 @@ describe("QuestieLib", function()
             local objective = {text = "Destroy   objects", type = "event"}
 
             assert.is_false(QuestieLib.IsObjectiveDataLoaded(objective))
-            assert.spy(debugMock).was.called_with(Questie.DEBUG_DEVELOP,
+            assert.spy(debugMock).was.called_with(QuestieSmazak.DEBUG_DEVELOP,
                 "[QuestieLib.IsObjectiveDataLoaded] Rejected triple ASCII spaces:", '"Destroy   objects"')
             assert.spy(debugMock).was.called(1)
         end)
@@ -834,7 +834,7 @@ describe("QuestieLib", function()
         end
 
         before_each(function()
-            ThreadLib = QuestieLoader:ImportModule("ThreadLib")
+            ThreadLib = QuestieSmazakLoader:ImportModule("ThreadLib")
             originalThread = ThreadLib.Thread
             originalHaveQuestData = _G.HaveQuestData
             originalGetQuestObjectives = _G.C_QuestLog.GetQuestObjectives
@@ -1076,7 +1076,7 @@ describe("QuestieLib", function()
                     table.insert(scheduledPublishes, callback)
                 end,
             }
-            QuestieCorrections = QuestieLoader:ImportModule("QuestieCorrections")
+            QuestieCorrections = QuestieSmazakLoader:ImportModule("QuestieCorrections")
             QuestieCorrections.SetCorrection = spy.new(function(_, _, rows)
                 local snapshot = {}
                 for itemId, row in pairs(rows) do
@@ -1220,7 +1220,7 @@ describe("QuestieLib", function()
     describe("DidDailyResetHappenSinceLastLogin", function()
         it("should return true when last login is not set", function()
             _G.GetRealmName = function() return "Ook Ook" end
-            Questie.db.global.lastKnownDailyReset = {}
+            QuestieSmazak.db.global.lastKnownDailyReset = {}
 
             local result = QuestieLib.DidDailyResetHappenSinceLastLogin()
 
@@ -1229,7 +1229,7 @@ describe("QuestieLib", function()
 
         it("should return true when the server time exceeds the last know daily reset", function()
             _G.GetRealmName = function() return "Ook Ook" end
-            Questie.db.global.lastKnownDailyReset = {["Ook Ook"] = 1765833265}
+            QuestieSmazak.db.global.lastKnownDailyReset = {["Ook Ook"] = 1765833265}
 
             _G.GetServerTime = function() return 2000000000 end
 
@@ -1240,7 +1240,7 @@ describe("QuestieLib", function()
 
         it("should return false when the server time did not exceed the last know daily reset", function()
             _G.GetRealmName = function() return "Ook Ook" end
-            Questie.db.global.lastKnownDailyReset = {["Ook Ook"] = 1765833265}
+            QuestieSmazak.db.global.lastKnownDailyReset = {["Ook Ook"] = 1765833265}
 
             _G.GetServerTime = function() return 1500000000 end
 

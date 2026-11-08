@@ -23,17 +23,17 @@ describe("WaypointHover", function()
         _G.GameTooltip = {GetOwner = function() return tooltipOwner end, Hide = spy.new(function() end)}
         minimapTooltip = {Hide = spy.new(function() end)}
         _G.CreateFrame = function() return minimapTooltip end
-        QuestieLoader:ImportModule("QuestieCompat").GetMouseFocus = function() return nil end
-        QuestieWaypoints = QuestieLoader:ImportModule("QuestieWaypoints")
+        QuestieSmazakLoader:ImportModule("QuestieCompat").GetMouseFocus = function() return nil end
+        QuestieWaypoints = QuestieSmazakLoader:ImportModule("QuestieWaypoints")
         QuestieWaypoints.SetHighlighted = spy.new(function() end)
         listed = {{}}
         QuestieWaypoints.MinimapIcons = function() return listed end
-        MapIconTooltip = QuestieLoader:ImportModule("MapIconTooltip")
+        MapIconTooltip = QuestieSmazakLoader:ImportModule("MapIconTooltip")
         MapIconTooltip.ShowOnTooltip = spy.new(function() end)
-        QuestieFrame = QuestieLoader:ImportModule("QuestieFrame")
+        QuestieFrame = QuestieSmazakLoader:ImportModule("QuestieSmazakFrame")
         QuestieFrame.ResetHoverHighlights = spy.new(function() end)
         dofile("Modules/Map/Waypoints/WaypointHover.lua")
-        WaypointHover = QuestieLoader:ImportModule("WaypointHover")
+        WaypointHover = QuestieSmazakLoader:ImportModule("WaypointHover")
     end)
 
     after_each(function()

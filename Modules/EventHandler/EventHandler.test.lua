@@ -23,52 +23,52 @@ describe("EventHandler event dispatch", function()
             GetSkillLineInfo = _G.GetSkillLineInfo,
         }
         savedQuestieFields = {
-            IsForever = Questie.IsForever,
-            RegisterEvent = Questie.RegisterEvent,
-            RegisterBucketEvent = Questie.RegisterBucketEvent,
-            RegisterBucketMessage = Questie.RegisterBucketMessage,
-            SendMessage = Questie.SendMessage,
-            ScheduleTimer = Questie.ScheduleTimer,
+            IsForever = QuestieSmazak.IsForever,
+            RegisterEvent = QuestieSmazak.RegisterEvent,
+            RegisterBucketEvent = QuestieSmazak.RegisterBucketEvent,
+            RegisterBucketMessage = QuestieSmazak.RegisterBucketMessage,
+            SendMessage = QuestieSmazak.SendMessage,
+            ScheduleTimer = QuestieSmazak.ScheduleTimer,
         }
         _G.ERR_QUEST_ACCEPTED_S = "Quest accepted: %s"
         _G.ERR_QUEST_COMPLETE_S = "Quest completed: %s"
         _G.GetQuestLogIndexByID = spy.new(function() return 2 end)
         _G.GetSkillLineInfo = function() end
-        Questie.IsForever = false
+        QuestieSmazak.IsForever = false
         callbacks = {}
         bucketEvents = {}
         scheduledTimers = {}
-        Questie.RegisterEvent = function(_, event, callback) callbacks[event] = callback end
-        Questie.RegisterBucketEvent = function(_, event, interval, callback)
+        QuestieSmazak.RegisterEvent = function(_, event, callback) callbacks[event] = callback end
+        QuestieSmazak.RegisterBucketEvent = function(_, event, interval, callback)
             bucketEvents[event] = {interval = interval, callback = callback}
         end
-        Questie.RegisterBucketMessage = spy.new(function() end)
-        Questie.SendMessage = spy.new(function() end)
-        Questie.ScheduleTimer = function(_, callback, delay, ...)
+        QuestieSmazak.RegisterBucketMessage = spy.new(function() end)
+        QuestieSmazak.SendMessage = spy.new(function() end)
+        QuestieSmazak.ScheduleTimer = function(_, callback, delay, ...)
             local timer = {callback = callback, delay = delay, argumentCount = select("#", ...)}
             table.insert(scheduledTimers, timer)
             return timer
         end
 
-        QuestEventHandler = QuestieLoader:ImportModule("QuestEventHandler")
+        QuestEventHandler = QuestieSmazakLoader:ImportModule("QuestEventHandler")
         originalQuestAccepted = QuestEventHandler.QuestAccepted
         QuestEventHandler.QuestAccepted = spy.new(function() end)
-        Expansions = QuestieLoader:ImportModule("Expansions")
+        Expansions = QuestieSmazakLoader:ImportModule("Expansions")
         originalExpansion = Expansions.Current
         Expansions.Current = Expansions.Era
-        QuestieProfessions = QuestieLoader:ImportModule("QuestieProfessions")
-        AvailableQuests = QuestieLoader:ImportModule("AvailableQuests")
+        QuestieProfessions = QuestieSmazakLoader:ImportModule("QuestieProfessions")
+        AvailableQuests = QuestieSmazakLoader:ImportModule("AvailableQuests")
         savedSkillCallbacks = {
             Update = QuestieProfessions.Update,
             CalculateAndDrawAll = AvailableQuests.CalculateAndDrawAll,
         }
         QuestieProfessions.Update = spy.new(function() return false, false end)
         AvailableQuests.CalculateAndDrawAll = spy.new(function() end)
-        TrackerRecipes = QuestieLoader:ImportModule("TrackerRecipes")
+        TrackerRecipes = QuestieSmazakLoader:ImportModule("TrackerRecipes")
         TrackerRecipes.IsSupported = function() return false end
 
         dofile("Modules/EventHandler/EventHandler.lua")
-        QuestieLoader:ImportModule("EventHandler"):RegisterLateEvents()
+        QuestieSmazakLoader:ImportModule("EventHandler"):RegisterLateEvents()
     end)
 
     after_each(function()
@@ -76,12 +76,12 @@ describe("EventHandler event dispatch", function()
         _G.ERR_QUEST_COMPLETE_S = savedGlobals.ERR_QUEST_COMPLETE_S
         _G.GetQuestLogIndexByID = savedGlobals.GetQuestLogIndexByID
         _G.GetSkillLineInfo = savedGlobals.GetSkillLineInfo
-        Questie.IsForever = savedQuestieFields.IsForever
-        Questie.RegisterEvent = savedQuestieFields.RegisterEvent
-        Questie.RegisterBucketEvent = savedQuestieFields.RegisterBucketEvent
-        Questie.RegisterBucketMessage = savedQuestieFields.RegisterBucketMessage
-        Questie.SendMessage = savedQuestieFields.SendMessage
-        Questie.ScheduleTimer = savedQuestieFields.ScheduleTimer
+        QuestieSmazak.IsForever = savedQuestieFields.IsForever
+        QuestieSmazak.RegisterEvent = savedQuestieFields.RegisterEvent
+        QuestieSmazak.RegisterBucketEvent = savedQuestieFields.RegisterBucketEvent
+        QuestieSmazak.RegisterBucketMessage = savedQuestieFields.RegisterBucketMessage
+        QuestieSmazak.SendMessage = savedQuestieFields.SendMessage
+        QuestieSmazak.ScheduleTimer = savedQuestieFields.ScheduleTimer
         QuestEventHandler.QuestAccepted = originalQuestAccepted
         Expansions.Current = originalExpansion
         QuestieProfessions.Update = savedSkillCallbacks.Update
@@ -96,7 +96,7 @@ describe("EventHandler event dispatch", function()
     end)
 
     it("resolves Forever's single quest ID without treating it as a log index", function()
-        Questie.IsForever = true
+        QuestieSmazak.IsForever = true
 
         callbacks.QUEST_ACCEPTED("QUEST_ACCEPTED", 783)
 
@@ -107,7 +107,7 @@ describe("EventHandler event dispatch", function()
     it("forwards CRITERIA_UPDATE to QuestEventHandler, which marks criteria-tree progress", function()
         local originalCriteriaUpdate = QuestEventHandler.CriteriaUpdate
         QuestEventHandler.CriteriaUpdate = spy.new(function() end)
-        QuestieLoader:ImportModule("EventHandler"):RegisterLateEvents()
+        QuestieSmazakLoader:ImportModule("EventHandler"):RegisterLateEvents()
 
         callbacks.CRITERIA_UPDATE("CRITERIA_UPDATE")
 
@@ -116,7 +116,7 @@ describe("EventHandler event dispatch", function()
     end)
 
     it("starts the quest log cache's loading-screen protection at PLAYER_LEAVING_WORLD and at LOADING_SCREEN_ENABLED", function()
-        local QuestLogCache = QuestieLoader:ImportModule("QuestLogCache")
+        local QuestLogCache = QuestieSmazakLoader:ImportModule("QuestLogCache")
         local originalOnLoadingScreenEnabled = QuestLogCache.OnLoadingScreenEnabled
         QuestLogCache.OnLoadingScreenEnabled = spy.new(function() end)
 
@@ -132,19 +132,19 @@ describe("EventHandler event dispatch", function()
         local QuestieTracker, QuestieCombatQueue, originalUpdate, originalQueue, originalCurrencyDisplayUpdate
 
         before_each(function()
-            QuestieTracker = QuestieLoader:ImportModule("QuestieTracker")
-            QuestieCombatQueue = QuestieLoader:ImportModule("QuestieCombatQueue")
+            QuestieTracker = QuestieSmazakLoader:ImportModule("QuestieTracker")
+            QuestieCombatQueue = QuestieSmazakLoader:ImportModule("QuestieCombatQueue")
             originalUpdate, originalQueue = QuestieTracker.Update, QuestieCombatQueue.Queue
             originalCurrencyDisplayUpdate = QuestEventHandler.CurrencyDisplayUpdate
             QuestieTracker.Update = spy.new(function() end)
             QuestieCombatQueue.Queue = function(_, callback) callback() end
-            Questie.db.profile.trackerEnabled = true
+            QuestieSmazak.db.profile.trackerEnabled = true
             TrackerRecipes.IsSupported = function() return true end
             TrackerRecipes.HasTrackedRecipes = function() return true end
             TrackerRecipes.OnItemInfoReceived = function(itemId) return itemId == 10 end
             callbacks = {}
             bucketEvents = {}
-            QuestieLoader:ImportModule("EventHandler"):RegisterLateEvents()
+            QuestieSmazakLoader:ImportModule("EventHandler"):RegisterLateEvents()
         end)
 
         after_each(function()
@@ -211,7 +211,7 @@ describe("EventHandler event dispatch", function()
             callbacks = {}
             bucketEvents = {}
 
-            QuestieLoader:ImportModule("EventHandler"):RegisterLateEvents()
+            QuestieSmazakLoader:ImportModule("EventHandler"):RegisterLateEvents()
 
             assert.is_nil(callbacks.TRACKED_RECIPE_UPDATE)
             assert.is_nil(bucketEvents.BAG_UPDATE_DELAYED)
@@ -222,8 +222,8 @@ describe("EventHandler event dispatch", function()
     it("registers skill chat directly without a bucket or message relay", function()
         assert.is_nil(bucketEvents.CHAT_MSG_SKILL)
         assert.is_function(callbacks.CHAT_MSG_SKILL)
-        assert.spy(Questie.RegisterBucketMessage).was.not_called()
-        assert.spy(Questie.SendMessage).was.not_called()
+        assert.spy(QuestieSmazak.RegisterBucketMessage).was.not_called()
+        assert.spy(QuestieSmazak.SendMessage).was.not_called()
         assert.are.equal(0, #scheduledTimers)
     end)
 
@@ -240,7 +240,7 @@ describe("EventHandler event dispatch", function()
         assert.are.equal(1, #scheduledTimers)
         assert.are.equal(2, scheduledTimers[1].delay)
         assert.are.equal(0, scheduledTimers[1].argumentCount)
-        assert.spy(Questie.SendMessage).was.not_called()
+        assert.spy(QuestieSmazak.SendMessage).was.not_called()
         assert.spy(QuestieProfessions.Update).was.not_called()
         assert.spy(AvailableQuests.CalculateAndDrawAll).was.not_called()
 
@@ -272,18 +272,18 @@ describe("EventHandler event dispatch", function()
     end)
 
     it("should register SUPER_TRACKING_CHANGED only when the client supports super tracking", function()
-        local QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+        local QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
         local originalIsSupported = QuestieCompat.IsSuperTrackingSupported
-        local TrackerSuperTrack = QuestieLoader:ImportModule("TrackerSuperTrack")
+        local TrackerSuperTrack = QuestieSmazakLoader:ImportModule("TrackerSuperTrack")
         local originalOnSuperTrackingChanged = TrackerSuperTrack.OnSuperTrackingChanged
         TrackerSuperTrack.OnSuperTrackingChanged = function() end
 
         QuestieCompat.IsSuperTrackingSupported = function() return false end
-        QuestieLoader:ImportModule("EventHandler"):RegisterLateEvents()
+        QuestieSmazakLoader:ImportModule("EventHandler"):RegisterLateEvents()
         local unsupportedCallback = callbacks.SUPER_TRACKING_CHANGED
 
         QuestieCompat.IsSuperTrackingSupported = function() return true end
-        QuestieLoader:ImportModule("EventHandler"):RegisterLateEvents()
+        QuestieSmazakLoader:ImportModule("EventHandler"):RegisterLateEvents()
         QuestieCompat.IsSuperTrackingSupported = originalIsSupported
         local registeredCallback = TrackerSuperTrack.OnSuperTrackingChanged
         TrackerSuperTrack.OnSuperTrackingChanged = originalOnSuperTrackingChanged
@@ -307,13 +307,13 @@ describe("EventHandler event dispatch", function()
         before_each(function()
             savedGetCVar = _G.GetCVar
             _G.GetCVar = function() return "1" end
-            QuestieCombatQueue = QuestieLoader:ImportModule("QuestieCombatQueue")
-            QuestieTracker = QuestieLoader:ImportModule("QuestieTracker")
+            QuestieCombatQueue = QuestieSmazakLoader:ImportModule("QuestieCombatQueue")
+            QuestieTracker = QuestieSmazakLoader:ImportModule("QuestieTracker")
             savedQueue, savedUpdate = QuestieCombatQueue.Queue, QuestieTracker.Update
             QuestieCombatQueue.Queue = function(_, callback) callback() end
             QuestieTracker.Update = spy.new(function() end)
 
-            QuestieLoader:ImportModule("EventHandler"):RegisterEarlyEvents()
+            QuestieSmazakLoader:ImportModule("EventHandler"):RegisterEarlyEvents()
         end)
 
         after_each(function()
@@ -343,22 +343,22 @@ describe("EventHandler event dispatch", function()
         before_each(function()
             savedSystemGlobals = {
                 GetLocale = _G.GetLocale,
-                QuestieConfig = _G.QuestieConfig,
+                QuestieSmazakConfig = _G.QuestieSmazakConfig,
                 FACTION_STANDING_CHANGED = _G.FACTION_STANDING_CHANGED,
                 issecretvalue = _G.issecretvalue,
             }
             _G.GetLocale = function() return "enUS" end
-            _G.QuestieConfig = {}
+            _G.QuestieSmazakConfig = {}
             _G.FACTION_STANDING_CHANGED = "You are now %s with %s."
             -- This marker tests dispatch only; native secret semantics require a client probe.
             secretMessage = {}
             _G.issecretvalue = function(value) return value == secretMessage end
 
-            MinimapIcon = QuestieLoader:ImportModule("MinimapIcon")
-            QuestieReputation = QuestieLoader:ImportModule("QuestieReputation")
-            QuestieCombatQueue = QuestieLoader:ImportModule("QuestieCombatQueue")
-            QuestieTracker = QuestieLoader:ImportModule("QuestieTracker")
-            QuestieInit = QuestieLoader:ImportModule("QuestieInit")
+            MinimapIcon = QuestieSmazakLoader:ImportModule("MinimapIcon")
+            QuestieReputation = QuestieSmazakLoader:ImportModule("QuestieReputation")
+            QuestieCombatQueue = QuestieSmazakLoader:ImportModule("QuestieCombatQueue")
+            QuestieTracker = QuestieSmazakLoader:ImportModule("QuestieTracker")
+            QuestieInit = QuestieSmazakLoader:ImportModule("QuestieInit")
             savedSystemCallbacks = {
                 UpdateText = MinimapIcon.UpdateText,
                 UpdateReputation = QuestieReputation.Update,
@@ -372,13 +372,13 @@ describe("EventHandler event dispatch", function()
             QuestieTracker.Update = spy.new(function() end)
             QuestieInit.Init = function() end
 
-            QuestieLoader:ImportModule("EventHandler"):RegisterEarlyEvents()
+            QuestieSmazakLoader:ImportModule("EventHandler"):RegisterEarlyEvents()
             callbacks.PLAYER_LOGIN("PLAYER_LOGIN")
         end)
 
         after_each(function()
             _G.GetLocale = savedSystemGlobals.GetLocale
-            _G.QuestieConfig = savedSystemGlobals.QuestieConfig
+            _G.QuestieSmazakConfig = savedSystemGlobals.QuestieSmazakConfig
             _G.FACTION_STANDING_CHANGED = savedSystemGlobals.FACTION_STANDING_CHANGED
             _G.issecretvalue = savedSystemGlobals.issecretvalue
             MinimapIcon.UpdateText = savedSystemCallbacks.UpdateText

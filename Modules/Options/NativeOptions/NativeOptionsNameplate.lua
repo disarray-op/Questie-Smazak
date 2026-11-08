@@ -2,11 +2,11 @@
 --Import modules.
 -------------------------
 ---@type QuestieOptionsEngine
-local QuestieOptionsEngine = QuestieLoader:ImportModule("QuestieOptionsEngine")
+local QuestieOptionsEngine = QuestieSmazakLoader:ImportModule("QuestieOptionsEngine")
 ---@type QuestieOptionsDefaults
-local QuestieOptionsDefaults = QuestieLoader:ImportModule("QuestieOptionsDefaults")
+local QuestieOptionsDefaults = QuestieSmazakLoader:ImportModule("QuestieOptionsDefaults")
 ---@type QuestieNameplate
-local QuestieNameplate = QuestieLoader:ImportModule("QuestieNameplate")
+local QuestieNameplate = QuestieSmazakLoader:ImportModule("QuestieNameplate")
 
 QuestieOptionsEngine.tabs.nameplate = { ... }
 local optionsDefaults = QuestieOptionsDefaults:Load()
@@ -29,9 +29,9 @@ function QuestieOptionsEngine.tabs.nameplate:Initialize()
                         title = "Enable Nameplate Quest Objectives",
                         description = "Enable or disable the quest objective icons over creature nameplates.",
                         width = "full",
-                        get = function() return Questie.db.profile.nameplateEnabled end,
+                        get = function() return QuestieSmazak.db.profile.nameplateEnabled end,
                         set = function(_, value)
-                            Questie.db.profile.nameplateEnabled = value
+                            QuestieSmazak.db.profile.nameplateEnabled = value
                             if not value then
                                 QuestieNameplate:HideCurrentFrames()
                             end
@@ -46,8 +46,8 @@ function QuestieOptionsEngine.tabs.nameplate:Initialize()
                         min = -200,
                         max = 200,
                         step = 1,
-                        enabled = function() return Questie.db.profile.nameplateEnabled end,
-                        get = function() return Questie.db.profile.nameplateX end,
+                        enabled = function() return QuestieSmazak.db.profile.nameplateEnabled end,
+                        get = function() return QuestieSmazak.db.profile.nameplateX end,
                         set = function(_, value)
                             QuestieNameplate.SetIconXPosition(value)
                             QuestieNameplate:RedrawIcons()
@@ -62,8 +62,8 @@ function QuestieOptionsEngine.tabs.nameplate:Initialize()
                         min = -200,
                         max = 200,
                         step = 1,
-                        enabled = function() return Questie.db.profile.nameplateEnabled end,
-                        get = function() return Questie.db.profile.nameplateY end,
+                        enabled = function() return QuestieSmazak.db.profile.nameplateEnabled end,
+                        get = function() return QuestieSmazak.db.profile.nameplateY end,
                         set = function(_, value)
                             QuestieNameplate.SetIconYPosition(value)
                             QuestieNameplate:RedrawIcons()
@@ -79,8 +79,8 @@ function QuestieOptionsEngine.tabs.nameplate:Initialize()
                         max = 4,
                         step = 0.01,
                         isPercent = true,
-                        enabled = function() return Questie.db.profile.nameplateEnabled end,
-                        get = function() return Questie.db.profile.nameplateScale end,
+                        enabled = function() return QuestieSmazak.db.profile.nameplateEnabled end,
+                        get = function() return QuestieSmazak.db.profile.nameplateScale end,
                         set = function(_, value)
                             QuestieNameplate.SetIconScale(value)
                             QuestieNameplate:RedrawIcons()
@@ -99,9 +99,9 @@ function QuestieOptionsEngine.tabs.nameplate:Initialize()
                         title = "Enable Target Frame Quest Objectives",
                         description = "Enable or disable the quest objective icons over creature target frame.",
                         width = "full",
-                        get = function() return Questie.db.profile.nameplateTargetFrameEnabled end,
+                        get = function() return QuestieSmazak.db.profile.nameplateTargetFrameEnabled end,
                         set = function(_, value)
-                            Questie.db.profile.nameplateTargetFrameEnabled = value
+                            QuestieSmazak.db.profile.nameplateTargetFrameEnabled = value
                             if not value then
                                 QuestieNameplate:HideCurrentTargetFrame()
                             else
@@ -118,10 +118,10 @@ function QuestieOptionsEngine.tabs.nameplate:Initialize()
                         min = -300,
                         max = 300,
                         step = 1,
-                        enabled = function() return Questie.db.profile.nameplateTargetFrameEnabled end,
-                        get = function() return Questie.db.profile.nameplateTargetFrameX end,
+                        enabled = function() return QuestieSmazak.db.profile.nameplateTargetFrameEnabled end,
+                        get = function() return QuestieSmazak.db.profile.nameplateTargetFrameX end,
                         set = function(_, value)
-                            Questie.db.profile.nameplateTargetFrameX = value
+                            QuestieSmazak.db.profile.nameplateTargetFrameX = value
                             QuestieNameplate:RedrawFrameIcon()
                         end,
                     },
@@ -134,10 +134,10 @@ function QuestieOptionsEngine.tabs.nameplate:Initialize()
                         min = -200,
                         max = 200,
                         step = 1,
-                        enabled = function() return Questie.db.profile.nameplateTargetFrameEnabled end,
-                        get = function() return Questie.db.profile.nameplateTargetFrameY end,
+                        enabled = function() return QuestieSmazak.db.profile.nameplateTargetFrameEnabled end,
+                        get = function() return QuestieSmazak.db.profile.nameplateTargetFrameY end,
                         set = function(_, value)
-                            Questie.db.profile.nameplateTargetFrameY = value
+                            QuestieSmazak.db.profile.nameplateTargetFrameY = value
                             QuestieNameplate:RedrawFrameIcon()
                         end,
                     },
@@ -151,10 +151,10 @@ function QuestieOptionsEngine.tabs.nameplate:Initialize()
                         max = 4,
                         step = 0.01,
                         isPercent = true,
-                        enabled = function() return Questie.db.profile.nameplateTargetFrameEnabled end,
-                        get = function() return Questie.db.profile.nameplateTargetFrameScale end,
+                        enabled = function() return QuestieSmazak.db.profile.nameplateTargetFrameEnabled end,
+                        get = function() return QuestieSmazak.db.profile.nameplateTargetFrameScale end,
                         set = function(_, value)
-                            Questie.db.profile.nameplateTargetFrameScale = value
+                            QuestieSmazak.db.profile.nameplateTargetFrameScale = value
                             QuestieNameplate:RedrawFrameIcon()
                         end,
                     },
@@ -168,7 +168,7 @@ function QuestieOptionsEngine.tabs.nameplate:Initialize()
                 tooltip = "Reset to default nameplate position and scale.",
                 width = "half",
                 align = "CENTER",
-                enabled = function() return Questie.db.profile.nameplateEnabled end,
+                enabled = function() return QuestieSmazak.db.profile.nameplateEnabled end,
                 func = function()
                     QuestieNameplate.SetIconPosition(
                         optionsDefaults.profile.nameplateX,
@@ -186,11 +186,11 @@ function QuestieOptionsEngine.tabs.nameplate:Initialize()
                 tooltip = "Reset to default target frame position and scale.",
                 width = "half",
                 align = "CENTER",
-                enabled = function() return Questie.db.profile.nameplateTargetFrameEnabled end,
+                enabled = function() return QuestieSmazak.db.profile.nameplateTargetFrameEnabled end,
                 func = function()
-                    Questie.db.profile.nameplateTargetFrameX = optionsDefaults.profile.nameplateTargetFrameX
-                    Questie.db.profile.nameplateTargetFrameY = optionsDefaults.profile.nameplateTargetFrameY
-                    Questie.db.profile.nameplateTargetFrameScale = optionsDefaults.profile.nameplateTargetFrameScale
+                    QuestieSmazak.db.profile.nameplateTargetFrameX = optionsDefaults.profile.nameplateTargetFrameX
+                    QuestieSmazak.db.profile.nameplateTargetFrameY = optionsDefaults.profile.nameplateTargetFrameY
+                    QuestieSmazak.db.profile.nameplateTargetFrameScale = optionsDefaults.profile.nameplateTargetFrameScale
                     QuestieNameplate:RedrawFrameIcon()
                     QuestieOptionsEngine:RefreshStates()
                 end,

@@ -96,11 +96,11 @@ describe("WaypointMinimap", function()
         player, radius, rotating, facing = {1000, 1000, 0}, 100, false, 0
         cursor, focus, uiScale = nil, nil, 1
         _G.GetCursorPosition = function() return cursor[1], cursor[2] end
-        QuestieLoader:ImportModule("QuestieCompat").GetMouseFocus = function() return focus end
-        WaypointHover = QuestieLoader:ImportModule("WaypointHover")
+        QuestieSmazakLoader:ImportModule("QuestieCompat").GetMouseFocus = function() return focus end
+        WaypointHover = QuestieSmazakLoader:ImportModule("WaypointHover")
         WaypointHover.Radius = function() return 3 end
         WaypointHover.Set = spy.new(function() end)
-        Questie.db.profile = {waypointWidth = 4}
+        QuestieSmazak.db.profile = {waypointWidth = 4}
         _G.CreateFrame = function() return NewFrame() end
         _G.Minimap = NewFrame()
         _G.GetPlayerFacing = function() return facing end
@@ -111,7 +111,7 @@ describe("WaypointMinimap", function()
                 GetMinimapView = function() return radius, rotating end,
             }
         end
-        QuestieWaypoints = QuestieLoader:ImportModule("QuestieWaypoints")
+        QuestieWaypoints = QuestieSmazakLoader:ImportModule("QuestieWaypoints")
         QuestieWaypoints.paths = {}
         QuestieWaypoints.MinimapAlpha = function(path) return path.minimapAlpha end
         QuestieWaypoints.Color = function(path) return path.highlighted and HOVER_COLOR or path.color end
@@ -122,14 +122,14 @@ describe("WaypointMinimap", function()
             Release = spy.new(function(_, view) view:Hide() end),
             Clear = function() end,
         }
-        QuestieLoader:ImportModule("WaypointRenderer").New = function(_, maskTextures)
+        QuestieSmazakLoader:ImportModule("WaypointRenderer").New = function(_, maskTextures)
             masks = maskTextures
             return renderer
         end
         dofile("Modules/Libs/QuestieLib.lua")
         dofile("Modules/Map/Waypoints/WaypointGeometry.lua")
         dofile("Modules/Map/Waypoints/WaypointMinimap.lua")
-        WaypointMinimap = QuestieLoader:ImportModule("WaypointMinimap")
+        WaypointMinimap = QuestieSmazakLoader:ImportModule("WaypointMinimap")
     end)
 
     after_each(function()
@@ -241,7 +241,7 @@ describe("WaypointMinimap", function()
         layer:Update()
 
         -- QuestieWaypoints.Refresh invalidates the layer, which collects the routes again.
-        Questie.db.profile.waypointWidth = 6
+        QuestieSmazak.db.profile.waypointWidth = 6
         layer.dirty = true
         layer:Update()
 
@@ -409,9 +409,9 @@ describe("WaypointMinimap", function()
         end)
 
         it("stops after an error while hovering, although ending the hover shows the layer again", function()
-            local originalError = Questie.Error
+            local originalError = QuestieSmazak.Error
             local reportError = spy.new(function() end)
-            Questie.Error = reportError
+            QuestieSmazak.Error = reportError
             local layer = Layer()
             -- The tooltip fails to open. Ending the hover then changes the highlight, which invalidates.
             WaypointHover.Set = function(_, hoveredPath)
@@ -421,7 +421,7 @@ describe("WaypointMinimap", function()
             CursorAt(onLine, 2)
 
             layer.root.scripts.OnUpdate()
-            Questie.Error = originalError
+            QuestieSmazak.Error = originalError
 
             assert.is_false(layer.root.shown)
             assert.spy(reportError).was.called(1)

@@ -5,13 +5,13 @@ _G.GetScreenWidth = function() return screenWidth end
 
 ---@type AutoCompleteFrame
 dofile("Modules/Tracker/AutoCompleteFrame.lua")
-local AutoCompleteFrame = QuestieLoader:ImportModule("AutoCompleteFrame")
+local AutoCompleteFrame = QuestieSmazakLoader:ImportModule("AutoCompleteFrame")
 
 describe("AutoCompleteFrame", function()
     before_each(function()
         CreateFrame.resetMockedFrames()
 
-        Questie.db.profile.trackerBackdropColor = {r = 0, g = 0, b = 0, a = 1}
+        QuestieSmazak.db.profile.trackerBackdropColor = {r = 0, g = 0, b = 0, a = 1}
     end)
 
     describe("ShowAutoComplete", function()

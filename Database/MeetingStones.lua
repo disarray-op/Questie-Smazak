@@ -1,9 +1,9 @@
 ---@class MeetingStones
-local MeetingStones = QuestieLoader:CreateModule("MeetingStones")
+local MeetingStones = QuestieSmazakLoader:CreateModule("MeetingStones")
 local _MeetingStones = {}
 
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 
 
 ---@param objectId number

@@ -5,7 +5,7 @@ describe("QuestieMapUtils", function()
     local QuestieMap
 
     before_each(function()
-        QuestieMap = QuestieLoader:ImportModule("QuestieMap")
+        QuestieMap = QuestieSmazakLoader:ImportModule("QuestieMap")
         dofile("Modules/Map/QuestieMapUtils.lua")
     end)
 

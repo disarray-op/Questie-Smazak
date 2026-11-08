@@ -1,8 +1,8 @@
 ---@type QuestieCompat
-local QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+local QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
 
 ---@class WatchFrameHook
-local WatchFrameHook = QuestieLoader:CreateModule("WatchFrameHook")
+local WatchFrameHook = QuestieSmazakLoader:CreateModule("WatchFrameHook")
 
 local QuestTimerFrame = QuestTimerFrame
 

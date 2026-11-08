@@ -12,21 +12,21 @@ describe("FocusedQuestgiver", function()
     local MANUAL_TYPE = "questgiver"
 
     before_each(function()
-        Questie.db.profile.trackerShowQuestGiverOnFocus = true
-        Questie.db.profile.availableScale = 1.2
-        Questie.icons = {available = "available-icon"}
-        Questie.Colorize = function(_, str) return str end
+        QuestieSmazak.db.profile.trackerShowQuestGiverOnFocus = true
+        QuestieSmazak.db.profile.availableScale = 1.2
+        QuestieSmazak.icons = {available = "available-icon"}
+        QuestieSmazak.Colorize = function(_, str) return str end
 
-        QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+        QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
         QuestieDB.GetQuest = function() return nil end
 
-        QuestieMap = QuestieLoader:ImportModule("QuestieMap")
+        QuestieMap = QuestieSmazakLoader:ImportModule("QuestieMap")
         QuestieMap.ShowNPC = spy.new(function() end)
         QuestieMap.ShowObject = spy.new(function() end)
         QuestieMap.UnloadManualFrames = spy.new(function() end)
 
         dofile("Modules/Map/FocusedQuestgiver.lua")
-        FocusedQuestgiver = QuestieLoader:ImportModule("FocusedQuestgiver")
+        FocusedQuestgiver = QuestieSmazakLoader:ImportModule("FocusedQuestgiver")
     end)
 
     describe("Show", function()
@@ -56,7 +56,7 @@ describe("FocusedQuestgiver", function()
         end)
 
         it("should not draw anything when the setting is disabled", function()
-            Questie.db.profile.trackerShowQuestGiverOnFocus = false
+            QuestieSmazak.db.profile.trackerShowQuestGiverOnFocus = false
             QuestieDB.GetQuest = function()
                 return {Id = 42, name = "Test Quest", Starts = {NPC = {100}}}
             end

@@ -31,37 +31,37 @@ describe("MapIconTooltip objective wording", function()
             IsShown = function() return false end,
             SetOwner = function() end, SetFrameStrata = function() end, Show = function() end,
         }
-        Questie.db.profile = {trackerColorObjectives = "minimal"}
+        QuestieSmazak.db.profile = {trackerColorObjectives = "minimal"}
         dofile("Localization/l10n.lua")
         dofile("Modules/Libs/QuestieLib.lua")
-        local QuestieLib = QuestieLoader:ImportModule("QuestieLib")
+        local QuestieLib = QuestieSmazakLoader:ImportModule("QuestieLib")
         QuestieLib.GetColoredQuestName = function() return "Quest Name" end
         QuestieLib.GetEffectiveQuestLevel = function() return 1, 0 end
-        QuestieLoader:ImportModule("QuestieDB").GetQuest = function() return {} end
-        QuestieLoader:ImportModule("QuestieDB").QueryItemSingle = function() return "Spell item" end
-        QuestieLoader:ImportModule("QuestieDB").GetQuestTagInfo = function() end
-        QuestieLoader:ImportModule("QuestXP").GetQuestLogRewardXP = function() return 0 end
-        local player = QuestieLoader:ImportModule("QuestiePlayer")
+        QuestieSmazakLoader:ImportModule("QuestieDB").GetQuest = function() return {} end
+        QuestieSmazakLoader:ImportModule("QuestieDB").QueryItemSingle = function() return "Spell item" end
+        QuestieSmazakLoader:ImportModule("QuestieDB").GetQuestTagInfo = function() end
+        QuestieSmazakLoader:ImportModule("QuestXP").GetQuestLogRewardXP = function() return 0 end
+        local player = QuestieSmazakLoader:ImportModule("QuestiePlayer")
         player.GetPartyMemberByName = function(_, name)
             if name == "Bob" then return {colorHex = "FFFFFFFF"} end
         end
-        QuestieComms = QuestieLoader:ImportModule("QuestieComms")
+        QuestieComms = QuestieSmazakLoader:ImportModule("QuestieComms")
         QuestieComms.GetQuest = function() return nil end
         QuestieComms.remotePlayerClasses = {}
         cached = {}
-        QuestieLoader:ImportModule("QuestLogCache").TryGetQuest = function(id) return cached[id] end
+        QuestieSmazakLoader:ImportModule("QuestLogCache").TryGetQuest = function(id) return cached[id] end
         dofile("Modules/Quest/ActiveQuests.lua")
-        ActiveQuests = QuestieLoader:ImportModule("ActiveQuests")
+        ActiveQuests = QuestieSmazakLoader:ImportModule("ActiveQuests")
         ActiveQuests.Add(1, {})
         ActiveQuests.Add(2, {})
-        local layout = QuestieLoader:ImportModule("TooltipLayout")
+        local layout = QuestieSmazakLoader:ImportModule("TooltipLayout")
         layout.CreateIndentUI = function() return "", 0 end
         layout.CreateRows = function()
             return {AddLine = function() end, AddDoubleLine = function() end}
         end
         layout.Render = function() end
-        QuestieLoader:ImportModule("QuestieWaypoints").SetHighlighted = function() end
-        QuestieLoader:ImportModule("WaypointHover").End = function() end
+        QuestieSmazakLoader:ImportModule("QuestieWaypoints").SetHighlighted = function() end
+        QuestieSmazakLoader:ImportModule("WaypointHover").End = function() end
 
         objective = {Index = 3, Type = "item", Description = "Windstone Cluster", Collected = 9, Needed = 15,
             Update = function() end}
@@ -84,7 +84,7 @@ describe("MapIconTooltip objective wording", function()
         -- Show traverses visible pins; only one pin participates in these renderer tests.
         _G.LibStub = function() return pins end
         dofile("Modules/Tooltips/MapIconTooltip.lua")
-        MapIconTooltip = QuestieLoader:ImportModule("MapIconTooltip")
+        MapIconTooltip = QuestieSmazakLoader:ImportModule("MapIconTooltip")
         now = 1
     end)
 
@@ -158,7 +158,7 @@ describe("MapIconTooltip objective wording", function()
     it("keeps local and remote optional counters separate without duplicating progress", function()
         _G.OPTIONAL_QUEST_OBJECTIVE_DESCRIPTION = "%s (Optional)"
         cached[1] = {objectives = {[3] = {text = "Wolf slain: 2/5 (Optional)"}}}
-        objective.Description = QuestieLoader:ImportModule("QuestieLib").GetFullObjectiveText(cached[1].objectives[3].text)
+        objective.Description = QuestieSmazakLoader:ImportModule("QuestieLib").GetFullObjectiveText(cached[1].objectives[3].text)
         QuestieComms.GetQuest = function() return {Bob = {[3] = {fulfilled = 3, required = 5}}} end
 
         assert.are.same({
@@ -175,7 +175,7 @@ describe("MapIconTooltip objective wording", function()
         local nativeText = "Vide-gousset défias\194\160: 2/5 personnages tués (optionnel)"
         cached[1] = {objectives = {[3] = {text = nativeText}}}
         objective.Type, objective.Collected, objective.Needed = "monster", 2, 5
-        objective.Description = QuestieLoader:ImportModule("QuestieLib").GetFullObjectiveText(nativeText)
+        objective.Description = QuestieSmazakLoader:ImportModule("QuestieLib").GetFullObjectiveText(nativeText)
         QuestieComms.GetQuest = function() return {Bob = {[3] = {fulfilled = 3, required = 5}}} end
 
         assert.are.same({
@@ -305,11 +305,11 @@ describe("MapIconTooltip objective wording", function()
 
         before_each(function()
             rendered, questLevels = {}, {}
-            local QuestieLib = QuestieLoader:ImportModule("QuestieLib")
+            local QuestieLib = QuestieSmazakLoader:ImportModule("QuestieLib")
             QuestieLib.GetEffectiveQuestLevel = function(questId) return questLevels[questId], 0 end
             QuestieLib.GetColoredQuestName = function(_, questId) return "Quest " .. questId end
-            QuestieLoader:ImportModule("QuestieReputation").GetReputationReward = function() return {} end
-            QuestieLoader:ImportModule("TooltipLayout").CreateRows = function()
+            QuestieSmazakLoader:ImportModule("QuestieReputation").GetReputationReward = function() return {} end
+            QuestieSmazakLoader:ImportModule("TooltipLayout").CreateRows = function()
                 local function Add(_, text) rendered[#rendered + 1] = text end
                 return {AddLine = Add, AddDoubleLine = Add}
             end

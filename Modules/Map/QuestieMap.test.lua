@@ -10,10 +10,10 @@ describe("QuestieMap", function()
     local QuestieFramePool
 
     before_each(function()
-        QuestieFramePool = QuestieLoader:ImportModule("QuestieFramePool")
+        QuestieFramePool = QuestieSmazakLoader:ImportModule("QuestieFramePool")
         QuestieFramePool.UnloadFrame = spy.new(function() end)
         dofile("Modules/Map/QuestieMap.lua")
-        QuestieMap = QuestieLoader:ImportModule("QuestieMap")
+        QuestieMap = QuestieSmazakLoader:ImportModule("QuestieMap")
         QuestieMap.questIdFrames = {}
     end)
 
@@ -28,10 +28,10 @@ describe("QuestieMap", function()
             originalCMap = _G.C_Map
             _G.C_Map = {GetMapInfo = function() return nil end}
             ---@type ZoneDB
-            local ZoneDB = QuestieLoader:ImportModule("ZoneDB")
+            local ZoneDB = QuestieSmazakLoader:ImportModule("ZoneDB")
             ---@type Phasing
-            local Phasing = QuestieLoader:ImportModule("Phasing")
-            warning = stub(Questie, "Warning")
+            local Phasing = QuestieSmazakLoader:ImportModule("Phasing")
+            warning = stub(QuestieSmazak, "Warning")
             getUiMapId = stub(ZoneDB, "GetUiMapIdByAreaId", function() return nil end)
             getParentZoneId = stub(ZoneDB, "GetParentZoneId", function() return nil end)
             isSpawnVisible = stub(Phasing, "IsSpawnVisible", function() return true end)
@@ -50,7 +50,7 @@ describe("QuestieMap", function()
 
             assert.is_nil(worldIcon)
             assert.is_nil(minimapIcon)
-            assert.spy(Questie.Warning).was.called_with("No UiMapID or fitting parentAreaId for areaId : 123 - Missing location")
+            assert.spy(QuestieSmazak.Warning).was.called_with("No UiMapID or fitting parentAreaId for areaId : 123 - Missing location")
         end)
     end)
 
@@ -62,9 +62,9 @@ describe("QuestieMap", function()
         before_each(function()
             dofile("Localization/l10n.lua")
             ---@type QuestieDB
-            local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+            local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
             ---@type ZoneDB
-            local ZoneDB = QuestieLoader:ImportModule("ZoneDB")
+            local ZoneDB = QuestieSmazakLoader:ImportModule("ZoneDB")
             getObject = stub(QuestieDB, "GetObject", function(_, id)
                 return {id = id, name = "Mailbox", spawns = {[1519] = {{61, 76}}}, waypoints = {[1519] = waypoints, [12] = waypoints}}
             end)

@@ -1,6 +1,6 @@
 dofile("setupTests.lua")
 ---@type ActiveQuests
-local ActiveQuests = QuestieLoader:ImportModule("ActiveQuests")
+local ActiveQuests = QuestieSmazakLoader:ImportModule("ActiveQuests")
 
 describe("Tooltip", function()
     ---@type QuestieDB
@@ -25,9 +25,9 @@ describe("Tooltip", function()
     }
 
     before_each(function()
-        Questie.db.profile = {}
+        QuestieSmazak.db.profile = {}
 
-        QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+        QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
         QuestieDB.GetItemDroprate = function () return nil end
         -- Quests have no level or type here; the tooltip sorts them by level, then ID.
         QuestieDB.QueryQuestSingle = function() return nil end
@@ -44,14 +44,14 @@ describe("Tooltip", function()
             }
         end)
         dofile("Modules/Libs/QuestieLib.lua")
-        QuestieLib = QuestieLoader:ImportModule("QuestieLib")
+        QuestieLib = QuestieSmazakLoader:ImportModule("QuestieLib")
         QuestieLib.GetColoredQuestName = spy.new(function()
             return "Quest Name"
         end)
         QuestieLib.GetRGBForObjective = spy.new(function()
             return "gold"
         end)
-        QuestieComms = QuestieLoader:ImportModule("QuestieComms")
+        QuestieComms = QuestieSmazakLoader:ImportModule("QuestieComms")
         QuestieComms.remoteQuestLogs = {}
         QuestieComms.remotePlayerClasses = {}
         QuestieComms.remotePlayerEnabled = {}
@@ -59,19 +59,19 @@ describe("Tooltip", function()
             KeyExists = function() return false end,
             GetTooltip = function() return {} end
         }
-        QuestiePlayer = QuestieLoader:ImportModule("QuestiePlayer")
+        QuestiePlayer = QuestieSmazakLoader:ImportModule("QuestiePlayer")
         QuestiePlayer.GetPartyMemberByName = function() return nil end
         dofile("Modules/Quest/ActiveQuests.lua")
         QuestiePlayer.numberOfGroupMembers = 0
         cached = {}
-        QuestieLoader:ImportModule("QuestLogCache").TryGetQuest = function(id) return cached[id] end
-        local ZoneDB = QuestieLoader:ImportModule("ZoneDB")
+        QuestieSmazakLoader:ImportModule("QuestLogCache").TryGetQuest = function(id) return cached[id] end
+        local ZoneDB = QuestieSmazakLoader:ImportModule("ZoneDB")
         ZoneDB.GetParentZoneId = function() return nil end
         dofile("Localization/l10n.lua")
         dofile("Modules/Tooltips/Forever.lua")
 
         dofile("Modules/Tooltips/Tooltip.lua")
-        QuestieTooltips = QuestieLoader:ImportModule("QuestieTooltips")
+        QuestieTooltips = QuestieSmazakLoader:ImportModule("QuestieTooltips")
     end)
 
     describe("Initialize", function()
@@ -94,7 +94,7 @@ describe("Tooltip", function()
                 issecrettable = _G.issecrettable,
                 GameTooltipTextLeft1 = _G.GameTooltipTextLeft1,
                 IsInInstance = _G.IsInInstance,
-                IsForever = Questie.IsForever,
+                IsForever = QuestieSmazak.IsForever,
             }
             gameScripts = {}
             itemScripts = {}
@@ -118,7 +118,7 @@ describe("Tooltip", function()
             originalGetCurrentZoneId = QuestiePlayer.GetCurrentZoneId
             QuestieTooltips.private.AddObjectDataToTooltip = spy.new(function() end)
             QuestiePlayer.GetCurrentZoneId = spy.new(function() return 440 end)
-            Questie.db.profile.enableTooltips = true
+            QuestieSmazak.db.profile.enableTooltips = true
             _G.issecretvalue = nil
             _G.issecrettable = nil
         end)
@@ -132,7 +132,7 @@ describe("Tooltip", function()
             _G.issecrettable = savedGlobals.issecrettable
             _G.GameTooltipTextLeft1 = savedGlobals.GameTooltipTextLeft1
             _G.IsInInstance = savedGlobals.IsInInstance
-            Questie.IsForever = savedGlobals.IsForever
+            QuestieSmazak.IsForever = savedGlobals.IsForever
             QuestieTooltips.private.AddItemDataToTooltip = originalItemHandler
             QuestieTooltips.private.AddUnitDataToTooltip = originalUnitHandler
             QuestieTooltips.private.AddSpellIdToTooltip = originalSpellHandler
@@ -184,7 +184,7 @@ describe("Tooltip", function()
             _G.TooltipDataProcessor = {
                 AddTooltipPostCall = function(kind, callback) callbacks[kind] = callback end,
             }
-            Questie.IsForever = true
+            QuestieSmazak.IsForever = true
             local inInstance = true
             _G.IsInInstance = function() return inInstance end
 
@@ -304,7 +304,7 @@ describe("Tooltip", function()
             end)
 
             it("does not inspect or change the native tooltip while augmentation is disabled", function()
-                Questie.db.profile.enableTooltips = false
+                QuestieSmazak.db.profile.enableTooltips = false
 
                 gameScripts.OnUpdate(GameTooltip)
                 gameScripts.OnUpdate(GameTooltip)
@@ -399,10 +399,10 @@ describe("Tooltip", function()
             end)
 
             it("skips disabled tooltips without consuming a later enabled render", function()
-                Questie.db.profile.enableTooltips = false
+                QuestieSmazak.db.profile.enableTooltips = false
                 callbacks[4](GameTooltip, primaryData)
                 assert.spy(QuestieTooltips.private.AddObjectDataToTooltip).was.not_called()
-                Questie.db.profile.enableTooltips = true
+                QuestieSmazak.db.profile.enableTooltips = true
                 callbacks[4](GameTooltip, primaryData)
                 assert.spy(QuestieTooltips.private.AddObjectDataToTooltip).was.called(1)
             end)
@@ -495,7 +495,7 @@ describe("Tooltip", function()
                 GameTooltip = _G.GameTooltip, ItemRefTooltip = _G.ItemRefTooltip,
                 Enum = _G.Enum, TooltipDataProcessor = _G.TooltipDataProcessor,
                 issecretvalue = _G.issecretvalue, issecrettable = _G.issecrettable,
-                IsForever = Questie.IsForever, format = string.format,
+                IsForever = QuestieSmazak.IsForever, format = string.format,
                 IsInInstance = _G.IsInInstance, InCombatLockdown = _G.InCombatLockdown,
             }
             originalUnitHandler = QuestieTooltips.private.AddUnitDataToTooltip
@@ -504,9 +504,9 @@ describe("Tooltip", function()
             QuestieTooltips.private.AddUnitDataToTooltip = spy.new(function() end)
             QuestieTooltips.private.AddObjectDataToTooltip = spy.new(function() end)
             QuestiePlayer.GetCurrentZoneId = function() return 440 end
-            Questie.IsForever = true
-            Questie.db.profile.enableTooltips = true
-            Questie.db.profile.enableTooltipsQuestLevel = true
+            QuestieSmazak.IsForever = true
+            QuestieSmazak.db.profile.enableTooltips = true
+            QuestieSmazak.db.profile.enableTooltipsQuestLevel = true
             _G.issecretvalue, _G.issecrettable = nil, nil
             _G.IsInInstance = function() return false end
             _G.InCombatLockdown = function() return false end
@@ -543,7 +543,7 @@ describe("Tooltip", function()
             _G.GameTooltip, _G.ItemRefTooltip = saved.GameTooltip, saved.ItemRefTooltip
             _G.Enum, _G.TooltipDataProcessor = saved.Enum, saved.TooltipDataProcessor
             _G.issecretvalue, _G.issecrettable = saved.issecretvalue, saved.issecrettable
-            Questie.IsForever, string.format = saved.IsForever, saved.format
+            QuestieSmazak.IsForever, string.format = saved.IsForever, saved.format
             _G.IsInInstance, _G.InCombatLockdown = saved.IsInInstance, saved.InCombatLockdown
             QuestieTooltips.private.AddUnitDataToTooltip = originalUnitHandler
             QuestieTooltips.private.AddObjectDataToTooltip = originalObjectHandler
@@ -558,10 +558,10 @@ describe("Tooltip", function()
         end)
 
         it("preserves MoP suppression and augmentation", function()
-            Questie.IsForever = false
+            QuestieSmazak.IsForever = false
             dofile("Modules/Tooltips/Tooltip.lua")
-            QuestieTooltips = QuestieLoader:ImportModule("QuestieTooltips")
-            local foreverTooltips = QuestieLoader:ImportModule("Forever")
+            QuestieTooltips = QuestieSmazakLoader:ImportModule("QuestieTooltips")
+            local foreverTooltips = QuestieSmazakLoader:ImportModule("Forever")
             foreverTooltips.CreateFormatter = spy.new(function() error("Forever formatter called on another client") end)
             QuestieTooltips:Initialize()
 
@@ -571,13 +571,13 @@ describe("Tooltip", function()
             assert.spy(QuestieTooltips.private.AddUnitDataToTooltip).was.called(1)
             assert.spy(GameTooltip.AddLine).was.not_called()
             assert.spy(foreverTooltips.CreateFormatter).was.not_called()
-            Questie.db.profile.enableTooltips = false
+            QuestieSmazak.db.profile.enableTooltips = false
             assert.is_nil(preCalls[17](GameTooltip, {leftText = "Disabled"}))
         end)
 
         it("reuses public quest candidates within a rebuild and refreshes them on clear", function()
             markObjectCaptionSecret()
-            local foreverTooltips = QuestieLoader:ImportModule("Forever")
+            local foreverTooltips = QuestieSmazakLoader:ImportModule("Forever")
             local formatter = {
                 Title = spy.new(function() return "Selected native title" end),
                 Objective = spy.new(function() return "Selected objective" end),
@@ -603,7 +603,7 @@ describe("Tooltip", function()
             assert.spy(foreverTooltips.CreateFormatter).was.called(2)
         end)
 
-        it("hides public object quest lines and uses normal Questie augmentation", function()
+        it("hides public object quest lines and uses normal QuestieSmazak augmentation", function()
             assert.is_true(preCalls[17](GameTooltip, {leftText = "Quest", id = 42}))
             assert.is_true(preCalls[8](GameTooltip, {leftText = "0/8 Objective", numFulfilled = 0, numRequired = 8}))
             postCalls[4](GameTooltip, primaryData)
@@ -612,7 +612,7 @@ describe("Tooltip", function()
             assert.spy(QuestieTooltips.private.AddObjectDataToTooltip).was.called_with("Object name", 440)
         end)
 
-        it("uses normal Questie replacement for readable NPC data even in combat", function()
+        it("uses normal QuestieSmazak replacement for readable NPC data even in combat", function()
             _G.InCombatLockdown = function() return true end
             primaryData.type = 2
             primaryData.guid = "Creature-0-0-0-0-1125-0"
@@ -653,7 +653,7 @@ describe("Tooltip", function()
             assert.spy(GameTooltip.AddLine).was.called_with(GameTooltip, "[??] Secret quest", 1, 0.82, 0, false)
         end)
 
-        it("keeps native rows for readable and secret data when the group-size gate prevents Questie replacement", function()
+        it("keeps native rows for readable and secret data when the group-size gate prevents QuestieSmazak replacement", function()
             QuestiePlayer.numberOfGroupMembers = 7
             assert.is_nil(preCalls[17](GameTooltip, {leftText = "Quest", id = 42}))
             assert.is_nil(preCalls[8](GameTooltip, {leftText = "0/8 Objective"}))
@@ -677,7 +677,7 @@ describe("Tooltip", function()
             assert.is_true(preCalls[8](GameTooltip, objectiveLine))
             postCalls[4](GameTooltip, primaryData)
 
-            -- The readable quest ID still gets Questie's title; only the secret objective stays native text.
+            -- The readable quest ID still gets QuestieSmazak's title; only the secret objective stays native text.
             assert.spy(GameTooltip.AddLine).was.called_with(GameTooltip, "Quest Name", 1, 0.82, 0, false)
             assert.spy(GameTooltip.AddLine).was.called_with(GameTooltip, "   Secret objective", 238 / 255, 238 / 255, 238 / 255, true)
             assert.spy(QuestieTooltips.private.AddObjectDataToTooltip).was.not_called()
@@ -710,9 +710,9 @@ describe("Tooltip", function()
             assert.spy(QuestieDB.GetQuest).was.not_called()
         end)
 
-        it("uses Questie's title for a readable ID and an ID placeholder when the ID is missing", function()
+        it("uses QuestieSmazak's title for a readable ID and an ID placeholder when the ID is missing", function()
             markObjectCaptionSecret()
-            Questie.db.profile.enableTooltipsQuestID = true
+            QuestieSmazak.db.profile.enableTooltipsQuestID = true
             preCalls[17](GameTooltip, {leftText = "Known quest", id = 42})
             preCalls[17](GameTooltip, {leftText = "Unknown quest"})
 
@@ -723,8 +723,8 @@ describe("Tooltip", function()
 
         it("does not show secret quest IDs when the setting is disabled, even with debug mode enabled", function()
             _G.issecretvalue = function(value) return value == "Object name" or value == "Secret ID" end
-            Questie.db.profile.enableTooltipsQuestID = false
-            Questie.db.profile.debugEnabled = true
+            QuestieSmazak.db.profile.enableTooltipsQuestID = false
+            QuestieSmazak.db.profile.debugEnabled = true
 
             assert.is_true(preCalls[17](GameTooltip, {leftText = "Quest", id = "Secret ID"}))
 
@@ -747,7 +747,7 @@ describe("Tooltip", function()
                 end
                 return nativeFormat(format, ...)
             end
-            Questie.db.profile.enableTooltipsQuestID = true
+            QuestieSmazak.db.profile.enableTooltipsQuestID = true
 
             assert.is_true(preCalls[17](GameTooltip, {leftText = text, id = id}))
 
@@ -814,7 +814,7 @@ describe("Tooltip", function()
             primaryData.type = 0
             assert.is_nil(preCalls[17](GameTooltip, {leftText = "Item"}))
             primaryData.type = 4
-            Questie.db.profile.enableTooltips = false
+            QuestieSmazak.db.profile.enableTooltips = false
             assert.is_nil(preCalls[17](GameTooltip, {leftText = "Disabled"}))
             assert.spy(GameTooltip.AddLine).was.not_called()
         end)
@@ -932,7 +932,7 @@ describe("Tooltip", function()
             end)
 
             it("should ignore Blizzard's lines outside Forever", function()
-                Questie.IsForever = false
+                QuestieSmazak.IsForever = false
 
                 renderUnit()
 
@@ -948,7 +948,7 @@ describe("Tooltip", function()
             end)
 
             it("should mark Blizzard's lines only while debugging", function()
-                Questie.db.profile.debugEnabled = true
+                QuestieSmazak.db.profile.debugEnabled = true
 
                 renderUnit()
 
@@ -967,7 +967,7 @@ describe("Tooltip", function()
         end)
 
         it("should not list objectives of a quest the NPC starts or finishes", function()
-            Questie.db.profile.showQuestsInNpcTooltip = true
+            QuestieSmazak.db.profile.showQuestsInNpcTooltip = true
             QuestieTooltips.lookupByKey = {["m_123"] = {["1 test 2"] = {questId = 1, name = "test", starterId = 2}}}
 
             renderUnit()
@@ -1013,10 +1013,10 @@ describe("Tooltip", function()
 
     describe("GetTooltip", function()
         it("uses the quest ID when coloring the starter icon", function()
-            Questie.db.profile.showQuestsInNpcTooltip = true
+            QuestieSmazak.db.profile.showQuestsInNpcTooltip = true
             QuestieLib.GetEffectiveQuestLevel = function() return 2 end
             QuestieLib.GetDifficultyColorPercent = spy.new(function() return 0.753, 0.753, 0.753 end)
-            QuestieLoader:ImportModule("QuestieEvent").IsEventQuest = function() return false end
+            QuestieSmazakLoader:ImportModule("QuestieEvent").IsEventQuest = function() return false end
             QuestieDB.IsPvPQuest = function() return false end
             QuestieDB.IsRepeatable = function() return false end
             QuestieTooltips:RegisterQuestStartTooltip(94414, "Quest giver", 123, "m_123", "NPC")
@@ -1025,12 +1025,12 @@ describe("Tooltip", function()
 
             assert.spy(QuestieLib.GetDifficultyColorPercent).was.called_with(QuestieLib, 2, 94414)
             assert.are.same({
-                "|TInterface\\Addons\\Questie\\Icons\\tooltip_available.png:14:14:0:0:32:32:0:32:0:32:192:192:192|tQuest Name",
+                "|TInterface\\Addons\\QuestieSmazak\\Icons\\tooltip_available.png:14:14:0:0:32:32:0:32:0:32:192:192:192|tQuest Name",
             }, tooltip)
         end)
 
         it("should return quest name when tooltip has name set and showQuestsInNpcTooltip is active", function()
-            Questie.db.profile.showQuestsInNpcTooltip = true
+            QuestieSmazak.db.profile.showQuestsInNpcTooltip = true
             QuestieTooltips.lookupByKey = {["key"] = {["1 test 2"] = {questId = 1, name = "test", starterId = 2}}}
 
             local tooltip = QuestieTooltips.GetTooltip("key")
@@ -1040,7 +1040,7 @@ describe("Tooltip", function()
         end)
 
         it("should return empty tooltip when tooltip has name set but showQuestsInNpcTooltip is not active", function()
-            Questie.db.profile.showQuestsInNpcTooltip = false
+            QuestieSmazak.db.profile.showQuestsInNpcTooltip = false
             QuestieTooltips.lookupByKey = {["key"] = {["1 test 2"] = {questId = 1, name = "test", starterId = 2}}}
 
             local tooltip = QuestieTooltips.GetTooltip("key")
@@ -1063,7 +1063,7 @@ describe("Tooltip", function()
         it("should use the objective player name for remote player class lookup", function()
             _G.UnitName = function() return "Local" end
             _G.IsInGroup = function() return true end
-            Questie.GetClassColor = spy.new(function()
+            QuestieSmazak.GetClassColor = spy.new(function()
                 return "|cFFC79C6E"
             end)
             QuestieTooltips.lookupByKey = {}
@@ -1094,7 +1094,7 @@ describe("Tooltip", function()
             local tooltip = QuestieTooltips.GetTooltip("m_123")
 
             assert.is_nil(QuestieComms.remotePlayerClasses["Local"])
-            assert.spy(Questie.GetClassColor).was.called_with(Questie, "WARRIOR")
+            assert.spy(QuestieSmazak.GetClassColor).was.called_with(QuestieSmazak, "WARRIOR")
             assert.are_same({
                 "Quest Name",
                 "   gold3/5 do it (|cFFC79C6EBob|rgold)|r (Nearby)",
@@ -1176,7 +1176,7 @@ describe("Tooltip", function()
             end
 
             it("lists the quests an NPC starts or finishes by level, low to high", function()
-                Questie.db.profile.showQuestsInNpcTooltip = true
+                QuestieSmazak.db.profile.showQuestsInNpcTooltip = true
                 QuestieTooltips.lookupByKey = {["key"] = {
                     ["1 test 9"] = {questId = 1, name = "test", starterId = 9},
                     ["2 test 9"] = {questId = 2, name = "test", starterId = 9},
@@ -1212,7 +1212,7 @@ describe("Tooltip", function()
             end)
 
             it("preserves accepted local text at its native index and keeps the drop rate", function()
-                Questie.db.profile.enableTooltipDroprates = true
+                QuestieSmazak.db.profile.enableTooltipDroprates = true
                 QuestieDB.GetItemDroprate = function() return {25} end
                 cached[1] = {objectives = {[3] = {text = "9/15 Windstone Cluster."}}}
 
@@ -1317,7 +1317,7 @@ describe("Tooltip", function()
             QuestieDB.QueryObjectSingle = spy.new(function()
                 return {[721]={{10,10}}} -- Gnomeregan
             end)
-            local ZoneDB = QuestieLoader:ImportModule("ZoneDB")
+            local ZoneDB = QuestieSmazakLoader:ImportModule("ZoneDB")
             ZoneDB.GetParentZoneId = spy.new(function(_, areaId)
                 if areaId == 10030 then return 721 end
             end)
@@ -1360,14 +1360,14 @@ describe("Tooltip", function()
             }}}
             ActiveQuests.Add(1, {})
             QuestieDB.QueryObjectSingle = spy.new(function() end)
-            _G.Questie.Debug = spy.new(function() end)
+            _G.QuestieSmazak.Debug = spy.new(function() end)
 
             local tooltip = QuestieTooltips.GetTooltip("o_123", nil)
 
             assert.spy(QuestieLib.GetColoredQuestName).was.called_with(QuestieLib, 1, nil, true)
             assert.are_same({"Quest Name", "   golddo it"}, tooltip)
             assert.spy(QuestieDB.QueryObjectSingle).was.not_called()
-            assert.spy(Questie.Debug).was.called_with(Questie.DEBUG_CRITICAL, "[QuestieTooltips.GetTooltip] was called without a playerZone for objects")
+            assert.spy(QuestieSmazak.Debug).was.called_with(QuestieSmazak.DEBUG_CRITICAL, "[QuestieTooltips.GetTooltip] was called without a playerZone for objects")
         end)
 
         it("should return quest name and objective description when object has no spawn", function()
@@ -1413,7 +1413,7 @@ describe("Tooltip", function()
         end)
 
         it("should only return quest name when tooltip has completed objective and showQuestsInNpcTooltip is true", function()
-            Questie.db.profile.showQuestsInNpcTooltip = true
+            QuestieSmazak.db.profile.showQuestsInNpcTooltip = true
             QuestieTooltips.lookupByKey = {["key"] = {
                 ["1 test 2"] = {
                     questId = 1,
@@ -1440,7 +1440,7 @@ describe("Tooltip", function()
         end)
 
         it("should return quest name and objective description when tooltip has completed objective and showQuestsInNpcTooltip is false", function()
-            Questie.db.profile.showQuestsInNpcTooltip = false
+            QuestieSmazak.db.profile.showQuestsInNpcTooltip = false
             QuestieTooltips.lookupByKey = {["key"] = {
                 ["1 test 2"] = {
                     questId = 1,

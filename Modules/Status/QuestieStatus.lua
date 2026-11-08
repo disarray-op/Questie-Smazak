@@ -1,7 +1,7 @@
 ---@class QuestieStatus
-local QuestieStatus = QuestieLoader:CreateModule("QuestieStatus")
+local QuestieStatus = QuestieSmazakLoader:CreateModule("QuestieStatus")
 
--- Runtime issues only: an empty registry does not imply that Questie is ready.
+-- Runtime issues only: an empty registry does not imply that QuestieSmazak is ready.
 -- Producers can record English localization keys before settings, databases, or UI exist.
 QuestieStatus.Severity = {Error = 1, Warning = 2, Info = 3}
 

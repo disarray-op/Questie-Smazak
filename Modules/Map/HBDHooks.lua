@@ -1,9 +1,9 @@
 ---@class HBDHooks
-local HBDHooks = QuestieLoader:CreateModule("HBDHooks");
+local HBDHooks = QuestieSmazakLoader:CreateModule("HBDHooks");
 local _HBDHooks = {}
 
 ---@type QuestieMap
-local QuestieMap = QuestieLoader:ImportModule("QuestieMap");
+local QuestieMap = QuestieSmazakLoader:ImportModule("QuestieMap");
 
 local HBDPins = LibStub("HereBeDragonsQuestie-Pins-2.0")
 
@@ -16,7 +16,7 @@ function HBDHooks:Init()
     _HBDHooks.ORG_OnMapChanged = HBDPins.worldmapProvider.OnMapChanged;
     HBDPins.worldmapProvider.OnMapChanged = _HBDHooks.OnMapChanged
 
-    if Questie.IsForever then
+    if QuestieSmazak.IsForever then
         HBDHooks.HideWorldMapPinsFromGamepadCursor()
     end
 end
@@ -25,7 +25,7 @@ local function _ReturnNoCenter()
     return nil
 end
 
--- Blizzard's gamepad map cursor uses the pins it finds outside of secure code, so Questie pins taint the map
+-- Blizzard's gamepad map cursor uses the pins it finds outside of secure code, so QuestieSmazak pins taint the map
 -- and block the gamepad UI. It skips pins without a center.
 function HBDHooks.HideWorldMapPinsFromGamepadCursor()
     -- New pins copy their fields from this mixin

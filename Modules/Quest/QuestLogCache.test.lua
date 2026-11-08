@@ -33,13 +33,13 @@ describe("QuestLogCache", function()
 
         dofile("Modules/Libs/QuestieLib.lua")
 
-        Sounds = QuestieLoader:ImportModule("Sounds")
+        Sounds = QuestieSmazakLoader:ImportModule("Sounds")
         Sounds.PlayQuestComplete = spy.new(function() end)
         Sounds.PlayObjectiveComplete = spy.new(function() end)
         Sounds.PlayObjectiveProgress = spy.new(function() end)
 
         dofile("Modules/Quest/QuestLogCache.lua")
-        QuestLogCache = QuestieLoader:ImportModule("QuestLogCache")
+        QuestLogCache = QuestieSmazakLoader:ImportModule("QuestLogCache")
     end)
 
     after_each(function()
@@ -50,7 +50,7 @@ describe("QuestLogCache", function()
         local compat, originalIsSequenced
 
         before_each(function()
-            compat = QuestieLoader:ImportModule("QuestieCompat")
+            compat = QuestieSmazakLoader:ImportModule("QuestieCompat")
             originalIsSequenced = compat.IsQuestSequenced
             compat.IsQuestSequenced = function() return true end
             questLogTitles[1] = {"A Last Request", 8, nil, false, false, nil, nil, QUEST_ID}
@@ -186,25 +186,25 @@ describe("QuestLogCache", function()
         local originalPrint, originalError
 
         before_each(function()
-            originalPrint, originalError = Questie.Print, Questie.Error
-            Questie.Print = spy.new(function() end)
-            Questie.Error = spy.new(function() end)
+            originalPrint, originalError = QuestieSmazak.Print, QuestieSmazak.Error
+            QuestieSmazak.Print = spy.new(function() end)
+            QuestieSmazak.Error = spy.new(function() end)
             _G.HaveQuestData = spy.new(function() return true end)
             _G.C_QuestLog.GetQuestObjectives = spy.new(_G.C_QuestLog.GetQuestObjectives)
             -- The cache captures the client function at load time.
             dofile("Modules/Quest/QuestLogCache.lua")
-            QuestLogCache = QuestieLoader:ImportModule("QuestLogCache")
+            QuestLogCache = QuestieSmazakLoader:ImportModule("QuestLogCache")
         end)
 
         after_each(function()
-            Questie.Print, Questie.Error = originalPrint, originalError
+            QuestieSmazak.Print, QuestieSmazak.Error = originalPrint, originalError
         end)
 
         it("returns nil silently without requesting missing quest data", function()
             assert.is_nil(QuestLogCache.TryGetQuest(QUEST_ID))
 
-            assert.spy(Questie.Print).was.not_called()
-            assert.spy(Questie.Error).was.not_called()
+            assert.spy(QuestieSmazak.Print).was.not_called()
+            assert.spy(QuestieSmazak.Error).was.not_called()
             assert.spy(_G.HaveQuestData).was.not_called()
             assert.spy(_G.C_QuestLog.GetQuestObjectives).was.not_called()
             assert.are.equal(0, QuestLogCache.GetQuestCount())
@@ -227,8 +227,8 @@ describe("QuestLogCache", function()
             assert.are.equal(2, result.objectives[1].numFulfilled)
             assert.spy(_G.C_QuestLog.GetQuestObjectives).was.not_called()
             assert.spy(_G.HaveQuestData).was.not_called()
-            assert.spy(Questie.Print).was.not_called()
-            assert.spy(Questie.Error).was.not_called()
+            assert.spy(QuestieSmazak.Print).was.not_called()
+            assert.spy(QuestieSmazak.Error).was.not_called()
         end)
     end)
 
@@ -988,7 +988,7 @@ describe("QuestLogCache", function()
             assert.are.equal(-1, QuestLogCache.GetQuest(QUEST_ID).isComplete)
         end)
 
-        -- Test of Faith (1149): "leap from the planks" is an empty row; Questie showed it complete 12 s before the client.
+        -- Test of Faith (1149): "leap from the planks" is an empty row; QuestieSmazak showed it complete 12 s before the client.
         it("leaves a quest whose only rows are empty incomplete until Blizzard completes it", function()
             questLogTitles[1] = {"Test of Faith", 26, nil, false, false, nil, nil, QUEST_ID}
             questObjectives[QUEST_ID] = {{text = "", type = "event", numFulfilled = 0, numRequired = 1, finished = false}}

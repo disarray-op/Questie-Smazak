@@ -1,5 +1,5 @@
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 
 local mapOptionsLocales = {
     ["Map"] = {
@@ -26,27 +26,27 @@ local mapOptionsLocales = {
         ["zhCN"] = "大地图选项",
         ["zhTW"] = "大地圖選項",
     },
-    ["Show Questie Map Button"] = {
+    ["Show QuestieSmazak Map Button"] = {
         ["enUS"] = true,
-        ["deDE"] = "Zeige Questie-Button an der Weltkarte",
-        ["esES"] = "Mostrar botón de Questie en el mapa",
-        ["esMX"] = "Mostrar botón de Questie en el mapa",
-        ["frFR"] = "Afficher le bouton Questie sur la carte",
-        ["koKR"] = "Questie 지도 버튼 표시",
-        ["ptBR"] = "Mostrar o botão de Questie no mapa",
-        ["ruRU"] = "Кнопка Questie",
+        ["deDE"] = "Zeige QuestieSmazak-Button an der Weltkarte",
+        ["esES"] = "Mostrar botón de QuestieSmazak en el mapa",
+        ["esMX"] = "Mostrar botón de QuestieSmazak en el mapa",
+        ["frFR"] = "Afficher le bouton QuestieSmazak sur la carte",
+        ["koKR"] = "QuestieSmazak 지도 버튼 표시",
+        ["ptBR"] = "Mostrar o botão de QuestieSmazak no mapa",
+        ["ruRU"] = "Кнопка QuestieSmazak",
         ["zhCN"] = "大地图显示Questie按钮",
         ["zhTW"] = "顯示大地圖的任務圖示按鈕",
     },
-    ["Enable or disable the Show/Hide Questie Button on Map (May fix some Map Addon interactions)."] = {
+    ["Enable or disable the Show/Hide QuestieSmazak Button on Map (May fix some Map Addon interactions)."] = {
         ["enUS"] = true,
         ["deDE"] = "Aktiviert/Deaktiviert den Zeigen/Verstecken-Button an der Weltkarte (repariert möglicherweise Karten-Addon Interaktionen).",
-        ["esES"] = "Activa o desactiva el botón de Questie en el mapa (puede solucionar algunas interacciones con los addons de mapas).",
-        ["esMX"] = "Activa o desactiva el botón de Questie en el mapa (puede solucionar algunas interacciones con los addons de mapas).",
-        ["frFR"] = "Active l'affichage du bouton de Questie sur la carte (peut corriger certaines interactions avec des add-ons modifiant la carte).",
-        ["koKR"] = "지도에 Questie 버튼을 표시합니다 (따로 지도 애드온을 사용할 경우 충돌할 수 있습니다)",
-        ["ptBR"] = "Ativa ou desativa o botão de Questie no mapa (pode corrigir algumas interações com os addons de mapas).",
-        ["ruRU"] = "Показать/скрыть кнопку Questie на карте (может исправить некоторые проблемы с аддонами карт)",
+        ["esES"] = "Activa o desactiva el botón de QuestieSmazak en el mapa (puede solucionar algunas interacciones con los addons de mapas).",
+        ["esMX"] = "Activa o desactiva el botón de QuestieSmazak en el mapa (puede solucionar algunas interacciones con los addons de mapas).",
+        ["frFR"] = "Active l'affichage du bouton de QuestieSmazak sur la carte (peut corriger certaines interactions avec des add-ons modifiant la carte).",
+        ["koKR"] = "지도에 QuestieSmazak 버튼을 표시합니다 (따로 지도 애드온을 사용할 경우 충돌할 수 있습니다)",
+        ["ptBR"] = "Ativa ou desativa o botão de QuestieSmazak no mapa (pode corrigir algumas interações com os addons de mapas).",
+        ["ruRU"] = "Показать/скрыть кнопку QuestieSmazak на карте (может исправить некоторые проблемы с аддонами карт)",
         ["zhCN"] = "启用或停用大地图上的Questie切换按钮（可以解决某些地图插件的冲突）",
         ["zhTW"] = "啟用或停用大地圖上的顯示/隱藏任務圖示按鈕 (可以修正某些地圖插件的互動問題)",
     },
@@ -530,15 +530,15 @@ local mapOptionsLocales = {
         ["zhCN"] = "启用大地图航点", -- AI 🤖
         ["zhTW"] = "啟用大地圖航點", -- AI 🤖
     },
-    ["Draws the patrol paths of the NPCs Questie shows on the world map."] = {
+    ["Draws the patrol paths of the NPCs QuestieSmazak shows on the world map."] = {
         ["enUS"] = true,
-        ["deDE"] = "Zeichnet die Patrouillenwege der NPCs, die Questie auf der Weltkarte anzeigt.", -- AI 🤖
-        ["esES"] = "Dibuja las rutas de patrulla de los PNJ que Questie muestra en el mapa del mundo.", -- AI 🤖
-        ["esMX"] = "Dibuja las rutas de patrulla de los PNJ que Questie muestra en el mapa del mundo.", -- AI 🤖
-        ["frFR"] = "Dessine les trajets de patrouille des PNJ que Questie affiche sur la carte du monde.", -- AI 🤖
+        ["deDE"] = "Zeichnet die Patrouillenwege der NPCs, die QuestieSmazak auf der Weltkarte anzeigt.", -- AI 🤖
+        ["esES"] = "Dibuja las rutas de patrulla de los PNJ que QuestieSmazak muestra en el mapa del mundo.", -- AI 🤖
+        ["esMX"] = "Dibuja las rutas de patrulla de los PNJ que QuestieSmazak muestra en el mapa del mundo.", -- AI 🤖
+        ["frFR"] = "Dessine les trajets de patrouille des PNJ que QuestieSmazak affiche sur la carte du monde.", -- AI 🤖
         ["koKR"] = "Questie가 세계 지도에 표시하는 NPC의 순찰 경로를 그립니다.", -- AI 🤖
-        ["ptBR"] = "Desenha as rotas de patrulha dos NPCs que o Questie mostra no mapa-múndi.", -- AI 🤖
-        ["ruRU"] = "Рисует маршруты патрулирования NPC, которых Questie показывает на карте мира.", -- AI 🤖
+        ["ptBR"] = "Desenha as rotas de patrulha dos NPCs que o QuestieSmazak mostra no mapa-múndi.", -- AI 🤖
+        ["ruRU"] = "Рисует маршруты патрулирования NPC, которых QuestieSmazak показывает на карте мира.", -- AI 🤖
         ["zhCN"] = "绘制Questie在大地图上显示的NPC巡逻路线。", -- AI 🤖
         ["zhTW"] = "繪製Questie在大地圖上顯示的NPC巡邏路線。", -- AI 🤖
     },
@@ -554,15 +554,15 @@ local mapOptionsLocales = {
         ["zhCN"] = "启用小地图航点", -- AI 🤖
         ["zhTW"] = "啟用小地圖航點", -- AI 🤖
     },
-    ["Draws the patrol paths of the NPCs Questie shows on the minimap. Minimap icons must be enabled too."] = {
+    ["Draws the patrol paths of the NPCs QuestieSmazak shows on the minimap. Minimap icons must be enabled too."] = {
         ["enUS"] = true,
-        ["deDE"] = "Zeichnet die Patrouillenwege der NPCs, die Questie auf der Minimap anzeigt. Dafür müssen auch die Minimap-Icons aktiviert sein.", -- AI 🤖
-        ["esES"] = "Dibuja las rutas de patrulla de los PNJ que Questie muestra en el minimapa. Los iconos del minimapa también deben estar activados.", -- AI 🤖
-        ["esMX"] = "Dibuja las rutas de patrulla de los PNJ que Questie muestra en el minimapa. Los iconos del minimapa también deben estar activados.", -- AI 🤖
-        ["frFR"] = "Dessine les trajets de patrouille des PNJ que Questie affiche sur la minicarte. Les icônes de la minicarte doivent aussi être activées.", -- AI 🤖
+        ["deDE"] = "Zeichnet die Patrouillenwege der NPCs, die QuestieSmazak auf der Minimap anzeigt. Dafür müssen auch die Minimap-Icons aktiviert sein.", -- AI 🤖
+        ["esES"] = "Dibuja las rutas de patrulla de los PNJ que QuestieSmazak muestra en el minimapa. Los iconos del minimapa también deben estar activados.", -- AI 🤖
+        ["esMX"] = "Dibuja las rutas de patrulla de los PNJ que QuestieSmazak muestra en el minimapa. Los iconos del minimapa también deben estar activados.", -- AI 🤖
+        ["frFR"] = "Dessine les trajets de patrouille des PNJ que QuestieSmazak affiche sur la minicarte. Les icônes de la minicarte doivent aussi être activées.", -- AI 🤖
         ["koKR"] = "Questie가 미니맵에 표시하는 NPC의 순찰 경로를 그립니다. 미니맵 아이콘도 활성화되어 있어야 합니다.", -- AI 🤖
-        ["ptBR"] = "Desenha as rotas de patrulha dos NPCs que o Questie mostra no minimapa. Os ícones do minimapa também precisam estar ativados.", -- AI 🤖
-        ["ruRU"] = "Рисует маршруты патрулирования NPC, которых Questie показывает на миникарте. Значки на миникарте тоже должны быть включены.", -- AI 🤖
+        ["ptBR"] = "Desenha as rotas de patrulha dos NPCs que o QuestieSmazak mostra no minimapa. Os ícones do minimapa também precisam estar ativados.", -- AI 🤖
+        ["ruRU"] = "Рисует маршруты патрулирования NPC, которых QuestieSmazak показывает на миникарте. Значки на миникарте тоже должны быть включены.", -- AI 🤖
         ["zhCN"] = "绘制Questie在小地图上显示的NPC巡逻路线。小地图图标也必须启用。", -- AI 🤖
         ["zhTW"] = "繪製Questie在小地圖上顯示的NPC巡邏路線。小地圖圖示也必須啟用。", -- AI 🤖
     },

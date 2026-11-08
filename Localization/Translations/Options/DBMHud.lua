@@ -1,5 +1,5 @@
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 
 local dbmHudOptionsLocales = {
     ["DBM HUD"] = {
@@ -62,17 +62,17 @@ local dbmHudOptionsLocales = {
         ["zhCN"] = "启用或停用 DBM HUD 覆盖层，以显示地图物体",
         ["zhTW"] = "啟用或停用 DBM HUD 覆蓋層，以顯示地圖物體",
     },
-    ["Questie has activated DBM HUD overlay. For more options, visit DBM HUD tab in Questie options"] = {
+    ["QuestieSmazak has activated DBM HUD overlay. For more options, visit DBM HUD tab in QuestieSmazak options"] = {
         ["enUS"] = true,
-        ["deDE"] = "Questie hat das DBM HUD aktiviert. Einstellungen dazu findest du in den Questie-Einstellungen im \"DBM HUD\"-Reiter.",
-        ["esES"] = "Questie ha activado la superposición del DBM HUD. Para más opciones, visita la pestaña DBM HUD en las opciones de Questie.",
-        ["esMX"] = "Questie ha activado la superposición del DBM HUD. Para más opciones, visita la pestaña DBM HUD en las opciones de Questie.",
-        ["frFR"] = "Questie a activé la superposition du DBM HUD. Pour plus d'options, rendez-vous dans l'onglet DBM HUD dans les options de Questie.",
-        ["koKR"] = "Questie가 DBM HUD 오버레이를 활성화했습니다. 더 많은 옵션을 보려면 Questie 설정의 DBM HUD 탭을 방문하세요.",
-        ["ptBR"] = "O Questie ativou a sobreposição do DBM HUD. Para mais opções, acesse a aba DBM HUD nas opções de Questie.",
-        ["ruRU"] = "В Questie активировано наложение DBM HUD. Для расширенных настроек посетите вкладку DBM HUD в параметрах Questie",
-        ["zhCN"] = "Questie 已激活 DBM HUD 覆盖。更多选项，请前往 Questie 选项中的 DBM HUD 标签",
-        ["zhTW"] = "Questie 已啟用 DBM 畫面中顯示 (HUD) 圖層，更多選項在 Questie 設定選項的 DBM HUD 標籤頁面中",
+        ["deDE"] = "QuestieSmazak hat das DBM HUD aktiviert. Einstellungen dazu findest du in den QuestieSmazak-Einstellungen im \"DBM HUD\"-Reiter.",
+        ["esES"] = "QuestieSmazak ha activado la superposición del DBM HUD. Para más opciones, visita la pestaña DBM HUD en las opciones de QuestieSmazak.",
+        ["esMX"] = "QuestieSmazak ha activado la superposición del DBM HUD. Para más opciones, visita la pestaña DBM HUD en las opciones de QuestieSmazak.",
+        ["frFR"] = "QuestieSmazak a activé la superposition du DBM HUD. Pour plus d'options, rendez-vous dans l'onglet DBM HUD dans les options de QuestieSmazak.",
+        ["koKR"] = "Questie가 DBM HUD 오버레이를 활성화했습니다. 더 많은 옵션을 보려면 QuestieSmazak 설정의 DBM HUD 탭을 방문하세요.",
+        ["ptBR"] = "O QuestieSmazak ativou a sobreposição do DBM HUD. Para mais opções, acesse a aba DBM HUD nas opções de QuestieSmazak.",
+        ["ruRU"] = "В QuestieSmazak активировано наложение DBM HUD. Для расширенных настроек посетите вкладку DBM HUD в параметрах QuestieSmazak",
+        ["zhCN"] = "QuestieSmazak 已激活 DBM HUD 覆盖。更多选项，请前往 QuestieSmazak 选项中的 DBM HUD 标签",
+        ["zhTW"] = "QuestieSmazak 已啟用 DBM 畫面中顯示 (HUD) 圖層，更多選項在 QuestieSmazak 設定選項的 DBM HUD 標籤頁面中",
     },
     ["Filter Options"] = {
         ["enUS"] = true,

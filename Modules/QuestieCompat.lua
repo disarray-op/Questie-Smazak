@@ -1,6 +1,6 @@
 ---@diagnostic disable: undefined-global, return-type-mismatch, undefined-field
 ---@class QuestieCompat
-local QuestieCompat = QuestieLoader:CreateModule("QuestieCompat")
+local QuestieCompat = QuestieSmazakLoader:CreateModule("QuestieCompat")
 
 -- Source baselines: Era 1.15.9 (69722), Anniversary 2.5.6 (69795), Mists 5.5.4 (69585),
 -- Titan 3.80.2 (69874), Forever 1.60.1 (69913). See FOREVER_WORK_LEFT_TO_DO.md for pinned sources and caveats.
@@ -10,20 +10,20 @@ local QuestieCompat = QuestieLoader:CreateModule("QuestieCompat")
 -- Item/container/gossip/date APIs have modern paths on these baselines; quest-log/reputation contracts still differ.
 -- Keep calls dynamic where legacy globals may be replaced by tracker hooks after this module loads.
 
-local errorMsg = "Questie tried to call a blizzard API function that does not exist..."
+local errorMsg = "QuestieSmazak tried to call a blizzard API function that does not exist..."
 local INDIZES_AVAILABLE = 7
 local INDIZES_ACTIVE = 6
 
 local tinsert = table.insert
 
--- Compatibility loads before VersionCheck and embedded libraries, so Questie.IsForever is not available yet.
+-- Compatibility loads before VersionCheck and embedded libraries, so QuestieSmazak.IsForever is not available yet.
 -- Forever shares Retail's project ID; use the same interface range as VersionCheck instead.
 local _, _, _, interfaceVersion = GetBuildInfo()
 local isForever = interfaceVersion >= 16000 and interfaceVersion < 17000
 
 -- QuestieDB loads later; the loader returns the module table that its owning file will populate.
 ---@type QuestieDB
-local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
 
 local WatchFrame = QuestWatchFrame or WatchFrame
 
@@ -122,7 +122,7 @@ end
 function QuestieCompat.GetActiveQuests()
     if C_GossipInfo and C_GossipInfo.GetActiveQuests then
         local activeQuests = C_GossipInfo.GetActiveQuests()
-        -- Also mark quests complete when Questie's quest state reports completion.
+        -- Also mark quests complete when QuestieSmazak's quest state reports completion.
         for _, quest in pairs(activeQuests) do
             quest.isComplete = quest.isComplete or QuestieDB.IsComplete(quest.questID) == 1
         end
@@ -405,9 +405,9 @@ function QuestieCompat.HideWatchFrame()
             objectiveTrackerHooked = true
         end
         ApplyObjectiveTrackerVisibility()
-    elseif Questie.IsTitanReforged then
+    elseif QuestieSmazak.IsTitanReforged then
         -- On titan reforged realms, the WatchFrame somehow behaves differently when hidden.
-        -- details: https://github.com/Questie/Questie/issues/7497
+        -- details: https://github.com/QuestieSmazak/QuestieSmazak/issues/7497
         WatchFrame:SetAlpha(0)
     else
         -- Classic: the legacy tracker can be hidden directly.
@@ -423,9 +423,9 @@ function QuestieCompat.ShowWatchFrame()
             hideObjectiveTracker = false
             ApplyObjectiveTrackerVisibility()
         end
-    elseif Questie.IsTitanReforged then
+    elseif QuestieSmazak.IsTitanReforged then
         -- On titan reforged realms, the WatchFrame somehow behaves differently when hidden.
-        -- details: https://github.com/Questie/Questie/issues/7497
+        -- details: https://github.com/QuestieSmazak/QuestieSmazak/issues/7497
         WatchFrame:SetAlpha(1)
     else
         -- Classic: restore the legacy tracker directly.
@@ -433,7 +433,7 @@ function QuestieCompat.ShowWatchFrame()
     end
 end
 
----Returns Blizzard's quest tracker anchor for positioning Questie's tracker.
+---Returns Blizzard's quest tracker anchor for positioning QuestieSmazak's tracker.
 ---@return any ... Point, relative region, relative point, x/y offsets; may return nothing.
 function QuestieCompat.GetWatchFramePoint()
     if isForever then
@@ -634,10 +634,10 @@ end
 ---@return number numQuestWatches
 function QuestieCompat.GetNumQuestWatches(arg)
     if C_QuestLog and C_QuestLog.GetNumQuestWatches then
-        -- Native count, not Questie's own tracked-quest count.
+        -- Native count, not QuestieSmazak's own tracked-quest count.
         return C_QuestLog.GetNumQuestWatches()
     elseif GetNumQuestWatches then
-        -- While the tracker intercepts this global, true requests Questie's count; other arguments return zero.
+        -- While the tracker intercepts this global, true requests QuestieSmazak's count; other arguments return zero.
         return GetNumQuestWatches(arg)
     end
     error(errorMsg, 2)
@@ -661,7 +661,7 @@ end
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_RemoveQuestWatch)
 ---Removes a quest from Blizzard's watched quests.
 ---@param questLogIndex number Position in the quest log, not a quest ID.
----@param isQuestie boolean? Bypasses Questie's legacy removal hook; ignored by the modern path.
+---@param isQuestie boolean? Bypasses QuestieSmazak's legacy removal hook; ignored by the modern path.
 function QuestieCompat.RemoveQuestWatch(questLogIndex, isQuestie)
     if not questLogIndex or questLogIndex <= 0 then return end
     if C_QuestLog and C_QuestLog.RemoveQuestWatch and C_QuestLog.GetInfo then
@@ -672,7 +672,7 @@ function QuestieCompat.RemoveQuestWatch(questLogIndex, isQuestie)
         end
         return
     elseif RemoveQuestWatch then
-        -- Forward the hook-control flag so Questie-owned removals are not treated as user actions.
+        -- Forward the hook-control flag so QuestieSmazak-owned removals are not treated as user actions.
         return RemoveQuestWatch(questLogIndex, isQuestie)
     end
     error(errorMsg, 2)
@@ -692,7 +692,7 @@ function QuestieCompat.GetQuestGreenRange()
         -- Blizzard's level-based difficulty check keeps quests green at this offset (<=), despite the API's name.
         return C_QuestLog.GetTrivialRange()
     end
-    print("ERROR: Something went seriously wrong in Questie's GetQuestGreenRange, please tell the devs on Discord or Github.")
+    print("ERROR: Something went seriously wrong in QuestieSmazak's GetQuestGreenRange, please tell the devs on Discord or Github.")
     return 10 -- default to level 50 in case of missing functions
 end
 
@@ -938,7 +938,7 @@ function QuestieCompat.ExpandAllSkillHeaders()
 end
 
 ---[Documentation](https://warcraft.wiki.gg/wiki/API_GetQuestUiMapID)
----Blizzard's map for a logged quest, for quests Questie has no map data for. The waypoint fallback may point to a
+---Blizzard's map for a logged quest, for quests QuestieSmazak has no map data for. The waypoint fallback may point to a
 ---neighbouring zone on the way to the quest.
 ---@param questId QuestId
 ---@return number|nil uiMapId Nil when the client knows no map for the quest or lacks both APIs.
@@ -1282,11 +1282,11 @@ end
 function QuestieCompat.IsQuestWatched(questLogIndex)
     if not questLogIndex or questLogIndex <= 0 then return false end
     if isForever then
-        -- Forever: query native state by quest ID, not Questie's synthetic legacy global. Watch type 0 is valid.
+        -- Forever: query native state by quest ID, not QuestieSmazak's synthetic legacy global. Watch type 0 is valid.
         local questID = QuestieCompat.GetQuestIDFromLogIndex(questLogIndex)
         return questID ~= nil and C_QuestLog.GetQuestWatchType(questID) ~= nil
     end
-    -- The legacy global may report Questie's tracking state, including nil for an unwatched quest.
+    -- The legacy global may report QuestieSmazak's tracking state, including nil for an unwatched quest.
     if IsQuestWatched then
         return IsQuestWatched(questLogIndex)
     end

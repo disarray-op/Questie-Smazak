@@ -55,22 +55,22 @@ describe("QuestSection", function()
         drawnLines = {}
         availableLines = 100
 
-        Questie.db.char.collapsedZones = {}
-        Questie.db.char.collapsedQuests = {}
-        Questie.db.char.minAllQuestsInZone = {}
-        Questie.db.char.AutoUntrackedQuests = {}
-        Questie.db.char.TrackedQuests = {}
-        Questie.db.profile.autoTrackQuests = true
-        Questie.db.profile.trackerShowCompleteQuests = true
-        Questie.db.profile.hideCompletedQuestObjectives = false
-        Questie.db.profile.collapseCompletedQuests = false
-        Questie.db.profile.hideBlizzardCompletionText = false
-        Questie.db.profile.trackerColorObjectives = "white"
-        Questie.db.profile.trackerQuestPadding = 2
+        QuestieSmazak.db.char.collapsedZones = {}
+        QuestieSmazak.db.char.collapsedQuests = {}
+        QuestieSmazak.db.char.minAllQuestsInZone = {}
+        QuestieSmazak.db.char.AutoUntrackedQuests = {}
+        QuestieSmazak.db.char.TrackedQuests = {}
+        QuestieSmazak.db.profile.autoTrackQuests = true
+        QuestieSmazak.db.profile.trackerShowCompleteQuests = true
+        QuestieSmazak.db.profile.hideCompletedQuestObjectives = false
+        QuestieSmazak.db.profile.collapseCompletedQuests = false
+        QuestieSmazak.db.profile.hideBlizzardCompletionText = false
+        QuestieSmazak.db.profile.trackerColorObjectives = "white"
+        QuestieSmazak.db.profile.trackerQuestPadding = 2
 
-        Questie.Colorize = function(_, text) return text end
+        QuestieSmazak.Colorize = function(_, text) return text end
 
-        TrackerLayout = QuestieLoader:ImportModule("TrackerLayout")
+        TrackerLayout = QuestieSmazakLoader:ImportModule("TrackerLayout")
         TrackerLayout.GetMargins = function() return {left = 14, right = 30, quest = 20, objective = 30, itemButtonSize = 24, buttonSize = 15, playButtonRight = 13, playButtonSize = 17} end
         TrackerLayout.UpdateWidth = function() end
         TrackerLayout.GetBaseFrame = function() return {} end
@@ -78,25 +78,25 @@ describe("QuestSection", function()
         TrackerLayout.TrackLineWidth = function() end
         TrackerLayout.UpdateLineWidth = spy.new(function() end)
 
-        TrackerLinePool = QuestieLoader:ImportModule("TrackerLinePool")
+        TrackerLinePool = QuestieSmazakLoader:ImportModule("TrackerLinePool")
         TrackerLinePool.GetNextLine = spy.new(_GetLine)
         TrackerLinePool.GetLastLine = _FakeLine
 
-        TrackerUtils = QuestieLoader:ImportModule("TrackerUtils")
+        TrackerUtils = QuestieSmazakLoader:ImportModule("TrackerUtils")
         TrackerUtils.GetCompletionText = function() return nil end
         TrackerUtils.AddQuestItemButtons = spy.new(function() return true end)
 
-        TrackerData = QuestieLoader:ImportModule("TrackerData")
+        TrackerData = QuestieSmazakLoader:ImportModule("TrackerData")
         TrackerData.GetColoredQuestName = function(quest) return "Quest " .. quest.Id end
         TrackerData.GetObjectiveText = function(objective) return objective.Description end
 
-        TrackerQuestTimers = QuestieLoader:ImportModule("TrackerQuestTimers")
+        TrackerQuestTimers = QuestieSmazakLoader:ImportModule("TrackerQuestTimers")
         TrackerQuestTimers.UpdateAndGetRemainingTime = function() end
 
         dofile("Localization/l10n.lua")
         dofile("Modules/Tracker/LinePool/LineBuilder.lua")
         dofile("Modules/Tracker/Sections/QuestSection.lua")
-        QuestSection = QuestieLoader:ImportModule("QuestSection")
+        QuestSection = QuestieSmazakLoader:ImportModule("QuestSection")
     end)
 
     it("should draw the zone header, the quest and its objectives", function()
@@ -139,17 +139,17 @@ describe("QuestSection", function()
     end)
 
     it("should auto collapse a complete quest when configured", function()
-        Questie.db.profile.collapseCompletedQuests = true
+        QuestieSmazak.db.profile.collapseCompletedQuests = true
 
         QuestSection.Draw(_Details({{quest = _Quest(1, 1), zoneName = "Elwynn Forest"}}))
 
-        assert.is_true(Questie.db.char.collapsedQuests[1])
+        assert.is_true(QuestieSmazak.db.char.collapsedQuests[1])
         assert.are_same({"|cFFC0C0C0Elwynn Forest|r", "Quest 1"}, texts)
     end)
 
     it("should not indent the title of a collapsed quest for a secondary item button", function()
-        Questie.db.char.collapsedQuests = {[1] = true}
-        local LineBuilder = QuestieLoader:ImportModule("LineBuilder")
+        QuestieSmazak.db.char.collapsedQuests = {[1] = true}
+        local LineBuilder = QuestieSmazakLoader:ImportModule("LineBuilder")
         LineBuilder.IndentTitle = spy.new(function() end)
         TrackerUtils.AddQuestItemButtons = function(_, _, _, _, _, _, rePositionLine)
             rePositionLine()
@@ -206,7 +206,7 @@ describe("QuestSection", function()
     end)
 
     it("should skip quests that are not tracked", function()
-        Questie.db.char.AutoUntrackedQuests = {[1] = true}
+        QuestieSmazak.db.char.AutoUntrackedQuests = {[1] = true}
 
         QuestSection.Draw(_Details({{quest = _Quest(1, 0), zoneName = "Elwynn Forest"}}))
 
@@ -214,7 +214,7 @@ describe("QuestSection", function()
     end)
 
     it("should only draw the zone header when the zone is collapsed", function()
-        Questie.db.char.collapsedZones = {["Elwynn Forest"] = true}
+        QuestieSmazak.db.char.collapsedZones = {["Elwynn Forest"] = true}
 
         QuestSection.Draw(_Details({{quest = _Quest(1, 0), zoneName = "Elwynn Forest"}}))
 
@@ -222,7 +222,7 @@ describe("QuestSection", function()
     end)
 
     it("should hide completed objectives when configured", function()
-        Questie.db.profile.hideCompletedQuestObjectives = true
+        QuestieSmazak.db.profile.hideCompletedQuestObjectives = true
         local quest = _Quest(1, 0, {
             {Description = "Wolf slain: 5/5", Completed = true},
             {Description = "Bear slain: 0/5", Completed = false},
@@ -309,25 +309,25 @@ describe("QuestSection", function()
         end)
 
         it("should return false when the quest with a quest item is in a collapsed zone", function()
-            Questie.db.char.collapsedZones["Elwynn Forest"] = true
+            QuestieSmazak.db.char.collapsedZones["Elwynn Forest"] = true
 
             assert.is_false(QuestSection.HasVisibleQuestItems(_Details({{quest = _Quest(1, 0), zoneName = "Elwynn Forest"}})))
         end)
 
         it("should return false when the quest with a quest item is collapsed", function()
-            Questie.db.char.collapsedQuests[1] = true
+            QuestieSmazak.db.char.collapsedQuests[1] = true
 
             assert.is_false(QuestSection.HasVisibleQuestItems(_Details({{quest = _Quest(1, 0), zoneName = "Elwynn Forest"}})))
         end)
 
         it("should return false when the quest with a quest item gets collapsed as completed", function()
-            Questie.db.profile.collapseCompletedQuests = true
+            QuestieSmazak.db.profile.collapseCompletedQuests = true
 
             assert.is_false(QuestSection.HasVisibleQuestItems(_Details({{quest = _Quest(1, 1), zoneName = "Elwynn Forest"}})))
         end)
 
         it("should return false when the quest with a quest item is untracked", function()
-            Questie.db.char.AutoUntrackedQuests[1] = true
+            QuestieSmazak.db.char.AutoUntrackedQuests[1] = true
 
             assert.is_false(QuestSection.HasVisibleQuestItems(_Details({{quest = _Quest(1, 0), zoneName = "Elwynn Forest"}})))
         end)

@@ -1,14 +1,14 @@
 ---@class WaypointHover
-local WaypointHover = QuestieLoader:CreateModule("WaypointHover")
+local WaypointHover = QuestieSmazakLoader:CreateModule("WaypointHover")
 
 ---@type QuestieWaypoints
-local QuestieWaypoints = QuestieLoader:ImportModule("QuestieWaypoints")
+local QuestieWaypoints = QuestieSmazakLoader:ImportModule("QuestieWaypoints")
 ---@type QuestieCompat
-local QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+local QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
 ---@type MapIconTooltip
-local MapIconTooltip = QuestieLoader:ImportModule("MapIconTooltip")
+local MapIconTooltip = QuestieSmazakLoader:ImportModule("MapIconTooltip")
 ---@type QuestieFrame
-local QuestieFrame = QuestieLoader:ImportModule("QuestieFrame")
+local QuestieFrame = QuestieSmazakLoader:ImportModule("QuestieSmazakFrame")
 
 -- One patrol path is hovered at a time, on the world map or the minimap. Hovering a path is
 -- hovering its NPC: the NPC's tooltip opens, which highlights all of the NPC's paths.
@@ -33,7 +33,7 @@ local minimapTooltip
 
 ---@return GameTooltip
 local function _MinimapTooltip()
-    minimapTooltip = minimapTooltip or CreateFrame("GameTooltip", "QuestieWaypointMinimapTooltip", UIParent, "GameTooltipTemplate")
+    minimapTooltip = minimapTooltip or CreateFrame("GameTooltip", "QuestieSmazakWaypointMinimapTooltip", UIParent, "GameTooltipTemplate")
     return minimapTooltip
 end
 
@@ -84,7 +84,7 @@ local function _Leave(path, on)
     -- Moving onto the icon itself hands the hover over to it.
     if QuestieCompat.GetMouseFocus() == icon then return end
     if GameTooltip:GetOwner() ~= icon then
-        -- Another frame took the tooltip; a Questie icon would have ended this hover first. Its
+        -- Another frame took the tooltip; a QuestieSmazak icon would have ended this hover first. Its
         -- tooltip stays, but nothing of the NPC's may: a modifier key would rebuild it.
         _ResetTooltipChanges(path)
         GameTooltip._Rebuild, GameTooltip.ShownAsMapIcon = nil, false
@@ -132,5 +132,5 @@ end
 ---game on the world map.
 ---@return number
 function WaypointHover.Radius()
-    return Questie.db.profile.waypointWidth / 2 + 1
+    return QuestieSmazak.db.profile.waypointWidth / 2 + 1
 end

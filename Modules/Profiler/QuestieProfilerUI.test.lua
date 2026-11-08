@@ -312,17 +312,17 @@ describe("QuestieProfilerUI", function()
         }
 
         -- Replace the profiler engine before load: the UI captures the module reference at file scope.
-        QuestieLoader._modules.Profiler = NewProfilerStub()
-        Profiler = QuestieLoader:ImportModule("Profiler")
+        QuestieSmazakLoader._modules.Profiler = NewProfilerStub()
+        Profiler = QuestieSmazakLoader:ImportModule("Profiler")
 
         -- The window aliases the report's formatters at file scope, so the report has to exist first.
-        QuestieLoader._modules.ProfilerReport = nil
+        QuestieSmazakLoader._modules.ProfilerReport = nil
         dofile("Modules/Profiler/QuestieProfilerReport.lua")
-        ProfilerReport = QuestieLoader:ImportModule("ProfilerReport")
+        ProfilerReport = QuestieSmazakLoader:ImportModule("ProfilerReport")
 
-        QuestieLoader._modules.ProfilerUI = nil
+        QuestieSmazakLoader._modules.ProfilerUI = nil
         dofile("Modules/Profiler/QuestieProfilerUI.lua")
-        ProfilerUI = QuestieLoader:ImportModule("ProfilerUI")
+        ProfilerUI = QuestieSmazakLoader:ImportModule("ProfilerUI")
     end)
 
     after_each(function()
@@ -332,9 +332,9 @@ describe("QuestieProfilerUI", function()
         _G.BackdropTemplateMixin = originalBackdropTemplateMixin
         _G.GetCursorPosition = originalGetCursorPosition
         _G.C_Timer = originalTimerAPI
-        QuestieLoader._modules.Profiler = nil
-        QuestieLoader._modules.ProfilerUI = nil
-        QuestieLoader._modules.ProfilerReport = nil
+        QuestieSmazakLoader._modules.Profiler = nil
+        QuestieSmazakLoader._modules.ProfilerUI = nil
+        QuestieSmazakLoader._modules.ProfilerReport = nil
     end)
 
     describe("profiler entry points", function()
@@ -346,7 +346,7 @@ describe("QuestieProfilerUI", function()
         end)
 
         it("registers under the module name the profiler excludes from hooking", function()
-            assert.are_equal(ProfilerUI, QuestieLoader._modules.ProfilerUI)
+            assert.are_equal(ProfilerUI, QuestieSmazakLoader._modules.ProfilerUI)
         end)
     end)
 
@@ -361,10 +361,10 @@ describe("QuestieProfilerUI", function()
         end)
 
         it("describes a file by its load and allocation, not by calls it cannot have", function()
-            Profiler.fileLoadTime["Questie.lua"] = 50
-            Profiler.fileLoadMemory["Questie.lua"] = 2140
+            Profiler.fileLoadTime["QuestieSmazak.lua"] = 50
+            Profiler.fileLoadMemory["QuestieSmazak.lua"] = 2140
 
-            local detail = ProfilerUI.private.DetailLineFor(FindRow(BuildReport(), "Questie.lua"))
+            local detail = ProfilerUI.private.DetailLineFor(FindRow(BuildReport(), "QuestieSmazak.lua"))
 
             assert.are_same(1, string.find(detail, "|  50.000 ms load", 1, true))
             assert.is_true(string.find(detail, "2.1 MB allocated", 1, true) ~= nil)
@@ -608,7 +608,7 @@ describe("QuestieProfilerUI", function()
         end
 
         before_each(function()
-            PreHook = QuestieLoader:ImportModule("ProfilerPreHook")
+            PreHook = QuestieSmazakLoader:ImportModule("ProfilerPreHook")
         end)
 
         it("promises full speed when nothing was installed before it loaded", function()
@@ -661,7 +661,7 @@ describe("QuestieProfilerUI", function()
         it("hides without creating a window when none exists", function()
             ProfilerUI:Hide()
 
-            assert.is_nil(FindFrameByName("QuestieProfilerFrame"))
+            assert.is_nil(FindFrameByName("QuestieSmazakProfilerFrame"))
         end)
 
         it("can be reopened after being closed", function()
@@ -677,7 +677,7 @@ describe("QuestieProfilerUI", function()
             ProfilerUI:Create()
             ProfilerUI:Create()
 
-            assert.are_same({"QuestieProfilerFrame"}, _G.UISpecialFrames)
+            assert.are_same({"QuestieSmazakProfilerFrame"}, _G.UISpecialFrames)
         end)
 
         it("retains the stopped report view when a new session cannot start", function()
@@ -704,15 +704,15 @@ describe("QuestieProfilerUI", function()
 
     describe("active session indicator", function()
         it("is not created on a client that never profiles", function()
-            assert.is_nil(FindFrameByName("QuestieProfilerIndicator"))
+            assert.is_nil(FindFrameByName("QuestieSmazakProfilerIndicator"))
         end)
 
         it("exists without the window ever being opened", function()
             -- StartStartup(showUI = false) arms a session and calls Hide; no window is ever built.
             ProfilerUI:Hide()
 
-            assert.is_not_nil(FindFrameByName("QuestieProfilerIndicator"))
-            assert.is_nil(FindFrameByName("QuestieProfilerFrame"))
+            assert.is_not_nil(FindFrameByName("QuestieSmazakProfilerIndicator"))
+            assert.is_nil(FindFrameByName("QuestieSmazakProfilerFrame"))
         end)
 
         it("is shown while the session is active", function()
@@ -755,7 +755,7 @@ describe("QuestieProfilerUI", function()
 
         it("opens a closed window when clicked", function()
             ProfilerUI:Hide()
-            local indicator = FindFrameByName("QuestieProfilerIndicator")
+            local indicator = FindFrameByName("QuestieSmazakProfilerIndicator")
 
             indicator.scripts.OnClick(indicator)
 
@@ -764,7 +764,7 @@ describe("QuestieProfilerUI", function()
 
         it("closes an open window when clicked", function()
             ProfilerUI:Show()
-            local indicator = FindFrameByName("QuestieProfilerIndicator")
+            local indicator = FindFrameByName("QuestieSmazakProfilerIndicator")
 
             indicator.scripts.OnClick(indicator)
 
@@ -773,7 +773,7 @@ describe("QuestieProfilerUI", function()
 
         it("toggles the window back open on a second click", function()
             ProfilerUI:Show()
-            local indicator = FindFrameByName("QuestieProfilerIndicator")
+            local indicator = FindFrameByName("QuestieSmazakProfilerIndicator")
 
             indicator.scripts.OnClick(indicator)
             indicator.scripts.OnClick(indicator)
@@ -783,7 +783,7 @@ describe("QuestieProfilerUI", function()
 
         it("stays visible while toggling the window", function()
             ProfilerUI:Hide()
-            local indicator = FindFrameByName("QuestieProfilerIndicator")
+            local indicator = FindFrameByName("QuestieSmazakProfilerIndicator")
 
             indicator.scripts.OnClick(indicator)
             indicator.scripts.OnClick(indicator)
@@ -904,7 +904,7 @@ describe("QuestieProfilerUI", function()
                     treeRow = frame
                 end
                 local parent = rawget(frame, "parent")
-                if parent and parent.frameName == "QuestieProfilerFrame"
+                if parent and parent.frameName == "QuestieSmazakProfilerFrame"
                     and frame.scripts.OnMouseDown and frame.scripts.OnMouseUp then
                     sizer = frame
                 end
@@ -998,7 +998,7 @@ describe("QuestieProfilerUI", function()
             ProfilerUI:Refresh()
             ProfilerUI:Hide()
 
-            _G.SlashCmdList["QUESTIEPROFILER"]("show")
+            _G.SlashCmdList["QUESTIESMAZAKPROFILER"]("show")
 
             assert.is_true(ProfilerUI:IsShown())
             assert.are_same({"QuestieDB.GetQuest"}, RenderedRowKeys())
@@ -1007,7 +1007,7 @@ describe("QuestieProfilerUI", function()
         it("does not open a window when nothing was ever measured", function()
             Profiler.active = false
 
-            _G.SlashCmdList["QUESTIEPROFILER"]("show")
+            _G.SlashCmdList["QUESTIESMAZAKPROFILER"]("show")
 
             assert.is_false(ProfilerUI:IsShown())
         end)

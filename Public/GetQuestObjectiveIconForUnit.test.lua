@@ -6,44 +6,44 @@ describe("GetQuestObjectiveIconForUnit", function()
     local QuestieNameplate
 
     before_each(function()
-        _G.Questie.API.isReady = true
+        _G.QuestieSmazak.API.isReady = true
 
-        QuestieNameplate = QuestieLoader:ImportModule("QuestieNameplate")
+        QuestieNameplate = QuestieSmazakLoader:ImportModule("QuestieNameplate")
         ---@diagnostic disable-next-line: assign-type-mismatch
         QuestieNameplate.GetIcon = spy.new(function()
-            return "Interface\\Addons\\Questie\\Icons\\slay.blp"
+            return "Interface\\Addons\\QuestieSmazak\\Icons\\slay.blp"
         end)
 
         dofile("Public/GetQuestObjectiveIconForUnit.lua")
     end)
 
-    it("should return nil when Questie API is not ready", function()
-        _G.Questie.API.isReady = false
+    it("should return nil when QuestieSmazak API is not ready", function()
+        _G.QuestieSmazak.API.isReady = false
 
-        local result = _G.Questie.API.GetQuestObjectiveIconForUnit("some-guid")
+        local result = _G.QuestieSmazak.API.GetQuestObjectiveIconForUnit("some-guid")
 
         assert.is_nil(result)
     end)
 
     it("should return error when guid is not a string", function()
         assert.has_error(function()
-            _G.Questie.API.GetQuestObjectiveIconForUnit(nil)
+            _G.QuestieSmazak.API.GetQuestObjectiveIconForUnit(nil)
         end)
         assert.has_error(function()
-            _G.Questie.API.GetQuestObjectiveIconForUnit(123)
+            _G.QuestieSmazak.API.GetQuestObjectiveIconForUnit(123)
         end)
         assert.has_error(function()
-            _G.Questie.API.GetQuestObjectiveIconForUnit(true)
+            _G.QuestieSmazak.API.GetQuestObjectiveIconForUnit(true)
         end)
         assert.has_error(function()
-            _G.Questie.API.GetQuestObjectiveIconForUnit({})
+            _G.QuestieSmazak.API.GetQuestObjectiveIconForUnit({})
         end)
     end)
 
-    it("should return icon path when Questie API is ready", function()
-        local result = _G.Questie.API.GetQuestObjectiveIconForUnit("some-guid")
+    it("should return icon path when QuestieSmazak API is ready", function()
+        local result = _G.QuestieSmazak.API.GetQuestObjectiveIconForUnit("some-guid")
 
-        assert.is_equal("Interface\\Addons\\Questie\\Icons\\slay.blp", result)
+        assert.is_equal("Interface\\Addons\\QuestieSmazak\\Icons\\slay.blp", result)
         assert.spy(QuestieNameplate.GetIcon).was.called_with("some-guid")
     end)
 end)

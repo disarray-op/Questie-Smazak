@@ -1,8 +1,8 @@
 ---@class WeaponMasterSkills
-local WeaponMasterSkills = QuestieLoader:CreateModule("WeaponMasterSkills")
+local WeaponMasterSkills = QuestieSmazakLoader:CreateModule("WeaponMasterSkills")
 
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 
 WeaponMasterSkills.data = {
     -- Alliance Weapon Trainers
@@ -17,7 +17,7 @@ WeaponMasterSkills.data = {
     [11870] = {"Crossbows", "Daggers", "One-Handed Swords", "Polearms", "Two-Handed Swords"},
 }
 
-if Questie.IsTBC or Questie.IsWotlk then
+if QuestieSmazak.IsTBC or QuestieSmazak.IsWotlk then
     -- Blood Elf Starting Area Weapon Trainers
     WeaponMasterSkills.data[16621] = {"Bows", "Daggers", "One-Handed Swords", "Polearms", "Thrown", "Two-Handed Swords"}
     WeaponMasterSkills.data[17005] = {"Bows", "Daggers", "One-Handed Swords", "Polearms", "Thrown", "Two-Handed Swords"}

@@ -1,11 +1,11 @@
 ---@type QuestieCompat
-local QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+local QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
 
 ---@class QuestieCoords
-local QuestieCoords = QuestieLoader:CreateModule("QuestieCoords");
+local QuestieCoords = QuestieSmazakLoader:CreateModule("QuestieCoords");
 
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 
 local posX = 0;
 local posY = 0;
@@ -49,7 +49,7 @@ local function GetMiniWorldMapTitleText()
 end
 
 function QuestieCoords:WriteCoords()
-    if not ((Questie.db.profile.mapCoordinatesEnabled and WorldMapFrame:IsVisible()) or (Questie.db.profile.minimapCoordinatesEnabled and Minimap:IsVisible())) then
+    if not ((QuestieSmazak.db.profile.mapCoordinatesEnabled and WorldMapFrame:IsVisible()) or (QuestieSmazak.db.profile.minimapCoordinatesEnabled and Minimap:IsVisible())) then
         return -- no need to write coords
     end
     local isInInstance, instanceType = IsInInstance()
@@ -71,13 +71,13 @@ function QuestieCoords:WriteCoords()
         posY = position.y * 100;
 
         -- if minimap
-        if Questie.db.profile.minimapCoordinatesEnabled and Minimap:IsVisible() then
+        if QuestieSmazak.db.profile.minimapCoordinatesEnabled and Minimap:IsVisible() then
             MinimapZoneText:SetText(format("(%d, %d) ", posX, posY) .. GetMinimapZoneText());
         end
     end
     -- if main map
     local mapTitleText, setter = GetMapTitleText()
-    if Questie.db.profile.mapCoordinatesEnabled and WorldMapFrame:IsVisible() and mapTitleText then
+    if QuestieSmazak.db.profile.mapCoordinatesEnabled and WorldMapFrame:IsVisible() and mapTitleText then
         -- get cursor position
         local curX, curY = GetCursorPosition();
 
@@ -94,7 +94,7 @@ function QuestieCoords:WriteCoords()
 
         curX = (curX - left) / width * 100;
         curY = (top - curY) / height * 100;
-        local precision = "%.".. Questie.db.profile.mapCoordinatePrecision .."f";
+        local precision = "%.".. QuestieSmazak.db.profile.mapCoordinatePrecision .."f";
 
         local worldmapCoordsText = "Cursor: "..format(precision.. " X, ".. precision .." Y  ", curX, curY);
 
@@ -123,17 +123,17 @@ end
 function QuestieCoords:Initialize()
 
     -- Do not fight with Coordinates addon
-    if IsAddOnLoaded("Coordinates") and ((Questie.db.profile.minimapCoordinatesEnabled) or (Questie.db.profile.mapCoordinatesEnabled)) then
-        Questie:Print("|cFFFF0000", l10n("WARNING!"), "|r", l10n("Coordinates addon is enabled and will cause buggy behavior. Disabling global map and mini map coordinates. These can be re-enabled in settings"))
-        Questie.db.profile.minimapCoordinatesEnabled = false
-        Questie.db.profile.mapCoordinatesEnabled = false
+    if IsAddOnLoaded("Coordinates") and ((QuestieSmazak.db.profile.minimapCoordinatesEnabled) or (QuestieSmazak.db.profile.mapCoordinatesEnabled)) then
+        QuestieSmazak:Print("|cFFFF0000", l10n("WARNING!"), "|r", l10n("Coordinates addon is enabled and will cause buggy behavior. Disabling global map and mini map coordinates. These can be re-enabled in settings"))
+        QuestieSmazak.db.profile.minimapCoordinatesEnabled = false
+        QuestieSmazak.db.profile.mapCoordinatesEnabled = false
     end
 
     C_Timer.NewTicker(QuestieCoords.updateInterval, QuestieCoords.Update)
 end
 
 function QuestieCoords:Update()
-    if (Questie.db.profile.minimapCoordinatesEnabled) or (Questie.db.profile.mapCoordinatesEnabled) then
+    if (QuestieSmazak.db.profile.minimapCoordinatesEnabled) or (QuestieSmazak.db.profile.mapCoordinatesEnabled) then
         QuestieCoords:WriteCoords();
     end
 end

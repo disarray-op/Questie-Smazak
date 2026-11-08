@@ -1,5 +1,5 @@
 ---@type QuestieCompat
-local QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+local QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
 
 --[[
 Feast of Winter Veil    1.2.0    18 December 2004
@@ -52,7 +52,7 @@ Harvest Festival history:         lunar calendar 15/8 in gregorian calendar:
 
 ---@class QuestieEvent
 ---@field public private QuestieEventPrivate
-local QuestieEvent = QuestieLoader:CreateModule("QuestieEvent")
+local QuestieEvent = QuestieSmazakLoader:CreateModule("QuestieEvent")
 ---@class QuestieEventPrivate
 local _QuestieEvent = QuestieEvent.private
 
@@ -84,17 +84,17 @@ local alwaysTurnInAbleQuests = {
 }
 
 ---@type QuestieCorrections
-local QuestieCorrections = QuestieLoader:ImportModule("QuestieCorrections")
+local QuestieCorrections = QuestieSmazakLoader:ImportModule("QuestieCorrections")
 ---@type QuestieClassicPolicyCorrections
-local QuestieClassicPolicyCorrections = QuestieLoader:ImportModule("QuestieClassicPolicyCorrections")
+local QuestieClassicPolicyCorrections = QuestieSmazakLoader:ImportModule("QuestieClassicPolicyCorrections")
 ---@type QuestieTBCPolicyCorrections
-local QuestieTBCPolicyCorrections = QuestieLoader:ImportModule("QuestieTBCPolicyCorrections")
+local QuestieTBCPolicyCorrections = QuestieSmazakLoader:ImportModule("QuestieTBCPolicyCorrections")
 ---@type ContentPhases
-local ContentPhases = QuestieLoader:ImportModule("ContentPhases")
+local ContentPhases = QuestieSmazakLoader:ImportModule("ContentPhases")
 ---@type Expansions
-local Expansions = QuestieLoader:ImportModule("Expansions")
+local Expansions = QuestieSmazakLoader:ImportModule("Expansions")
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 
 local _WithinDates, _LoadDarkmoonFaire, _GetDarkmoonFaireLocation, _GetDarkmoonFaireLocationEra, _GetDarkmoonFaireLocationSoD, _GetDarkmoonFaireLocationTBC, _IsDarkmoonFaireWeek, _GetLunarFestivalDates
 
@@ -133,9 +133,9 @@ local DMF_START_DAY_BY_FIRST_WEEKDAY = {
 }
 
 function QuestieEvent.Initialize()
-    Questie:RegisterEvent("CALENDAR_UPDATE_EVENT_LIST", function()
+    QuestieSmazak:RegisterEvent("CALENDAR_UPDATE_EVENT_LIST", function()
         QuestieEvent:Load()
-        Questie:UnregisterEvent("CALENDAR_UPDATE_EVENT_LIST")
+        QuestieSmazak:UnregisterEvent("CALENDAR_UPDATE_EVENT_LIST")
     end)
 
     -- According to the docs, OpenCalendar queries the server to force a CALENDAR_UPDATE_EVENT_LIST update.
@@ -184,8 +184,8 @@ function QuestieEvent:Load()
         endMinute = eventData.endMinute
 
         if _WithinDates(startDay, startMonth, startHour, startMinute, endDay, endMonth, endHour, endMinute) and (eventCorrections[eventName] ~= false) then
-            if Questie.db.profile.showEventQuests then
-                print(Questie:Colorize("[Questie]"), "|cFF6ce314" .. l10n("The \"%s\" world event is active!", l10n(eventName)))
+            if QuestieSmazak.db.profile.showEventQuests then
+                print(QuestieSmazak:Colorize("[QuestieSmazak]"), "|cFF6ce314" .. l10n("The \"%s\" world event is active!", l10n(eventName)))
             end
             activeEvents[eventName] = true
         end
@@ -247,16 +247,16 @@ function QuestieEvent:Load()
     end
 
     if dmfIsActive then
-        if Questie.db.profile.showEventQuests then
-            print(Questie:Colorize("[Questie]"), "|cFF6ce314" .. l10n("The \"%s\" world event is active!", l10n("Darkmoon Faire")))
+        if QuestieSmazak.db.profile.showEventQuests then
+            print(QuestieSmazak:Colorize("[QuestieSmazak]"), "|cFF6ce314" .. l10n("The \"%s\" world event is active!", l10n("Darkmoon Faire")))
         end
     end
 
     SetCVar("calendarShowDarkmoon", shouldShowDmfEvents and "1" or "0")
 
     -- TODO: Also handle WotLK which has a different starting schedule
-    if (not Questie.IsForever) and (Questie.IsClassic and (((not Questie.IsAnniversaryEra) and (not Questie.IsAnniversaryHardcore)) or (ContentPhases.activePhases.Anniversary >= 3)))
-            or Questie.IsTBC then
+    if (not QuestieSmazak.IsForever) and (QuestieSmazak.IsClassic and (((not QuestieSmazak.IsAnniversaryEra) and (not QuestieSmazak.IsAnniversaryHardcore)) or (ContentPhases.activePhases.Anniversary >= 3)))
+            or QuestieSmazak.IsTBC then
         _LoadDarkmoonFaire()
     end
 
@@ -267,7 +267,7 @@ end
 ---@param year string
 ---@return QuestieEventDateRange|nil
 _GetLunarFestivalDates = function(year)
-    if Questie.IsTitanReforged and QuestieEvent.lunarFestival.TITAN[year] then
+    if QuestieSmazak.IsTitanReforged and QuestieEvent.lunarFestival.TITAN[year] then
         return QuestieEvent.lunarFestival.TITAN[year]
     end
 
@@ -284,9 +284,9 @@ _GetDarkmoonFaireLocation = function()
 
     local currentDate = QuestieCompat.GetCurrentCalendarTime()
 
-    if Questie.IsSoD then
+    if QuestieSmazak.IsSoD then
         return _GetDarkmoonFaireLocationSoD(currentDate)
-    elseif Questie.IsTBC then
+    elseif QuestieSmazak.IsTBC then
         return _GetDarkmoonFaireLocationTBC(currentDate)
     else
         return _GetDarkmoonFaireLocationEra(currentDate)
@@ -394,7 +394,7 @@ _LoadDarkmoonFaire = function()
 
     -- The NPC Policy Correction slot is written exactly once per load, outside the Event Quest loop
     -- below: the number of visible Event Quests must not control entity Correction application.
-    if Questie.IsTBC then
+    if QuestieSmazak.IsTBC then
         QuestieCorrections.SetCorrection("Npc", "DarkmoonFaire", QuestieTBCPolicyCorrections:LoadDarkmoonFixes(isInMulgore, isInTerokkar))
     else
         QuestieCorrections.SetCorrection("Npc", "DarkmoonFaire", QuestieClassicPolicyCorrections:LoadDarkmoonFixes(isInMulgore))
@@ -435,8 +435,8 @@ _LoadDarkmoonFaire = function()
         QuestieEvent.activeQuests[hordeAnnouncingQuestId] = nil
     end
 
-    if Questie.db.profile.showEventQuests then
-        print(Questie:Colorize("[Questie]"), "|cFF6ce314" .. l10n("The Darkmoon Faire is up in %s!", l10n(DMF_LOCATION_NAMES[eventLocation])))
+    if QuestieSmazak.db.profile.showEventQuests then
+        print(QuestieSmazak:Colorize("[QuestieSmazak]"), "|cFF6ce314" .. l10n("The Darkmoon Faire is up in %s!", l10n(DMF_LOCATION_NAMES[eventLocation])))
     end
 end
 
@@ -504,7 +504,7 @@ end
 -- EUROPEAN FORMAT! NO FUCKING AMERICAN SHIDAZZLE FORMAT!
 QuestieEvent.eventDates = {
     ["Winter Veil"] =
-        not Questie.IsTitanReforged and { -- regular servers
+        not QuestieSmazak.IsTitanReforged and { -- regular servers
             startDate = "15/12",
             startHour = 10,
             startMinute = 0,
@@ -545,7 +545,7 @@ QuestieEvent.eventDates = {
     },
     ["Midsummer"] =
         -- Fixed calendar days: 21 Jun 4 AM - 4 Jul 4 AM
-        not Questie.IsTitanReforged and { -- regular servers
+        not QuestieSmazak.IsTitanReforged and { -- regular servers
             startDate = "21/6",
             startHour = 4,
             startMinute = 0,
@@ -570,7 +570,7 @@ QuestieEvent.eventDates = {
     },
     ["Brewfest"] =
     -- TODO: This might be different (retail date)
-    not Questie.IsTitanReforged and { -- regular servers
+    not QuestieSmazak.IsTitanReforged and { -- regular servers
             startDate = "20/9",
             startHour = 10,
             startMinute = 0,
@@ -594,7 +594,7 @@ QuestieEvent.eventDates = {
         endMinute = 59,
     },
     ["Hallow's End"] =  -- WARNING THIS DATE VARIES!!!!
-        not Questie.IsTitanReforged and { -- regular servers
+        not QuestieSmazak.IsTitanReforged and { -- regular servers
             startDate = "18/10",
             startHour = 10,
             startMinute = 0,

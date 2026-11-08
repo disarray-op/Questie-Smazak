@@ -1,28 +1,28 @@
 ---@class TrackerLinePool
-local TrackerLinePool = QuestieLoader:CreateModule("TrackerLinePool")
+local TrackerLinePool = QuestieSmazakLoader:CreateModule("TrackerLinePool")
 -------------------------
 --Import QuestieTracker modules.
 -------------------------
 ---@type TrackerBaseFrame
-local TrackerBaseFrame = QuestieLoader:ImportModule("TrackerBaseFrame")
+local TrackerBaseFrame = QuestieSmazakLoader:ImportModule("TrackerBaseFrame")
 ---@type TrackerUtils
-local TrackerUtils = QuestieLoader:ImportModule("TrackerUtils")
+local TrackerUtils = QuestieSmazakLoader:ImportModule("TrackerUtils")
 ---@type TrackerItemButton
-local TrackerItemButton = QuestieLoader:ImportModule("TrackerItemButton")
+local TrackerItemButton = QuestieSmazakLoader:ImportModule("TrackerItemButton")
 ---@type TrackerLine
-local TrackerLine = QuestieLoader:ImportModule("TrackerLine")
+local TrackerLine = QuestieSmazakLoader:ImportModule("TrackerLine")
 ---@type TrackerLayout
-local TrackerLayout = QuestieLoader:ImportModule("TrackerLayout")
+local TrackerLayout = QuestieSmazakLoader:ImportModule("TrackerLayout")
 ---@type QuestieLib
-local QuestieLib = QuestieLoader:ImportModule("QuestieLib")
+local QuestieLib = QuestieSmazakLoader:ImportModule("QuestieLib")
 ---@type TrackerData
-local TrackerData = QuestieLoader:ImportModule("TrackerData")
+local TrackerData = QuestieSmazakLoader:ImportModule("TrackerData")
 
 local coYield = coroutine.yield
 
 local TICKS_PER_YIELD = 50
 
-if Questie.IsHardcore then
+if QuestieSmazak.IsHardcore then
     TICKS_PER_YIELD = 25
 end
 
@@ -61,7 +61,7 @@ function TrackerLinePool.Initialize(questFrame)
 
     -- create buttonPool for quest items
     for i = 1, C_QuestLog.GetMaxNumQuestsCanAccept() do
-        local btn = TrackerItemButton.New("Questie_ItemButton" .. i, TrackerLinePool.OnHighlightEnter, TrackerLinePool.OnHighlightLeave)
+        local btn = TrackerItemButton.New("QuestieSmazak_ItemButton" .. i, TrackerLinePool.OnHighlightEnter, TrackerLinePool.OnHighlightLeave)
 
         buttonPool[i] = btn
         buttonPool[i]:Hide()
@@ -70,12 +70,12 @@ end
 
 function TrackerLinePool.ResetLinesForChange()
     if TrackerBaseFrame.isSizing == true or TrackerBaseFrame.isMoving == true then
-        Questie.Debug(Questie.DEBUG_SPAM, "[TrackerLinePool:ResetLinesForChange]")
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_SPAM, "[TrackerLinePool:ResetLinesForChange]")
     else
-        Questie.Debug(Questie.DEBUG_INFO, "[TrackerLinePool:ResetLinesForChange]")
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_INFO, "[TrackerLinePool:ResetLinesForChange]")
     end
 
-    if InCombatLockdown() or not Questie.db.profile.trackerEnabled then
+    if InCombatLockdown() or not QuestieSmazak.db.profile.trackerEnabled then
         return
     end
 
@@ -114,12 +114,12 @@ end
 
 function TrackerLinePool.ResetButtonsForChange()
     if TrackerBaseFrame.isSizing == true or TrackerBaseFrame.isMoving == true then
-        Questie.Debug(Questie.DEBUG_SPAM, "[TrackerLinePool:ResetButtonsForChange]")
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_SPAM, "[TrackerLinePool:ResetButtonsForChange]")
     else
-        Questie.Debug(Questie.DEBUG_INFO, "[TrackerLinePool:ResetButtonsForChange]")
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_INFO, "[TrackerLinePool:ResetButtonsForChange]")
     end
 
-    if InCombatLockdown() or not Questie.db.profile.trackerEnabled then
+    if InCombatLockdown() or not QuestieSmazak.db.profile.trackerEnabled then
         return
     end
 
@@ -152,9 +152,9 @@ function TrackerLinePool.UpdateWrappedLineWidths(trackerLineWidth)
 
     -- Updates all the line.label widths in the linePool for wrapped text only
     for _, line in pairs(linePool) do
-        if Questie.db.profile.TrackerWidth == 0 then
+        if QuestieSmazak.db.profile.TrackerWidth == 0 then
             if line.mode == "objective" then
-                if line.label:GetNumLines() > 1 and line:GetHeight() > Questie.db.profile.trackerFontSizeObjective then
+                if line.label:GetNumLines() > 1 and line:GetHeight() > QuestieSmazak.db.profile.trackerFontSizeObjective then
                     line.label:SetText(line.label:GetText())
 
                     if line.altButton then
@@ -165,8 +165,8 @@ function TrackerLinePool.UpdateWrappedLineWidths(trackerLineWidth)
                         line:SetWidth(trackerLineWidth)
                     end
 
-                    line:SetHeight(line.label:GetStringHeight() + 2 + Questie.db.profile.trackerQuestPadding)
-                    line.label:SetHeight(line:GetHeight() - 2 - Questie.db.profile.trackerQuestPadding)
+                    line:SetHeight(line.label:GetStringHeight() + 2 + QuestieSmazak.db.profile.trackerQuestPadding)
+                    line.label:SetHeight(line:GetHeight() - 2 - QuestieSmazak.db.profile.trackerQuestPadding)
                 end
             end
         end
@@ -221,13 +221,13 @@ end
 
 function TrackerLinePool.HideUnusedLines()
     if TrackerBaseFrame.isSizing == true or TrackerBaseFrame.isMoving == true then
-        Questie.Debug(Questie.DEBUG_SPAM, "[TrackerLinePool:HideUnusedLines]")
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_SPAM, "[TrackerLinePool:HideUnusedLines]")
     else
-        Questie.Debug(Questie.DEBUG_INFO, "[TrackerLinePool:HideUnusedLines]")
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_INFO, "[TrackerLinePool:HideUnusedLines]")
     end
     local startUnusedLines = 0
 
-    if Questie.db.char.isTrackerExpanded then
+    if QuestieSmazak.db.char.isTrackerExpanded then
         startUnusedLines = lineIndex + 1
     end
 
@@ -257,13 +257,13 @@ end
 
 function TrackerLinePool.HideUnusedButtons()
     if TrackerBaseFrame.isSizing == true or TrackerBaseFrame.isMoving == true then
-        Questie.Debug(Questie.DEBUG_SPAM, "[TrackerLinePool:HideUnusedButtons]")
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_SPAM, "[TrackerLinePool:HideUnusedButtons]")
     else
-        Questie.Debug(Questie.DEBUG_INFO, "[TrackerLinePool:HideUnusedButtons]")
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_INFO, "[TrackerLinePool:HideUnusedButtons]")
     end
     local startUnusedButtons = 0
 
-    if Questie.db.char.isTrackerExpanded then
+    if QuestieSmazak.db.char.isTrackerExpanded then
         startUnusedButtons = buttonIndex + 1
     end
 
@@ -316,7 +316,7 @@ function TrackerLinePool.SetAllItemButtonAlpha(alpha)
 end
 
 TrackerLinePool.OnHighlightEnter = function(self)
-    if Questie.db.profile.trackerDisableHoverFade then
+    if QuestieSmazak.db.profile.trackerDisableHoverFade then
         return
     end
 

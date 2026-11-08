@@ -1,47 +1,47 @@
 ---@type QuestiePopup
-local Popup = QuestieLoader:ImportModule("QuestiePopup")
+local Popup = QuestieSmazakLoader:ImportModule("QuestiePopup")
 
 ---@class QuestieSlash
-local QuestieSlash = QuestieLoader:CreateModule("QuestieSlash")
+local QuestieSlash = QuestieSmazakLoader:CreateModule("QuestieSlash")
 
 ---@type QuestieOptions
-local QuestieOptions = QuestieLoader:ImportModule("QuestieOptions")
+local QuestieOptions = QuestieSmazakLoader:ImportModule("QuestieOptions")
 ---@type QuestieOptionsEngine
-local QuestieOptionsEngine = QuestieLoader:ImportModule("QuestieOptionsEngine");
+local QuestieOptionsEngine = QuestieSmazakLoader:ImportModule("QuestieOptionsEngine");
 ---@type QuestieJourney
-local QuestieJourney = QuestieLoader:ImportModule("QuestieJourney")
+local QuestieJourney = QuestieSmazakLoader:ImportModule("QuestieJourney")
 ---@type QuestieQuest
-local QuestieQuest = QuestieLoader:ImportModule("QuestieQuest")
+local QuestieQuest = QuestieSmazakLoader:ImportModule("QuestieQuest")
 ---@type QuestieTracker
-local QuestieTracker = QuestieLoader:ImportModule("QuestieTracker")
+local QuestieTracker = QuestieSmazakLoader:ImportModule("QuestieTracker")
 ---@type QuestieSearch
-local QuestieSearch = QuestieLoader:ImportModule("QuestieSearch")
+local QuestieSearch = QuestieSmazakLoader:ImportModule("QuestieSearch")
 ---@type QuestieSearchResults
-local QuestieSearchResults = QuestieLoader:ImportModule("QuestieSearchResults")
+local QuestieSearchResults = QuestieSmazakLoader:ImportModule("QuestieSearchResults")
 ---@type QuestieMap
-local QuestieMap = QuestieLoader:ImportModule("QuestieMap")
+local QuestieMap = QuestieSmazakLoader:ImportModule("QuestieMap")
 ---@type QuestieLib
-local QuestieLib = QuestieLoader:ImportModule("QuestieLib")
+local QuestieLib = QuestieSmazakLoader:ImportModule("QuestieLib")
 ---@type QuestieDB
-local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 ---@type QuestieCombatQueue
-local QuestieCombatQueue = QuestieLoader:ImportModule("QuestieCombatQueue")
+local QuestieCombatQueue = QuestieSmazakLoader:ImportModule("QuestieCombatQueue")
 ---@type MinimapIcon
-local MinimapIcon = QuestieLoader:ImportModule("MinimapIcon")
+local MinimapIcon = QuestieSmazakLoader:ImportModule("MinimapIcon")
 
 local stringtrim, stringgmatch, stringmatch = string.trim, string.gmatch, string.match
 
 function QuestieSlash.RegisterSlashCommands()
-    Questie:RegisterChatCommand("questieclassic", QuestieSlash.HandleCommands)
-    Questie:RegisterChatCommand("questie", QuestieSlash.HandleCommands)
-    Questie:RegisterChatCommand("q", QuestieSlash.HandleCommands)
+    QuestieSmazak:RegisterChatCommand("questiesmazakclassic", QuestieSlash.HandleCommands)
+    QuestieSmazak:RegisterChatCommand("questiesmazak", QuestieSlash.HandleCommands)
+    QuestieSmazak:RegisterChatCommand("qsmazak", QuestieSlash.HandleCommands)
 end
 
 function QuestieSlash.HandleCommands(input)
-    if not Questie.started then
-        print(Questie:Colorize("/questie "..input..":"), l10n("Please wait a moment for Questie to finish loading"))
+    if not QuestieSmazak.started then
+        print(QuestieSmazak:Colorize("/questie "..input..":"), l10n("Please wait a moment for QuestieSmazak to finish loading"))
         return
     end
 
@@ -79,22 +79,22 @@ function QuestieSlash.HandleCommands(input)
     if tempCommand then mainCommand = tempCommand end
 
     if mainCommand == "help" or mainCommand == "?" then
-        print(Questie:Colorize(l10n("Questie Commands")));
-        print(Questie:Colorize("/questie"), l10n("Toggles the Config window"));
-        print(Questie:Colorize("/questie toggle"), ("Toggles showing questie on the map and minimap"));
-        print(Questie:Colorize("/questie tomap reset||npc|object [ID or name]"), l10n("Try to add markers for NPCs or objects to the map by search. If the \"tomap\" command is entered without subcommand it will attempt to mark the currently selected target. Searches by ID return exact matches, searches by name return partial matches. The \"reset\" subcommand does not accept additional parameters and just removes all markers."));
-        print(Questie:Colorize("/questie minimap"), l10n("Toggles the Minimap Button for Questie"));
-        print(Questie:Colorize("/questie journey"), l10n("Toggles the My Journey window"));
-        print(Questie:Colorize("/questie tracker reset|show||hide"), ("Toggles the Tracker. Add 'show', 'hide', 'reset' to explicit show/hide or reset the Tracker"));
-        print(Questie:Colorize("/questie flex"), l10n("Flex the amount of quests you have completed so far"));
-        print(Questie:Colorize("/questie doable [questID]"), l10n("Prints whether you are eligibile to do a quest"));
-        print(Questie:Colorize("/questie version"), l10n("Prints Questie and client version info"));
+        print(QuestieSmazak:Colorize(l10n("QuestieSmazak Commands")));
+        print(QuestieSmazak:Colorize("/questie"), l10n("Toggles the Config window"));
+        print(QuestieSmazak:Colorize("/questie toggle"), ("Toggles showing questie on the map and minimap"));
+        print(QuestieSmazak:Colorize("/questie tomap reset||npc|object [ID or name]"), l10n("Try to add markers for NPCs or objects to the map by search. If the \"tomap\" command is entered without subcommand it will attempt to mark the currently selected target. Searches by ID return exact matches, searches by name return partial matches. The \"reset\" subcommand does not accept additional parameters and just removes all markers."));
+        print(QuestieSmazak:Colorize("/questie minimap"), l10n("Toggles the Minimap Button for QuestieSmazak"));
+        print(QuestieSmazak:Colorize("/questie journey"), l10n("Toggles the My Journey window"));
+        print(QuestieSmazak:Colorize("/questie tracker reset|show||hide"), ("Toggles the Tracker. Add 'show', 'hide', 'reset' to explicit show/hide or reset the Tracker"));
+        print(QuestieSmazak:Colorize("/questie flex"), l10n("Flex the amount of quests you have completed so far"));
+        print(QuestieSmazak:Colorize("/questie doable [questID]"), l10n("Prints whether you are eligibile to do a quest"));
+        print(QuestieSmazak:Colorize("/questie version"), l10n("Prints QuestieSmazak and client version info"));
         return;
     end
 
     if mainCommand == "toggle" then
-        Questie.db.profile.enabled = (not Questie.db.profile.enabled)
-        QuestieQuest:ToggleNotes(Questie.db.profile.enabled);
+        QuestieSmazak.db.profile.enabled = (not QuestieSmazak.db.profile.enabled)
+        QuestieQuest:ToggleNotes(QuestieSmazak.db.profile.enabled);
 
         -- Refresh config window to sync the Checkbox
         QuestieOptionsEngine:RefreshStates();
@@ -107,7 +107,7 @@ function QuestieSlash.HandleCommands(input)
     end
 
     if mainCommand == "minimap" then
-        MinimapIcon.Toggle(Questie.db.profile.minimap.hide)
+        MinimapIcon.Toggle(QuestieSmazak.db.profile.minimap.hide)
         return;
     end
 
@@ -138,7 +138,7 @@ function QuestieSlash.HandleCommands(input)
         if not subCommand then
             local unit = UnitName("target")
             if not unit then
-                print(Questie:Colorize("/questie "..input..":"), l10n("An active target or search parameters are required."))
+                print(QuestieSmazak:Colorize("/questie "..input..":"), l10n("An active target or search parameters are required."))
                 return
             end
             searchType = "npc"
@@ -160,17 +160,17 @@ function QuestieSlash.HandleCommands(input)
             if searchType == "reset" then
                 QuestieMap:ResetManualFrames()
                 QuestieSearchResults.ClearShownItemIds()
-                print(Questie:Colorize("/questie " .. input .. ":"), l10n("All map markers cleared."))
+                print(QuestieSmazak:Colorize("/questie " .. input .. ":"), l10n("All map markers cleared."))
                 return
             end
             -- no search term provided
             if numCommands < 3 then
-                print(Questie:Colorize("/questie "..input..":"), l10n("Search term required."))
+                print(QuestieSmazak:Colorize("/questie "..input..":"), l10n("Search term required."))
                 return
             end
             -- TODO
             if searchType == "item" or searchType == "quest" then
-                print(Questie:Colorize("/questie "..input..":"), "TODO: Implement ShowItem and ShowQuest functions.")
+                print(QuestieSmazak:Colorize("/questie "..input..":"), "TODO: Implement ShowItem and ShowQuest functions.")
                 return
             end
             local isid = tonumber(commands[3])
@@ -186,7 +186,7 @@ function QuestieSlash.HandleCommands(input)
                 end
                 if name then
                     result = {[isid]=true}
-                    print(Questie:Colorize("/questie "..input..":"), l10n("Exact match found, added %s to map.", name))
+                    print(QuestieSmazak:Colorize("/questie "..input..":"), l10n("Exact match found, added %s to map.", name))
                 end
             -- Search term is not an ID
             else
@@ -202,7 +202,7 @@ function QuestieSlash.HandleCommands(input)
                 result = QuestieSearch:Search(search, searchType)
                 local results = QuestieLib:Count(result)
                 if results ~= 0 then
-                    print(Questie:Colorize("/questie "..input..":"), l10n("%d matches found and added to map.", results))
+                    print(QuestieSmazak:Colorize("/questie "..input..":"), l10n("%d matches found and added to map.", results))
                 else
                     result = nil
                 end
@@ -218,7 +218,7 @@ function QuestieSlash.HandleCommands(input)
                 end
             -- if nothing was found inform the user
             else
-                print(Questie:Colorize("/questie "..input..":"), l10n("No match found, nothing added to map."))
+                print(QuestieSmazak:Colorize("/questie "..input..":"), l10n("No match found, nothing added to map."))
             end
             return
         end
@@ -226,7 +226,7 @@ function QuestieSlash.HandleCommands(input)
 
     if mainCommand == "flex" then
         local questCount = 0
-        for _, _ in pairs(Questie.db.char.complete) do
+        for _, _ in pairs(QuestieSmazak.db.char.complete) do
             questCount = questCount + 1
         end
         if GetDailyQuestsCompleted then
@@ -237,11 +237,11 @@ function QuestieSlash.HandleCommands(input)
     end
 
     if mainCommand == "version" then
-        -- By checking each object in Questie
+        -- By checking each object in QuestieSmazak
         -- We can find out which version is currently running.
         local gameType = ""
         do
-            for k, v in pairs(Questie) do
+            for k, v in pairs(QuestieSmazak) do
                 if type(k) == "string" then
                     if k:sub(1, 2) == "Is" and type(v) == "boolean" then
                         if v then
@@ -253,25 +253,25 @@ function QuestieSlash.HandleCommands(input)
             gameType = gameType:sub(1, -2) -- remove last dash
         end
 
-        Questie:Print("Questie " .. QuestieLib:GetAddonVersionString() .. ", Client " .. GetBuildInfo() .. " " .. gameType .. ", Locale " .. GetLocale())
+        QuestieSmazak:Print("QuestieSmazak " .. QuestieLib:GetAddonVersionString() .. ", Client " .. GetBuildInfo() .. " " .. gameType .. ", Locale " .. GetLocale())
         return
     end
 
     if mainCommand == "doable" or mainCommand == "eligible" or mainCommand == "eligibility" then
         if not subCommand then
-            print(Questie:Colorize("/questie "..input..":"), "Usage: /questie", mainCommand, "<questID>")
+            print(QuestieSmazak:Colorize("/questie "..input..":"), "Usage: /questie", mainCommand, "<questID>")
             do return end
         elseif QuestieDB.QueryQuestSingle(tonumber(subCommand), "name") == nil then
-            print(Questie:Colorize("/questie "..input..":"), "Invalid quest ID")
+            print(QuestieSmazak:Colorize("/questie "..input..":"), "Invalid quest ID")
             return
         end
 
-        Questie:Print("[Availability] " .. tostring(QuestieDB.IsDoableVerbose(tonumber(subCommand), false, true, false)))
+        QuestieSmazak:Print("[Availability] " .. tostring(QuestieDB.IsDoableVerbose(tonumber(subCommand), false, true, false)))
 
         return
     end
 
-    if Questie.db.profile.debugEnabled and mainCommand == "itemdrop" then
+    if QuestieSmazak.db.profile.debugEnabled and mainCommand == "itemdrop" then
         -- This is a developer tool to output a list of item IDs based upon all quests' item objectives in the currently loaded DB at runtime.
         -- It should not be documented for users.
         -- It does perform a bruteforce operation on the DB, it's a bit laggy, and this is a hacky way of doing it... but we only do it manually.
@@ -303,7 +303,7 @@ function QuestieSlash.HandleCommands(input)
         local output = table.concat(data, ",") -- generate a string list of the items, comma-separated (for json syntax)
 
         Popup.Dialogs["QUESTIE_ITEMDROPOUTPUT"] = {
-            text = "Questie Item Drop Output",
+            text = "QuestieSmazak Item Drop Output",
             button2 = CLOSE,
             hasEditBox = true,
             editBoxWidth = 280,
@@ -342,5 +342,5 @@ function QuestieSlash.HandleCommands(input)
     end
 
     -- if no condition returned so far we have received an invalid command
-    print(Questie:Colorize("/questie "..input..":"), l10n("Invalid command. For a list of options please type:"), Questie:Colorize("/questie help"))
+    print(QuestieSmazak:Colorize("/questie "..input..":"), l10n("Invalid command. For a list of options please type:"), QuestieSmazak:Colorize("/questie help"))
 end

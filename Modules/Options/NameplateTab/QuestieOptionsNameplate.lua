@@ -2,15 +2,15 @@
 --Import modules.
 -------------------------
 ---@type QuestieOptions
-local QuestieOptions = QuestieLoader:ImportModule("QuestieOptions");
+local QuestieOptions = QuestieSmazakLoader:ImportModule("QuestieOptions");
 ---@type QuestieOptionsDefaults
-local QuestieOptionsDefaults = QuestieLoader:ImportModule("QuestieOptionsDefaults");
+local QuestieOptionsDefaults = QuestieSmazakLoader:ImportModule("QuestieOptionsDefaults");
 ---@type QuestieOptionsUtils
-local QuestieOptionsUtils = QuestieLoader:ImportModule("QuestieOptionsUtils");
+local QuestieOptionsUtils = QuestieSmazakLoader:ImportModule("QuestieOptionsUtils");
 ---@type QuestieNameplate
-local QuestieNameplate = QuestieLoader:ImportModule("QuestieNameplate");
+local QuestieNameplate = QuestieSmazakLoader:ImportModule("QuestieNameplate");
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 
 QuestieOptions.tabs.nameplate = {...}
 local optionsDefaults = QuestieOptionsDefaults:Load()
@@ -80,7 +80,7 @@ function QuestieOptions.tabs.nameplate:Initialize()
                         min = -200,
                         max = 200,
                         step = 1,
-                        disabled = function() return not Questie.db.profile.nameplateEnabled; end,
+                        disabled = function() return not QuestieSmazak.db.profile.nameplateEnabled; end,
                         get = function(info) return QuestieOptions:GetProfileValue(info); end,
                         set = function (_, value)
                             QuestieNameplate.SetIconXPosition(value)
@@ -106,7 +106,7 @@ function QuestieOptions.tabs.nameplate:Initialize()
                         min = -200,
                         max = 200,
                         step = 1,
-                        disabled = function() return not Questie.db.profile.nameplateEnabled; end,
+                        disabled = function() return not QuestieSmazak.db.profile.nameplateEnabled; end,
                         get = function(info) return QuestieOptions:GetProfileValue(info); end,
                         set = function (_, value)
                             QuestieNameplate.SetIconYPosition(value)
@@ -133,7 +133,7 @@ function QuestieOptions.tabs.nameplate:Initialize()
                         min = 0.01,
                         max = 4,
                         step = 0.01,
-                        disabled = function() return not Questie.db.profile.nameplateEnabled; end,
+                        disabled = function() return not QuestieSmazak.db.profile.nameplateEnabled; end,
                         get = function(info) return QuestieOptions:GetProfileValue(info); end,
                         set = function (_, value)
                             QuestieNameplate.SetIconScale(value)
@@ -202,7 +202,7 @@ function QuestieOptions.tabs.nameplate:Initialize()
                         min = -300,
                         max = 300,
                         step = 1,
-                        disabled = function() return not Questie.db.profile.nameplateTargetFrameEnabled; end,
+                        disabled = function() return not QuestieSmazak.db.profile.nameplateTargetFrameEnabled; end,
                         get = function(info) return QuestieOptions:GetProfileValue(info); end,
                         set = function (info, value)
                             QuestieNameplate:RedrawFrameIcon()
@@ -228,7 +228,7 @@ function QuestieOptions.tabs.nameplate:Initialize()
                         min = -200,
                         max = 200,
                         step = 1,
-                        disabled = function() return not Questie.db.profile.nameplateTargetFrameEnabled; end,
+                        disabled = function() return not QuestieSmazak.db.profile.nameplateTargetFrameEnabled; end,
                         get = function(info) return QuestieOptions:GetProfileValue(info); end,
                         set = function (info, value)
                             QuestieNameplate:RedrawFrameIcon()
@@ -255,7 +255,7 @@ function QuestieOptions.tabs.nameplate:Initialize()
                         min = 0.01,
                         max = 4,
                         step = 0.01,
-                        disabled = function() return not Questie.db.profile.nameplateTargetFrameEnabled; end,
+                        disabled = function() return not QuestieSmazak.db.profile.nameplateTargetFrameEnabled; end,
                         get = function(info) return QuestieOptions:GetProfileValue(info); end,
                         set = function (info, value)
                             QuestieOptions:SetProfileValue(info, value)
@@ -282,7 +282,7 @@ function QuestieOptions.tabs.nameplate:Initialize()
                 name = function() return l10n("Reset Nameplates"); end,
                 desc = function() return l10n("Reset to default nameplate position and scale."); end,
                 width = 1,
-                disabled = function() return not Questie.db.profile.nameplateEnabled; end,
+                disabled = function() return not QuestieSmazak.db.profile.nameplateEnabled; end,
                 func = function()
                     QuestieNameplate.SetIconPosition(
                         optionsDefaults.profile.nameplateX,
@@ -307,11 +307,11 @@ function QuestieOptions.tabs.nameplate:Initialize()
                 name = function() return l10n("Reset Target Frame"); end,
                 desc = function() return l10n("Reset to default target frame position and scale."); end,
                 width = 1,
-                disabled = function() return not Questie.db.profile.nameplateTargetFrameEnabled; end,
+                disabled = function() return not QuestieSmazak.db.profile.nameplateTargetFrameEnabled; end,
                 func = function (info, value)
-                    Questie.db.profile.nameplateTargetFrameX = optionsDefaults.profile.nameplateTargetFrameX;
-                    Questie.db.profile.nameplateTargetFrameY = optionsDefaults.profile.nameplateTargetFrameY;
-                    Questie.db.profile.nameplateTargetFrameScale = optionsDefaults.profile.nameplateTargetFrameScale;
+                    QuestieSmazak.db.profile.nameplateTargetFrameX = optionsDefaults.profile.nameplateTargetFrameX;
+                    QuestieSmazak.db.profile.nameplateTargetFrameY = optionsDefaults.profile.nameplateTargetFrameY;
+                    QuestieSmazak.db.profile.nameplateTargetFrameScale = optionsDefaults.profile.nameplateTargetFrameScale;
                     QuestieNameplate:RedrawFrameIcon();
                 end,
             },

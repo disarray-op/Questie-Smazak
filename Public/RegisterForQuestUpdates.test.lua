@@ -10,40 +10,40 @@ describe("RegisterForQuestUpdates", function()
 
     before_each(function()
         dofile("Public/Enums.lua")
-        _G.Questie.API.isReady = true
+        _G.QuestieSmazak.API.isReady = true
 
-        QuestieNameplate = QuestieLoader:ImportModule("QuestieNameplate")
+        QuestieNameplate = QuestieSmazakLoader:ImportModule("QuestieNameplate")
         ---@diagnostic disable-next-line: assign-type-mismatch
         QuestieNameplate.GetIcon = spy.new(function()
-            return "Interface\\Addons\\Questie\\Icons\\slay.blp"
+            return "Interface\\Addons\\QuestieSmazak\\Icons\\slay.blp"
         end)
 
         dofile("Public/RegisterForQuestUpdates.lua")
-        QuestieAPI = QuestieLoader:ImportModule("QuestieAPI")
+        QuestieAPI = QuestieSmazakLoader:ImportModule("QuestieAPI")
     end)
 
     it("should error when callback is not a function", function()
         assert.has_error(function()
-            _G.Questie.API.RegisterForQuestUpdates(nil)
+            _G.QuestieSmazak.API.RegisterForQuestUpdates(nil)
         end)
         assert.has_error(function()
-            _G.Questie.API.RegisterForQuestUpdates(123)
+            _G.QuestieSmazak.API.RegisterForQuestUpdates(123)
         end)
         assert.has_error(function()
-            _G.Questie.API.RegisterForQuestUpdates("not-a-function")
+            _G.QuestieSmazak.API.RegisterForQuestUpdates("not-a-function")
         end)
         assert.has_error(function()
-            _G.Questie.API.RegisterForQuestUpdates(true)
+            _G.QuestieSmazak.API.RegisterForQuestUpdates(true)
         end)
         assert.has_error(function()
-            _G.Questie.API.RegisterForQuestUpdates({})
+            _G.QuestieSmazak.API.RegisterForQuestUpdates({})
         end)
     end)
 
     it("should register and call the callback on quest update", function()
         local callbackSpy = spy.new(function() end)
 
-        _G.Questie.API.RegisterForQuestUpdates(function(...) callbackSpy(...) end)
+        _G.QuestieSmazak.API.RegisterForQuestUpdates(function(...) callbackSpy(...) end)
         QuestieAPI.PropagateQuestUpdate(1234, {1, 2}, QuestieAPI.Enums.QuestUpdateTriggerReason.QUEST_UPDATED)
 
         assert.spy(callbackSpy).was.called(2)
@@ -54,7 +54,7 @@ describe("RegisterForQuestUpdates", function()
     it("should call the callback with nil objective index when no indices are provided", function()
         local callbackSpy = spy.new(function() end)
 
-        _G.Questie.API.RegisterForQuestUpdates(function(...) callbackSpy(...) end)
+        _G.QuestieSmazak.API.RegisterForQuestUpdates(function(...) callbackSpy(...) end)
         QuestieAPI.PropagateQuestUpdate(5678, {}, QuestieAPI.Enums.QuestUpdateTriggerReason.QUEST_ACCEPTED)
 
         assert.spy(callbackSpy).was.called(1)

@@ -10,8 +10,8 @@ describe("ExpandQuestButton", function()
     end
 
     before_each(function()
-        Questie.db.profile.trackerFontSizeQuest = 12
-        Questie.db.profile.trackerFadeMinMaxButtons = false
+        QuestieSmazak.db.profile.trackerFontSizeQuest = 12
+        QuestieSmazak.db.profile.trackerFadeMinMaxButtons = false
 
         originalCreateFrame = _G.CreateFrame
         -- The texture mock lacks the sizing functions of the expand button texture
@@ -29,7 +29,7 @@ describe("ExpandQuestButton", function()
         })
 
         dofile("Modules/Tracker/LinePool/ExpandQuestButton.lua")
-        ExpandQuestButton = QuestieLoader:ImportModule("ExpandQuestButton")
+        ExpandQuestButton = QuestieSmazakLoader:ImportModule("ExpandQuestButton")
     end)
 
     after_each(function()

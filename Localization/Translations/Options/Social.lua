@@ -1,5 +1,5 @@
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 
 local socialOptionsLocales = {
     ["Social"] = {
@@ -50,29 +50,29 @@ local socialOptionsLocales = {
         ["zhCN"] = "通报的频道",
         ["zhTW"] = "通報的頻道",
     },
-    ["Questie ShutUp!"] = {
+    ["QuestieSmazak ShutUp!"] = {
     -- TN: This was a stand-alone addon name, so you may want to leave it untranslated (change to true)
         ["enUS"] = true,
         ["deDE"] = true,
         ["esES"] = true,
         ["esMX"] = true,
         ["frFR"] = true,
-        ["koKR"] = "Questie 차단",
+        ["koKR"] = "QuestieSmazak 차단",
         ["ptBR"] = true,
-        ["ruRU"] = "Заткнись, Questie!",
+        ["ruRU"] = "Заткнись, QuestieSmazak!",
         ["zhCN"] = "关闭Questie通报！",
         ["zhTW"] = "關閉任務通報！",
     },
-    ["Remove all Questie chat messages coming from other players and disable sending your own."] = {
+    ["Remove all QuestieSmazak chat messages coming from other players and disable sending your own."] = {
         ["enUS"] = true,
-        ["deDE"] = "Alle Questie-Chatnachrichten anderer Spieler entfernen und das Senden der eigenen deaktivieren.",
-        ["esES"] = "Elimina los mensajes de Questie.",
-        ["esMX"] = "Elimina los mensajes de Questie.",
-        ["frFR"] = "Supprimez les messages de Questie.",
-        ["koKR"] = "다른 플레이어로부터 오는 모든 Questie 채팅 메시지를 제거하고 자신의 메시지 전송을 비활성화합니다.",
-        ["ptBR"] = "Remove as mensagens de Questie.",
-        ["ruRU"] = "Скрывает в чатах все сообщения Questie от других игроков и отключает отправку ваших",
-        ["zhCN"] = "屏蔽来自其他玩家的所有 Questie 聊天消息，并禁止发送您自己的消息",
+        ["deDE"] = "Alle QuestieSmazak-Chatnachrichten anderer Spieler entfernen und das Senden der eigenen deaktivieren.",
+        ["esES"] = "Elimina los mensajes de QuestieSmazak.",
+        ["esMX"] = "Elimina los mensajes de QuestieSmazak.",
+        ["frFR"] = "Supprimez les messages de QuestieSmazak.",
+        ["koKR"] = "다른 플레이어로부터 오는 모든 QuestieSmazak 채팅 메시지를 제거하고 자신의 메시지 전송을 비활성화합니다.",
+        ["ptBR"] = "Remove as mensagens de QuestieSmazak.",
+        ["ruRU"] = "Скрывает в чатах все сообщения QuestieSmazak от других игроков и отключает отправку ваших",
+        ["zhCN"] = "屏蔽来自其他玩家的所有 QuestieSmazak 聊天消息，并禁止发送您自己的消息",
         ["zhTW"] = "移除所有來自其他玩家的任務位置提示聊天訊息，你自己也停止發送訊息",
     },
     ["Both"] = {
@@ -291,15 +291,15 @@ local socialOptionsLocales = {
         ["zhCN"] = "向自己通告任务更新",
         ["zhTW"] = "向自己通報任務更新",
     },
-    ["Questie will print your update messages to chat. Other players will NOT be able to see this."] = {
+    ["QuestieSmazak will print your update messages to chat. Other players will NOT be able to see this."] = {
         ["enUS"] = true,
-        ["deDE"] = "Questie wird deine Aktualisierungsnachrichten in den Chat schreiben. Andere Spieler werden dies NICHT sehen können.",
-        ["esES"] = "Questie mostrará tus mensajes de actualización en el chat. Los demás jugadores NO podrán verlos.",
-        ["esMX"] = "Questie mostrará tus mensajes de actualización en el chat. Los demás jugadores NO podrán verlos.",
-        ["frFR"] = "Questie affichera vos messages de mise à jour dans la discussion. Les autres joueurs ne pourront PAS les voir.",
+        ["deDE"] = "QuestieSmazak wird deine Aktualisierungsnachrichten in den Chat schreiben. Andere Spieler werden dies NICHT sehen können.",
+        ["esES"] = "QuestieSmazak mostrará tus mensajes de actualización en el chat. Los demás jugadores NO podrán verlos.",
+        ["esMX"] = "QuestieSmazak mostrará tus mensajes de actualización en el chat. Los demás jugadores NO podrán verlos.",
+        ["frFR"] = "QuestieSmazak affichera vos messages de mise à jour dans la discussion. Les autres joueurs ne pourront PAS les voir.",
         ["koKR"] = "Questie가 퀘스트 진행 상황을 채팅창 메시지로 출력합니다. 다른 사람들은 이 메시지를 볼 수 없습니다.",
-        ["ptBR"] = "Questie mostrará suas mensagens de atualização no bate-papo. Os outros jogadores NÃO poderão vê-las.",
-        ["ruRU"] = "Questie будет выводить в чат ваши сообщения об обновлениях. Другие игроки НЕ будут их видеть",
+        ["ptBR"] = "QuestieSmazak mostrará suas mensagens de atualização no bate-papo. Os outros jogadores NÃO poderão vê-las.",
+        ["ruRU"] = "QuestieSmazak будет выводить в чат ваши сообщения об обновлениях. Другие игроки НЕ будут их видеть",
         ["zhCN"] = "Questie会将你的更新消息打印到聊天框中，其他玩家无法看到这些消息",
         ["zhTW"] = "Questie會將你的更新訊息顯示在聊天視窗中，其他玩家無法看到這些訊息",
     },

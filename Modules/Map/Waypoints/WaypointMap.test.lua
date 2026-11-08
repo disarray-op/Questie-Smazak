@@ -44,7 +44,7 @@ describe("WaypointMap", function()
     before_each(function()
         saved = {WorldMapFrame = _G.WorldMapFrame, CreateFrame = _G.CreateFrame, GameTooltip = _G.GameTooltip}
         mapId, scale, cursor, focus, tooltipOwner = 1, 1, nil, nil, nil
-        Questie.db.profile = {waypointWidth = 4}
+        QuestieSmazak.db.profile = {waypointWidth = 4}
         local canvas = {GetWidth = function() return 1000 end, GetHeight = function() return 500 end,
             IsMouseOver = function() return cursor ~= nil end}
         local scrollContainer = {
@@ -59,9 +59,9 @@ describe("WaypointMap", function()
             return driver
         end
         _G.GameTooltip = {GetOwner = function() return tooltipOwner end, Hide = spy.new(function() end)}
-        QuestieLoader:ImportModule("QuestieCompat").GetMouseFocus = function() return focus end
+        QuestieSmazakLoader:ImportModule("QuestieCompat").GetMouseFocus = function() return focus end
 
-        QuestieWaypoints = QuestieLoader:ImportModule("QuestieWaypoints")
+        QuestieWaypoints = QuestieSmazakLoader:ImportModule("QuestieWaypoints")
         QuestieWaypoints.paths = {}
         QuestieWaypoints.WorldMapAlpha = function(path) return path.alpha end
         QuestieWaypoints.Color = function(path) return path.color end
@@ -75,13 +75,13 @@ describe("WaypointMap", function()
         }
         dofile("Modules/Libs/QuestieLib.lua")
         dofile("Modules/Map/Waypoints/WaypointRenderer.lua")
-        QuestieLoader:ImportModule("WaypointRenderer").New = function() return renderer end
+        QuestieSmazakLoader:ImportModule("WaypointRenderer").New = function() return renderer end
 
         dofile("Modules/Map/Waypoints/WaypointGeometry.lua")
         dofile("Modules/Map/Waypoints/WaypointHover.lua")
-        WaypointHover = QuestieLoader:ImportModule("WaypointHover")
+        WaypointHover = QuestieSmazakLoader:ImportModule("WaypointHover")
         dofile("Modules/Map/Waypoints/WaypointMap.lua")
-        WaypointMap = QuestieLoader:ImportModule("WaypointMap")
+        WaypointMap = QuestieSmazakLoader:ImportModule("WaypointMap")
         focus = _G.WorldMapFrame.ScrollContainer
     end)
 
@@ -155,7 +155,7 @@ describe("WaypointMap", function()
             Update()
             assert.are.equal(4, renderer.Draw.calls[1].vals[4].thickness)
 
-            Questie.db.profile.waypointWidth = 6
+            QuestieSmazak.db.profile.waypointWidth = 6
             WaypointMap.Invalidate()
             Update()
 
@@ -168,7 +168,7 @@ describe("WaypointMap", function()
             Update()
             assert.is_nil(renderer.Draw.calls[1].vals[4].hoverRadius)
 
-            Questie.db.profile.waypointWidth, Questie.db.profile.waypointDebugHover = 6, true
+            QuestieSmazak.db.profile.waypointWidth, QuestieSmazak.db.profile.waypointDebugHover = 6, true
             WaypointMap.Invalidate()
             Update()
 

@@ -24,7 +24,7 @@ describe("loadTOC", function()
         loadTOC("cli/testData/loadTOC/addon.toc")
 
         assert.are_same({
-            "Questie: first Lua",
+            "QuestieSmazak: first Lua",
             "inline XML script",
             "XML Lua file",
             "included XML Lua file",
@@ -34,11 +34,11 @@ describe("loadTOC", function()
 
     it("keeps Questie.lua as the final executable entry in every production manifest", function()
         local tocPaths = {
-            "Questie_TBC.toc",
-            "Questie_Cata.toc",
-            "Questie_Vanilla.toc",
-            "Questie_Mists.toc",
-            "Questie_Wrath.toc",
+            "QuestieSmazak_TBC.toc",
+            "QuestieSmazak_Cata.toc",
+            "QuestieSmazak_Vanilla.toc",
+            "QuestieSmazak_Mists.toc",
+            "QuestieSmazak_Wrath.toc",
         }
 
         for _, tocPath in ipairs(tocPaths) do

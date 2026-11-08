@@ -1,28 +1,28 @@
 ---@class QuestiePartyObjectives : QuestieModule
-local QuestiePartyObjectives = QuestieLoader:CreateModule("QuestiePartyObjectives")
+local QuestiePartyObjectives = QuestieSmazakLoader:CreateModule("QuestiePartyObjectives")
 ---@class QuestiePartyObjectivesPrivate
 QuestiePartyObjectives.private = QuestiePartyObjectives.private or {}
 -------------------------
 --Import modules.
 -------------------------
 ---@type QuestieComms
-local QuestieComms = QuestieLoader:ImportModule("QuestieComms")
+local QuestieComms = QuestieSmazakLoader:ImportModule("QuestieComms")
 ---@type QuestieQuest
-local QuestieQuest = QuestieLoader:ImportModule("QuestieQuest")
+local QuestieQuest = QuestieSmazakLoader:ImportModule("QuestieQuest")
 ---@type QuestieDB
-local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
 ---@type QuestieLib
-local QuestieLib = QuestieLoader:ImportModule("QuestieLib")
+local QuestieLib = QuestieSmazakLoader:ImportModule("QuestieLib")
 ---@type QuestiePlayer
-local QuestiePlayer = QuestieLoader:ImportModule("QuestiePlayer")
+local QuestiePlayer = QuestieSmazakLoader:ImportModule("QuestiePlayer")
 ---@type QuestieFramePool
-local QuestieFramePool = QuestieLoader:ImportModule("QuestieFramePool")
+local QuestieFramePool = QuestieSmazakLoader:ImportModule("QuestieFramePool")
 ---@type QuestLogCache
-local QuestLogCache = QuestieLoader:ImportModule("QuestLogCache")
+local QuestLogCache = QuestieSmazakLoader:ImportModule("QuestLogCache")
 ---@type ThreadLib
-local ThreadLib = QuestieLoader:ImportModule("ThreadLib")
+local ThreadLib = QuestieSmazakLoader:ImportModule("ThreadLib")
 ---@type CommsVisibility
-local CommsVisibility = QuestieLoader:ImportModule("CommsVisibility")
+local CommsVisibility = QuestieSmazakLoader:ImportModule("CommsVisibility")
 
 local NOP_FUNCTION = function() end
 
@@ -89,7 +89,7 @@ end
 
 ---@return boolean
 local function _ShouldDraw()
-    return Questie.db.profile.showPartyQuestObjectives
+    return QuestieSmazak.db.profile.showPartyQuestObjectives
         and QuestiePlayer:GetGroupType() ~= nil
         and GetNumGroupMembers() <= MAX_GROUP_SIZE
 end
@@ -254,7 +254,7 @@ local function _DrawQuest(questId)
             end
 
             -- Prefer the database ObjectiveData (canonical Type/Id). It only misses an entry at
-            -- this index when the party members' databases disagree (e.g. different Questie
+            -- this index when the party members' databases disagree (e.g. different QuestieSmazak
             -- versions); in that case fall back to the comms data as a whole, to not mix sources.
             local objData = quest.ObjectiveData[objectiveIndex]
             local objType, objId
@@ -461,7 +461,7 @@ end
 -- nothing to request a full refresh (e.g. a player left the group).
 ---@param questId number?
 function QuestiePartyObjectives:ScheduleUpdate(questId)
-    if not Questie.db.profile.showPartyQuestObjectives then
+    if not QuestieSmazak.db.profile.showPartyQuestObjectives then
         return
     end
     if questId then

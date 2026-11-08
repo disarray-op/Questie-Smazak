@@ -1,5 +1,5 @@
 ---@class QuestieAPI
-local QuestieAPI = QuestieLoader:CreateModule("QuestieAPI")
+local QuestieAPI = QuestieSmazakLoader:CreateModule("QuestieAPI")
 
 QuestieAPI.Enums = {
     ---@enum QuestUpdateTriggerReason
@@ -10,4 +10,4 @@ QuestieAPI.Enums = {
         QUEST_ABANDONED = 4,
     }
 }
-Questie.API.Enums = QuestieAPI.Enums
+QuestieSmazak.API.Enums = QuestieAPI.Enums

@@ -1,28 +1,28 @@
 ---@type QuestieJourney
-local QuestieJourney = QuestieLoader:ImportModule("QuestieJourney")
+local QuestieJourney = QuestieSmazakLoader:ImportModule("QuestieJourney")
 local _QuestieJourney = QuestieJourney.private
 
 ---@type QuestDetailsFrame
-local QuestDetailsFrame = QuestieLoader:ImportModule("QuestDetailsFrame")
+local QuestDetailsFrame = QuestieSmazakLoader:ImportModule("QuestDetailsFrame")
 
 ---@type QuestieDB
-local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
 ---@type QuestieLib
-local QuestieLib = QuestieLoader:ImportModule("QuestieLib")
+local QuestieLib = QuestieSmazakLoader:ImportModule("QuestieLib")
 ---@type QuestiePlayer
-local QuestiePlayer = QuestieLoader:ImportModule("QuestiePlayer")
+local QuestiePlayer = QuestieSmazakLoader:ImportModule("QuestiePlayer")
 ---@type ActiveQuests
-local ActiveQuests = QuestieLoader:ImportModule("ActiveQuests")
+local ActiveQuests = QuestieSmazakLoader:ImportModule("ActiveQuests")
 ---@type QuestieCorrections
-local QuestieCorrections = QuestieLoader:ImportModule("QuestieCorrections")
+local QuestieCorrections = QuestieSmazakLoader:ImportModule("QuestieCorrections")
 ---@type QuestieQuestBlacklist
-local QuestieQuestBlacklist = QuestieLoader:ImportModule("QuestieQuestBlacklist")
+local QuestieQuestBlacklist = QuestieSmazakLoader:ImportModule("QuestieQuestBlacklist")
 ---@type QuestieEvent
-local QuestieEvent = QuestieLoader:ImportModule("QuestieEvent")
+local QuestieEvent = QuestieSmazakLoader:ImportModule("QuestieEvent")
 ---@type QuestieLink
-local QuestieLink = QuestieLoader:ImportModule("QuestieLink")
+local QuestieLink = QuestieSmazakLoader:ImportModule("QuestieLink")
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 
 local AceGUI = LibStub("AceGUI-3.0")
 local zoneTreeFrame
@@ -116,7 +116,7 @@ function _QuestieJourney.questsByZone:ManageTree(container, zoneTree)
         local treePath = {...}
 
         if not treePath[2] then
-            Questie.Debug(Questie.DEBUG_CRITICAL, "[zoneTreeFrame:OnClick] No tree path given in Journey.")
+            QuestieSmazak.Debug(QuestieSmazak.DEBUG_CRITICAL, "[zoneTreeFrame:OnClick] No tree path given in Journey.")
             return
         end
         -- if they clicked on a header, don't do anything
@@ -238,12 +238,12 @@ function _QuestieJourney.questsByZone:CategorizeQuests(quests)
             temp.iconGutterOffset = -3
             if ActiveQuests.Get(questId) then
                 if QuestieDB.IsComplete(questId) == 1 then
-                    temp.icon = Questie.icons["complete"]
+                    temp.icon = QuestieSmazak.icons["complete"]
                 else
-                    temp.icon = Questie.icons["incomplete"]
+                    temp.icon = QuestieSmazak.icons["incomplete"]
                 end
             end
-            temp.text = QuestieLib:GetColoredQuestName(questId, Questie.db.profile.enableTooltipsQuestLevel, false)
+            temp.text = QuestieLib:GetColoredQuestName(questId, QuestieSmazak.db.profile.enableTooltipsQuestLevel, false)
 
             local breadcrumbForQuestId = QuestieDB.QueryQuest(questId, {"breadcrumbForQuestId"})[1] or {}
             local _, _, returnReason = QuestieDB.IsDoableVerbose(questId, false, true, false)
@@ -285,13 +285,13 @@ function _QuestieJourney.questsByZone:CategorizeQuests(quests)
                     -- reused the logic from AvailableQuests.lua _DrawChildQuests
                     -- if this is modified, also make sure the changes are reflected in the other file(s)
                     local requiredRaces = QuestieDB.QueryQuestSingle(questId, "requiredRaces")
-                    if (not Questie.db.char.complete[questId]) and (not hiddenQuests[questId]) and (QuestiePlayer.HasRequiredRace(requiredRaces)) then
+                    if (not QuestieSmazak.db.char.complete[questId]) and (not hiddenQuests[questId]) and (QuestiePlayer.HasRequiredRace(requiredRaces)) then
                         -- some childQuest remain completed after abandoning and retaking parentQuest
                         -- here we are checking against
                         local childQuestExclusiveTo = QuestieDB.QueryQuestSingle(questId, "exclusiveTo")
                         local blockedByExclusiveTo = false
                         for _, exclusiveToQuestId in pairs(childQuestExclusiveTo or {}) do
-                            if ActiveQuests.Get(exclusiveToQuestId) or Questie.db.char.complete[exclusiveToQuestId] then
+                            if ActiveQuests.Get(exclusiveToQuestId) or QuestieSmazak.db.char.complete[exclusiveToQuestId] then
                                 tinsert(zoneTree[4].children, temp)
                                 completedCounter = completedCounter + 1
                                 blockedByExclusiveTo = true
@@ -362,7 +362,7 @@ function _QuestieJourney.questsByZone:CategorizeQuests(quests)
                     end
                 elseif returnReason == DoableStates.PARENT_INACTIVE then -- inactive parent
                     local parentQuest = QuestieDB.QueryQuestSingle(questId, "parentQuest")
-                    if Questie.db.char.complete[parentQuest] then
+                    if QuestieSmazak.db.char.complete[parentQuest] then
                         tinsert(zoneTree[6].children, temp)
                         unobtainableCounter = unobtainableCounter + 1
                     else
@@ -384,7 +384,7 @@ function _QuestieJourney.questsByZone:CategorizeQuests(quests)
                             local exclusivePreQuests = QuestieDB.QueryQuestSingle(preQuestSingle[i], "exclusiveTo")
                             if exclusivePreQuests then
                                 for _, exclusivePreQuestId in pairs(exclusivePreQuests) do
-                                    if not questDecidedCategory and (Questie.db.char.complete[exclusivePreQuestId] or ActiveQuests.Get(exclusivePreQuestId)) then
+                                    if not questDecidedCategory and (QuestieSmazak.db.char.complete[exclusivePreQuestId] or ActiveQuests.Get(exclusivePreQuestId)) then
                                         tinsert(zoneTree[6].children, temp)
                                         unobtainableCounter = unobtainableCounter + 1
                                         questDecidedCategory = true
@@ -399,7 +399,7 @@ function _QuestieJourney.questsByZone:CategorizeQuests(quests)
                         local exclusiveFollowups = QuestieDB.QueryQuestSingle(nextQuestInChain, "exclusiveTo")
                         if exclusiveFollowups then
                             for _, exclusiveFollowupId in pairs(exclusiveFollowups) do
-                                if not questDecidedCategory and (Questie.db.char.complete[exclusiveFollowupId] or ActiveQuests.Get(exclusiveFollowupId)) then
+                                if not questDecidedCategory and (QuestieSmazak.db.char.complete[exclusiveFollowupId] or ActiveQuests.Get(exclusiveFollowupId)) then
                                     tinsert(zoneTree[6].children, temp)
                                     unobtainableCounter = unobtainableCounter + 1
                                     questDecidedCategory = true
@@ -485,7 +485,7 @@ function _QuestieJourney.questsByZone:CategorizeQuests(quests)
             end
 
             -- show manually hidden quests
-            if Questie.db.char.hidden[questId] then
+            if QuestieSmazak.db.char.hidden[questId] then
                 if not zoneTree[7] then
                     zoneTree[7] = {
                         value = "h",

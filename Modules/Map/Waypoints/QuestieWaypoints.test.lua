@@ -24,16 +24,16 @@ describe("QuestieWaypoints", function()
         _G.LibStub = function()
             return {GetWorldCoordinatesFromZone = function(_, x, y) return x * 1000, y * 1000, 0 end}
         end
-        Questie.db.profile = {iconFadeLevel = 0.3, waypointMapEnabled = true, waypointMinimapEnabled = true, waypointOpacity = 1,
+        QuestieSmazak.db.profile = {iconFadeLevel = 0.3, waypointMapEnabled = true, waypointMinimapEnabled = true, waypointOpacity = 1,
             waypointColor = NORMAL, waypointHostileColor = HOSTILE, waypointHighlight = true, waypointHighlightColor = HIGHLIGHT}
-        QuestieLoader:ImportModule("ZoneDB").GetUiMapIdByAreaId = function(_, areaId) return areaId + 1000 end
-        WaypointMap = QuestieLoader:ImportModule("WaypointMap")
+        QuestieSmazakLoader:ImportModule("ZoneDB").GetUiMapIdByAreaId = function(_, areaId) return areaId + 1000 end
+        WaypointMap = QuestieSmazakLoader:ImportModule("WaypointMap")
         WaypointMap.Invalidate = spy.new(function() end)
-        WaypointMinimap = QuestieLoader:ImportModule("WaypointMinimap")
+        WaypointMinimap = QuestieSmazakLoader:ImportModule("WaypointMinimap")
         WaypointMinimap.Invalidate = spy.new(function() end)
         dofile("Modules/Map/Waypoints/WaypointGeometry.lua")
         dofile("Modules/Map/Waypoints/QuestieWaypoints.lua")
-        QuestieWaypoints = QuestieLoader:ImportModule("QuestieWaypoints")
+        QuestieWaypoints = QuestieSmazakLoader:ImportModule("QuestieWaypoints")
     end)
 
     after_each(function()
@@ -174,7 +174,7 @@ describe("QuestieWaypoints", function()
     end)
 
     it("neither recolors a hovered path nor lets it take its route over while hover highlighting is off", function()
-        Questie.db.profile.waypointHighlight = false
+        QuestieSmazak.db.profile.waypointHighlight = false
         local icon = Icon({})
         QuestieWaypoints.Add(icon, "m_icon", PATROLS, 12, true)
         local path = icon.data.waypointPaths[1]
@@ -194,7 +194,7 @@ describe("QuestieWaypoints", function()
         assert.are_same(NORMAL, QuestieWaypoints.Color(friendlyPath))
         assert.are_same(HOSTILE, QuestieWaypoints.Color(hostilePath))
 
-        Questie.db.profile.waypointHostileColor = {0, 0, 1, 0.6}
+        QuestieSmazak.db.profile.waypointHostileColor = {0, 0, 1, 0.6}
         assert.are_same({0, 0, 1, 0.6}, QuestieWaypoints.Color(hostilePath))
     end)
 
@@ -203,10 +203,10 @@ describe("QuestieWaypoints", function()
         QuestieWaypoints.Add(friendly, "m_friendly", PATROLS, 12)
         QuestieWaypoints.Add(hostile, "m_hostile", PATROLS, 12, true)
 
-        Questie.db.profile.waypointOpacity = 0.5
+        QuestieSmazak.db.profile.waypointOpacity = 0.5
         assert.are.equal(0.25, QuestieWaypoints.Color(friendly.data.waypointPaths[1])[4])
 
-        Questie.db.profile.waypointOpacity = 2
+        QuestieSmazak.db.profile.waypointOpacity = 2
         assert.are.equal(1, QuestieWaypoints.Color(hostile.data.waypointPaths[1])[4])
     end)
 
@@ -216,11 +216,11 @@ describe("QuestieWaypoints", function()
         QuestieWaypoints.Add(icon, "m_icon", PATROLS, 12)
         local path = icon.data.waypointPaths[1]
 
-        Questie.db.profile.waypointMinimapEnabled = false
+        QuestieSmazak.db.profile.waypointMinimapEnabled = false
         assert.are.equal(1, QuestieWaypoints.WorldMapAlpha(path))
         assert.is_nil(QuestieWaypoints.MinimapAlpha(path))
 
-        Questie.db.profile.waypointMinimapEnabled, Questie.db.profile.waypointMapEnabled = true, false
+        QuestieSmazak.db.profile.waypointMinimapEnabled, QuestieSmazak.db.profile.waypointMapEnabled = true, false
         assert.is_nil(QuestieWaypoints.WorldMapAlpha(path))
         assert.are.equal(1, QuestieWaypoints.MinimapAlpha(path))
     end)

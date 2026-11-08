@@ -1,23 +1,23 @@
 ---@type QuestieCompat
-local QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+local QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
 
-local Questie = _G.Questie
+local QuestieSmazak = _G.QuestieSmazak
 ---@class QuestieAnnounce
-local QuestieAnnounce = QuestieLoader:CreateModule("QuestieAnnounce")
+local QuestieAnnounce = QuestieSmazakLoader:CreateModule("QuestieAnnounce")
 local _QuestieAnnounce = {}
 ---@type QuestieDB
-local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
 ---@type QuestieLink
-local QuestieLink = QuestieLoader:ImportModule("QuestieLink")
+local QuestieLink = QuestieSmazakLoader:ImportModule("QuestieLink")
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 
 local GetItemInfo = QuestieCompat.GetItemInfo
 
 local itemCache = {} -- cache data since this happens on item looted it could happen a lot with auto loot
 local alreadySentBandaid = {} -- TODO: rewrite the entire thing its a lost cause
 
--- === Below code borrowed from ShutUp to implement Questie logo swapping for chat messages ===
+-- === Below code borrowed from ShutUp to implement QuestieSmazak logo swapping for chat messages ===
 
 local ChatFrameAddMessageEventFilter = QuestieCompat.AddMessageEventFilter
 
@@ -34,7 +34,7 @@ local function SafeAddMessageEventFilter(event, filter)
                 SafeAddMessageEventFilter(event, filter)
             end)
         else
-            Questie.Error("Failed to register chat filter for", event, ":", err)
+            QuestieSmazak.Error("Failed to register chat filter for", event, ":", err)
         end
     end
 end
@@ -44,19 +44,19 @@ local patternRU = ""
 
 function QuestieAnnounce.LogoFilter(self, event, msg, author, ...)
     if msg:find(pattern) then
-        return false, gsub(msg, pattern, "|TInterface\\Addons\\Questie\\Icons\\questie.png:0|t"), author, ...
+        return false, gsub(msg, pattern, "|TInterface\\Addons\\QuestieSmazak\\Icons\\questie.png:0|t"), author, ...
     end
     -- Adding this check for messages sent by ruRU clients where {rt1} doesnt work (thanks Blizz)
-    -- We want those to also be replaced with our Questie icon
+    -- We want those to also be replaced with our QuestieSmazak icon
     if msg:find(patternRU) then
-        return false, gsub(msg, patternRU, "|TInterface\\Addons\\Questie\\Icons\\questie.png:0|t"), author, ...
+        return false, gsub(msg, patternRU, "|TInterface\\Addons\\QuestieSmazak\\Icons\\questie.png:0|t"), author, ...
     end
 end
 
 function QuestieAnnounce:InitializeLogoFilter()
-    pattern = "{rt1}" .. " Questie%s?:"
+    pattern = "{rt1}" .. " QuestieSmazak%s?:"
      -- ruRU clients don't have {rt1} so we also want to filter these
-    patternRU = "{звезда}" .. " Questie%s?:"
+    patternRU = "{звезда}" .. " QuestieSmazak%s?:"
     SafeAddMessageEventFilter("CHAT_MSG_PARTY", QuestieAnnounce.LogoFilter)
     SafeAddMessageEventFilter("CHAT_MSG_PARTY_LEADER", QuestieAnnounce.LogoFilter)
     SafeAddMessageEventFilter("CHAT_MSG_RAID", QuestieAnnounce.LogoFilter)
@@ -75,11 +75,11 @@ _GetAnnounceMarker = function()
     if IsInRaid() or IsInGroup() then
         if locale == "ruRU" then
             -- ruRU clients don't have {rt1} so we also want to filter these
-            return "{звезда} Questie: ";
+            return "{звезда} QuestieSmazak: ";
         elseif locale == "frFR" then
-            return "{rt1} Questie : ";
+            return "{rt1} QuestieSmazak : ";
         else
-            return "{rt1} Questie: "
+            return "{rt1} QuestieSmazak: "
         end
     else
         return ""
@@ -89,12 +89,12 @@ end
 ---@param questId QuestId
 ---@param objectiveText string @Complete accepted native wording, including any native progress counter.
 function QuestieAnnounce:AnnounceObjectiveToChannel(questId, objectiveText)
-    if _QuestieAnnounce:AnnounceEnabledAndPlayerInChannel() and Questie.db.profile.questAnnounceObjectives then
+    if _QuestieAnnounce:AnnounceEnabledAndPlayerInChannel() and QuestieSmazak.db.profile.questAnnounceObjectives then
         local questLink = QuestieLink.GetNativeQuestLinkStringById(questId);
         local message = l10n("%s for %s!", objectiveText, questLink or "no quest name")
 
         local localMessage
-        if Questie.db.profile.questAnnounceLocally == true then
+        if QuestieSmazak.db.profile.questAnnounceLocally == true then
             localMessage = l10n("%s for %s!", objectiveText, QuestieLink:GetQuestHyperLink(questId) or "no quest name")
         end
 
@@ -126,13 +126,13 @@ end
 ---@param questId QuestId
 ---@param itemId ItemId
 function QuestieAnnounce:AnnounceQuestItemLootedToChannel(questId, itemId)
-    if _QuestieAnnounce:AnnounceEnabledAndPlayerInChannel() and Questie.db.profile.questAnnounceItems then
+    if _QuestieAnnounce:AnnounceEnabledAndPlayerInChannel() and QuestieSmazak.db.profile.questAnnounceItems then
         local questLink = QuestieLink.GetNativeQuestLinkStringById(questId);
         local itemLink = select(2, GetItemInfo(itemId))
         local message = l10n("Picked up %s which starts %s!", itemLink, questLink or "no quest name")
 
         local localMessage
-        if Questie.db.profile.questAnnounceLocally == true then
+        if QuestieSmazak.db.profile.questAnnounceLocally == true then
             localMessage = l10n("Picked up %s which starts %s!", itemLink, QuestieLink:GetQuestHyperLink(questId) or "no quest name")
         end
 
@@ -149,12 +149,12 @@ function _QuestieAnnounce:AnnounceSelf(questId, itemId)
     local questHyperLink = QuestieLink:GetQuestHyperLink(questId);
     local itemLink = select(2, GetItemInfo(itemId));
 
-    Questie:Print(l10n("You picked up %s which starts %s!", itemLink, questHyperLink or "no quest name"));
+    QuestieSmazak:Print(l10n("You picked up %s which starts %s!", itemLink, questHyperLink or "no quest name"));
 end
 
 ---@return boolean
 local function _ShouldAnnounceToGroup()
-    local channel = Questie.db.profile.questAnnounceChannel
+    local channel = QuestieSmazak.db.profile.questAnnounceChannel
     if channel == "both" then
         return IsInRaid() or IsInGroup()
     elseif channel == "raid" then
@@ -168,7 +168,7 @@ end
 
 ---@return boolean
 function _QuestieAnnounce:AnnounceEnabledAndPlayerInChannel()
-    if Questie.db.profile.questAnnounceLocally == true then
+    if QuestieSmazak.db.profile.questAnnounceLocally == true then
         return true -- we always want to print if this option is enabled
     end
     return _ShouldAnnounceToGroup()
@@ -187,15 +187,15 @@ end
 ---@param message string
 ---@param localMessage? string
 function _QuestieAnnounce:AnnounceToChannel(message, localMessage)
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieAnnounce] raw msg: ", message)
-    if (not message) or alreadySentBandaid[message] or Questie.db.profile.questieShutUp then
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieAnnounce] raw msg: ", message)
+    if (not message) or alreadySentBandaid[message] or QuestieSmazak.db.profile.questieShutUp then
         return
     end
 
     alreadySentBandaid[message] = true
 
-    if Questie.db.profile.questAnnounceLocally == true then
-        Questie:Print(localMessage)
+    if QuestieSmazak.db.profile.questAnnounceLocally == true then
+        QuestieSmazak:Print(localMessage)
     end
 
     if _ShouldAnnounceToGroup() then
@@ -238,12 +238,12 @@ end
 
 ---@param questId QuestId
 function QuestieAnnounce:AcceptedQuest(questId)
-    if (_QuestieAnnounce:AnnounceEnabledAndPlayerInChannel()) and Questie.db.profile.questAnnounceAccepted then
+    if (_QuestieAnnounce:AnnounceEnabledAndPlayerInChannel()) and QuestieSmazak.db.profile.questAnnounceAccepted then
         local questLink = QuestieLink.GetNativeQuestLinkStringById(questId)
         local message = l10n("Quest %s: %s", l10n("Accepted"), questLink or "no quest name")
 
         local localMessage
-        if Questie.db.profile.questAnnounceLocally == true then
+        if QuestieSmazak.db.profile.questAnnounceLocally == true then
             localMessage = l10n("Quest %s: %s", l10n('Accepted'), QuestieLink:GetQuestHyperLink(questId) or "no quest name")
         end
 
@@ -253,12 +253,12 @@ end
 
 ---@param questId QuestId
 function QuestieAnnounce:AbandonedQuest(questId)
-    if (_QuestieAnnounce:AnnounceEnabledAndPlayerInChannel()) and Questie.db.profile.questAnnounceAbandoned then
+    if (_QuestieAnnounce:AnnounceEnabledAndPlayerInChannel()) and QuestieSmazak.db.profile.questAnnounceAbandoned then
         local questLink = QuestieLink.GetNativeQuestLinkStringById(questId)
         local message = l10n("Quest %s: %s", l10n("Abandoned"), questLink or "no quest name")
 
         local localMessage
-        if Questie.db.profile.questAnnounceLocally == true then
+        if QuestieSmazak.db.profile.questAnnounceLocally == true then
             localMessage = l10n("Quest %s: %s", l10n('Abandoned'), QuestieLink:GetQuestHyperLink(questId) or "no quest name")
         end
 
@@ -268,12 +268,12 @@ end
 
 ---@param questId QuestId
 function QuestieAnnounce:CompletedQuest(questId)
-    if (_QuestieAnnounce:AnnounceEnabledAndPlayerInChannel()) and Questie.db.profile.questAnnounceCompleted then
+    if (_QuestieAnnounce:AnnounceEnabledAndPlayerInChannel()) and QuestieSmazak.db.profile.questAnnounceCompleted then
         local questLink = QuestieLink.GetNativeQuestLinkStringById(questId)
         local message = l10n("Quest %s: %s", l10n("Completed"), questLink or "no quest name")
 
         local localMessage
-        if Questie.db.profile.questAnnounceLocally == true then
+        if QuestieSmazak.db.profile.questAnnounceLocally == true then
             localMessage = l10n("Quest %s: %s", l10n('Completed'), QuestieLink:GetQuestHyperLink(questId) or "no quest name")
         end
 
@@ -288,5 +288,5 @@ function QuestieAnnounce.IncompleteBreadcrumbQuest(questId, breadcrumbQuestId)
     local breadcrumbQuestLink = QuestieLink:GetQuestHyperLink(breadcrumbQuestId)
 
     local message = l10n("You have accepted %s without completing its breadcrumb quest %s", questLink or "no quest name", breadcrumbQuestLink or "no quest name")
-    Questie:Print(message)
+    QuestieSmazak:Print(message)
 end

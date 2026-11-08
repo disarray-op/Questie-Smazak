@@ -1,29 +1,29 @@
 ---@type QuestieQuest
-local QuestieQuest = QuestieLoader:ImportModule("QuestieQuest")
+local QuestieQuest = QuestieSmazakLoader:ImportModule("QuestieQuest")
 ---@type QuestieQuestPrivate
 QuestieQuest.private = QuestieQuest.private or {}
 ---@class QuestieQuestPrivate
 local _QuestieQuest = QuestieQuest.private
 
 ---@type QuestieDB
-local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
 ---@type QuestieCorrections
-local QuestieCorrections = QuestieLoader:ImportModule("QuestieCorrections")
+local QuestieCorrections = QuestieSmazakLoader:ImportModule("QuestieCorrections")
 
 local function _GetIconScaleForMonster()
-    return Questie.db.profile.monsterScale or 1
+    return QuestieSmazak.db.profile.monsterScale or 1
 end
 
 local function _GetIconScaleForObject()
-    return Questie.db.profile.objectScale or 1
+    return QuestieSmazak.db.profile.objectScale or 1
 end
 
 local function _GetIconScaleForEvent()
-    return Questie.db.profile.eventScale or 1.35
+    return QuestieSmazak.db.profile.eventScale or 1.35
 end
 
 local function _GetIconScaleForLoot()
-    return Questie.db.profile.lootScale or 1
+    return QuestieSmazak.db.profile.lootScale or 1
 end
 
 
@@ -80,7 +80,7 @@ end
 ---@return table<NpcId, SpawnListNPC>?
 monster = function(npcId, objective)
     if (not npcId) then
-        Questie.Error(
+        QuestieSmazak.Error(
             "Corrupted objective data handed to objectiveSpawnListCallTable['monster']:",
             "'" .. objective.Description .. "' -",
             "Please report this error on Discord or GitHub."
@@ -90,13 +90,13 @@ monster = function(npcId, objective)
 
     local name = QuestieDB.QueryNPCSingle(npcId, "name")
     if (not name) then
-        Questie.Warning("Name missing for NPC:", npcId, "- Please report this error on Discord or GitHub.")
+        QuestieSmazak.Warning("Name missing for NPC:", npcId, "- Please report this error on Discord or GitHub.")
         return nil
     end
 
     local spawns = QuestieDB.QueryNPCSingle(npcId, "spawns")
     if (not spawns) then
-        Questie.Debug(Questie.DEBUG_CRITICAL, "Spawn data missing for NPC:", npcId)
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_CRITICAL, "Spawn data missing for NPC:", npcId)
         spawns = {}
     end
 
@@ -112,7 +112,7 @@ monster = function(npcId, objective)
         Spawns = enableSpawns and spawns or {},
         Waypoints = enableWaypoints and QuestieDB.QueryNPCSingle(npcId, "waypoints") or {},
         Hostile = true,
-        Icon = objective.Icon or Questie.ICON_TYPE_SLAY,
+        Icon = objective.Icon or QuestieSmazak.ICON_TYPE_SLAY,
         GetIconScale = _GetIconScaleForMonster,
         IconScale = _GetIconScaleForMonster(),
         TooltipKey = "m_" .. npcId, -- todo: use ID based keys
@@ -129,7 +129,7 @@ end
 ---@return table<ObjectId, SpawnListObject>?
 object = function(objectId, objective)
     if (not objectId) then
-        Questie.Error(
+        QuestieSmazak.Error(
             "Corrupted objective data handed to objectiveSpawnListCallTable['object']:",
             "'" .. objective.Description .. "' -",
             "Please report this error on Discord or GitHub."
@@ -139,13 +139,13 @@ object = function(objectId, objective)
 
     local name = QuestieDB.QueryObjectSingle(objectId, "name")
     if (not name) then
-        Questie.Warning("Name missing for object:", objectId, "- Please report this error on Discord or GitHub.")
+        QuestieSmazak.Warning("Name missing for object:", objectId, "- Please report this error on Discord or GitHub.")
         return nil
     end
 
     local spawns = QuestieDB.QueryObjectSingle(objectId, "spawns")
     if (not spawns) then
-        Questie.Debug(Questie.DEBUG_CRITICAL, "Spawn data missing for object:", objectId)
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_CRITICAL, "Spawn data missing for object:", objectId)
         spawns = {}
     end
 
@@ -156,7 +156,7 @@ object = function(objectId, objective)
         Name = name,
         Spawns = spawns,
         Waypoints = QuestieDB.QueryObjectSingle(objectId, "waypoints") or {},
-        Icon = objective.Icon or Questie.ICON_TYPE_OBJECT,
+        Icon = objective.Icon or QuestieSmazak.ICON_TYPE_OBJECT,
         GetIconScale = _GetIconScaleForObject,
         IconScale = _GetIconScaleForObject(),
         TooltipKey = "o_" .. objectId,
@@ -174,7 +174,7 @@ end
 event = function(eventId, objective)
     local spawns = objective.Coordinates
     if (not spawns) then
-        Questie.Warning("Missing event data for Objective:", objective.Description, "id:", eventId)
+        QuestieSmazak.Warning("Missing event data for Objective:", objective.Description, "id:", eventId)
         spawns = {}
     end
 
@@ -183,7 +183,7 @@ event = function(eventId, objective)
         Id = eventId or 0,
         Name = objective.Description or "Event Trigger",
         Spawns = spawns,
-        Icon = Questie.ICON_TYPE_EVENT,
+        Icon = QuestieSmazak.ICON_TYPE_EVENT,
         GetIconScale = _GetIconScaleForEvent,
         IconScale = _GetIconScaleForEvent(),
     }
@@ -199,7 +199,7 @@ end
 ---@return table<ItemId, SpawnListItem>?
 item = function(itemId, objective)
     if (not itemId) then
-        Questie.Error(
+        QuestieSmazak.Error(
             "Corrupted objective data handed to objectiveSpawnListCallTable['item']:",
             "'" .. objective.Description .. "' -",
             "Please report this error on Discord or GitHub."
@@ -216,17 +216,17 @@ item = function(itemId, objective)
                 if not sourceList then
                     -- Log objectives are just empty.
                     if source.Type ~= "log" then
-                        Questie.Warning("Missing objective data for", source.Type, "'", objective, "'", source.Id)
+                        QuestieSmazak.Warning("Missing objective data for", source.Type, "'", objective, "'", source.Id)
                     end
                 else
                     for id, sourceData in pairs(sourceList) do
                         if (not ret[id]) then
                             local icon, GetIconScale
                             if source.Type == "object" then
-                                icon = objective.Icon or Questie.ICON_TYPE_OBJECT
+                                icon = objective.Icon or QuestieSmazak.ICON_TYPE_OBJECT
                                 GetIconScale = _GetIconScaleForObject
                             else
-                                icon = objective.Icon or Questie.ICON_TYPE_LOOT
+                                icon = objective.Icon or QuestieSmazak.ICON_TYPE_LOOT
                                 GetIconScale = _GetIconScaleForLoot
                             end
 
@@ -288,7 +288,7 @@ end
 ---@return table<ItemId, SpawnListItem>?
 spell = function(spellId, objective, objectiveData)
     if (not spellId) then
-        Questie.Error(
+        QuestieSmazak.Error(
             "Corrupted objective data handed to objectiveSpawnListCallTable['spell']:",
             "'" .. objective.Description .. "' -",
             "Please report this error on Discord or GitHub."

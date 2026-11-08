@@ -8,21 +8,21 @@ describe("VoiceOverPlayButton", function()
 
     before_each(function()
         playingSound = nil
-        originalQuestieDB = Questie.db
-        Questie.db = {profile = {trackerShowPlayButtons = true}}
+        originalQuestieDB = QuestieSmazak.db
+        QuestieSmazak.db = {profile = {trackerShowPlayButtons = true}}
         _G.VoiceOver = {
             QuestOverlayUI = {questPlayButtons = {[123] = {soundData = {questID = 123}}}},
             SoundQueue = {Contains = function(_, soundData) return soundData == playingSound end},
         }
-        QuestieLoader:ImportModule("TrackerUtils").IsVoiceOverLoaded = function() return true end
+        QuestieSmazakLoader:ImportModule("TrackerUtils").IsVoiceOverLoaded = function() return true end
 
         dofile("Modules/Tracker/LinePool/VoiceOverPlayButton.lua")
-        VoiceOverPlayButton = QuestieLoader:ImportModule("VoiceOverPlayButton")
+        VoiceOverPlayButton = QuestieSmazakLoader:ImportModule("VoiceOverPlayButton")
     end)
 
     after_each(function()
         _G.VoiceOver = nil
-        Questie.db = originalQuestieDB
+        QuestieSmazak.db = originalQuestieDB
     end)
 
     it("should always show the play button of a quest without holding shift", function()
@@ -32,7 +32,7 @@ describe("VoiceOverPlayButton", function()
 
         assert.is_true(button:IsVisible())
         assert.are_same(1, button:GetAlpha())
-        assert.are_same("Interface\\Addons\\Questie\\Icons\\QuestLogPlayButton", button:GetNormalTexture():GetTexture())
+        assert.are_same("Interface\\Addons\\QuestieSmazak\\Icons\\QuestLogPlayButton", button:GetNormalTexture():GetTexture())
     end)
 
     it("should show the stop icon while the quest sound plays", function()
@@ -41,7 +41,7 @@ describe("VoiceOverPlayButton", function()
 
         button:SetPlayButton(123)
 
-        assert.are_same("Interface\\Addons\\Questie\\Icons\\QuestLogStopButton", button:GetNormalTexture():GetTexture())
+        assert.are_same("Interface\\Addons\\QuestieSmazak\\Icons\\QuestLogStopButton", button:GetNormalTexture():GetTexture())
     end)
 
     it("should hide without a quest", function()
@@ -54,7 +54,7 @@ describe("VoiceOverPlayButton", function()
     end)
 
     it("should hide the play button when the play buttons setting is off", function()
-        Questie.db.profile.trackerShowPlayButtons = false
+        QuestieSmazak.db.profile.trackerShowPlayButtons = false
         local button = VoiceOverPlayButton.New(1, CreateFrame("Button"))
 
         button:SetPlayButton(123)

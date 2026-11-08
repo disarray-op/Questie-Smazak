@@ -1,37 +1,37 @@
 ---@type QuestieCompat
-local QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+local QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
 
 ---@class TrackerMenu
-local TrackerMenu = QuestieLoader:CreateModule("TrackerMenu")
+local TrackerMenu = QuestieSmazakLoader:CreateModule("TrackerMenu")
 -------------------------
 --Import QuestieTracker modules.
 -------------------------
 ---@type QuestieTracker
-local QuestieTracker = QuestieLoader:ImportModule("QuestieTracker")
+local QuestieTracker = QuestieSmazakLoader:ImportModule("QuestieTracker")
 ---@type TrackerBaseFrame
-local TrackerBaseFrame = QuestieLoader:ImportModule("TrackerBaseFrame")
+local TrackerBaseFrame = QuestieSmazakLoader:ImportModule("TrackerBaseFrame")
 ---@type TrackerUtils
-local TrackerUtils = QuestieLoader:ImportModule("TrackerUtils")
+local TrackerUtils = QuestieSmazakLoader:ImportModule("TrackerUtils")
 -------------------------
---Import Questie modules.
+--Import QuestieSmazak modules.
 -------------------------
 ---@type QuestieQuest
-local QuestieQuest = QuestieLoader:ImportModule("QuestieQuest")
+local QuestieQuest = QuestieSmazakLoader:ImportModule("QuestieQuest")
 ---@type TrackerData
-local TrackerData = QuestieLoader:ImportModule("TrackerData")
+local TrackerData = QuestieSmazakLoader:ImportModule("TrackerData")
 ---@type TrackerMapEligibility
-local TrackerMapEligibility = QuestieLoader:ImportModule("TrackerMapEligibility")
+local TrackerMapEligibility = QuestieSmazakLoader:ImportModule("TrackerMapEligibility")
 ---@type QuestieCombatQueue
-local QuestieCombatQueue = QuestieLoader:ImportModule("QuestieCombatQueue")
+local QuestieCombatQueue = QuestieSmazakLoader:ImportModule("QuestieCombatQueue")
 ---@type DistanceUtils
-local DistanceUtils = QuestieLoader:ImportModule("DistanceUtils")
+local DistanceUtils = QuestieSmazakLoader:ImportModule("DistanceUtils")
 ---@type QuestiePopup
-local Popup = QuestieLoader:ImportModule("QuestiePopup")
+local Popup = QuestieSmazakLoader:ImportModule("QuestiePopup")
 
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 ---@type AchievementTracking
-local AchievementTracking = QuestieLoader:ImportModule("AchievementTracking")
+local AchievementTracking = QuestieSmazakLoader:ImportModule("AchievementTracking")
 
 local LibDropDown = LibStub:GetLibrary("LibUIDropDownMenuQuestie-4.0")
 
@@ -108,11 +108,11 @@ TrackerMenu.addTomTomOptionForObjective = function(menu, quest, objective)
 end
 
 TrackerMenu.minMaxQuestOption = function(menu, quest)
-    if Questie.db.char.collapsedQuests[quest.Id] then
+    if QuestieSmazak.db.char.collapsedQuests[quest.Id] then
         tinsert(menu, {
             text = l10n('Maximize Quest'),
             func = function()
-                Questie.db.char.collapsedQuests[quest.Id] = false
+                QuestieSmazak.db.char.collapsedQuests[quest.Id] = false
 
                 QuestieCombatQueue:Queue(function()
                     QuestieTracker:Update()
@@ -123,7 +123,7 @@ TrackerMenu.minMaxQuestOption = function(menu, quest)
         tinsert(menu, {
             text = l10n('Minimize Quest'),
             func = function()
-                Questie.db.char.collapsedQuests[quest.Id] = true
+                QuestieSmazak.db.char.collapsedQuests[quest.Id] = true
 
                 QuestieCombatQueue:Queue(function()
                     QuestieTracker:Update()
@@ -146,7 +146,7 @@ TrackerMenu.addShowHideObjectivesOption = function(menu, quest, objective)
                     return
                 end
                 objective.HideIcons = nil
-                Questie.db.char.TrackerHiddenObjectives[tostring(quest.Id) .. " " .. tostring(objective.Index)] = nil
+                QuestieSmazak.db.char.TrackerHiddenObjectives[tostring(quest.Id) .. " " .. tostring(objective.Index)] = nil
                 QuestieQuest.ToggleQuestNotes(true)
             end
         })
@@ -160,7 +160,7 @@ TrackerMenu.addShowHideObjectivesOption = function(menu, quest, objective)
                     return
                 end
                 objective.HideIcons = true
-                Questie.db.char.TrackerHiddenObjectives[tostring(quest.Id) .. " " .. tostring(objective.Index)] = true
+                QuestieSmazak.db.char.TrackerHiddenObjectives[tostring(quest.Id) .. " " .. tostring(objective.Index)] = true
                 QuestieQuest.ToggleQuestNotes(false)
             end
         })
@@ -174,7 +174,7 @@ TrackerMenu.addShowHideQuestsOption = function(menu, quest)
             func = function()
                 -- Recovery action: clearing hidden state needs no eligibility check.
                 quest.HideIcons = nil
-                Questie.db.char.TrackerHiddenQuests[quest.Id] = nil
+                QuestieSmazak.db.char.TrackerHiddenQuests[quest.Id] = nil
                 QuestieQuest.ToggleQuestNotes(true)
             end
         })
@@ -187,7 +187,7 @@ TrackerMenu.addShowHideQuestsOption = function(menu, quest)
                     return
                 end
                 quest.HideIcons = true
-                Questie.db.char.TrackerHiddenQuests[quest.Id] = true
+                QuestieSmazak.db.char.TrackerHiddenQuests[quest.Id] = true
                 QuestieQuest.ToggleQuestNotes(false)
             end
         })
@@ -204,7 +204,7 @@ TrackerMenu.addShowObjectivesOnMapOption = function(menu, quest, objective)
                 return
             end
             local needHiddenUpdate = false
-            if Questie.db.char.TrackerFocus and Questie.db.char.TrackerFocus ~= quest.Id then
+            if QuestieSmazak.db.char.TrackerFocus and QuestieSmazak.db.char.TrackerFocus ~= quest.Id then
                 TrackerUtils:UnFocus()
                 needHiddenUpdate = true
             end
@@ -212,13 +212,13 @@ TrackerMenu.addShowObjectivesOnMapOption = function(menu, quest, objective)
             -- Like "Show Icons": also forget the saved hidden state, so the icons stay visible after a reload.
             if objective.HideIcons then
                 objective.HideIcons = nil
-                Questie.db.char.TrackerHiddenObjectives[tostring(quest.Id) .. " " .. tostring(objective.Index)] = nil
+                QuestieSmazak.db.char.TrackerHiddenObjectives[tostring(quest.Id) .. " " .. tostring(objective.Index)] = nil
                 needHiddenUpdate = true
             end
 
             if quest.HideIcons then
                 quest.HideIcons = nil
-                Questie.db.char.TrackerHiddenQuests[quest.Id] = nil
+                QuestieSmazak.db.char.TrackerHiddenQuests[quest.Id] = nil
                 needHiddenUpdate = true
             end
 
@@ -246,7 +246,7 @@ TrackerMenu.addShowQuestObjectivesOnMapOption = function(menu, quest)
             end
             local needHiddenUpdate = false
             -- Any other focus, including one of this quest's own objectives, would hide objectives being flashed.
-            if Questie.db.char.TrackerFocus and Questie.db.char.TrackerFocus ~= quest.Id then
+            if QuestieSmazak.db.char.TrackerFocus and QuestieSmazak.db.char.TrackerFocus ~= quest.Id then
                 TrackerUtils:UnFocus()
                 needHiddenUpdate = true
             end
@@ -362,8 +362,8 @@ TrackerMenu.addUntrackOption = function(menu, quest)
 end
 
 TrackerMenu.addFocusUnfocusOption = function(menu, quest)
-    if Questie.db.char.TrackerFocus == quest.Id then
-        _AddUnfocusEntry(menu, function() return Questie.db.char.TrackerFocus == quest.Id end)
+    if QuestieSmazak.db.char.TrackerFocus == quest.Id then
+        _AddUnfocusEntry(menu, function() return QuestieSmazak.db.char.TrackerFocus == quest.Id end)
     else
         tinsert(menu, {
             text = l10n('Focus Quest'),
@@ -378,12 +378,12 @@ TrackerMenu.addFocusUnfocusOption = function(menu, quest)
 end
 
 TrackerMenu.addLockUnlockOption = function(menu)
-    if Questie.db.profile.trackerLocked then
+    if QuestieSmazak.db.profile.trackerLocked then
         tinsert(menu, {
             text = l10n('Unlock Tracker'),
             func = function()
                 LibDropDown:CloseDropDownMenus()
-                Questie.db.profile.trackerLocked = false
+                QuestieSmazak.db.profile.trackerLocked = false
                 TrackerBaseFrame:Update()
             end
         })
@@ -392,7 +392,7 @@ TrackerMenu.addLockUnlockOption = function(menu)
             text = l10n('Lock Tracker'),
             func = function()
                 LibDropDown:CloseDropDownMenus()
-                Questie.db.profile.trackerLocked = true
+                QuestieSmazak.db.profile.trackerLocked = true
                 TrackerBaseFrame:Update()
             end
         })
@@ -408,15 +408,15 @@ local function _GetWowheadLinkForLanguage()
     end
 
     local xpac
-    if Questie.IsForever then
+    if QuestieSmazak.IsForever then
         xpac = "forever/"
-    elseif Questie.IsMoP then
+    elseif QuestieSmazak.IsMoP then
         xpac = "mop-classic/"
-    elseif Questie.IsCata then
+    elseif QuestieSmazak.IsCata then
         xpac = "cata/"
-    elseif Questie.IsWotlk then
+    elseif QuestieSmazak.IsWotlk then
         xpac = "wotlk/"
-    elseif Questie.IsTBC then
+    elseif QuestieSmazak.IsTBC then
         xpac = "tbc/"
     else
         xpac = "classic/" -- era/sod/hardcore are all on this URL
@@ -431,13 +431,13 @@ end
 ---@param link string
 local function _ShowWowheadLink(dialog, name, link)
     if name then
-        dialog.Text:SetText(dialog.Text:GetText() .. Questie:Colorize("\n\n" .. name, "gold"))
+        dialog.Text:SetText(dialog.Text:GetText() .. QuestieSmazak:Colorize("\n\n" .. name, "gold"))
     end
 
     local editBox = dialog:GetEditBox()
     editBox:SetText(link)
     -- Focusing from addon code while SmartNavigation is shown taints Blizzard's controller bindings
-    if Questie.IsForever and SmartNavigation and SmartNavigation:IsShown() then
+    if QuestieSmazak.IsForever and SmartNavigation and SmartNavigation:IsShown() then
         editBox:SetScript("OnEditFocusGained", editBox.HighlightText)
     else
         editBox:SetScript("OnEditFocusGained", nil)
@@ -531,16 +531,16 @@ function TrackerMenu:GetMenuForQuest(quest)
         end
     end
 
-    local coloredQuestName = TrackerData.GetColoredQuestName(quest, Questie.db.profile.enableTooltipsQuestLevel, true)
+    local coloredQuestName = TrackerData.GetColoredQuestName(quest, QuestieSmazak.db.profile.enableTooltipsQuestLevel, true)
 
     tinsert(menu, { text = coloredQuestName, isTitle = true })
 
     TrackerMenu.addObjectiveOption(menu, subMenu, quest)
     if capabilities.canFocusQuest then
         TrackerMenu.addFocusUnfocusOption(menu, enrichedQuest)
-    elseif Questie.db.char.TrackerFocus == quest.Id then
+    elseif QuestieSmazak.db.char.TrackerFocus == quest.Id then
         -- Lost eligibility while focused.
-        _AddUnfocusEntry(menu, function() return Questie.db.char.TrackerFocus == quest.Id end)
+        _AddUnfocusEntry(menu, function() return QuestieSmazak.db.char.TrackerFocus == quest.Id end)
     end
     if capabilities.canNavigateQuest then
         TrackerMenu.addTomTomOptionForQuest(menu, quest)

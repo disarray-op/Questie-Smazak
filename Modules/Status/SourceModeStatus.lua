@@ -1,13 +1,13 @@
 ---@class SourceModeStatus
-local SourceModeStatus = QuestieLoader:CreateModule("SourceModeStatus")
+local SourceModeStatus = QuestieSmazakLoader:CreateModule("SourceModeStatus")
 ---@type QuestieStatus
-local QuestieStatus = QuestieLoader:ImportModule("QuestieStatus")
+local QuestieStatus = QuestieSmazakLoader:ImportModule("QuestieStatus")
 ---@type QuestieCompat
-local QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+local QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
 ---@type Expansions
-local Expansions = QuestieLoader:ImportModule("Expansions")
+local Expansions = QuestieSmazakLoader:ImportModule("Expansions")
 
-local SOURCE_ICON = {texture = "Interface\\AddOns\\Questie\\Icons\\green_plus.png"}
+local SOURCE_ICON = {texture = "Interface\\AddOns\\QuestieSmazak\\Icons\\green_plus.png"}
 local PROJECT_NAMES = {
     "WOW_PROJECT_MAINLINE", "WOW_PROJECT_CLASSIC", "WOW_PROJECT_BURNING_CRUSADE_CLASSIC",
     "WOW_PROJECT_WRATH_CLASSIC", "WOW_PROJECT_CATACLYSM_CLASSIC", "WOW_PROJECT_MISTS_CLASSIC",
@@ -58,7 +58,7 @@ end
 local function _Flags(names)
     local values = {}
     for _, name in ipairs(names) do
-        values[#values + 1] = name .. ": " .. _Value(Questie[name])
+        values[#values + 1] = name .. ": " .. _Value(QuestieSmazak[name])
     end
     return table.concat(values, ", ")
 end
@@ -73,7 +73,7 @@ local function _ClientDetails()
     end
     local locale = type(GetLocale) == "function" and GetLocale() or nil
 
-    -- Raw project identity and Questie's content expansion are different namespaces on Forever.
+    -- Raw project identity and QuestieSmazak's content expansion are different namespaces on Forever.
     -- Names and boolean flag values are technical identifiers, not translated display labels.
     return {
         {message = "Client: %s (build %s, %s)", args = {_Value(version), _Value(build), _Value(buildDate)}},
@@ -81,7 +81,7 @@ local function _ClientDetails()
         {message = "Project: %s (%s)", args = {
             _Value(_ConstantName(WOW_PROJECT_ID, _G, PROJECT_NAMES)), _Value(WOW_PROJECT_ID),
         }},
-        {message = "Questie expansion: %s (%s)", args = {
+        {message = "QuestieSmazak expansion: %s (%s)", args = {
             _Value(_ConstantName(Expansions.Current, Expansions, EXPANSION_NAMES)), _Value(Expansions.Current),
         }},
         {message = "Season: %s (%s), active: %s", args = {_Value(_SeasonName(seasonId)), _Value(seasonId), _Value(hasSeason)}},
@@ -109,9 +109,9 @@ local function _ProviderDetails(provider)
         {message = "Provider version: %s", args = {_Value(QuestieCompat.GetAddOnMetadata("QuestieDB", "Version"))}},
         {message = "Data expansion: %s", args = {_Value(expansion)}},
         {message = "Read mode: %s", args = {_Value(provider.readMode)}},
-        {message = "Provider contracts: %s to %s; Questie requires %s", args = {
+        {message = "Provider contracts: %s to %s; QuestieSmazak requires %s", args = {
             _Value(provider.minSupportedContract), _Value(provider.contractVersion),
-            _Value(QuestieCompat.GetAddOnMetadata("Questie", "X-QuestieDB-Contract")),
+            _Value(QuestieCompat.GetAddOnMetadata("QuestieSmazak", "X-QuestieDB-Contract")),
         }},
     }
     if statusError then

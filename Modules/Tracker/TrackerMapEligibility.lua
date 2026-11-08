@@ -1,8 +1,8 @@
 ---@class TrackerMapEligibility
-local TrackerMapEligibility = QuestieLoader:CreateModule("TrackerMapEligibility")
+local TrackerMapEligibility = QuestieSmazakLoader:CreateModule("TrackerMapEligibility")
 
 ---@type TrackerData
-local TrackerData = QuestieLoader:ImportModule("TrackerData")
+local TrackerData = QuestieSmazakLoader:ImportModule("TrackerData")
 
 ---@class TrackerMapCapabilities
 ---@field quest Quest? Original map object, never a display copy.
@@ -14,7 +14,7 @@ local TrackerData = QuestieLoader:ImportModule("TrackerData")
 
 ---Records an original objective with map locations as usable for map actions.
 ---@param capabilities TrackerMapCapabilities
----@param original table Original Questie objective.
+---@param original table Original QuestieSmazak objective.
 local function _AddObjectiveLocations(capabilities, original)
     if not (original.spawnList and next(original.spawnList)) then
         return

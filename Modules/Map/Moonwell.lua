@@ -1,12 +1,12 @@
 ---@class Moonwell
-local Moonwell = QuestieLoader:CreateModule("Moonwell")
+local Moonwell = QuestieSmazakLoader:CreateModule("Moonwell")
 
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 ---@type QuestieMap
-local QuestieMap = QuestieLoader:ImportModule("QuestieMap")
+local QuestieMap = QuestieSmazakLoader:ImportModule("QuestieMap")
 ---@type Expansions
-local Expansions = QuestieLoader:ImportModule("Expansions")
+local Expansions = QuestieSmazakLoader:ImportModule("Expansions")
 
 ---@type table<number, boolean>
 Moonwell.dataClassic = {
@@ -63,7 +63,7 @@ end
 function Moonwell:ShowMoonwell(objectID, icon, scale)
     icon = icon or "Interface\\Icons\\inv_fabric_moonrag_01.blp"
     scale = scale or 0.6
-    local title = Questie:Colorize(l10n("Moonwell"), "white")
+    local title = QuestieSmazak:Colorize(l10n("Moonwell"), "white")
     QuestieMap:ShowObject(objectID, icon, scale, title, nil, true, "moonwell")
 end
 

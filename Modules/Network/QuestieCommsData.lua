@@ -1,15 +1,15 @@
 ---@type QuestieCompat
-local QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+local QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
 
 -------------------------
 --Import modules.
 -------------------------
 ---@type QuestieDB
-local QuestieDB = QuestieLoader:ImportModule("QuestieDB");
+local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB");
 ---@type QuestieComms
-local QuestieComms = QuestieLoader:ImportModule("QuestieComms");
+local QuestieComms = QuestieSmazakLoader:ImportModule("QuestieComms");
 ---@type QuestieLib
-local QuestieLib = QuestieLoader:ImportModule("QuestieLib");
+local QuestieLib = QuestieSmazakLoader:ImportModule("QuestieLib");
 
 local GetItemInfo = QuestieCompat.GetItemInfo
 

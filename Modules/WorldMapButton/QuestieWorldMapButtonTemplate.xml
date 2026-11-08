@@ -1,8 +1,8 @@
 <Ui>
     <!-- This template has no Lua module call, so it names its own load-timing interval. -->
-    <Script>QuestieLoader:StampLoadBoundary()</Script>
+    <Script>QuestieSmazakLoader:StampLoadBoundary()</Script>
 
-    <Button name="QuestieWorldMapButtonTemplate" frameStrata="HIGH" mixin="QuestieWorldMapButtonMixin" motionScriptsWhileDisabled="true" virtual="true">
+    <Button name="QuestieSmazakWorldMapButtonTemplate" frameStrata="HIGH" mixin="QuestieSmazakWorldMapButtonMixin" motionScriptsWhileDisabled="true" virtual="true">
         <Size x="32" y="32"/>
         <Layers>
             <Layer level="BACKGROUND" textureSubLevel="-1">
@@ -22,7 +22,7 @@
                 </Texture>
             </Layer>
             <Layer level="ARTWORK">
-                <Texture parentKey="Icon" file="Interface\Addons\Questie\Icons\questie.png">
+                <Texture parentKey="Icon" file="Interface\Addons\QuestieSmazak\Icons\questie.png">
                     <Size x="22" y="22"/>
                     <Anchors>
                         <Anchor point="TOPLEFT" x="6" y="-5"/>

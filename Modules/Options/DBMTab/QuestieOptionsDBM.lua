@@ -2,17 +2,17 @@
 --Import modules.
 -------------------------
 ---@type QuestieQuest
-local QuestieQuest = QuestieLoader:ImportModule("QuestieQuest");
+local QuestieQuest = QuestieSmazakLoader:ImportModule("QuestieQuest");
 ---@type QuestieOptions
-local QuestieOptions = QuestieLoader:ImportModule("QuestieOptions");
+local QuestieOptions = QuestieSmazakLoader:ImportModule("QuestieOptions");
 ---@type QuestieOptionsDefaults
-local QuestieOptionsDefaults = QuestieLoader:ImportModule("QuestieOptionsDefaults");
+local QuestieOptionsDefaults = QuestieSmazakLoader:ImportModule("QuestieOptionsDefaults");
 ---@type QuestieOptionsUtils
-local QuestieOptionsUtils = QuestieLoader:ImportModule("QuestieOptionsUtils");
+local QuestieOptionsUtils = QuestieSmazakLoader:ImportModule("QuestieOptionsUtils");
 ---@type QuestieDBMIntegration
-local QuestieDBMIntegration = QuestieLoader:ImportModule("QuestieDBMIntegration");
+local QuestieDBMIntegration = QuestieSmazakLoader:ImportModule("QuestieDBMIntegration");
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 
 QuestieOptions.tabs.dbm = {...}
 local optionsDefaults = QuestieOptionsDefaults:Load()
@@ -32,7 +32,7 @@ function QuestieOptions.tabs.dbm:Initialize()
             info_text = {
                 type = "description",
                 order = 0.1,
-                name = function() return Questie:Colorize(l10n("The DBM HUD integrates with the addon DeadlyBossMods to show a radar of objective icons on your entire screen. Enabling this feature usually requires a /reload to take effect."), "gray"); end,
+                name = function() return QuestieSmazak:Colorize(l10n("The DBM HUD integrates with the addon DeadlyBossMods to show a radar of objective icons on your entire screen. Enabling this feature usually requires a /reload to take effect."), "gray"); end,
                 fontSize = "medium",
             },
             info_postspacer = QuestieOptionsUtils:Spacer(0.2),
@@ -67,7 +67,7 @@ function QuestieOptions.tabs.dbm:Initialize()
                 name = function() return l10n("Enable proximity visual for HUD icons"); end,
                 desc = function() return l10n("Changes the color of a HUD icon to red when you are near it."); end,
                 width = "full",
-                disabled = function() return not Questie.db.profile.dbmHUDEnable end,
+                disabled = function() return not QuestieSmazak.db.profile.dbmHUDEnable end,
                 get = function(info) return QuestieOptions:GetProfileValue(info); end,
                 set = function (info, value)
                     QuestieOptions:SetProfileValue(info, value)
@@ -77,7 +77,7 @@ function QuestieOptions.tabs.dbm:Initialize()
             DBMHUDRefresh = {
                 type = "range",
                 disabled = function()
-                    if not Questie.db.profile.dbmHUDEnable then
+                    if not QuestieSmazak.db.profile.dbmHUDEnable then
                         return true
                     elseif DBM and DBM.HudMap and not DBM.HudMap.Version then
                         return true
@@ -114,7 +114,7 @@ function QuestieOptions.tabs.dbm:Initialize()
                 min = 40,
                 max = 200,
                 step = 20,
-                disabled = function() return not Questie.db.profile.dbmHUDEnable end,
+                disabled = function() return not QuestieSmazak.db.profile.dbmHUDEnable end,
                 get = function(info) return QuestieOptions:GetProfileValue(info); end,
                 set = function (info, value)
                     QuestieOptions:SetProfileValue(info, value)
@@ -130,7 +130,7 @@ function QuestieOptions.tabs.dbm:Initialize()
                 min = 1,
                 max = 5,
                 step = 0.5,
-                disabled = function() return not Questie.db.profile.dbmHUDEnable end,
+                disabled = function() return not QuestieSmazak.db.profile.dbmHUDEnable end,
                 get = function(info) return QuestieOptions:GetProfileValue(info); end,
                 set = function (info, value)
                     QuestieOptions:SetProfileValue(info, value)
@@ -149,7 +149,7 @@ function QuestieOptions.tabs.dbm:Initialize()
                 name = function() return l10n("Show quest giver icons"); end,
                 desc = function() return l10n("Toggles whether or not available/complete quest icons appear on the HUD.", optionsDefaults.profile.dbmHUDShowQuest); end,
                 width = "full",
-                disabled = function() return not Questie.db.profile.dbmHUDEnable end,
+                disabled = function() return not QuestieSmazak.db.profile.dbmHUDEnable end,
                 get = function(info) return QuestieOptions:GetProfileValue(info); end,
                 set = function (info, value)
                     QuestieOptions:SetProfileValue(info, value)
@@ -162,7 +162,7 @@ function QuestieOptions.tabs.dbm:Initialize()
                 name = function() return l10n("Show slay icons"); end,
                 desc = function() return l10n("Toggles whether or not slay icons appear on the HUD.", optionsDefaults.profile.dbmHUDShowSlay); end,
                 width = "full",
-                disabled = function() return not Questie.db.profile.dbmHUDEnable end,
+                disabled = function() return not QuestieSmazak.db.profile.dbmHUDEnable end,
                 get = function(info) return QuestieOptions:GetProfileValue(info); end,
                 set = function (info, value)
                     QuestieOptions:SetProfileValue(info, value)
@@ -175,7 +175,7 @@ function QuestieOptions.tabs.dbm:Initialize()
                 name = function() return l10n("Show loot icons"); end,
                 desc = function() return l10n("Toggles whether or not loot icons appear on the HUD.", optionsDefaults.profile.dbmHUDShowLoot); end,
                 width = "full",
-                disabled = function() return not Questie.db.profile.dbmHUDEnable end,
+                disabled = function() return not QuestieSmazak.db.profile.dbmHUDEnable end,
                 get = function(info) return QuestieOptions:GetProfileValue(info); end,
                 set = function (info, value)
                     QuestieOptions:SetProfileValue(info, value)
@@ -188,7 +188,7 @@ function QuestieOptions.tabs.dbm:Initialize()
                 name = function() return l10n("Show object interact icons"); end,
                 desc = function() return l10n("Toggles whether or not object (gear) icons appear on the HUD.", optionsDefaults.profile.dbmHUDShowInteract); end,
                 width = "full",
-                disabled = function() return not Questie.db.profile.dbmHUDEnable end,
+                disabled = function() return not QuestieSmazak.db.profile.dbmHUDEnable end,
                 get = function(info) return QuestieOptions:GetProfileValue(info); end,
                 set = function (info, value)
                     QuestieOptions:SetProfileValue(info, value)

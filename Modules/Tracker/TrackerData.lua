@@ -1,23 +1,23 @@
 -- Owns native metadata, objective display records and their lifetime for every tracked quest.
--- TrackerQuestieBehavior owns quest completion, database additions and Questie compatibility exceptions.
+-- TrackerQuestieBehavior owns quest completion, database additions and QuestieSmazak compatibility exceptions.
 -- Shared formatting at the end of this file affects both known and database-unknown quests.
 ---@class TrackerData
-local TrackerData = QuestieLoader:CreateModule("TrackerData")
+local TrackerData = QuestieSmazakLoader:CreateModule("TrackerData")
 
 ---@type QuestieCompat
-local QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+local QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
 ---@type QuestLogCache
-local QuestLogCache = QuestieLoader:ImportModule("QuestLogCache")
+local QuestLogCache = QuestieSmazakLoader:ImportModule("QuestLogCache")
 ---@type QuestiePlayer
-local QuestiePlayer = QuestieLoader:ImportModule("QuestiePlayer")
+local QuestiePlayer = QuestieSmazakLoader:ImportModule("QuestiePlayer")
 ---@type TrackerQuestieBehavior
-local TrackerQuestieBehavior = QuestieLoader:ImportModule("TrackerQuestieBehavior")
+local TrackerQuestieBehavior = QuestieSmazakLoader:ImportModule("TrackerQuestieBehavior")
 ---@type TrackerUtils
-local TrackerUtils = QuestieLoader:ImportModule("TrackerUtils")
+local TrackerUtils = QuestieSmazakLoader:ImportModule("TrackerUtils")
 ---@type QuestieLib
-local QuestieLib = QuestieLoader:ImportModule("QuestieLib")
+local QuestieLib = QuestieSmazakLoader:ImportModule("QuestieLib")
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 
 ---@class TrackerQuest
 ---@field Id QuestId
@@ -125,7 +125,7 @@ local function _RefreshQuest(questId, title, level, header, nativeComplete)
         end
     end
 
-    -- Resolve quest completion and apply Questie-specific behavior in one place, including the unloaded case.
+    -- Resolve quest completion and apply QuestieSmazak-specific behavior in one place, including the unloaded case.
     -- This step never replaces the native title, objective wording or live progress with database values.
     TrackerQuestieBehavior.Apply(displayQuest, cached, nativeComplete)
 
@@ -266,26 +266,26 @@ function TrackerData.GetColoredQuestName(displayQuest, showLevel, showState)
     if showLevel then
         name = QuestieLib:GetLevelString(displayQuest.Id, displayQuest.level) .. name
     end
-    if Questie.db.profile.enableTooltipsQuestID then
+    if QuestieSmazak.db.profile.enableTooltipsQuestID then
         name = name .. " " .. l10n("(") .. displayQuest.Id .. l10n(")")
     end
     if showState then
         if displayQuest:IsComplete() == -1 then
-            name = name .. " " .. Questie:Colorize(l10n("(") .. l10n("Failed") .. l10n(")"), "red")
+            name = name .. " " .. QuestieSmazak:Colorize(l10n("(") .. l10n("Failed") .. l10n(")"), "red")
         elseif displayQuest:IsComplete() == 1 or displayQuest.isComplete then
-            name = name .. " " .. Questie:Colorize(l10n("(") .. l10n("Complete") .. l10n(")"), "green")
+            name = name .. " " .. QuestieSmazak:Colorize(l10n("(") .. l10n("Complete") .. l10n(")"), "green")
         end
     end
     local isRepeatable, isEvent, isPvP = TrackerQuestieBehavior.GetTitleFlags(displayQuest)
     return QuestieLib:PrintDifficultyColor(displayQuest.level, name, isRepeatable, isEvent, isPvP)
 end
 
----Keep Questie's chat-safe bracket format without requiring a database title.
+---Keep QuestieSmazak's chat-safe bracket format without requiring a database title.
 ---@param displayQuest TrackerQuest
 ---@return string
 function TrackerData.GetQuestLink(displayQuest)
     local name = displayQuest.name .. " (" .. displayQuest.Id .. ")]"
-    if Questie.db.profile.trackerShowQuestLevel then
+    if QuestieSmazak.db.profile.trackerShowQuestLevel then
         return "[[" .. displayQuest.level .. "] " .. name
     end
     return "[" .. name

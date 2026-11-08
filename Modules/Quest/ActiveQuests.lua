@@ -1,5 +1,5 @@
 ---@class ActiveQuests
-local ActiveQuests = QuestieLoader:CreateModule("ActiveQuests")
+local ActiveQuests = QuestieSmazakLoader:CreateModule("ActiveQuests")
 
 local pairs = pairs
 
@@ -7,7 +7,7 @@ local pairs = pairs
 ---work started for a quest that was turned in, abandoned or accepted again in the meantime is dropped.
 ---@class Acceptance
 ---@field questId QuestId
----@field quest Quest? @nil when Questie's database lacks the quest
+---@field quest Quest? @nil when QuestieSmazak's database lacks the quest
 
 ---@type table<QuestId, Acceptance>
 local acceptances = {}

@@ -1,7 +1,7 @@
 ---@class TitanReforgedQuestTags
-local TitanReforgedQuestTags = QuestieLoader:CreateModule("TitanReforgedQuestTags")
+local TitanReforgedQuestTags = QuestieSmazakLoader:CreateModule("TitanReforgedQuestTags")
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 
 ---Returns tag corrections owned by Titan-only quest templates.
 ---@return table<QuestId, {[1]: QuestTagIds, [2]: string}>

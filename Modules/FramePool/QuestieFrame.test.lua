@@ -1,6 +1,6 @@
 dofile("setupTests.lua")
 
-describe("QuestieFrame", function()
+describe("QuestieSmazakFrame", function()
     ---@type QuestieDB
     local QuestieDB
     ---@type QuestieMap
@@ -16,7 +16,7 @@ describe("QuestieFrame", function()
     local QuestieFrameInstance
 
     before_each(function()
-        Questie.db.profile = {
+        QuestieSmazak.db.profile = {
             enabled = true,
             enableMapIcons = true,
             enableMiniMapIcons = true,
@@ -34,7 +34,7 @@ describe("QuestieFrame", function()
             hideUntrackedQuestsMapIcons = false,
         }
 
-        QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+        QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
         QuestieDB.IsRepeatable = function() return false end
         QuestieDB.IsActiveEventQuest = function() return false end
         QuestieDB.IsDungeonQuest = function() return false end
@@ -42,20 +42,20 @@ describe("QuestieFrame", function()
         QuestieDB.IsPvPQuest = function() return false end
         QuestieDB.IsRuneAndShouldBeHidden = function() return false end
 
-        QuestieMap = QuestieLoader:ImportModule("QuestieMap")
+        QuestieMap = QuestieSmazakLoader:ImportModule("QuestieMap")
         QuestieMap.utils = {IsExplored = function() return true end}
 
-        QuestieQuest = QuestieLoader:ImportModule("QuestieQuest")
+        QuestieQuest = QuestieSmazakLoader:ImportModule("QuestieQuest")
         QuestieQuest.ShouldShowQuestNotes = function() return true end
 
-        QuestieLoader:ImportModule("DailyQuests")
+        QuestieSmazakLoader:ImportModule("DailyQuests")
 
-        QuestieWaypoints = QuestieLoader:ImportModule("QuestieWaypoints")
+        QuestieWaypoints = QuestieSmazakLoader:ImportModule("QuestieWaypoints")
         QuestieWaypoints.SetHighlighted = spy.new(function() end)
 
         dofile("Localization/l10n.lua")
         dofile("Modules/FramePool/QuestieFrame.lua")
-        QuestieFrame = QuestieLoader:ImportModule("QuestieFrame")
+        QuestieFrame = QuestieSmazakLoader:ImportModule("QuestieSmazakFrame")
         QuestieFrameInstance = {
             data = {
                 Type = "monster",
@@ -65,9 +65,9 @@ describe("QuestieFrame", function()
     end)
 
     it("passes the clicked quest name and ID to the hide confirmation", function()
-        local Popup = QuestieLoader:ImportModule("QuestiePopup")
+        local Popup = QuestieSmazakLoader:ImportModule("QuestiePopup")
         Popup.Show = spy.new(function() end)
-        local QuestieLib = QuestieLoader:ImportModule("QuestieLib")
+        local QuestieLib = QuestieSmazakLoader:ImportModule("QuestieLib")
         QuestieLib.GetColoredQuestName = function(_, id)
             return "Quest " .. id
         end
@@ -103,7 +103,7 @@ describe("QuestieFrame", function()
 
     it("should let the client switch the world map to the icon's zone on left click", function()
         local originalWorldMapFrame, originalIsModifierKeyDown, originalIsControlKeyDown = _G.WorldMapFrame, _G.IsModifierKeyDown, _G.IsControlKeyDown
-        local QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+        local QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
         local originalOpenWorldMap = QuestieCompat.OpenWorldMap
         QuestieCompat.OpenWorldMap = spy.new(function() end)
         _G.WorldMapFrame = {
@@ -141,7 +141,7 @@ describe("QuestieFrame", function()
                 return passThroughButtons[button] == true
             end
             queued = {}
-            queueMock = stub(QuestieLoader:ImportModule("QuestieCombatQueue"), "Queue", function(_, func, ...)
+            queueMock = stub(QuestieSmazakLoader:ImportModule("QuestieCombatQueue"), "Queue", function(_, func, ...)
                 queued[#queued + 1] = {func = func, args = {...}}
                 return true
             end)
@@ -203,7 +203,7 @@ describe("QuestieFrame", function()
 
         it("should queue a retry on a later call when the queue was not started yet", function()
             _G.InCombatLockdown = function() return true end
-            local QuestieCombatQueue = QuestieLoader:ImportModule("QuestieCombatQueue")
+            local QuestieCombatQueue = QuestieSmazakLoader:ImportModule("QuestieCombatQueue")
             queueMock:revert()
             queueMock = stub(QuestieCombatQueue, "Queue", function() return false end)
             QuestieFrame.EnsureRightClickPassThrough(QuestieFrameInstance)
@@ -271,7 +271,7 @@ describe("QuestieFrame", function()
             _G.LibStub = function() return {RemoveMinimapIcon = function() end, RemoveWorldMapIcon = function() end} end
             dofile("Modules/FramePool/QuestieFrame.lua")
             _G.LibStub = savedLibStub
-            QuestieLoader:ImportModule("QuestieDBMIntegration").UnregisterHudQuestIcon = function() end
+            QuestieSmazakLoader:ImportModule("QuestieDBMIntegration").UnregisterHudQuestIcon = function() end
             QuestieMap.questIdFrames = {}
             QuestieWaypoints.RemoveOwner = spy.new(function() end)
             local function Region() return {Hide = function() end, SetVertexColor = function() end} end
@@ -292,7 +292,7 @@ describe("QuestieFrame", function()
             _G.LibStub = function() return {RemoveMinimapIcon = function() end, RemoveWorldMapIcon = function() end} end
             dofile("Modules/FramePool/QuestieFrame.lua")
             _G.LibStub = savedLibStub
-            QuestieLoader:ImportModule("QuestieDBMIntegration").UnregisterHudQuestIcon = function() end
+            QuestieSmazakLoader:ImportModule("QuestieDBMIntegration").UnregisterHudQuestIcon = function() end
             QuestieMap.questIdFrames = {}
             QuestieWaypoints.RemoveOwner = function() end
             local function Region() return {Hide = function() end, SetVertexColor = function() end} end
@@ -331,7 +331,7 @@ describe("QuestieFrame", function()
 
     describe("ShouldBeHidden", function()
         it("should return true when all icons are disabled", function()
-            Questie.db.profile.enabled = false
+            QuestieSmazak.db.profile.enabled = false
 
             local result = QuestieFrame.private.ShouldBeHidden(QuestieFrameInstance)
 
@@ -339,7 +339,7 @@ describe("QuestieFrame", function()
         end)
 
         it("should return true when frame is map icon and map icons are disabled", function()
-            Questie.db.profile.enableMapIcons = false
+            QuestieSmazak.db.profile.enableMapIcons = false
             QuestieFrameInstance.miniMapIcon = false
 
             local result = QuestieFrame.private.ShouldBeHidden(QuestieFrameInstance)
@@ -348,7 +348,7 @@ describe("QuestieFrame", function()
         end)
 
         it("should return true when frame is minimap icon and minimap icons are disabled", function()
-            Questie.db.profile.enableMiniMapIcons = false
+            QuestieSmazak.db.profile.enableMiniMapIcons = false
             QuestieFrameInstance.miniMapIcon = true
 
             local result = QuestieFrame.private.ShouldBeHidden(QuestieFrameInstance)
@@ -357,7 +357,7 @@ describe("QuestieFrame", function()
         end)
 
         it("should return true when icon type is complete and turn in icons are disabled", function()
-            Questie.db.profile.enableTurnins = false
+            QuestieSmazak.db.profile.enableTurnins = false
             QuestieFrameInstance.data.Type = "complete"
 
             local result = QuestieFrame.private.ShouldBeHidden(QuestieFrameInstance)
@@ -366,7 +366,7 @@ describe("QuestieFrame", function()
         end)
 
         it("should return true when icon type is monster and objective icons are disabled", function()
-            Questie.db.profile.enableObjectives = false
+            QuestieSmazak.db.profile.enableObjectives = false
             QuestieFrameInstance.data.Type = "monster"
 
             local result = QuestieFrame.private.ShouldBeHidden(QuestieFrameInstance)
@@ -375,7 +375,7 @@ describe("QuestieFrame", function()
         end)
 
         it("should return true when icon type is object and objective icons are disabled", function()
-            Questie.db.profile.enableObjectives = false
+            QuestieSmazak.db.profile.enableObjectives = false
             QuestieFrameInstance.data.Type = "object"
 
             local result = QuestieFrame.private.ShouldBeHidden(QuestieFrameInstance)
@@ -384,7 +384,7 @@ describe("QuestieFrame", function()
         end)
 
         it("should return true when icon type is event and objective icons are disabled", function()
-            Questie.db.profile.enableObjectives = false
+            QuestieSmazak.db.profile.enableObjectives = false
             QuestieFrameInstance.data.Type = "event"
 
             local result = QuestieFrame.private.ShouldBeHidden(QuestieFrameInstance)
@@ -393,7 +393,7 @@ describe("QuestieFrame", function()
         end)
 
         it("should return true when icon type is item and objective icons are disabled", function()
-            Questie.db.profile.enableObjectives = false
+            QuestieSmazak.db.profile.enableObjectives = false
             QuestieFrameInstance.data.Type = "item"
 
             local result = QuestieFrame.private.ShouldBeHidden(QuestieFrameInstance)
@@ -403,7 +403,7 @@ describe("QuestieFrame", function()
 
         it("should return true when frame coords are unexplored and unexplored icons should be hidden", function()
             QuestieMap.utils.IsExplored = spy.new(function() return false end)
-            Questie.db.profile.hideUnexploredMapIcons = true
+            QuestieSmazak.db.profile.hideUnexploredMapIcons = true
             QuestieFrameInstance.UiMapID = 1
             QuestieFrameInstance.x = 50
             QuestieFrameInstance.y = 60
@@ -416,7 +416,7 @@ describe("QuestieFrame", function()
 
         it("should return false when frame coords are explored and unexplored icons should be hidden", function()
             QuestieMap.utils.IsExplored = spy.new(function() return true end)
-            Questie.db.profile.hideUnexploredMapIcons = true
+            QuestieSmazak.db.profile.hideUnexploredMapIcons = true
             QuestieFrameInstance.UiMapID = 1
             QuestieFrameInstance.x = 50
             QuestieFrameInstance.y = 60
@@ -429,7 +429,7 @@ describe("QuestieFrame", function()
 
         it("should return true when quest notes should not be shown and untracked icons should be hidden", function()
             QuestieQuest.ShouldShowQuestNotes = spy.new(function() return false end)
-            Questie.db.profile.hideUntrackedQuestsMapIcons = true
+            QuestieSmazak.db.profile.hideUntrackedQuestsMapIcons = true
             QuestieFrameInstance.data.Id = 123
 
             local result = QuestieFrame.private.ShouldBeHidden(QuestieFrameInstance)
@@ -440,7 +440,7 @@ describe("QuestieFrame", function()
 
         it("should return false when quest notes should be shown and untracked icons should be hidden", function()
             QuestieQuest.ShouldShowQuestNotes = spy.new(function() return true end)
-            Questie.db.profile.hideUntrackedQuestsMapIcons = true
+            QuestieSmazak.db.profile.hideUntrackedQuestsMapIcons = true
             QuestieFrameInstance.data.Id = 123
 
             local result = QuestieFrame.private.ShouldBeHidden(QuestieFrameInstance)
@@ -451,7 +451,7 @@ describe("QuestieFrame", function()
 
         it("should return false for available icons when untracked icons should be hidden", function()
             QuestieQuest.ShouldShowQuestNotes = spy.new(function() return false end)
-            Questie.db.profile.hideUntrackedQuestsMapIcons = true
+            QuestieSmazak.db.profile.hideUntrackedQuestsMapIcons = true
             QuestieFrameInstance.data.Type = "available"
 
             local result = QuestieFrame.private.ShouldBeHidden(QuestieFrameInstance)
@@ -488,7 +488,7 @@ describe("QuestieFrame", function()
 
         it("should return true for available repeatable icons when all available quests are hidden", function()
             QuestieDB.IsRepeatable = function() return true end
-            Questie.db.profile.showAvailableQuests = false
+            QuestieSmazak.db.profile.showAvailableQuests = false
             QuestieFrameInstance.data.Type = "available"
 
             local result = QuestieFrame.private.ShouldBeHidden(QuestieFrameInstance)
@@ -497,7 +497,7 @@ describe("QuestieFrame", function()
         end)
 
         it("should return true for available icons when available icons should be hidden", function()
-            Questie.db.profile.enableAvailable = false
+            QuestieSmazak.db.profile.enableAvailable = false
             QuestieFrameInstance.data.Type = "available"
 
             local result = QuestieFrame.private.ShouldBeHidden(QuestieFrameInstance)
@@ -507,7 +507,7 @@ describe("QuestieFrame", function()
 
         it("should return false for available icons when available icons should be hidden but quest is repeatable", function()
             QuestieDB.IsRepeatable = function() return true end
-            Questie.db.profile.enableAvailable = false
+            QuestieSmazak.db.profile.enableAvailable = false
             QuestieFrameInstance.data.Type = "available"
 
             local result = QuestieFrame.private.ShouldBeHidden(QuestieFrameInstance)
@@ -517,7 +517,7 @@ describe("QuestieFrame", function()
 
         it("should return true for available icons when repeatable icons should be hidden", function()
             QuestieDB.IsRepeatable = function() return true end
-            Questie.db.profile.showRepeatableQuests = false
+            QuestieSmazak.db.profile.showRepeatableQuests = false
             QuestieFrameInstance.data.Type = "available"
 
             local result = QuestieFrame.private.ShouldBeHidden(QuestieFrameInstance)
@@ -526,7 +526,7 @@ describe("QuestieFrame", function()
         end)
 
         it("should return false for available icons when repeatable icons should be hidden but quest is normal", function()
-            Questie.db.profile.showRepeatableQuests = false
+            QuestieSmazak.db.profile.showRepeatableQuests = false
             QuestieFrameInstance.data.Type = "available"
 
             local result = QuestieFrame.private.ShouldBeHidden(QuestieFrameInstance)
@@ -536,7 +536,7 @@ describe("QuestieFrame", function()
 
         it("should return true for available icons when event icons should be hidden", function()
             QuestieDB.IsActiveEventQuest = function() return true end
-            Questie.db.profile.showEventQuests = false
+            QuestieSmazak.db.profile.showEventQuests = false
             QuestieFrameInstance.data.Type = "available"
 
             local result = QuestieFrame.private.ShouldBeHidden(QuestieFrameInstance)
@@ -545,7 +545,7 @@ describe("QuestieFrame", function()
         end)
 
         it("should return false for available icons when event icons should be hidden but quest is normal", function()
-            Questie.db.profile.showEventQuests = false
+            QuestieSmazak.db.profile.showEventQuests = false
             QuestieFrameInstance.data.Type = "available"
 
             local result = QuestieFrame.private.ShouldBeHidden(QuestieFrameInstance)
@@ -555,7 +555,7 @@ describe("QuestieFrame", function()
 
         it("should return true for available icons when dungeon icons should be hidden", function()
             QuestieDB.IsDungeonQuest = function() return true end
-            Questie.db.profile.showDungeonQuests = false
+            QuestieSmazak.db.profile.showDungeonQuests = false
             QuestieFrameInstance.data.Type = "available"
 
             local result = QuestieFrame.private.ShouldBeHidden(QuestieFrameInstance)
@@ -564,7 +564,7 @@ describe("QuestieFrame", function()
         end)
 
         it("should return false for available icons when dungeon icons should be hidden but quest is normal", function()
-            Questie.db.profile.showDungeonQuests = false
+            QuestieSmazak.db.profile.showDungeonQuests = false
             QuestieFrameInstance.data.Type = "available"
 
             local result = QuestieFrame.private.ShouldBeHidden(QuestieFrameInstance)
@@ -574,7 +574,7 @@ describe("QuestieFrame", function()
 
         it("should return true for available icons when raid icons should be hidden", function()
             QuestieDB.IsRaidQuest = function() return true end
-            Questie.db.profile.showRaidQuests = false
+            QuestieSmazak.db.profile.showRaidQuests = false
             QuestieFrameInstance.data.Type = "available"
 
             local result = QuestieFrame.private.ShouldBeHidden(QuestieFrameInstance)
@@ -583,7 +583,7 @@ describe("QuestieFrame", function()
         end)
 
         it("should return false for available icons when raid icons should be hidden but quest is normal", function()
-            Questie.db.profile.showRaidQuests = false
+            QuestieSmazak.db.profile.showRaidQuests = false
             QuestieFrameInstance.data.Type = "available"
 
             local result = QuestieFrame.private.ShouldBeHidden(QuestieFrameInstance)
@@ -593,7 +593,7 @@ describe("QuestieFrame", function()
 
         it("should return true for available icons when PvP icons should be hidden", function()
             QuestieDB.IsPvPQuest = function() return true end
-            Questie.db.profile.showPvPQuests = false
+            QuestieSmazak.db.profile.showPvPQuests = false
             QuestieFrameInstance.data.Type = "available"
 
             local result = QuestieFrame.private.ShouldBeHidden(QuestieFrameInstance)
@@ -602,7 +602,7 @@ describe("QuestieFrame", function()
         end)
 
         it("should return false for available icons when PvP icons should be hidden but quest is normal", function()
-            Questie.db.profile.showPvPQuests = false
+            QuestieSmazak.db.profile.showPvPQuests = false
             QuestieFrameInstance.data.Type = "available"
 
             local result = QuestieFrame.private.ShouldBeHidden(QuestieFrameInstance)
@@ -611,7 +611,7 @@ describe("QuestieFrame", function()
         end)
 
         it("should return true for available icons when item drop icons should be hidden", function()
-            Questie.db.profile.enableAvailableItems = false
+            QuestieSmazak.db.profile.enableAvailableItems = false
             QuestieFrameInstance.data.Type = "available"
             QuestieFrameInstance.data.StarterType = "itemFromMonster"
 
@@ -621,7 +621,7 @@ describe("QuestieFrame", function()
         end)
 
         it("should return false for available icons when item drop icons should be hidden but quest is not started by a drop", function()
-            Questie.db.profile.enableAvailableItems = false
+            QuestieSmazak.db.profile.enableAvailableItems = false
             QuestieFrameInstance.data.Type = "available"
 
             local result = QuestieFrame.private.ShouldBeHidden(QuestieFrameInstance)
@@ -630,7 +630,7 @@ describe("QuestieFrame", function()
         end)
 
         it("should return true for available icons when quest is rune quest and should be hidden", function()
-            Questie.IsSoD = true
+            QuestieSmazak.IsSoD = true
             QuestieDB.IsRuneAndShouldBeHidden = function() return true end
             QuestieFrameInstance.data.Type = "available"
 
@@ -640,7 +640,7 @@ describe("QuestieFrame", function()
         end)
 
         it("should return false for available icons when not SoD", function()
-            Questie.IsSoD = false
+            QuestieSmazak.IsSoD = false
             QuestieFrameInstance.data.Type = "available"
 
             local result = QuestieFrame.private.ShouldBeHidden(QuestieFrameInstance)

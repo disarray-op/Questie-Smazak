@@ -1,15 +1,15 @@
 ---@class VersionCheckDB
-local VersionCheckDB = QuestieLoader:CreateModule("VersionCheckDB")
+local VersionCheckDB = QuestieSmazakLoader:CreateModule("VersionCheckDB")
 
 ---Reads the active flavor's TOC; an absent or malformed requirement must never default to a supported version.
 ---@return integer? required
 ---@return string? message
 function VersionCheckDB.GetRequiredContract()
     local getMetadata = C_AddOns and C_AddOns.GetAddOnMetadata or GetAddOnMetadata
-    local value = getMetadata and getMetadata("Questie", "X-QuestieDB-Contract")
+    local value = getMetadata and getMetadata("QuestieSmazak", "X-QuestieDB-Contract")
     local required = type(value) == "string" and value:match("^[1-9][0-9]*$") and tonumber(value)
     if not required or required == math.huge or required % 1 ~= 0 then
-        return nil, "Questie's TOC has a missing or invalid X-QuestieDB-Contract. Reinstall Questie."
+        return nil, "QuestieSmazak's TOC has a missing or invalid X-QuestieDB-Contract. Reinstall QuestieSmazak."
     end
     return required
 end
@@ -33,11 +33,11 @@ function VersionCheckDB.Check()
         if installedVersion and (installedVersion ~= "unknown") then
             return false, "QuestieDB installed but not active. Please enable QuestieDB in your addon list!"
         else
-            return false, "QuestieDB not installed. Please reinstall Questie in your addon manager (CurseForge/WowUp)."
+            return false, "QuestieDB not installed. Please reinstall QuestieSmazak in your addon manager (CurseForge/WowUp)."
         end
     end
 
-    local context = ("Questie requires QuestieDB contract %d; installed QuestieDB version: %s. ")
+    local context = ("QuestieSmazak requires QuestieDB contract %d; installed QuestieDB version: %s. ")
         :format(required, installedVersion)
     if type(LibQuestieDB) ~= "table" or type(LibQuestieDB.RequireContract) ~= "function" then
         return false, context .. "The provider contract API is unavailable. Install or update QuestieDB and reload."
@@ -45,7 +45,7 @@ function VersionCheckDB.Check()
 
     local supported, contractError = LibQuestieDB.RequireContract(required)
     if supported ~= true then
-        return false, context .. (contractError or "The installed provider does not support this contract. Update Questie or QuestieDB.")
+        return false, context .. (contractError or "The installed provider does not support this contract. Update QuestieSmazak or QuestieDB.")
     end
     -- A supported contract must also expose the tables consumed during player and database initialization.
     if type(LibQuestieDB.Enum) ~= "table" or type(LibQuestieDB.Enum.raceMaskById) ~= "table" then

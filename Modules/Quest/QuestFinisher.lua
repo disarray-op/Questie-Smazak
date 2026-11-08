@@ -1,23 +1,23 @@
 ---@type QuestieCompat
-local QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+local QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
 
 ---@class QuestFinisher
-local QuestFinisher = QuestieLoader:CreateModule("QuestFinisher")
+local QuestFinisher = QuestieSmazakLoader:CreateModule("QuestFinisher")
 
 ---@type QuestieDB
-local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
 ---@type ZoneDB
-local ZoneDB = QuestieLoader:ImportModule("ZoneDB")
+local ZoneDB = QuestieSmazakLoader:ImportModule("ZoneDB")
 ---@type QuestiePlayer
-local QuestiePlayer = QuestieLoader:ImportModule("QuestiePlayer")
+local QuestiePlayer = QuestieSmazakLoader:ImportModule("QuestiePlayer")
 ---@type ActiveQuests
-local ActiveQuests = QuestieLoader:ImportModule("ActiveQuests")
+local ActiveQuests = QuestieSmazakLoader:ImportModule("ActiveQuests")
 ---@type QuestieTooltips
-local QuestieTooltips = QuestieLoader:ImportModule("QuestieTooltips")
+local QuestieTooltips = QuestieSmazakLoader:ImportModule("QuestieTooltips")
 ---@type QuestieMap
-local QuestieMap = QuestieLoader:ImportModule("QuestieMap")
+local QuestieMap = QuestieSmazakLoader:ImportModule("QuestieMap")
 ---@type QuestieEvent
-local QuestieEvent = QuestieLoader:ImportModule("QuestieEvent")
+local QuestieEvent = QuestieSmazakLoader:ImportModule("QuestieEvent")
 
 local IsQuestFlaggedCompleted = QuestieCompat.IsQuestFlaggedCompleted
 
@@ -27,12 +27,12 @@ local _GetIconData, _GetIcon, _GetIconScale, _RemoveDuplicateQuestTitle, _AddFin
 ---@param quest Quest
 function QuestFinisher.AddFinisher(quest)
     local questId = quest.Id
-    Questie.Debug(Questie.DEBUG_INFO, "[QuestieQuest] Adding finisher for quest", questId)
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_INFO, "[QuestieQuest] Adding finisher for quest", questId)
 
     if (not ActiveQuests.Get(questId)) or
         IsQuestFlaggedCompleted(questId) or
         quest:IsComplete() == -1 or
-        Questie.db.char.complete[questId] then
+        QuestieSmazak.db.char.complete[questId] then
         -- We don't add finisher for quests that are not in the quest log or are already completed
         return
     end
@@ -43,14 +43,14 @@ function QuestFinisher.AddFinisher(quest)
     end
 
     if (not quest.Finisher.NPC) and (not quest.Finisher.GameObject) then
-        Questie.Debug(Questie.DEBUG_CRITICAL, "[QuestieQuest] Quest has no finisher:", questId, quest.name)
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_CRITICAL, "[QuestieQuest] Quest has no finisher:", questId, quest.name)
         return
     end
 
     if _IsFinisherDrawn(questId) then
         -- Callers remove a quest's icons before requesting its finisher, so a turn-in icon still present was drawn by
         -- another request in the same batch. A second set would stack on top of it.
-        Questie.Debug(Questie.DEBUG_INFO, "[QuestieQuest] Finisher already drawn for quest", questId)
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_INFO, "[QuestieQuest] Finisher already drawn for quest", questId)
         return
     end
 
@@ -61,7 +61,7 @@ function QuestFinisher.AddFinisher(quest)
             if finisher then
                 _AddFinisherToMap(finisher, quest, "m_" .. finisher.id)
             else
-                Questie.Warning("Finisher NPC", quest.Finisher.NPC[i], "for quest:", questId, "is not in the DB")
+                QuestieSmazak.Warning("Finisher NPC", quest.Finisher.NPC[i], "for quest:", questId, "is not in the DB")
             end
         end
     end
@@ -122,7 +122,7 @@ _AddFinisherToMap = function(finisher, quest, key, playerZone)
                             local x = value[2];
                             local y = value[3];
 
-                            Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieQuest] Adding world icon as finisher:", zone, x, y)
+                            QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieQuest] Adding world icon as finisher:", zone, x, y)
                             QuestieMap:DrawWorldIcon(data, zone, x, y)
                         end
                     end
@@ -131,7 +131,7 @@ _AddFinisherToMap = function(finisher, quest, key, playerZone)
                     local y = coords[2];
 
 
-                    Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieQuest] Adding world icon as finisher:", finisherZone, x, y)
+                    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieQuest] Adding world icon as finisher:", finisherZone, x, y)
                     finisherIcons[finisherZone] = QuestieMap:DrawWorldIcon(data, finisherZone, x, y, coords[3])
 
                     if (not finisherLocs[finisherZone]) then
@@ -186,17 +186,17 @@ end
 
 _GetIcon = function(quest)
     if QuestieEvent.IsEventQuest(quest.Id) then
-        return Questie.ICON_TYPE_EVENTQUEST_COMPLETE
+        return QuestieSmazak.ICON_TYPE_EVENTQUEST_COMPLETE
     elseif QuestieDB.IsPvPQuest(quest.Id) then
-        return Questie.ICON_TYPE_PVPQUEST_COMPLETE
+        return QuestieSmazak.ICON_TYPE_PVPQUEST_COMPLETE
     elseif quest.IsRepeatable then
-        return Questie.ICON_TYPE_REPEATABLE_COMPLETE
+        return QuestieSmazak.ICON_TYPE_REPEATABLE_COMPLETE
     end
-    return Questie.ICON_TYPE_COMPLETE
+    return QuestieSmazak.ICON_TYPE_COMPLETE
 end
 
 _GetIconScale = function()
-    return Questie.db.profile.availableScale or 1.3
+    return QuestieSmazak.db.profile.availableScale or 1.3
 end
 
 -- TODO: Is this still true?
@@ -210,7 +210,7 @@ _RemoveDuplicateQuestTitle = function(questId, key, finisherName, specialObjecti
         for ttline = 1, #tooltip do
             for index, line in pairs(tooltip) do
                 if ttline == index then
-                    Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieQuest] AddFinisher - Removing duplicate Quest Title!")
+                    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieQuest] AddFinisher - Removing duplicate Quest Title!")
 
                     -- Remove duplicate Quest Title
                     QuestieTooltips.lookupByKey[key][tostring(questId) .. " " .. tostring(finisherName)] = nil
@@ -227,7 +227,7 @@ _RemoveDuplicateQuestTitle = function(questId, key, finisherName, specialObjecti
                         end
 
                         if objIndex then
-                            Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieQuest] AddFinisher - Removing Special Objective!")
+                            QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieQuest] AddFinisher - Removing Special Objective!")
 
                             -- Remove Special Objective Text
                             QuestieTooltips.lookupByKey[key][tostring(questId) .. " " .. objIndex] = nil

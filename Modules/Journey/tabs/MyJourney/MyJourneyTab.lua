@@ -1,17 +1,17 @@
 ---@type QuestieJourney
-local QuestieJourney = QuestieLoader:ImportModule("QuestieJourney")
+local QuestieJourney = QuestieSmazakLoader:ImportModule("QuestieJourney")
 local _QuestieJourney = QuestieJourney.private
 -------------------------
 --Import modules.
 -------------------------
 ---@type QuestieJourneyUtils
-local QuestieJourneyUtils = QuestieLoader:ImportModule("QuestieJourneyUtils")
+local QuestieJourneyUtils = QuestieSmazakLoader:ImportModule("QuestieJourneyUtils")
 ---@type QuestieDB
-local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
 ---@type QuestieLib
-local QuestieLib = QuestieLoader:ImportModule("QuestieLib")
+local QuestieLib = QuestieSmazakLoader:ImportModule("QuestieLib")
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 
 local AceGUI = LibStub("AceGUI-3.0");
 
@@ -26,7 +26,7 @@ function _QuestieJourney.myJourney:DrawTab(container)
     QuestieJourneyUtils:Spacer(container);
 
     -- get last 5 elements from table for history
-    local counter = #Questie.db.char.journey;
+    local counter = #QuestieSmazak.db.char.journey;
     local recentEvents = {};
     for i = counter, counter-4, -1 do
         if i <= 0 then
@@ -37,28 +37,28 @@ function _QuestieJourney.myJourney:DrawTab(container)
         recentEvents[i] = AceGUI:Create("Label");
         recentEvents[i]:SetFullWidth(true);
 
-        local timestamp = Questie:Colorize(QuestieLib.FormatDate(Questie.db.char.journey[i].Timestamp) .. " ", 'lightBlue');
+        local timestamp = QuestieSmazak:Colorize(QuestieLib.FormatDate(QuestieSmazak.db.char.journey[i].Timestamp) .. " ", 'lightBlue');
 
         -- if it's a quest event
-        if Questie.db.char.journey[i].Event == "Quest" then
-            local qName = QuestieDB.QueryQuestSingle(Questie.db.char.journey[i].Quest, "name");
+        if QuestieSmazak.db.char.journey[i].Event == "Quest" then
+            local qName = QuestieDB.QueryQuestSingle(QuestieSmazak.db.char.journey[i].Quest, "name");
             if qName then
-                qName = Questie:Colorize(qName, 'gray');
+                qName = QuestieSmazak:Colorize(qName, 'gray');
 
-                if Questie.db.char.journey[i].SubType == "Accept" then
-                    recentEvents[i]:SetText(timestamp .. Questie:Colorize(l10n('You Accepted the quest %s', qName), 'yellow'));
-                elseif Questie.db.char.journey[i].SubType == "Abandon" then
-                    recentEvents[i]:SetText(timestamp .. Questie:Colorize(l10n('You Abandoned the quest %s', qName), 'yellow'));
-                elseif Questie.db.char.journey[i].SubType == "Complete" then
-                    recentEvents[i]:SetText(timestamp .. Questie:Colorize(l10n('You Completed the quest %s', qName), 'yellow'));
+                if QuestieSmazak.db.char.journey[i].SubType == "Accept" then
+                    recentEvents[i]:SetText(timestamp .. QuestieSmazak:Colorize(l10n('You Accepted the quest %s', qName), 'yellow'));
+                elseif QuestieSmazak.db.char.journey[i].SubType == "Abandon" then
+                    recentEvents[i]:SetText(timestamp .. QuestieSmazak:Colorize(l10n('You Abandoned the quest %s', qName), 'yellow'));
+                elseif QuestieSmazak.db.char.journey[i].SubType == "Complete" then
+                    recentEvents[i]:SetText(timestamp .. QuestieSmazak:Colorize(l10n('You Completed the quest %s', qName), 'yellow'));
                 end
             end
-        elseif Questie.db.char.journey[i].Event == "Level" then
-            local level = Questie:Colorize(l10n('Level %s', Questie.db.char.journey[i].NewLevel), 'gray');
-            recentEvents[i]:SetText(timestamp .. Questie:Colorize(l10n('Congratulations! You reached %s !', level), 'yellow'));
-        elseif Questie.db.char.journey[i].Event == "Note" then
-            local title = Questie:Colorize(Questie.db.char.journey[i].Title, 'gray');
-            recentEvents[i]:SetText(timestamp .. Questie:Colorize(l10n('Note Created: %s', title), 'yellow'));
+        elseif QuestieSmazak.db.char.journey[i].Event == "Level" then
+            local level = QuestieSmazak:Colorize(l10n('Level %s', QuestieSmazak.db.char.journey[i].NewLevel), 'gray');
+            recentEvents[i]:SetText(timestamp .. QuestieSmazak:Colorize(l10n('Congratulations! You reached %s !', level), 'yellow'));
+        elseif QuestieSmazak.db.char.journey[i].Event == "Note" then
+            local title = QuestieSmazak:Colorize(QuestieSmazak.db.char.journey[i].Title, 'gray');
+            recentEvents[i]:SetText(timestamp .. QuestieSmazak:Colorize(l10n('Note Created: %s', title), 'yellow'));
         end
 
         container:AddChild(recentEvents[i]);
@@ -67,7 +67,7 @@ function _QuestieJourney.myJourney:DrawTab(container)
     if counter == 0 then
         local justdoit = AceGUI:Create("Label");
         justdoit:SetFullWidth(true);
-        justdoit:SetText(Questie:Colorize(l10n("It's about time you embark on your first Journey!"), 'yellow'));
+        justdoit:SetText(QuestieSmazak:Colorize(l10n("It's about time you embark on your first Journey!"), 'yellow'));
         container:AddChild(justdoit);
     end
 

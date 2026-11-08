@@ -1,33 +1,33 @@
 ---@type QuestieCompat
-local QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+local QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
 
 ---@class QuestieSearchResults
-local QuestieSearchResults = QuestieLoader:CreateModule("QuestieSearchResults")
+local QuestieSearchResults = QuestieSmazakLoader:CreateModule("QuestieSearchResults")
 -------------------------
 --Import modules.
 -------------------------
 ---@type QuestDetailsFrame
-local QuestDetailsFrame = QuestieLoader:ImportModule("QuestDetailsFrame")
+local QuestDetailsFrame = QuestieSmazakLoader:ImportModule("QuestDetailsFrame")
 ---@type QuestieJourneyUtils
-local QuestieJourneyUtils = QuestieLoader:ImportModule("QuestieJourneyUtils")
+local QuestieJourneyUtils = QuestieSmazakLoader:ImportModule("QuestieJourneyUtils")
 ---@type QuestieSearch
-local QuestieSearch = QuestieLoader:ImportModule("QuestieSearch")
+local QuestieSearch = QuestieSmazakLoader:ImportModule("QuestieSearch")
 ---@type QuestieMap
-local QuestieMap = QuestieLoader:ImportModule("QuestieMap")
+local QuestieMap = QuestieSmazakLoader:ImportModule("QuestieMap")
 ---@type QuestieDB
-local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
 ---@type QuestieCorrections
-local QuestieCorrections = QuestieLoader:ImportModule("QuestieCorrections")
+local QuestieCorrections = QuestieSmazakLoader:ImportModule("QuestieCorrections")
 ---@type QuestieLib
-local QuestieLib = QuestieLoader:ImportModule("QuestieLib")
+local QuestieLib = QuestieSmazakLoader:ImportModule("QuestieLib")
 ---@type QuestieLink
-local QuestieLink = QuestieLoader:ImportModule("QuestieLink")
+local QuestieLink = QuestieSmazakLoader:ImportModule("QuestieLink")
 ---@type TrackerUtils
-local TrackerUtils = QuestieLoader:ImportModule("TrackerUtils")
+local TrackerUtils = QuestieSmazakLoader:ImportModule("TrackerUtils")
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 ---@type ThreadLib
-local ThreadLib = QuestieLoader:ImportModule("ThreadLib")
+local ThreadLib = QuestieSmazakLoader:ImportModule("ThreadLib")
 
 -- this variable defines how many operations to run (batched at a time) before yielding for a frame.
 -- 1 would mean yielding every operation (so lower = slower but less lag)
@@ -35,7 +35,7 @@ local ThreadLib = QuestieLoader:ImportModule("ThreadLib")
 -- each code block may put a modifier on it, for instance 10x  if the loop is lightweight
 local TICKS_PER_YIELD = 30
 
-if Questie.IsHardcore then
+if QuestieSmazak.IsHardcore then
     -- The addon timing restrictions from the Blizzard watchdog are much higher for HC servers.
     -- Therefore we need a quite low tick rate to make sure we don't get bitten on less performant machines.
     TICKS_PER_YIELD = 15
@@ -255,9 +255,9 @@ local function rec(theTable, ret, indent)
 end
 
 local function recurseTable(theTable, theKeys)
-    local ret = Questie:Colorize('Raw data (shown because debug is enabled):\n\n', 'red')
+    local ret = QuestieSmazak:Colorize('Raw data (shown because debug is enabled):\n\n', 'red')
     for key, _ in pairs(theKeys) do
-        ret = ret..Questie:Colorize(key, 'yellow')..': '
+        ret = ret..QuestieSmazak:Colorize(key, 'yellow')..': '
         local t = type(theTable[key])
         if t == 'nil' then
             ret = ret..'nil'
@@ -292,21 +292,21 @@ function QuestieSearchResults:SpawnDetailsFrame(f, spawn, spawnType)
 
     QuestieJourneyUtils:Spacer(f);
 
-    QuestieJourneyUtils:AddLine(f, Questie:Colorize(l10n(typeLabel))..l10n(": ")..spawn)
+    QuestieJourneyUtils:AddLine(f, QuestieSmazak:Colorize(l10n(typeLabel))..l10n(": ")..spawn)
     if spawnType == "npc" then
         if spawnObject.subName then
-            QuestieJourneyUtils:AddLine(f, Questie:Colorize(l10n("Title"))..l10n(": ")..spawnObject.subName)
+            QuestieJourneyUtils:AddLine(f, QuestieSmazak:Colorize(l10n("Title"))..l10n(": ")..spawnObject.subName)
         end
         local minLevel = spawnObject.minLevel
         local maxLevel = spawnObject.maxLevel
         local level
         if minLevel == maxLevel then level = minLevel else level = minLevel.." - "..maxLevel end
-        QuestieJourneyUtils:AddLine(f, Questie:Colorize(l10n("Level"))..l10n(": ")..level)
+        QuestieJourneyUtils:AddLine(f, QuestieSmazak:Colorize(l10n("Level"))..l10n(": ")..level)
         local minLevelHealth = spawnObject.minLevelHealth
         local maxLevelHealth = spawnObject.maxLevelHealth
         local health
         if minLevelHealth == maxLevelHealth then health = minLevelHealth else health = minLevelHealth.." - "..maxLevelHealth end
-        QuestieJourneyUtils:AddLine(f, Questie:Colorize(l10n("Health"))..l10n(": ")..health)
+        QuestieJourneyUtils:AddLine(f, QuestieSmazak:Colorize(l10n("Health"))..l10n(": ")..health)
         local friendlyTo = l10n("no faction")
         if spawnObject.friendlyToFaction == "AH" then
             friendlyTo = l10n("both factions")
@@ -315,7 +315,7 @@ function QuestieSearchResults:SpawnDetailsFrame(f, spawn, spawnType)
         elseif spawnObject.friendlyToFaction == "H" then
             friendlyTo = l10n("Horde")
         end
-        QuestieJourneyUtils:AddLine(f, Questie:Colorize(l10n("Friendly to"))..l10n(": ")..friendlyTo)
+        QuestieJourneyUtils:AddLine(f, QuestieSmazak:Colorize(l10n("Friendly to"))..l10n(": ")..friendlyTo)
     end
 
     QuestieJourneyUtils:Spacer(f);
@@ -382,7 +382,7 @@ function QuestieSearchResults:SpawnDetailsFrame(f, spawn, spawnType)
 
     QuestieJourneyUtils:Spacer(f);
 
-    if Questie.db.profile.debugEnabled then
+    if QuestieSmazak.db.profile.debugEnabled then
         if spawnType == "npc" then
             QuestieJourneyUtils:AddLine(f, recurseTable(spawnObject, QuestieDB.npcKeys))
         elseif spawnType == "object" then
@@ -562,7 +562,7 @@ function QuestieSearchResults:ItemsFrameAfterTicker(f, itemId)
         AddLinkedParagraph(f, "npc", vendorIdsWithSpawns, "", QuestieDB.QueryNPCSingle)
     end
 
-    if Questie.db.profile.debugEnabled then
+    if QuestieSmazak.db.profile.debugEnabled then
         QuestieJourneyUtils:AddLine(f, recurseTable(QuestieDB:GetItem(itemId), QuestieDB.itemKeys))
     end
     -- Fix for sometimes the scroll content will max out and not show everything until window is resized
@@ -596,12 +596,12 @@ function QuestieSearchResults:DrawResultTab(container, resultType)
             local name = database(k, "name")
             if name then
                 local complete = ''
-                if Questie.db.char.complete[k] and resultType == "quest" then
-                    complete = Questie:Colorize("(" .. l10n("Complete") .. ")" , "green")
+                if QuestieSmazak.db.char.complete[k] and resultType == "quest" then
+                    complete = QuestieSmazak:Colorize("(" .. l10n("Complete") .. ")" , "green")
                 end
                 -- TODO rename option to "enabledIDs" or create separate ones for npcs/objects/items
                 local id = ''
-                if Questie.db.profile.enableTooltipsQuestID then
+                if QuestieSmazak.db.profile.enableTooltipsQuestID then
                     id = ' (' .. k .. ')'
                 end
                 table.insert(results, {
@@ -681,7 +681,7 @@ local function _GetSearchFunction(searchBox, searchGroup)
             elseif stringsub(searchText, 1, 4) == "|cff" then
                 -- This should be impossible to reach, since when you see an item link in the game the item should
                 -- be cached already which would be caught by the condition above
-                Questie.Debug(Questie.DEBUG_DEVELOP, "Search with link of an uncached item")
+                QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "Search with link of an uncached item")
             else
                 -- Normal search
                 local text = string.trim(searchText, " \n\r\t[]");
@@ -725,7 +725,7 @@ function QuestieSearchResults:DrawSearchResultTab(searchGroup, searchType, query
         end
         if (resultCountTotal == 0) then
             local noresults = AceGUI:Create("Label");
-            noresults:SetText(Questie:Colorize(l10n('No Match for Search Results: %s', query), 'yellow'));
+            noresults:SetText(QuestieSmazak:Colorize(l10n('No Match for Search Results: %s', query), 'yellow'));
             noresults:SetFullWidth(true);
             searchGroup:AddChild(noresults);
             return;

@@ -32,11 +32,11 @@ describe("TrackerAchievements", function()
                 criteria.quantityString or (criteria.progress .. "/" .. criteria.needed)
         end
 
-        Questie.db.profile.hideCompletedAchieveObjectives = false
-        QuestieLoader:ImportModule("QuestieDB").GetQuest = function(id) return linkedQuestIds[id] end
+        QuestieSmazak.db.profile.hideCompletedAchieveObjectives = false
+        QuestieSmazakLoader:ImportModule("QuestieDB").GetQuest = function(id) return linkedQuestIds[id] end
 
         dofile("Modules/Tracker/TrackerAchievements.lua")
-        TrackerAchievements = QuestieLoader:ImportModule("TrackerAchievements")
+        TrackerAchievements = QuestieSmazakLoader:ImportModule("TrackerAchievements")
     end)
 
     after_each(function()
@@ -94,7 +94,7 @@ describe("TrackerAchievements", function()
         end)
 
         it("should hide completed criteria when configured", function()
-            Questie.db.profile.hideCompletedAchieveObjectives = true
+            QuestieSmazak.db.profile.hideCompletedAchieveObjectives = true
             achievements[1] = {name = "Explorer", description = "Explore.", criteria = {
                 _Criteria("Elwynn Forest", true, 1, 1),
                 _Criteria("Westfall", false, 0, 1),
@@ -107,7 +107,7 @@ describe("TrackerAchievements", function()
         end)
 
         it("should return no criteria when all are completed and hidden", function()
-            Questie.db.profile.hideCompletedAchieveObjectives = true
+            QuestieSmazak.db.profile.hideCompletedAchieveObjectives = true
             achievements[1] = {name = "Explorer", description = "Explore.", criteria = {_Criteria("Elwynn Forest", true, 1, 1)}}
 
             assert.are_same({}, TrackerAchievements.GetAchievements({1})[1].Criteria)
@@ -169,7 +169,7 @@ describe("TrackerAchievements", function()
         end)
 
         it("should show the description even when completed criteria are hidden", function()
-            Questie.db.profile.hideCompletedAchieveObjectives = true
+            QuestieSmazak.db.profile.hideCompletedAchieveObjectives = true
             achievements[1] = {name = "Level 10", description = "Reach level 10.", criteria = {}}
 
             assert.are_same(1, #TrackerAchievements.GetAchievements({1})[1].Criteria)

@@ -1,6 +1,6 @@
 ---@class DailyQuests
 ---@field hubs table<HubId, Hub>
-local DailyQuests = QuestieLoader:CreateModule("DailyQuests");
+local DailyQuests = QuestieSmazakLoader:CreateModule("DailyQuests");
 
 ---@type table<QuestId, Hub[]>
 local hubQuestLookup = {}

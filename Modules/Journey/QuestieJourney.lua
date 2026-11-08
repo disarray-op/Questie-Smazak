@@ -1,27 +1,27 @@
 ---@type QuestieCompat
-local QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+local QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
 
 ---@class QuestieJourney
-local QuestieJourney = QuestieLoader:ImportModule("QuestieJourney")
+local QuestieJourney = QuestieSmazakLoader:ImportModule("QuestieJourney")
 local _QuestieJourney = QuestieJourney.private
-QuestieJourneyFrame = nil
+QuestieSmazakJourneyFrame = nil
 -------------------------
 --Import modules.
 -------------------------
 ---@type QuestiePlayer
-local QuestiePlayer = QuestieLoader:ImportModule("QuestiePlayer")
+local QuestiePlayer = QuestieSmazakLoader:ImportModule("QuestiePlayer")
 ---@type QuestieOptions
-local QuestieOptions = QuestieLoader:ImportModule("QuestieOptions")
+local QuestieOptions = QuestieSmazakLoader:ImportModule("QuestieOptions")
 ---@type JourneyData
-local JourneyData = QuestieLoader:ImportModule("JourneyData")
+local JourneyData = QuestieSmazakLoader:ImportModule("JourneyData")
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 ---@type QuestieCombatQueue
-local QuestieCombatQueue = QuestieLoader:ImportModule("QuestieCombatQueue")
+local QuestieCombatQueue = QuestieSmazakLoader:ImportModule("QuestieCombatQueue")
 ---@type Expansions
-local Expansions = QuestieLoader:ImportModule("Expansions")
+local Expansions = QuestieSmazakLoader:ImportModule("Expansions")
 ---@type QuestieOptionsEngine
-local QuestieOptionsEngine = QuestieLoader:ImportModule("QuestieOptionsEngine")
+local QuestieOptionsEngine = QuestieSmazakLoader:ImportModule("QuestieOptionsEngine")
 
 -- Useful doc about the AceGUI TreeGroup: https://github.com/hurricup/WoW-Ace3/blob/master/AceGUI-3.0/widgets/AceGUIContainer-TreeGroup.lua
 
@@ -65,14 +65,14 @@ QuestieJourney.questCategoryKeys = questCategoryKeys
 -- Detect character re-creation and ask user about journey reset
 local function checkForCharacterRecreation()
     local guid = UnitGUID("player") -- this is unique per character
-    if (not Questie.db.char.guid) then
+    if (not QuestieSmazak.db.char.guid) then
         -- First login for this character
-        Questie.db.char.guid = guid
-    elseif (Questie.db.char.guid ~= guid) then
+        QuestieSmazak.db.char.guid = guid
+    elseif (QuestieSmazak.db.char.guid ~= guid) then
         -- Character re-created, ask user about journey reset
-        Questie:Print(l10n("Character re-creation detected, resetting \"My Journey\" data."))
-        Questie.db.char.journey = {}
-        Questie.db.char.guid = guid
+        QuestieSmazak:Print(l10n("Character re-creation detected, resetting \"My Journey\" data."))
+        QuestieSmazak.db.char.journey = {}
+        QuestieSmazak.db.char.guid = guid
     end
 end
 
@@ -84,7 +84,7 @@ function QuestieJourney:Initialize()
             not (questCategoryKeys.CATACLYSM == id and Expansions.Current < Expansions.Cata) and
             not (questCategoryKeys.THE_MAELSTROM == id and Expansions.Current < Expansions.Cata) and
             not (questCategoryKeys.PANDARIA == id and Expansions.Current < Expansions.MoP) and
-            not (questCategoryKeys.ZEPHRAS_ISLE == id and not Questie.IsForever) and
+            not (questCategoryKeys.ZEPHRAS_ISLE == id and not QuestieSmazak.IsForever) and
             not (questCategoryKeys.PET_BATTLES == id and Expansions.Current < Expansions.MoP) and
             not (questCategoryKeys.SCENARIOS == id and Expansions.Current < Expansions.MoP)
         then
@@ -120,7 +120,7 @@ function QuestieJourney:Initialize()
 end
 
 function QuestieJourney:BuildMainFrame()
-    if (not QuestieJourneyFrame) then
+    if (not QuestieSmazakJourneyFrame) then
         local journeyFrame = AceGUI:Create("Frame")
         journeyFrame:SetCallback("OnClose", function()
             isWindowShown = false
@@ -166,7 +166,7 @@ function QuestieJourney:BuildMainFrame()
         local settingsButton = AceGUI:Create("Button")
         settingsButton:SetWidth(160)
         settingsButton:SetPoint("TOPRIGHT", journeyFrame.frame, "TOPRIGHT", -50, -13)
-        settingsButton:SetText(l10n("Questie Options"))
+        settingsButton:SetText(l10n("QuestieSmazak Options"))
         settingsButton:SetCallback("OnClick", function()
             QuestieCombatQueue:Queue(function()
                 QuestieJourney:ToggleJourneyWindow()
@@ -176,8 +176,8 @@ function QuestieJourney:BuildMainFrame()
         journeyFrame:AddChild(settingsButton)
 
         journeyFrame:Hide()
-        QuestieJourneyFrame = journeyFrame
-        table.insert(UISpecialFrames, "QuestieJourneyFrame")
+        QuestieSmazakJourneyFrame = journeyFrame
+        table.insert(UISpecialFrames, "QuestieSmazakJourneyFrame")
     end
 end
 
@@ -187,8 +187,8 @@ end
 
 -- There are ways to toggle this function before the frame has been created
 function QuestieJourney:ToggleJourneyWindow()
-    if (not Questie.started) then
-        print(Questie:Colorize(l10n("Please wait a moment for Questie to finish loading")))
+    if (not QuestieSmazak.started) then
+        print(QuestieSmazak:Colorize(l10n("Please wait a moment for QuestieSmazak to finish loading")))
         return
     end
 
@@ -200,27 +200,27 @@ function QuestieJourney:ToggleJourneyWindow()
             _QuestieJourney.treeCache = treeGroup
         end
 
-        QuestieJourneyFrame:Show()
+        QuestieSmazakJourneyFrame:Show()
         isWindowShown = true
     else
-        QuestieJourneyFrame:Hide()
+        QuestieSmazakJourneyFrame:Hide()
         isWindowShown = false
     end
 end
 
 function QuestieJourney:SetupKeybinding()
-    _G.BINDING_NAME_QUESTIE_TOGGLE_JOURNEY = l10n("Toggle My Journey")
+    _G.BINDING_NAME_QUESTIESMAZAK_TOGGLE_JOURNEY = l10n("Toggle My Journey")
 
     -- Only ever attempt to set the default keybind once, so we never fight a user who later changes or removes their bindings
-    if Questie.db.global.journeyKeybindDefaultApplied then
+    if QuestieSmazak.db.global.journeyKeybindDefaultApplied then
         return
     end
-    Questie.db.global.journeyKeybindDefaultApplied = true
+    QuestieSmazak.db.global.journeyKeybindDefaultApplied = true
 
-    local currentBinding = GetBindingKey("QUESTIE_TOGGLE_JOURNEY")
+    local currentBinding = GetBindingKey("QUESTIESMAZAK_TOGGLE_JOURNEY")
     if not currentBinding and not C_KeyBindings.GetBindingByKey(";") then
-        SetBinding("SEMICOLON", "QUESTIE_TOGGLE_JOURNEY")
-        Questie.Debug(Questie.DEBUG_INFO, "Set default keybind ';' for Questie Journey")
+        SetBinding("SEMICOLON", "QUESTIESMAZAK_TOGGLE_JOURNEY")
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_INFO, "Set default keybind ';' for QuestieSmazak Journey")
     end
 end
 
@@ -239,7 +239,7 @@ function QuestieJourney:PlayerLevelUp(level)
         Timestamp = time()
     }
 
-    tinsert(Questie.db.char.journey, entry)
+    tinsert(QuestieSmazak.db.char.journey, entry)
 end
 
 function QuestieJourney:AcceptQuest(questId)
@@ -253,15 +253,15 @@ function QuestieJourney:AcceptQuest(questId)
         Timestamp = time()
     }
 
-    tinsert(Questie.db.char.journey, entry)
+    tinsert(QuestieSmazak.db.char.journey, entry)
 end
 
 function QuestieJourney:AbandonQuest(questId)
     -- Abandon Quest added to Journey
     -- first check to see if the quest has been completed already or not
     local skipAbandon = false
-    for i in ipairs(Questie.db.char.journey) do
-        local entry = Questie.db.char.journey[i]
+    for i in ipairs(QuestieSmazak.db.char.journey) do
+        local entry = QuestieSmazak.db.char.journey[i]
         if entry.Event == "Quest" then
             if entry.Quest == questId then
                 if entry.SubType == "Complete" then
@@ -281,7 +281,7 @@ function QuestieJourney:AbandonQuest(questId)
             Timestamp = time()
         }
 
-        tinsert(Questie.db.char.journey, entry)
+        tinsert(QuestieSmazak.db.char.journey, entry)
     end
 end
 
@@ -296,5 +296,5 @@ function QuestieJourney:CompleteQuest(questId)
         Timestamp = time()
     }
 
-    tinsert(Questie.db.char.journey, entry)
+    tinsert(QuestieSmazak.db.char.journey, entry)
 end

@@ -1,7 +1,7 @@
 ---@class QuestieItemBlacklist
-local QuestieItemBlacklist = QuestieLoader:CreateModule("QuestieItemBlacklist")
+local QuestieItemBlacklist = QuestieSmazakLoader:CreateModule("QuestieItemBlacklist")
 ---@type Expansions
-local Expansions = QuestieLoader:ImportModule("Expansions")
+local Expansions = QuestieSmazakLoader:ImportModule("Expansions")
 
 ---@return table<ItemId, boolean>
 function QuestieItemBlacklist:Load()

@@ -1,8 +1,8 @@
 local TestUtils = dofile("setupTests.lua")
 dofile("Modules/Quest/ActiveQuests.lua")
 ---@type ActiveQuests
-local ActiveQuests = QuestieLoader:ImportModule("ActiveQuests")
-local QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+local ActiveQuests = QuestieSmazakLoader:ImportModule("ActiveQuests")
+local QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
 
 local match = require("luassert.match")
 local LoadQuestieDBMock = dofile("test/QuestieDBMock.lua")
@@ -47,37 +47,37 @@ describe("AvailableQuests", function()
             After = function() end
         }
 
-        Questie.db.global.lastKnownDailyReset = {}
-        Questie.db.global.unavailableQuestsDeterminedByTalking = {}
-        Questie.db.global.unavailableDailyQuestsByNpc = {}
-        ZoneDB = QuestieLoader:ImportModule("ZoneDB")
+        QuestieSmazak.db.global.lastKnownDailyReset = {}
+        QuestieSmazak.db.global.unavailableQuestsDeterminedByTalking = {}
+        QuestieSmazak.db.global.unavailableDailyQuestsByNpc = {}
+        ZoneDB = QuestieSmazakLoader:ImportModule("ZoneDB")
         ZoneDB.GetDungeons = function() return {} end
-        QuestiePlayer = QuestieLoader:ImportModule("QuestiePlayer")
+        QuestiePlayer = QuestieSmazakLoader:ImportModule("QuestiePlayer")
         QuestiePlayer.GetPlayerLevel = function() return 20 end
-        QuestieLib = QuestieLoader:ImportModule("QuestieLib")
+        QuestieLib = QuestieSmazakLoader:ImportModule("QuestieLib")
         QuestieLib.DidDailyResetHappenSinceLastLogin = function() return false end
         -- Level-capable by default so existing hide-behaviour tests are unaffected.
         -- Tests for the level-range guard override this.
         QuestieLib.GetEffectiveQuestLevel = function() return 1, 1, 0 end
-        QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+        QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
         QuestieDB.GetNPC = function() return nil end
         QuestieDB.GetQuest = function() return nil end
         QuestieDB.IsDailyQuest = function() return false end
         QuestieDB.IsWeeklyQuest = function() return false end
-        QuestiePlayer = QuestieLoader:ImportModule("QuestiePlayer")
+        QuestiePlayer = QuestieSmazakLoader:ImportModule("QuestiePlayer")
         originalGetPlayerLevel = QuestiePlayer.GetPlayerLevel
-        QuestieTooltips = QuestieLoader:ImportModule("QuestieTooltips")
-        QuestieMap = QuestieLoader:ImportModule("QuestieMap")
-        DailyQuestComms = QuestieLoader:ImportModule("DailyQuestComms")
-        ThreadLib = QuestieLoader:ImportModule("ThreadLib")
+        QuestieTooltips = QuestieSmazakLoader:ImportModule("QuestieTooltips")
+        QuestieMap = QuestieSmazakLoader:ImportModule("QuestieMap")
+        DailyQuestComms = QuestieSmazakLoader:ImportModule("DailyQuestComms")
+        ThreadLib = QuestieSmazakLoader:ImportModule("ThreadLib")
         originalThreadCallbackInstant = ThreadLib.ThreadCallbackInstant
         ThreadLib.ThreadCallbackInstant = function(fun, callback)
             fun()
             callback()
         end
-        DailyQuestCommsBlacklist = QuestieLoader:ImportModule("DailyQuestCommsBlacklist")
+        DailyQuestCommsBlacklist = QuestieSmazakLoader:ImportModule("DailyQuestCommsBlacklist")
         DailyQuestCommsBlacklist.IsBlacklisted = function() return false end
-        IsleOfQuelDanas = QuestieLoader:ImportModule("IsleOfQuelDanas")
+        IsleOfQuelDanas = QuestieSmazakLoader:ImportModule("IsleOfQuelDanas")
         originalThread = ThreadLib.Thread
         originalIsleOfQuelDanasQuests = IsleOfQuelDanas.quests
         originalQuestPointers = QuestieDB.QuestPointers
@@ -85,10 +85,10 @@ describe("AvailableQuests", function()
         originalGetQuestGreenRange = _G.GetQuestGreenRange
         _G.GetQuestGreenRange = function() return 5 end
 
-        Questie.db.profile.availableIconLimit = 10
+        QuestieSmazak.db.profile.availableIconLimit = 10
 
         dofile("Modules/Quest/AvailableQuests/AvailableQuests.lua")
-        AvailableQuests = QuestieLoader:ImportModule("AvailableQuests")
+        AvailableQuests = QuestieSmazakLoader:ImportModule("AvailableQuests")
         AvailableQuests.Initialize()
         TestUtils.clearTable(AvailableQuests.__availableQuests)
         TestUtils.clearTable(AvailableQuests.__availableQuestsByNpc)
@@ -112,16 +112,16 @@ describe("AvailableQuests", function()
             ZoneDB.GetDungeons = spy.new(function() return {} end)
             _G.UnitFactionGroup = spy.new(function() return "Horde" end)
             _G.GetRealmName = spy.new(function() return "Ook Ook" end)
-            Questie.db.global.unavailableQuestsDeterminedByTalking = {}
-            Questie.db.global.unavailableDailyQuestsByNpc = {}
+            QuestieSmazak.db.global.unavailableQuestsDeterminedByTalking = {}
+            QuestieSmazak.db.global.unavailableDailyQuestsByNpc = {}
 
             AvailableQuests.Initialize()
 
             assert.spy(ZoneDB.GetDungeons).was.called()
             assert.spy(_G.UnitFactionGroup).was.called()
             assert.spy(_G.GetRealmName).was.called()
-            assert.are_same({["Ook Ook"] = {}}, Questie.db.global.unavailableQuestsDeterminedByTalking)
-            assert.are_same({["Ook Ook"] = {}}, Questie.db.global.unavailableDailyQuestsByNpc)
+            assert.are_same({["Ook Ook"] = {}}, QuestieSmazak.db.global.unavailableQuestsDeterminedByTalking)
+            assert.are_same({["Ook Ook"] = {}}, QuestieSmazak.db.global.unavailableDailyQuestsByNpc)
         end)
 
         it("should reset unavailableQuestsDeterminedByTalking when a daily reset happened", function()
@@ -129,10 +129,10 @@ describe("AvailableQuests", function()
             _G.UnitFactionGroup = spy.new(function() return "Horde" end)
             _G.GetRealmName = spy.new(function() return "Ook Ook" end)
             QuestieLib.DidDailyResetHappenSinceLastLogin = function() return true end
-            Questie.db.global.unavailableQuestsDeterminedByTalking = {
+            QuestieSmazak.db.global.unavailableQuestsDeterminedByTalking = {
                 ["Ook Ook"] = {[1234] = true},
             }
-            Questie.db.global.unavailableDailyQuestsByNpc = {
+            QuestieSmazak.db.global.unavailableDailyQuestsByNpc = {
                 ["Ook Ook"] = {[9999] = {[1234] = true}},
             }
 
@@ -141,8 +141,8 @@ describe("AvailableQuests", function()
             assert.spy(ZoneDB.GetDungeons).was.called()
             assert.spy(_G.UnitFactionGroup).was.called()
             assert.spy(_G.GetRealmName).was.called()
-            assert.are_same({["Ook Ook"] = {}}, Questie.db.global.unavailableQuestsDeterminedByTalking)
-            assert.are_same({["Ook Ook"] = {}}, Questie.db.global.unavailableDailyQuestsByNpc)
+            assert.are_same({["Ook Ook"] = {}}, QuestieSmazak.db.global.unavailableQuestsDeterminedByTalking)
+            assert.are_same({["Ook Ook"] = {}}, QuestieSmazak.db.global.unavailableDailyQuestsByNpc)
         end)
 
         it("should not reset unavailableQuestsDeterminedByTalking when no daily reset happened", function()
@@ -150,10 +150,10 @@ describe("AvailableQuests", function()
             _G.UnitFactionGroup = spy.new(function() return "Horde" end)
             _G.GetRealmName = spy.new(function() return "Ook Ook" end)
             QuestieLib.DidDailyResetHappenSinceLastLogin = function() return false end
-            Questie.db.global.unavailableQuestsDeterminedByTalking = {
+            QuestieSmazak.db.global.unavailableQuestsDeterminedByTalking = {
                 ["Ook Ook"] = {[1234] = true},
             }
-            Questie.db.global.unavailableDailyQuestsByNpc = {
+            QuestieSmazak.db.global.unavailableDailyQuestsByNpc = {
                 ["Ook Ook"] = {[9999] = {[1234] = true}},
             }
 
@@ -162,8 +162,8 @@ describe("AvailableQuests", function()
             assert.spy(ZoneDB.GetDungeons).was.called()
             assert.spy(_G.UnitFactionGroup).was.called()
             assert.spy(_G.GetRealmName).was.called()
-            assert.are_same({["Ook Ook"] = {[1234] = true}}, Questie.db.global.unavailableQuestsDeterminedByTalking)
-            assert.are_same({["Ook Ook"] = {[9999] = {[1234] = true}}}, Questie.db.global.unavailableDailyQuestsByNpc)
+            assert.are_same({["Ook Ook"] = {[1234] = true}}, QuestieSmazak.db.global.unavailableQuestsDeterminedByTalking)
+            assert.are_same({["Ook Ook"] = {[9999] = {[1234] = true}}}, QuestieSmazak.db.global.unavailableDailyQuestsByNpc)
         end)
     end)
 
@@ -219,41 +219,41 @@ describe("AvailableQuests", function()
         it("should clear unavailable quest tables for the current realm", function()
             local realmName = "TestRealm"
             _G.GetRealmName = function() return realmName end
-            Questie.db.global.unavailableQuestsDeterminedByTalking[realmName] = {[QUEST_ID] = true}
-            Questie.db.global.unavailableDailyQuestsByNpc[realmName] = {[NPC_ID] = {[QUEST_ID] = true}}
+            QuestieSmazak.db.global.unavailableQuestsDeterminedByTalking[realmName] = {[QUEST_ID] = true}
+            QuestieSmazak.db.global.unavailableDailyQuestsByNpc[realmName] = {[NPC_ID] = {[QUEST_ID] = true}}
 
             AvailableQuests.ClearUnavailableDailyQuests()
 
-            assert.are_same({}, Questie.db.global.unavailableQuestsDeterminedByTalking[realmName])
-            assert.are_same({}, Questie.db.global.unavailableDailyQuestsByNpc[realmName])
+            assert.are_same({}, QuestieSmazak.db.global.unavailableQuestsDeterminedByTalking[realmName])
+            assert.are_same({}, QuestieSmazak.db.global.unavailableDailyQuestsByNpc[realmName])
             assert.are_same({}, AvailableQuests.__unavailableQuestsDeterminedByTalking)
             assert.are_same({}, AvailableQuests.__unavailableDailyQuestsByNpc)
         end)
     end)
 
     describe("_ScheduleDailyResetTimer (via Initialize)", function()
-        it("should schedule a timer when not Questie.IsClassic", function()
+        it("should schedule a timer when not QuestieSmazak.IsClassic", function()
             local realmName = "TestRealm"
             _G.GetRealmName = function() return realmName end
             _G.GetServerTime = function() return 1000 end
             _G.GetQuestResetTime = function() return 86400 end
             _G.C_Timer = {After = spy.new(function() end)}
-            Questie.IsClassic = false
-            Questie.db.global.lastKnownDailyReset[realmName] = 90000
+            QuestieSmazak.IsClassic = false
+            QuestieSmazak.db.global.lastKnownDailyReset[realmName] = 90000
 
             AvailableQuests.Initialize()
 
             assert.spy(_G.C_Timer.After).was.called()
         end)
 
-        it("should not schedule a timer when Questie.IsClassic is true", function()
+        it("should not schedule a timer when QuestieSmazak.IsClassic is true", function()
             local realmName = "TestRealm"
             _G.GetRealmName = function() return realmName end
             _G.GetServerTime = function() return 1000 end
             _G.GetQuestResetTime = function() return 86400 end
             _G.C_Timer = {After = spy.new(function() end)}
-            Questie.IsClassic = true
-            Questie.db.global.lastKnownDailyReset[realmName] = 90000
+            QuestieSmazak.IsClassic = true
+            QuestieSmazak.db.global.lastKnownDailyReset[realmName] = 90000
 
             AvailableQuests.Initialize()
 
@@ -269,8 +269,8 @@ describe("AvailableQuests", function()
             _G.GetQuestResetTime = function() return 86400 end
             local afterMock = spy.new(function() end)
             _G.C_Timer = {After = afterMock}
-            Questie.IsClassic = false
-            Questie.db.global.lastKnownDailyReset[realmName] = resetTime
+            QuestieSmazak.IsClassic = false
+            QuestieSmazak.db.global.lastKnownDailyReset[realmName] = resetTime
 
             AvailableQuests.Initialize()
 
@@ -285,8 +285,8 @@ describe("AvailableQuests", function()
             _G.GetQuestResetTime = function() return 86400 end
             local afterMock = spy.new(function() end)
             _G.C_Timer = {After = afterMock}
-            Questie.IsClassic = false
-            Questie.db.global.lastKnownDailyReset[realmName] = 1000 -- Already passed
+            QuestieSmazak.IsClassic = false
+            QuestieSmazak.db.global.lastKnownDailyReset[realmName] = 1000 -- Already passed
 
             AvailableQuests.Initialize()
 
@@ -300,8 +300,8 @@ describe("AvailableQuests", function()
             _G.GetQuestResetTime = function() return 86400 end
             local afterMock = spy.new(function() end)
             _G.C_Timer = {After = afterMock}
-            Questie.IsClassic = false
-            Questie.db.global.lastKnownDailyReset = {[realmName] = nil}
+            QuestieSmazak.IsClassic = false
+            QuestieSmazak.db.global.lastKnownDailyReset = {[realmName] = nil}
 
             AvailableQuests.Initialize()
 
@@ -314,10 +314,10 @@ describe("AvailableQuests", function()
             _G.GetRealmName = function() return realmName end
             _G.GetServerTime = function() return 1000 end
             _G.GetQuestResetTime = function() return 86400 end
-            Questie.IsClassic = false
-            Questie.db.global.lastKnownDailyReset[realmName] = 90000
-            Questie.db.global.unavailableQuestsDeterminedByTalking[realmName] = {[QUEST_ID] = true}
-            Questie.db.global.unavailableDailyQuestsByNpc[realmName] = {[NPC_ID] = {[QUEST_ID] = true}}
+            QuestieSmazak.IsClassic = false
+            QuestieSmazak.db.global.lastKnownDailyReset[realmName] = 90000
+            QuestieSmazak.db.global.unavailableQuestsDeterminedByTalking[realmName] = {[QUEST_ID] = true}
+            QuestieSmazak.db.global.unavailableDailyQuestsByNpc[realmName] = {[NPC_ID] = {[QUEST_ID] = true}}
             QuestieLib.UpdateLastKnownDailyReset = spy.new(function() end)
             AvailableQuests.CalculateAndDrawAll = spy.new(function() end)
             QuestieDB.QuestPointers = {}
@@ -334,8 +334,8 @@ describe("AvailableQuests", function()
             assert.is_not_nil(capturedCallback)
             capturedCallback()
 
-            assert.are_same({}, Questie.db.global.unavailableQuestsDeterminedByTalking[realmName])
-            assert.are_same({}, Questie.db.global.unavailableDailyQuestsByNpc[realmName])
+            assert.are_same({}, QuestieSmazak.db.global.unavailableQuestsDeterminedByTalking[realmName])
+            assert.are_same({}, QuestieSmazak.db.global.unavailableDailyQuestsByNpc[realmName])
             assert.spy(QuestieLib.UpdateLastKnownDailyReset).was.called()
             assert.spy(AvailableQuests.CalculateAndDrawAll).was.called()
         end)
@@ -345,8 +345,8 @@ describe("AvailableQuests", function()
             _G.GetRealmName = function() return realmName end
             _G.GetServerTime = function() return 1000 end
             _G.GetQuestResetTime = function() return 86400 end
-            Questie.IsClassic = false
-            Questie.db.global.lastKnownDailyReset[realmName] = 90000
+            QuestieSmazak.IsClassic = false
+            QuestieSmazak.db.global.lastKnownDailyReset[realmName] = 90000
             QuestieLib.UpdateLastKnownDailyReset = spy.new(function() end)
             AvailableQuests.CalculateAndDrawAll = spy.new(function() end)
             QuestieDB.QuestPointers = nil
@@ -378,10 +378,10 @@ describe("AvailableQuests", function()
             submittedJobs = {}
             originalGetFramesForQuest = QuestieMap.GetFramesForQuest
             originalGetQuestIcon = QuestieLib.GetQuestIcon
-            originalUsedIcons = Questie.usedIcons
+            originalUsedIcons = QuestieSmazak.usedIcons
             QuestieMap.GetFramesForQuest = spy.new(function() return {} end)
             QuestieLib.GetQuestIcon = spy.new(function() return 6 end)
-            Questie.usedIcons = {[6] = "available-texture"}
+            QuestieSmazak.usedIcons = {[6] = "available-texture"}
             ThreadLib.Thread = function(threadFunction, delay, errorMessage, callbackFunction, errorCallback, threadName)
                 table.insert(submittedJobs, {
                     threadFunction = threadFunction,
@@ -403,7 +403,7 @@ describe("AvailableQuests", function()
         after_each(function()
             QuestieMap.GetFramesForQuest = originalGetFramesForQuest
             QuestieLib.GetQuestIcon = originalGetQuestIcon
-            Questie.usedIcons = originalUsedIcons
+            QuestieSmazak.usedIcons = originalUsedIcons
         end)
 
         it("should name its calculation and draw jobs for profiling", function()
@@ -483,14 +483,14 @@ describe("AvailableQuests", function()
         local originalGetObject
 
         before_each(function()
-            originalWarning = Questie.Warning
+            originalWarning = QuestieSmazak.Warning
             originalGetItem = QuestieDB.GetItem
             originalGetObject = QuestieDB.GetObject
-            Questie.Warning = spy.new(function() end)
+            QuestieSmazak.Warning = spy.new(function() end)
         end)
 
         after_each(function()
-            Questie.Warning = originalWarning
+            QuestieSmazak.Warning = originalWarning
             QuestieDB.GetItem = originalGetItem
             QuestieDB.GetObject = originalGetObject
         end)
@@ -500,7 +500,7 @@ describe("AvailableQuests", function()
 
             AvailableQuests.DrawAvailableQuest({Id = 123, Starts = {Item = {456}}})
 
-            assert.spy(Questie.Warning).was.called_with("Item not found for quest", 123, "Item ID:", 456,
+            assert.spy(QuestieSmazak.Warning).was.called_with("Item not found for quest", 123, "Item ID:", 456,
                 "- Please report this on Github or Discord!")
         end)
 
@@ -509,14 +509,14 @@ describe("AvailableQuests", function()
 
             AvailableQuests.DrawAvailableQuest({Id = 123, Starts = {GameObject = {456}}})
 
-            assert.spy(Questie.Warning).was.called_with("Object not found for quest", 123, "Object ID:", 456,
+            assert.spy(QuestieSmazak.Warning).was.called_with("Object not found for quest", 123, "Object ID:", 456,
                 "- Please report this on Github or Discord!")
         end)
 
         it("should warn when a quest-starting NPC is missing", function()
             AvailableQuests.DrawAvailableQuest({Id = 123, Starts = {NPC = {456}}})
 
-            assert.spy(Questie.Warning).was.called_with("NPC not found for quest", 123, "NPC ID:", 456,
+            assert.spy(QuestieSmazak.Warning).was.called_with("NPC not found for quest", 123, "NPC ID:", 456,
                 "- Please report this on Github or Discord!")
         end)
 
@@ -1838,7 +1838,7 @@ describe("AvailableQuests", function()
             local successCallback = spy.new(function() error("callback error") end)
             local capturedSuccessCallback
 
-            Questie.Error = spy.new(function() end)
+            QuestieSmazak.Error = spy.new(function() end)
 
             ThreadLib.Thread = function(_, _, _, cb)
                 capturedSuccessCallback = cb
@@ -1850,7 +1850,7 @@ describe("AvailableQuests", function()
 
             -- Callback was called despite the error
             assert.spy(successCallback).was.called()
-            assert.spy(Questie.Error).was.called()
+            assert.spy(QuestieSmazak.Error).was.called()
 
             local running = AvailableQuests.__getPassState()
             assert.is_false(running)
@@ -1859,7 +1859,7 @@ describe("AvailableQuests", function()
         it("should start queued pass even if callback errors", function()
             local passCount = 0
 
-            Questie.Error = function() end
+            QuestieSmazak.Error = function() end
 
             ThreadLib.Thread = function(_, _, _, cb)
                 passCount = passCount + 1
@@ -1881,16 +1881,16 @@ describe("AvailableQuests", function()
         local submittedJobs
 
         before_each(function()
-            originalIsClassic = Questie.IsClassic
-            originalIsSoD = Questie.IsSoD
+            originalIsClassic = QuestieSmazak.IsClassic
+            originalIsSoD = QuestieSmazak.IsSoD
             originalGetFramesForQuest = QuestieMap.GetFramesForQuest
 
             -- The availability pass captures these at load, so this describe loads AvailableQuests again.
             QuestieDB.IsDoable = function() return true end
             QuestieDB.IsComplete = function() return 0 end
-            QuestieLoader:ImportModule("AvailableQuests").IsLevelRequirementsFulfilled = function() return true end
+            QuestieSmazakLoader:ImportModule("AvailableQuests").IsLevelRequirementsFulfilled = function() return true end
             dofile("Modules/Quest/AvailableQuests/AvailableQuests.lua")
-            AvailableQuests = QuestieLoader:ImportModule("AvailableQuests")
+            AvailableQuests = QuestieSmazakLoader:ImportModule("AvailableQuests")
             AvailableQuests.Initialize()
             TestUtils.clearTable(AvailableQuests.__availableQuests)
             TestUtils.clearTable(AvailableQuests.__availableQuestsByNpc)
@@ -1908,12 +1908,12 @@ describe("AvailableQuests", function()
             QuestieDB.IsPvPQuest = function() return false end
             QuestieDB.IsDungeonQuest = function() return false end
             QuestieDB.IsRaidQuest = function() return false end
-            QuestieLoader:ImportModule("QuestieCorrections").hiddenQuests = {[5] = true}
-            QuestieLoader:ImportModule("QuestieQuestBlacklist").AQWarEffortQuests = {}
-            Questie.db.char.complete = {[4] = true}
-            Questie.db.char.hidden = {}
-            Questie.IsClassic = false
-            Questie.IsSoD = false
+            QuestieSmazakLoader:ImportModule("QuestieCorrections").hiddenQuests = {[5] = true}
+            QuestieSmazakLoader:ImportModule("QuestieQuestBlacklist").AQWarEffortQuests = {}
+            QuestieSmazak.db.char.complete = {[4] = true}
+            QuestieSmazak.db.char.hidden = {}
+            QuestieSmazak.IsClassic = false
+            QuestieSmazak.IsSoD = false
             IsleOfQuelDanas.quests = {}
             ActiveQuests.Reset()
             QuestiePlayer.GetPlayerLevel = function() return 60 end
@@ -1928,8 +1928,8 @@ describe("AvailableQuests", function()
         end)
 
         after_each(function()
-            Questie.IsClassic = originalIsClassic
-            Questie.IsSoD = originalIsSoD
+            QuestieSmazak.IsClassic = originalIsClassic
+            QuestieSmazak.IsSoD = originalIsSoD
             QuestieMap.GetFramesForQuest = originalGetFramesForQuest
         end)
 

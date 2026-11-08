@@ -1,5 +1,5 @@
 ---@class utf8
-local utf8 = QuestieLoader:CreateModule("utf8")
+local utf8 = QuestieSmazakLoader:CreateModule("utf8")
 
 
 -- ! -------------------------------------------

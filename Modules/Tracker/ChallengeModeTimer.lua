@@ -1,5 +1,5 @@
 ---@class ChallengeModeTimer
-local ChallengeModeTimer = QuestieLoader:CreateModule("ChallengeModeTimer")
+local ChallengeModeTimer = QuestieSmazakLoader:CreateModule("ChallengeModeTimer")
 
 ---@class Label
 ---@field SetText fun(self: Label, text: string)
@@ -62,12 +62,12 @@ function ChallengeModeTimer.GetTimerString()
         local currentTime = string.format("%02d:%02d / ", currentMinutes, currentSeconds)
         local targetTime = string.format("%02d:%02d", targetMinutes, targetSeconds)
 
-        local timerString = Questie:Colorize(currentTime, "white") .. Questie:Colorize(targetTime, thresholdColor)
+        local timerString = QuestieSmazak:Colorize(currentTime, "white") .. QuestieSmazak:Colorize(targetTime, thresholdColor)
         if medalIcon then
             timerString = timerString .. " |T" .. medalIcon .. ":0|t"
         end
         return timerString
     end
 
-    return Questie:Colorize("00:00 / 00:00", "white")
+    return QuestieSmazak:Colorize("00:00 / 00:00", "white")
 end

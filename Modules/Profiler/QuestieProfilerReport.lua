@@ -1,5 +1,5 @@
 ---@class QuestieProfilerReport
-local QuestieProfilerReport = QuestieLoader:CreateModule("ProfilerReport")
+local QuestieProfilerReport = QuestieSmazakLoader:CreateModule("ProfilerReport")
 
 -------------------------
 -- Report building (pure, frame free)
@@ -50,7 +50,7 @@ local THREAD_JOB_PREFIX_LENGTH = string.len(THREAD_JOB_PREFIX)
 
 -- The root the profiler files bundled-library functions under, spelled for the folder the code sits in.
 -- Dotted like any other path, so the hierarchy panel folds every library into one node and its total can be
--- read against Questie's own without expanding anything - which is the whole reason this is a path segment
+-- read against QuestieSmazak's own without expanding anything - which is the whole reason this is a path segment
 -- rather than a bare tag, and why it stayed a prefix when it was shortened.
 local LIBRARY_PREFIX = "Libs."
 local LIBRARY_PREFIX_LENGTH = string.len(LIBRARY_PREFIX)
@@ -75,7 +75,7 @@ local GROUPING_NOISE_SEGMENTS = {private = true}
 ---@field averageTime number
 ---@field isThreadJob boolean
 ---@field isFileLoad boolean @True for an addon file load, which is not a call and has no caller or average
----@field isLibrary boolean @True for a bundled-library function: an ordinary call, but not Questie's code
+---@field isLibrary boolean @True for a bundled-library function: an ordinary call, but not QuestieSmazak's code
 ---@field hasCalls boolean @False for addon-load rows, where a call count would be meaningless
 ---@field hasTiming boolean @False when the entry was counted but never produced a timed slice
 ---@field jobCalls number? @Submitted ThreadLib jobs
@@ -314,7 +314,7 @@ function QuestieProfilerReport.BuildReport(source, options)
     -- No self time, and the reason is worth recording so it does not read as an oversight. A file's interval
     -- covers everything that ran during it, profiled calls included, so a file row and a function row can in
     -- principle bill the same milliseconds twice. That overlap was built and measured rather than argued
-    -- about: over a full startup it came to 3.9 ms out of roughly 1200, all of it on Questie.lua, because
+    -- about: over a full startup it came to 3.9 ms out of roughly 1200, all of it on QuestieSmazak.lua, because
     -- QuestieProfiler.lua sits near the end of the TOC and almost nothing is hooked while the other 240-odd
     -- files load. Producing the number needs a running counter in the profiler, a sample at every loader
     -- interval, and a getter the loader reaches back for - and the column it yields reads self == total on
@@ -408,7 +408,7 @@ function QuestieProfilerReport.BuildReport(source, options)
     -- floats free of its basis, and only the file denominator is a real total - `fileLoadTime` covers every
     -- TOC entry, so 20.4% genuinely is a fifth of addon load. The function denominator is the summed self
     -- time of the functions that happen to be hooked and listed, and PROFILING_DISALLOWED_PATHS excludes
-    -- whole subsystems on purpose, so a bare "8.2%" claims a share of Questie's CPU that it does not have.
+    -- whole subsystems on purpose, so a bare "8.2%" claims a share of QuestieSmazak's CPU that it does not have.
     -- The tooltip has room to name the basis in words, which keeps that caveat attached to the number.
     --
     -- Functions are measured on self time, not total. Inclusive totals nest: a caller's total contains its

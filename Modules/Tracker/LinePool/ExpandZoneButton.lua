@@ -1,14 +1,14 @@
 ---@class ExpandZoneButton
-local ExpandZoneButton = QuestieLoader:CreateModule("ExpandZoneButton")
+local ExpandZoneButton = QuestieSmazakLoader:CreateModule("ExpandZoneButton")
 
 ---@type QuestieTracker
-local QuestieTracker = QuestieLoader:ImportModule("QuestieTracker") -- TODO: Remove this explicit dependency
+local QuestieTracker = QuestieSmazakLoader:ImportModule("QuestieTracker") -- TODO: Remove this explicit dependency
 ---@type TrackerFadeTicker
-local TrackerFadeTicker = QuestieLoader:ImportModule("TrackerFadeTicker")
+local TrackerFadeTicker = QuestieSmazakLoader:ImportModule("TrackerFadeTicker")
 ---@type QuestieCombatQueue
-local QuestieCombatQueue = QuestieLoader:ImportModule("QuestieCombatQueue")
+local QuestieCombatQueue = QuestieSmazakLoader:ImportModule("QuestieCombatQueue")
 ---@type TrackerBaseFrame
-local TrackerBaseFrame = QuestieLoader:ImportModule("TrackerBaseFrame")
+local TrackerBaseFrame = QuestieSmazakLoader:ImportModule("TrackerBaseFrame")
 
 ---@param index number
 ---@param parent TrackerLineFrame
@@ -16,7 +16,7 @@ local TrackerBaseFrame = QuestieLoader:ImportModule("TrackerBaseFrame")
 ---@param OnLeave function @Callback function for OnLeave
 ---@return Button
 function ExpandZoneButton.New(index, parent, OnEnter, OnLeave)
-    local expandZone = CreateFrame("Button", "linePool.expandZone" .. index, parent)
+    local expandZone = CreateFrame("Button", "QuestieSmazaklinePool.expandZone" .. index, parent)
     expandZone:SetWidth(1)
     expandZone:SetHeight(1)
     expandZone:SetPoint("TOPLEFT", parent, "TOPLEFT", 0, 0)
@@ -36,11 +36,11 @@ function ExpandZoneButton.New(index, parent, OnEnter, OnLeave)
         if button == "LeftButton" then
             if IsShiftKeyDown() then
                 -- This sets up the minAllQuestsInZone table upon first click
-                if not Questie.db.char.collapsedZones[self.zoneId] then
-                    if not Questie.db.char.minAllQuestsInZone[self.zoneId] then
-                        Questie.db.char.minAllQuestsInZone[self.zoneId] = {}
+                if not QuestieSmazak.db.char.collapsedZones[self.zoneId] then
+                    if not QuestieSmazak.db.char.minAllQuestsInZone[self.zoneId] then
+                        QuestieSmazak.db.char.minAllQuestsInZone[self.zoneId] = {}
                         -- This flag prevents repopulating QuestID's where we don't want them.
-                        Questie.db.char.minAllQuestsInZone[self.zoneId].isTrue = true
+                        QuestieSmazak.db.char.minAllQuestsInZone[self.zoneId].isTrue = true
 
                         QuestieCombatQueue:Queue(function()
                             QuestieTracker:Update()
@@ -59,28 +59,28 @@ function ExpandZoneButton.New(index, parent, OnEnter, OnLeave)
             end
 
             if IsShiftKeyDown() then
-                if not Questie.db.char.collapsedZones[self.zoneId] then
+                if not QuestieSmazak.db.char.collapsedZones[self.zoneId] then
                     C_Timer.After(0.1, function()
-                        if Questie.db.char.minAllQuestsInZone[self.zoneId].isTrue then
+                        if QuestieSmazak.db.char.minAllQuestsInZone[self.zoneId].isTrue then
                             -- Places all QuestID's into the collapsedQuests table and keeps the Min/Max buttons in sync.
-                            Questie.Debug(Questie.DEBUG_DEVELOP, "[TrackerLine:minAllQuestsInZone] - Minimize")
-                            for questId, _ in pairs(Questie.db.char.minAllQuestsInZone[self.zoneId]) do
+                            QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[TrackerLine:minAllQuestsInZone] - Minimize")
+                            for questId, _ in pairs(QuestieSmazak.db.char.minAllQuestsInZone[self.zoneId]) do
                                 if type(questId) == "number" then
-                                    Questie.db.char.collapsedQuests[questId] = true
+                                    QuestieSmazak.db.char.collapsedQuests[questId] = true
                                 end
                             end
 
-                            Questie.db.char.minAllQuestsInZone[self.zoneId].isTrue = nil
+                            QuestieSmazak.db.char.minAllQuestsInZone[self.zoneId].isTrue = nil
                         else
                             -- Removes all QuestID's from the collapsedQuests table.
-                            Questie.Debug(Questie.DEBUG_DEVELOP, "[TrackerLine:minAllQuestsInZone] - Maximize")
-                            for questId, _ in pairs(Questie.db.char.minAllQuestsInZone[self.zoneId]) do
+                            QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[TrackerLine:minAllQuestsInZone] - Maximize")
+                            for questId, _ in pairs(QuestieSmazak.db.char.minAllQuestsInZone[self.zoneId]) do
                                 if type(questId) == "number" then
-                                    Questie.db.char.collapsedQuests[questId] = nil
+                                    QuestieSmazak.db.char.collapsedQuests[questId] = nil
                                 end
                             end
 
-                            Questie.db.char.minAllQuestsInZone[self.zoneId] = nil
+                            QuestieSmazak.db.char.minAllQuestsInZone[self.zoneId] = nil
                         end
 
                         QuestieCombatQueue:Queue(function()
@@ -91,16 +91,16 @@ function ExpandZoneButton.New(index, parent, OnEnter, OnLeave)
             else
                 if self.mode == 1 then
                     self:SetMode(0)
-                    Questie.Debug(Questie.DEBUG_DEVELOP, "[TrackerLine:expandZone] - Minimize")
+                    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[TrackerLine:expandZone] - Minimize")
                 else
                     self:SetMode(1)
-                    Questie.Debug(Questie.DEBUG_DEVELOP, "[TrackerLine:expandZone] - Maximize")
+                    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[TrackerLine:expandZone] - Maximize")
                 end
 
-                if Questie.db.char.collapsedZones[self.zoneId] == true then
-                    Questie.db.char.collapsedZones[self.zoneId] = nil
+                if QuestieSmazak.db.char.collapsedZones[self.zoneId] == true then
+                    QuestieSmazak.db.char.collapsedZones[self.zoneId] = nil
                 else
-                    Questie.db.char.collapsedZones[self.zoneId] = true
+                    QuestieSmazak.db.char.collapsedZones[self.zoneId] = true
                 end
 
                 QuestieCombatQueue:Queue(function()

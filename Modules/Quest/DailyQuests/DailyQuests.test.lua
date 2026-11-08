@@ -5,10 +5,10 @@ describe("DailyQuests", function()
     local DailyQuests
 
     before_each(function()
-        _G["Questie"] = {db = {char = {complete = {}}}}
+        _G["QuestieSmazak"] = {db = {char = {complete = {}}}}
 
         dofile("Modules/Quest/DailyQuests/DailyQuests.lua")
-        DailyQuests = QuestieLoader:ImportModule("DailyQuests")
+        DailyQuests = QuestieSmazakLoader:ImportModule("DailyQuests")
 
         DailyQuests.hubs = {
             TEST_HUB = {

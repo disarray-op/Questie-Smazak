@@ -1,20 +1,20 @@
 ---@type QuestiePopup
-local Popup = QuestieLoader:ImportModule("QuestiePopup")
+local Popup = QuestieSmazakLoader:ImportModule("QuestiePopup")
 
 ---@type QuestieJourney
-local QuestieJourney = QuestieLoader:ImportModule("QuestieJourney")
+local QuestieJourney = QuestieSmazakLoader:ImportModule("QuestieJourney")
 local _QuestieJourney = QuestieJourney.private
 _QuestieJourney.myJourney = {}
 _QuestieJourney.notePopup = nil
 
 ---@type QuestieJourneyUtils
-local QuestieJourneyUtils = QuestieLoader:ImportModule("QuestieJourneyUtils")
+local QuestieJourneyUtils = QuestieSmazakLoader:ImportModule("QuestieJourneyUtils")
 ---@type QuestieDB
-local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
 ---@type QuestieLib
-local QuestieLib = QuestieLoader:ImportModule("QuestieLib")
+local QuestieLib = QuestieSmazakLoader:ImportModule("QuestieLib")
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 
 local AceGUI = LibStub("AceGUI-3.0");
 local journeyTreeFrame
@@ -36,7 +36,7 @@ function _QuestieJourney.myJourney:ManageTree(container)
             journeyTreeFrame:SelectByPath(latestYear, latestMonth)
         end
         journeyTreeFrame:SetCallback("OnGroupSelected", function(group)
-            Questie.Debug(Questie.DEBUG_DEVELOP, "[Journey] OnGroupSelected - Path:", group.localstatus.selected)
+            QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[Journey] OnGroupSelected - Path:", group.localstatus.selected)
 
             local _, _, e = strsplit("\001", group.localstatus.selected);
 
@@ -60,15 +60,15 @@ function _QuestieJourney.myJourney:ManageTree(container)
                 local created = AceGUI:Create("Label");
                 created:SetFullWidth(true);
 
-                local entry = Questie.db.char.journey[tonumber(e)];
-                local timestamp = Questie:Colorize(QuestieLib.FormatDate(entry.Timestamp), 'lightBlue');
+                local entry = QuestieSmazak.db.char.journey[tonumber(e)];
+                local timestamp = QuestieSmazak:Colorize(QuestieLib.FormatDate(entry.Timestamp), 'lightBlue');
 
                 if entry.Event == "Note" then
                     header:SetText(l10n('Note: %s', entry.Title));
 
                     local note = AceGUI:Create("Label");
                     note:SetFullWidth(true);
-                    note:SetText(Questie:Colorize( entry.Note , 'yellow'));
+                    note:SetText(QuestieSmazak:Colorize( entry.Note , 'yellow'));
                     f:AddChild(note);
                     QuestieJourneyUtils:Spacer(f);
 

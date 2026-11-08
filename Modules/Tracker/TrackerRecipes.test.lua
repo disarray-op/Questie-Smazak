@@ -28,7 +28,7 @@ describe("TrackerRecipes", function()
         _G.RETRIEVING_ITEM_INFO = "Retrieving item information"
 
         dofile("Modules/Tracker/TrackerRecipes.lua")
-        TrackerRecipes = QuestieLoader:ImportModule("TrackerRecipes")
+        TrackerRecipes = QuestieSmazakLoader:ImportModule("TrackerRecipes")
     end)
 
     after_each(function()

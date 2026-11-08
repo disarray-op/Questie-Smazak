@@ -7,9 +7,9 @@ describe("AchievementEventHandler", function()
     local originalUpdate, originalQueue, originalGetTrackedIds, originalIsTracked, trackedIds, tracked
 
     before_each(function()
-        QuestieTracker = QuestieLoader:ImportModule("QuestieTracker")
-        QuestieCombatQueue = QuestieLoader:ImportModule("QuestieCombatQueue")
-        AchievementTracking = QuestieLoader:ImportModule("AchievementTracking")
+        QuestieTracker = QuestieSmazakLoader:ImportModule("QuestieTracker")
+        QuestieCombatQueue = QuestieSmazakLoader:ImportModule("QuestieCombatQueue")
+        AchievementTracking = QuestieSmazakLoader:ImportModule("AchievementTracking")
         originalUpdate, originalQueue = QuestieTracker.Update, QuestieCombatQueue.Queue
         originalGetTrackedIds, originalIsTracked = AchievementTracking.GetTrackedIds, AchievementTracking.IsTracked
         trackedIds = {}
@@ -18,11 +18,11 @@ describe("AchievementEventHandler", function()
         QuestieCombatQueue.Queue = function(_, callback) callback() end
         AchievementTracking.GetTrackedIds = function() return trackedIds end
         AchievementTracking.IsTracked = function() return tracked end
-        Questie.db.char.collapsedQuests = {}
-        Questie.db.char.collapsedZones = {}
+        QuestieSmazak.db.char.collapsedQuests = {}
+        QuestieSmazak.db.char.collapsedZones = {}
 
         dofile("Modules/EventHandler/AchievementEventHandler.lua")
-        AchievementEventHandler = QuestieLoader:ImportModule("AchievementEventHandler")
+        AchievementEventHandler = QuestieSmazakLoader:ImportModule("AchievementEventHandler")
     end)
 
     after_each(function()
@@ -46,33 +46,33 @@ describe("AchievementEventHandler", function()
         end)
 
         it("should expand a newly tracked achievement and the Achievements zone", function()
-            Questie.db.char.collapsedQuests = {[12] = true, [13] = true}
-            Questie.db.char.collapsedZones = {Achievements = true, Durotar = true}
+            QuestieSmazak.db.char.collapsedQuests = {[12] = true, [13] = true}
+            QuestieSmazak.db.char.collapsedZones = {Achievements = true, Durotar = true}
 
             AchievementEventHandler.TrackedAchievementListChanged(12)
 
-            assert.are_same({[13] = true}, Questie.db.char.collapsedQuests)
-            assert.are_same({Durotar = true}, Questie.db.char.collapsedZones)
+            assert.are_same({[13] = true}, QuestieSmazak.db.char.collapsedQuests)
+            assert.are_same({Durotar = true}, QuestieSmazak.db.char.collapsedZones)
         end)
 
         it("should keep the minimized states when an achievement is untracked", function()
-            Questie.db.char.collapsedQuests = {[12] = true}
-            Questie.db.char.collapsedZones = {Achievements = true}
+            QuestieSmazak.db.char.collapsedQuests = {[12] = true}
+            QuestieSmazak.db.char.collapsedZones = {Achievements = true}
             tracked = false
 
             AchievementEventHandler.TrackedAchievementListChanged(12)
 
-            assert.are_same({[12] = true}, Questie.db.char.collapsedQuests)
-            assert.are_same({Achievements = true}, Questie.db.char.collapsedZones)
+            assert.are_same({[12] = true}, QuestieSmazak.db.char.collapsedQuests)
+            assert.are_same({Achievements = true}, QuestieSmazak.db.char.collapsedZones)
             assert.spy(QuestieTracker.Update).was.called(1)
         end)
 
         it("should not change the minimized states without an achievement id", function()
-            Questie.db.char.collapsedZones = {Achievements = true}
+            QuestieSmazak.db.char.collapsedZones = {Achievements = true}
 
             AchievementEventHandler.TrackedAchievementListChanged(0)
 
-            assert.are_same({Achievements = true}, Questie.db.char.collapsedZones)
+            assert.are_same({Achievements = true}, QuestieSmazak.db.char.collapsedZones)
         end)
     end)
 

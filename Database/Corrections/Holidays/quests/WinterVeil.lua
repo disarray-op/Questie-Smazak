@@ -1,7 +1,7 @@
 ---@type QuestieEvent
-local QuestieEvent = QuestieLoader:ImportModule("QuestieEvent")
+local QuestieEvent = QuestieSmazakLoader:ImportModule("QuestieEvent")
 ---@type Expansions
-local Expansions = QuestieLoader:ImportModule("Expansions")
+local Expansions = QuestieSmazakLoader:ImportModule("Expansions")
 
 local tinsert = table.insert
 local eventQuests = QuestieEvent.eventQuests
@@ -13,24 +13,24 @@ tinsert(eventQuests, {"Winter Veil", 7023}) -- Greatfather Winter is Here!
 tinsert(eventQuests, {"Winter Veil", 7024}) -- Great-father Winter is Here!
 tinsert(eventQuests, {"Winter Veil", 6962}) -- Treats for Great-father Winter
 tinsert(eventQuests, {"Winter Veil", 7025}) -- Treats for Greatfather Winter
-tinsert(eventQuests, {"Winter Veil", 7043, nil, nil, nil, nil, Questie.IsSoD}) -- You're a Mean One...
-tinsert(eventQuests, {"Winter Veil", 6983, nil, nil, nil, nil, Questie.IsSoD}) -- You're a Mean One...
-tinsert(eventQuests, {"Winter Veil", 6984, nil, nil, nil, nil, Questie.IsSoD}) -- A Smokywood Pastures' Thank You!
-tinsert(eventQuests, {"Winter Veil", 7045, nil, nil, nil, nil, Questie.IsSoD}) -- A Smokywood Pastures' Thank You!
+tinsert(eventQuests, {"Winter Veil", 7043, nil, nil, nil, nil, QuestieSmazak.IsSoD}) -- You're a Mean One...
+tinsert(eventQuests, {"Winter Veil", 6983, nil, nil, nil, nil, QuestieSmazak.IsSoD}) -- You're a Mean One...
+tinsert(eventQuests, {"Winter Veil", 6984, nil, nil, nil, nil, QuestieSmazak.IsSoD}) -- A Smokywood Pastures' Thank You!
+tinsert(eventQuests, {"Winter Veil", 7045, nil, nil, nil, nil, QuestieSmazak.IsSoD}) -- A Smokywood Pastures' Thank You!
 tinsert(eventQuests, {"Winter Veil", 7063}) -- The Feast of Winter Veil
 tinsert(eventQuests, {"Winter Veil", 7061}) -- The Feast of Winter Veil
-tinsert(eventQuests, {"Winter Veil", 6963, nil, nil, nil, nil, Expansions.Current >= Expansions.Cata or Questie.IsSoD}) -- Stolen Winter Veil Treats
-tinsert(eventQuests, {"Winter Veil", 7042, nil, nil, nil, nil, Expansions.Current >= Expansions.Cata or Questie.IsSoD}) -- Stolen Winter Veil Treats
+tinsert(eventQuests, {"Winter Veil", 6963, nil, nil, nil, nil, Expansions.Current >= Expansions.Cata or QuestieSmazak.IsSoD}) -- Stolen Winter Veil Treats
+tinsert(eventQuests, {"Winter Veil", 7042, nil, nil, nil, nil, Expansions.Current >= Expansions.Cata or QuestieSmazak.IsSoD}) -- Stolen Winter Veil Treats
 tinsert(eventQuests, {"Winter Veil", 7062}) -- The Reason for the Season
-tinsert(eventQuests, {"Winter Veil", 8763, nil, nil, nil, nil, Questie.IsSoD}) -- The Hero of the Day
-tinsert(eventQuests, {"Winter Veil", 8799, nil, nil, nil, nil, Questie.IsSoD}) -- The Hero of the Day
+tinsert(eventQuests, {"Winter Veil", 8763, nil, nil, nil, nil, QuestieSmazak.IsSoD}) -- The Hero of the Day
+tinsert(eventQuests, {"Winter Veil", 8799, nil, nil, nil, nil, QuestieSmazak.IsSoD}) -- The Hero of the Day
 tinsert(eventQuests, {"Winter Veil", 6964}) -- The Reason for the Season
-tinsert(eventQuests, {"Winter Veil", 8762, nil, nil, nil, nil, Questie.IsSoD}) -- Metzen the Reindeer
-tinsert(eventQuests, {"Winter Veil", 8746, nil, nil, nil, nil, Questie.IsSoD}) -- Metzen the Reindeer
+tinsert(eventQuests, {"Winter Veil", 8762, nil, nil, nil, nil, QuestieSmazak.IsSoD}) -- Metzen the Reindeer
+tinsert(eventQuests, {"Winter Veil", 8746, nil, nil, nil, nil, QuestieSmazak.IsSoD}) -- Metzen the Reindeer
 tinsert(eventQuests, {"Winter Veil", 8744, "25/12", "2/1"}) -- A Carefully Wrapped Present
 tinsert(eventQuests, {"Winter Veil", 8767, "25/12", "2/1"}) -- A Gently Shaken Gift
 tinsert(eventQuests, {"Winter Veil", 8768, "25/12", "2/1"}) -- A Gaily Wrapped Present
-tinsert(eventQuests, {"Winter Veil", 8769, "25/12", "2/1", nil, nil, Questie.IsSoD}) -- A Ticking Present
+tinsert(eventQuests, {"Winter Veil", 8769, "25/12", "2/1", nil, nil, QuestieSmazak.IsSoD}) -- A Ticking Present
 tinsert(eventQuests, {"Winter Veil", 8788, "25/12", "2/1"}) -- A Gently Shaken Gift
 tinsert(eventQuests, {"Winter Veil", 8803, "25/12", "2/1"}) -- A Festive Gift
 tinsert(eventQuests, {"Winter Veil", 8827, "25/12", "2/1"}) -- Winter's Presents

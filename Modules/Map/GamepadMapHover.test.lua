@@ -70,16 +70,16 @@ describe("GamepadMapHover", function()
         originalGetCVarBool = _G.GetCVarBool
         _G.GetCVarBool = function() return tooltipsDisabled end
 
-        MapIconTooltip = QuestieLoader:ImportModule("MapIconTooltip")
+        MapIconTooltip = QuestieSmazakLoader:ImportModule("MapIconTooltip")
         MapIconTooltip.ShowOnTooltip = spy.new(function() end)
         resetData = {}
-        QuestieFrame = QuestieLoader:ImportModule("QuestieFrame")
+        QuestieFrame = QuestieSmazakLoader:ImportModule("QuestieSmazakFrame")
         QuestieFrame.ResetHoverHighlights = function(icon)
             table.insert(resetData, icon.data)
         end
 
         dofile("Modules/Map/GamepadMapHover.lua")
-        GamepadMapHover = QuestieLoader:ImportModule("GamepadMapHover")
+        GamepadMapHover = QuestieSmazakLoader:ImportModule("GamepadMapHover")
         _GamepadMapHover = GamepadMapHover.private
         GamepadMapHover.Initialize()
     end)
@@ -92,7 +92,7 @@ describe("GamepadMapHover", function()
         _G.InputUtil = nil
     end)
 
-    it("should show the Questie tooltip on the private tooltip for the icon under the cursor", function()
+    it("should show the QuestieSmazak tooltip on the private tooltip for the icon under the cursor", function()
         local pin = CreatePin(105, 100)
         pins = {pin}
 

@@ -10,19 +10,19 @@ describe("QuestieProfilerPreHook", function()
     local originalTimerAPI
     local originalGetTimePreciseSec
 
-    ---Loads the pre-hook against whatever modules exist right now. It reads QuestieProfilerEnabled at load
+    ---Loads the pre-hook against whatever modules exist right now. It reads QuestieSmazakProfilerEnabled at load
     ---time and installs a loader observer, so both have to be arranged before this runs.
     ---@param enabled boolean?
     local function LoadPreHook(enabled)
-        _G.QuestieProfilerEnabled = enabled
+        _G.QuestieSmazakProfilerEnabled = enabled
         dofile("Modules/Profiler/QuestieProfilerPreHook.lua")
-        PreHook = QuestieLoader:ImportModule("ProfilerPreHook")
+        PreHook = QuestieSmazakLoader:ImportModule("ProfilerPreHook")
     end
 
     ---@param moduleName string
     ---@param functions table<string, function>
     local function GivenModule(moduleName, functions)
-        local module = QuestieLoader:CreateModule(moduleName)
+        local module = QuestieSmazakLoader:CreateModule(moduleName)
         for name, fn in pairs(functions) do
             module[name] = fn
         end
@@ -47,37 +47,37 @@ describe("QuestieProfilerPreHook", function()
         _G.C_Timer = {NewTicker = function() return {Cancel = function() end} end}
         _G.GetTimePreciseSec = _G.GetTimePreciseSec or function() return 0 end
         dofile("Modules/Libs/ThreadLib.lua")
-        local ProfilerUI = QuestieLoader:ImportModule("ProfilerUI")
+        local ProfilerUI = QuestieSmazakLoader:ImportModule("ProfilerUI")
         ProfilerUI.Create = function() end
         ProfilerUI.Show = function() end
         ProfilerUI.Hide = function() end
         dofile("Modules/Profiler/QuestieProfiler.lua")
-        Profiler = QuestieLoader:ImportModule("Profiler")
+        Profiler = QuestieSmazakLoader:ImportModule("Profiler")
         return Profiler
     end
 
     before_each(function()
         Profiler = nil
-        originalProfilerEnabled = _G.QuestieProfilerEnabled
+        originalProfilerEnabled = _G.QuestieSmazakProfilerEnabled
         originalCreateFrame = _G.CreateFrame
         originalTimerAPI = _G.C_Timer
         originalGetTimePreciseSec = _G.GetTimePreciseSec
         -- No frame: the ADDON_LOADED listener is optional and the tests drive Finish directly.
         _G.CreateFrame = nil
         -- A loader with only the modules each test creates, so a sweep has a knowable scope.
-        dofile("Modules/Libs/QuestieLoader.lua")
+        dofile("Modules/Libs/QuestieSmazakLoader.lua")
     end)
 
     after_each(function()
         if Profiler then
             Profiler:Unhook()
         end
-        QuestieLoader:SetModuleCallObserver(nil)
-        _G.QuestieProfilerEnabled = originalProfilerEnabled
+        QuestieSmazakLoader:SetModuleCallObserver(nil)
+        _G.QuestieSmazakProfilerEnabled = originalProfilerEnabled
         _G.CreateFrame = originalCreateFrame
         _G.C_Timer = originalTimerAPI
         _G.GetTimePreciseSec = originalGetTimePreciseSec
-        dofile("Modules/Libs/QuestieLoader.lua")
+        dofile("Modules/Libs/QuestieSmazakLoader.lua")
     end)
 
     describe("when profiling is not enabled at startup", function()
@@ -86,7 +86,7 @@ describe("QuestieProfilerPreHook", function()
             local module = GivenModule("PreHookOff", {Work = original})
 
             LoadPreHook(nil)
-            QuestieLoader:CreateModule("PreHookLater")
+            QuestieSmazakLoader:CreateModule("PreHookLater")
 
             assert.is_false(PreHook.installed)
             assert.are_same(0, #PreHook.targets)
@@ -99,24 +99,24 @@ describe("QuestieProfilerPreHook", function()
             GivenModule("PreHookAlpha", {Work = function() return "worked" end})
             LoadPreHook(true)
             -- The sweep runs on the next module registration, which is any file's first loader call.
-            QuestieLoader:CreateModule("PreHookTrigger")
+            QuestieSmazakLoader:CreateModule("PreHookTrigger")
         end)
 
         it("replaces a module function with an indirection", function()
             local target = TargetFor("PreHookAlpha", "Work")
 
             assert.is_not_nil(target)
-            assert.are_not_equal(target.original, QuestieLoader._modules.PreHookAlpha.Work)
-            assert.are_equal(target.wrapper, QuestieLoader._modules.PreHookAlpha.Work)
+            assert.are_not_equal(target.original, QuestieSmazakLoader._modules.PreHookAlpha.Work)
+            assert.are_equal(target.wrapper, QuestieSmazakLoader._modules.PreHookAlpha.Work)
         end)
 
         it("passes straight through to the original while nothing is measuring", function()
-            assert.are_same("worked", QuestieLoader._modules.PreHookAlpha.Work())
+            assert.are_same("worked", QuestieSmazakLoader._modules.PreHookAlpha.Work())
         end)
 
         it("is what a file-scope alias captures, which is the whole point", function()
             -- Exactly what a consumer does at its top: read the slot once and keep it.
-            local aliased = QuestieLoader._modules.PreHookAlpha.Work
+            local aliased = QuestieSmazakLoader._modules.PreHookAlpha.Work
             local target = TargetFor("PreHookAlpha", "Work")
 
             -- A session redirects the indirection; the alias, holding the wrapper, follows.
@@ -126,7 +126,7 @@ describe("QuestieProfilerPreHook", function()
         end)
 
         it("restores through the same slot, so a stopped session leaves the alias working", function()
-            local aliased = QuestieLoader._modules.PreHookAlpha.Work
+            local aliased = QuestieSmazakLoader._modules.PreHookAlpha.Work
             local target = TargetFor("PreHookAlpha", "Work")
             target.slot[target.functionName] = function() return "measured" end
 
@@ -145,11 +145,11 @@ describe("QuestieProfilerPreHook", function()
 
         it("preserves arguments and nil-bearing returns exactly", function()
             GivenModule("PreHookTuple", {Echo = function(a, b, c) return a, b, c end})
-            QuestieLoader:CreateModule("PreHookTupleTrigger")
+            QuestieSmazakLoader:CreateModule("PreHookTupleTrigger")
 
-            local values = {QuestieLoader._modules.PreHookTuple.Echo(nil, "middle", nil)}
+            local values = {QuestieSmazakLoader._modules.PreHookTuple.Echo(nil, "middle", nil)}
 
-            assert.are_same(3, select("#", QuestieLoader._modules.PreHookTuple.Echo(nil, "middle", nil)))
+            assert.are_same(3, select("#", QuestieSmazakLoader._modules.PreHookTuple.Echo(nil, "middle", nil)))
             assert.is_nil(values[1])
             assert.are_same("middle", values[2])
         end)
@@ -159,11 +159,11 @@ describe("QuestieProfilerPreHook", function()
             -- it. Naming it is what marks it for another look, so the dirty set must not treat a module as
             -- finished once swept.
             GivenModule("PreHookExtended", {First = function() end})
-            QuestieLoader:CreateModule("PreHookExtendedTrigger")
+            QuestieSmazakLoader:CreateModule("PreHookExtendedTrigger")
             assert.is_not_nil(TargetFor("PreHookExtended", "First"))
 
-            QuestieLoader:ImportModule("PreHookExtended").Second = function() end
-            QuestieLoader:CreateModule("PreHookExtendedSecondTrigger")
+            QuestieSmazakLoader:ImportModule("PreHookExtended").Second = function() end
+            QuestieSmazakLoader:CreateModule("PreHookExtendedSecondTrigger")
 
             assert.is_not_nil(TargetFor("PreHookExtended", "Second"))
         end)
@@ -171,14 +171,14 @@ describe("QuestieProfilerPreHook", function()
         it("wraps functions a later file defines, not only what existed at load", function()
             GivenModule("PreHookLate", {Work = function() end})
 
-            QuestieLoader:CreateModule("PreHookLateTrigger")
+            QuestieSmazakLoader:CreateModule("PreHookLateTrigger")
 
             assert.is_not_nil(TargetFor("PreHookLate", "Work"))
         end)
 
         it("never wraps its own wrapper, however many sweeps run", function()
-            QuestieLoader:CreateModule("PreHookSweepTwo")
-            QuestieLoader:CreateModule("PreHookSweepThree")
+            QuestieSmazakLoader:CreateModule("PreHookSweepTwo")
+            QuestieSmazakLoader:CreateModule("PreHookSweepThree")
 
             local matches = 0
             for _, target in ipairs(PreHook.targets) do
@@ -199,10 +199,10 @@ describe("QuestieProfilerPreHook", function()
             end
 
             LoadPreHook(true)
-            QuestieLoader:CreateModule("PreHookExclusionTrigger")
+            QuestieSmazakLoader:CreateModule("PreHookExclusionTrigger")
 
             for name, original in pairs(originals) do
-                assert.are_equal(original, QuestieLoader._modules[name].Work,
+                assert.are_equal(original, QuestieSmazakLoader._modules[name].Work,
                     name .. " must keep its real function")
             end
         end)
@@ -215,10 +215,10 @@ describe("QuestieProfilerPreHook", function()
             end
 
             LoadPreHook(true)
-            QuestieLoader:CreateModule("PreHookLowLevelTrigger")
+            QuestieSmazakLoader:CreateModule("PreHookLowLevelTrigger")
 
             for name, original in pairs(originals) do
-                assert.are_equal(original, QuestieLoader._modules[name].Work, name .. " must be excluded")
+                assert.are_equal(original, QuestieSmazakLoader._modules[name].Work, name .. " must be excluded")
             end
         end)
 
@@ -228,11 +228,11 @@ describe("QuestieProfilerPreHook", function()
             GivenModule("QuestieDB", {QueryNPC = query, _QueryQuestSingle = query, IsDoable = ordinary})
 
             LoadPreHook(true)
-            QuestieLoader:CreateModule("PreHookQueryTrigger")
+            QuestieSmazakLoader:CreateModule("PreHookQueryTrigger")
 
-            assert.are_equal(query, QuestieLoader._modules.QuestieDB.QueryNPC)
-            assert.are_equal(query, QuestieLoader._modules.QuestieDB._QueryQuestSingle)
-            assert.are_not_equal(ordinary, QuestieLoader._modules.QuestieDB.IsDoable)
+            assert.are_equal(query, QuestieSmazakLoader._modules.QuestieDB.QueryNPC)
+            assert.are_equal(query, QuestieSmazakLoader._modules.QuestieDB._QueryQuestSingle)
+            assert.are_not_equal(ordinary, QuestieSmazakLoader._modules.QuestieDB.IsDoable)
         end)
     end)
 
@@ -246,7 +246,7 @@ describe("QuestieProfilerPreHook", function()
                 end,
             })
             LoadPreHook(true)
-            QuestieLoader:CreateModule("PreHookMeasuredTrigger")
+            QuestieSmazakLoader:CreateModule("PreHookMeasuredTrigger")
             local fileScopeAlias = measuredModule.Work
             local target = TargetFor("PreHookMeasured", "Work")
             assert.is_not_nil(target)
@@ -256,7 +256,7 @@ describe("QuestieProfilerPreHook", function()
             local firstSessionOverride = target.slot.Work
             assert.are_not_equal(target.original, firstSessionOverride)
 
-            -- Questie.lua starts profiling while it loads; ADDON_LOADED ends the pre-hook sweep afterward.
+            -- QuestieSmazak.lua starts profiling while it loads; ADDON_LOADED ends the pre-hook sweep afterward.
             PreHook.Finish()
             assert.are_equal(target.wrapper, measuredModule.Work)
 
@@ -320,11 +320,11 @@ describe("QuestieProfilerPreHook", function()
         it("stops sweeping once addon load is over", function()
             GivenModule("PreHookBefore", {Work = function() end})
             LoadPreHook(true)
-            QuestieLoader:CreateModule("PreHookFinishTrigger")
+            QuestieSmazakLoader:CreateModule("PreHookFinishTrigger")
 
             PreHook.Finish()
             GivenModule("PreHookAfter", {Work = function() end})
-            QuestieLoader:CreateModule("PreHookAfterTrigger")
+            QuestieSmazakLoader:CreateModule("PreHookAfterTrigger")
 
             -- Anything defined after load cannot be captured by a file, so it is left to the ordinary hooks.
             assert.is_nil(TargetFor("PreHookAfter", "Work"))
@@ -333,12 +333,12 @@ describe("QuestieProfilerPreHook", function()
         it("keeps everything it already installed", function()
             GivenModule("PreHookKept", {Work = function() return "kept" end})
             LoadPreHook(true)
-            QuestieLoader:CreateModule("PreHookKeptTrigger")
+            QuestieSmazakLoader:CreateModule("PreHookKeptTrigger")
 
             PreHook.Finish()
 
             assert.is_not_nil(TargetFor("PreHookKept", "Work"))
-            assert.are_same("kept", QuestieLoader._modules.PreHookKept.Work())
+            assert.are_same("kept", QuestieSmazakLoader._modules.PreHookKept.Work())
         end)
     end)
 end)

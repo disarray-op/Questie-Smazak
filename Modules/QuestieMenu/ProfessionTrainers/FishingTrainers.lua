@@ -1,32 +1,32 @@
 ---@type Townsfolk
-local Townsfolk = QuestieLoader:ImportModule("Townsfolk")
+local Townsfolk = QuestieSmazakLoader:ImportModule("Townsfolk")
 ---@type QuestieProfessions
-local QuestieProfessions = QuestieLoader:ImportModule("QuestieProfessions")
+local QuestieProfessions = QuestieSmazakLoader:ImportModule("QuestieProfessions")
 
 ---@type NpcId[]
 local trainers
 
-if Questie.IsMoP then
+if QuestieSmazak.IsMoP then
     trainers = {
         1651,1680,1683,1700,2367,2834,3028,3179,3332,3607,4156,4573,4997,5161,5493,5690,5938,5941,7946,12032,
         12961,14740,16774,16780,17101,18018,18911,23896,25580,26909,26957,26993,28742,32474,44975,45286,50570,56068,63721,66358,
     }
-elseif Questie.IsCata then
+elseif QuestieSmazak.IsCata then
     trainers = {
         1651,1680,1683,1700,2367,2834,3028,3179,3332,3607,4156,4573,4997,5161,5493,5690,5938,5941,7946,12032,
         12961,14740,16774,16780,17101,18018,18911,23896,25580,26909,26957,26993,28742,32474,44975,45286,50570,56068,
     }
-elseif Questie.IsWotlk then
+elseif QuestieSmazak.IsWotlk then
     trainers = {
         1651,1680,1683,1700,2367,2834,3028,3179,3332,3607,4156,4573,5161,5493,5690,5938,5941,7946,10216,12032,
         12961,14740,16774,16780,17101,18018,18911,26909,26957,26993,28742,32474,
     }
-elseif Questie.IsTBC then
+elseif QuestieSmazak.IsTBC then
     trainers = {
         1651,1680,1683,1700,2367,2834,3028,3179,3332,3607,4156,4573,5161,5493,5690,5938,5941,7946,10216,12032,
         12961,14740,16774,16780,17101,18018,
     }
-elseif Questie.IsForever then
+elseif QuestieSmazak.IsForever then
     trainers = {
         1651,1680,1683,1700,2367,2834,3028,3179,3332,3607,4156,4573,5161,5493,5690,5938,5941,7946,10216,12032,
         12961,14740,251992,255877,257008,260558,

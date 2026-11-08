@@ -1,34 +1,34 @@
 ---@type QuestieCompat
-local QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+local QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
 
 ---@class TrackerHeaderFrame
-local TrackerHeaderFrame = QuestieLoader:CreateModule("TrackerHeaderFrame")
+local TrackerHeaderFrame = QuestieSmazakLoader:CreateModule("TrackerHeaderFrame")
 -------------------------
 --Import QuestieTracker modules.
 -------------------------
 ---@type TrackerBaseFrame
-local TrackerBaseFrame = QuestieLoader:ImportModule("TrackerBaseFrame")
+local TrackerBaseFrame = QuestieSmazakLoader:ImportModule("TrackerBaseFrame")
 ---@type TrackerFadeTicker
-local TrackerFadeTicker = QuestieLoader:ImportModule("TrackerFadeTicker")
+local TrackerFadeTicker = QuestieSmazakLoader:ImportModule("TrackerFadeTicker")
 ---@type TrackerUtils
-local TrackerUtils = QuestieLoader:ImportModule("TrackerUtils")
+local TrackerUtils = QuestieSmazakLoader:ImportModule("TrackerUtils")
 -------------------------
---Import Questie modules.
+--Import QuestieSmazak modules.
 -------------------------
 ---@type QuestieLib
-local QuestieLib = QuestieLoader:ImportModule("QuestieLib")
+local QuestieLib = QuestieSmazakLoader:ImportModule("QuestieLib")
 ---@type QuestieOptions
-local QuestieOptions = QuestieLoader:ImportModule("QuestieOptions")
+local QuestieOptions = QuestieSmazakLoader:ImportModule("QuestieOptions")
 ---@type QuestieJourney
-local QuestieJourney = QuestieLoader:ImportModule("QuestieJourney")
+local QuestieJourney = QuestieSmazakLoader:ImportModule("QuestieJourney")
 ---@type QuestLogCache
-local QuestLogCache = QuestieLoader:ImportModule("QuestLogCache")
+local QuestLogCache = QuestieSmazakLoader:ImportModule("QuestLogCache")
 ---@type QuestieCombatQueue
-local QuestieCombatQueue = QuestieLoader:ImportModule("QuestieCombatQueue")
+local QuestieCombatQueue = QuestieSmazakLoader:ImportModule("QuestieCombatQueue")
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 ---@type QuestieOptionsEngine
-local QuestieOptionsEngine = QuestieLoader:ImportModule("QuestieOptionsEngine")
+local QuestieOptionsEngine = QuestieSmazakLoader:ImportModule("QuestieOptionsEngine")
 
 local LSM30 = LibStub("LibSharedMedia-3.0")
 local IsAddOnLoaded = QuestieCompat.IsAddOnLoaded
@@ -37,18 +37,18 @@ local headerFrame, trackerBaseFrame
 
 function TrackerHeaderFrame.Initialize(baseFrame, OnTrackedQuestClick)
     trackerBaseFrame = baseFrame
-    headerFrame = CreateFrame("Button", "Questie_HeaderFrame", trackerBaseFrame)
+    headerFrame = CreateFrame("Button", "QuestieSmazak_HeaderFrame", trackerBaseFrame)
 
     TrackerHeaderFrame.PositionTrackerHeaderFrame()
 
-    -- Questie Icon Settings
+    -- QuestieSmazak Icon Settings
     local questieIcon = CreateFrame("Button", nil, trackerBaseFrame)
     questieIcon:SetPoint("TOPLEFT", headerFrame, "TOPLEFT", 0, 0)
     questieIcon:SetAlpha(1)
 
-    -- Questie Icon Texture Settings
+    -- QuestieSmazak Icon Texture Settings
     questieIcon.texture = questieIcon:CreateTexture(nil, "BACKGROUND", nil, 0)
-    questieIcon.texture:SetTexture(Questie.icons["complete"])
+    questieIcon.texture:SetTexture(QuestieSmazak.icons["complete"])
     questieIcon.texture:SetPoint("CENTER", 0, 0)
 
     questieIcon:EnableMouse(true)
@@ -84,27 +84,27 @@ function TrackerHeaderFrame.Initialize(baseFrame, OnTrackedQuestClick)
         end
         GameTooltip._owner = self
         GameTooltip:SetOwner(self, "ANCHOR_CURSOR")
-        GameTooltip:AddDoubleLine(Questie:Colorize("Questie", "gold"), Questie:Colorize(QuestieLib:GetAddonVersionString(), "gray"))
+        GameTooltip:AddDoubleLine(QuestieSmazak:Colorize("QuestieSmazak", "gold"), QuestieSmazak:Colorize(QuestieLib:GetAddonVersionString(), "gray"))
         GameTooltip:AddLine(" ")
-        GameTooltip:AddDoubleLine(Questie:Colorize(l10n("Left Click"), "lightBlue"), Questie:Colorize(l10n("Toggle Options"), "white"))
-        GameTooltip:AddDoubleLine(Questie:Colorize(l10n("Right Click"), "lightBlue"), Questie:Colorize(l10n("Toggle My Journey"), "white"))
+        GameTooltip:AddDoubleLine(QuestieSmazak:Colorize(l10n("Left Click"), "lightBlue"), QuestieSmazak:Colorize(l10n("Toggle Options"), "white"))
+        GameTooltip:AddDoubleLine(QuestieSmazak:Colorize(l10n("Right Click"), "lightBlue"), QuestieSmazak:Colorize(l10n("Toggle My Journey"), "white"))
         GameTooltip:AddLine(" ")
         GameTooltip:AddDoubleLine(
-            Questie:Colorize(l10n("Left Click + Hold"), "lightBlue"),
-            Questie:Colorize(l10n("Drag while Unlocked"), "white")
+            QuestieSmazak:Colorize(l10n("Left Click + Hold"), "lightBlue"),
+            QuestieSmazak:Colorize(l10n("Drag while Unlocked"), "white")
         )
         GameTooltip:AddDoubleLine(
-            Questie:Colorize(l10n("Ctrl + Left Click + Hold"), "lightBlue"),
-            Questie:Colorize(l10n("Drag while Locked"), "white")
+            QuestieSmazak:Colorize(l10n("Ctrl + Left Click + Hold"), "lightBlue"),
+            QuestieSmazak:Colorize(l10n("Drag while Locked"), "white")
         )
 
         if IsAddOnLoaded("TomTom") then
             GameTooltip:AddLine(" ")
-            GameTooltip:AddLine(Questie:Colorize(l10n("Questie Tracker Integrations"), "gold"))
+            GameTooltip:AddLine(QuestieSmazak:Colorize(l10n("QuestieSmazak Tracker Integrations"), "gold"))
             GameTooltip:AddLine(" ")
             GameTooltip:AddDoubleLine(
-                Questie:Colorize(l10n("TomTom"), "lightBlue"),
-                Questie:Colorize(l10n("Ctrl + Left Click or Right Click a Quest Title"), "white")
+                QuestieSmazak:Colorize(l10n("TomTom"), "lightBlue"),
+                QuestieSmazak:Colorize(l10n("Ctrl + Left Click or Right Click a Quest Title"), "white")
             )
         end
 
@@ -127,11 +127,11 @@ function TrackerHeaderFrame.Initialize(baseFrame, OnTrackedQuestClick)
     questieIcon:Hide()
     headerFrame.questieIcon = questieIcon
 
-    -- Questie Tracked Quests Settings
+    -- QuestieSmazak Tracked Quests Settings
     local trackedQuests = CreateFrame("Button", nil, trackerBaseFrame)
     trackedQuests:SetPoint("TOPLEFT", questieIcon, "TOPLEFT", 10, 0)
 
-    -- Questie Tracked Quests Label
+    -- QuestieSmazak Tracked Quests Label
     trackedQuests.label = headerFrame:CreateFontString(nil, "ARTWORK", "GameFontNormal")
     trackedQuests.label:SetPoint("TOPLEFT", headerFrame, "TOPLEFT", 0, 0)
 
@@ -141,7 +141,7 @@ function TrackerHeaderFrame.Initialize(baseFrame, OnTrackedQuestClick)
         end
     end
 
-    if Questie.db.char.isTrackerExpanded then
+    if QuestieSmazak.db.char.isTrackerExpanded then
         trackedQuests:SetMode(1)
     else
         trackedQuests:SetMode(0)
@@ -157,15 +157,15 @@ function TrackerHeaderFrame.Initialize(baseFrame, OnTrackedQuestClick)
         end
 
         if self.mode == 1 then
-            Questie.Debug(Questie.DEBUG_DEVELOP, "[TrackerHeaderFrame:OnClick] - Tracker Minimized")
+            QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[TrackerHeaderFrame:OnClick] - Tracker Minimized")
 
             self:SetMode(0)
-            Questie.db.char.isTrackerExpanded = false
+            QuestieSmazak.db.char.isTrackerExpanded = false
         else
-            Questie.Debug(Questie.DEBUG_DEVELOP, "[TrackerHeaderFrame:OnClick] - Tracker Maximized")
+            QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[TrackerHeaderFrame:OnClick] - Tracker Maximized")
 
             self:SetMode(1)
-            Questie.db.char.isTrackerExpanded = true
+            QuestieSmazak.db.char.isTrackerExpanded = true
         end
 
         QuestieCombatQueue:Queue(function()
@@ -182,8 +182,8 @@ function TrackerHeaderFrame.Initialize(baseFrame, OnTrackedQuestClick)
 
     headerFrame.trackedQuests = trackedQuests
 
-    if Questie.db.profile.trackerHeaderEnabled or (not TrackerUtils.HasQuest()) then
-        headerFrame:SetSize(1, Questie.db.profile.trackerFontSizeHeader) -- Width is updated later on
+    if QuestieSmazak.db.profile.trackerHeaderEnabled or (not TrackerUtils.HasQuest()) then
+        headerFrame:SetSize(1, QuestieSmazak.db.profile.trackerFontSizeHeader) -- Width is updated later on
     else
         headerFrame:SetSize(1, 1)
     end
@@ -198,10 +198,10 @@ function TrackerHeaderFrame.Initialize(baseFrame, OnTrackedQuestClick)
 end
 
 function TrackerHeaderFrame:Update()
-    local trackerFontSizeHeader = Questie.db.profile.trackerFontSizeHeader
-    local trackerFontSizeZone = Questie.db.profile.trackerFontSizeZone
+    local trackerFontSizeHeader = QuestieSmazak.db.profile.trackerFontSizeHeader
+    local trackerFontSizeZone = QuestieSmazak.db.profile.trackerFontSizeZone
 
-    if Questie.db.profile.trackerHeaderEnabled or (not TrackerUtils.HasQuest()) then
+    if QuestieSmazak.db.profile.trackerHeaderEnabled or (not TrackerUtils.HasQuest()) then
         headerFrame:ClearAllPoints()
         headerFrame.questieIcon.texture:SetWidth(trackerFontSizeHeader)
         headerFrame.questieIcon.texture:SetHeight(trackerFontSizeHeader)
@@ -213,15 +213,15 @@ function TrackerHeaderFrame:Update()
         headerFrame.questieIcon:SetPoint("TOPLEFT", headerFrame, "TOPLEFT", 6, 0)
         headerFrame.questieIcon:Show()
 
-        headerFrame.trackedQuests.label:SetFont(LSM30:Fetch("font", Questie.db.profile.trackerFontHeader), trackerFontSizeHeader, Questie.db.profile.trackerFontOutline)
+        headerFrame.trackedQuests.label:SetFont(LSM30:Fetch("font", QuestieSmazak.db.profile.trackerFontHeader), trackerFontSizeHeader, QuestieSmazak.db.profile.trackerFontOutline)
 
         local maxQuestAmount = "/" .. C_QuestLog.GetMaxNumQuestsCanAccept()
 
-        if Questie.db.char.isTrackerExpanded then
+        if QuestieSmazak.db.char.isTrackerExpanded then
             local activeQuests = QuestLogCache.GetQuestCount()
-            headerFrame.trackedQuests.label:SetText(l10n("Questie Tracker") .. l10n(": ") .. tostring(activeQuests) .. maxQuestAmount)
+            headerFrame.trackedQuests.label:SetText(l10n("QuestieSmazak Tracker") .. l10n(": ") .. tostring(activeQuests) .. maxQuestAmount)
         else
-            headerFrame.trackedQuests.label:SetText(l10n("Questie Tracker") .. " +")
+            headerFrame.trackedQuests.label:SetText(l10n("QuestieSmazak Tracker") .. " +")
         end
 
         headerFrame.trackedQuests.label:SetPoint("TOPLEFT", headerFrame.questieIcon, "TOPRIGHT", 2, 0)
@@ -248,7 +248,7 @@ function TrackerHeaderFrame:Update()
         headerFrame.questieIcon:SetHeight(trackerFontSizeZone)
         headerFrame.questieIcon:SetAlpha(0)
 
-        if Questie.db.profile.moveHeaderToBottom then
+        if QuestieSmazak.db.profile.moveHeaderToBottom then
             headerFrame.questieIcon:SetPoint("BOTTOMRIGHT", trackerBaseFrame, "BOTTOMRIGHT", -4, 8)
         else
             headerFrame.questieIcon:SetPoint("TOPRIGHT", trackerBaseFrame, "TOPRIGHT", -4, -8)
@@ -261,11 +261,11 @@ function TrackerHeaderFrame:Update()
 end
 
 function TrackerHeaderFrame.PositionTrackerHeaderFrame()
-    if Questie.db.profile.moveHeaderToBottom then
+    if QuestieSmazak.db.profile.moveHeaderToBottom then
         -- Move tracker header to the bottom
         headerFrame:SetPoint("BOTTOMLEFT", trackerBaseFrame, "BOTTOMLEFT", 0, 5)
     else
-        if Questie.db.char.isTrackerExpanded then
+        if QuestieSmazak.db.char.isTrackerExpanded then
             -- Move tracker header to the top
             headerFrame:SetPoint("TOPLEFT", trackerBaseFrame, "TOPLEFT", 0, -10)
         else

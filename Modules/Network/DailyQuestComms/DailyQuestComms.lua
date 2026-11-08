@@ -1,12 +1,12 @@
 ---@class DailyQuestComms
-local DailyQuestComms = QuestieLoader:CreateModule("DailyQuestComms")
+local DailyQuestComms = QuestieSmazakLoader:CreateModule("DailyQuestComms")
 
 ---@type AvailableQuests
-local AvailableQuests = QuestieLoader:ImportModule("AvailableQuests")
+local AvailableQuests = QuestieSmazakLoader:ImportModule("AvailableQuests")
 ---@type CommsEncoding
-local CommsEncoding = QuestieLoader:ImportModule("CommsEncoding")
+local CommsEncoding = QuestieSmazakLoader:ImportModule("CommsEncoding")
 ---@type DailyQuestCommsBlacklist
-local DailyQuestCommsBlacklist = QuestieLoader:ImportModule("DailyQuestCommsBlacklist")
+local DailyQuestCommsBlacklist = QuestieSmazakLoader:ImportModule("DailyQuestCommsBlacklist")
 
 ---@class HideDailyQuestsEvent
 ---@field eventName "HideDailyQuests"
@@ -40,12 +40,12 @@ local broadcastedQuestIds = {}
 
 function DailyQuestComms.Initialize()
     if (not CommsEncoding.hasCodecSupport) then
-        Questie.Debug(Questie.DEBUG_DEVELOP, "[DailyQuestComms] Codec support unavailable, not registering QuestieDailies")
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[DailyQuestComms] Codec support unavailable, not registering QuestieDailies")
         return
     end
 
     -- TODO: Re-enable once we fixed the daily quest comms problems
-    -- Questie:RegisterComm(COMM_PREFIX, DailyQuestComms.OnCommReceived)
+    -- QuestieSmazak:RegisterComm(COMM_PREFIX, DailyQuestComms.OnCommReceived)
 
     playerName = GetUnitName("player", true)
     realmName = GetRealmName()
@@ -101,7 +101,7 @@ function DailyQuestComms.OnCommReceived(prefix, message, distribution, sender)
         return
     end
 
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[DailyQuestComms.OnCommReceived] Received", event.eventName, "from", sender)
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[DailyQuestComms.OnCommReceived] Received", event.eventName, "from", sender)
 
     if event.eventName == "HideDailyQuests" and event.data and type(event.data) == "table" then
         -- A peer is broadcasting unavailable quests.
@@ -129,7 +129,7 @@ function DailyQuestComms.OnCommReceived(prefix, message, distribution, sender)
 
         -- Cancel our pending response only if we don't know of any additional quests
         if pendingResponseTimer and (not _HasUncoveredQuests()) then
-            Questie.Debug(Questie.DEBUG_DEVELOP, "[DailyQuestComms.OnCommReceived] Nothing new to broadcast")
+            QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[DailyQuestComms.OnCommReceived] Nothing new to broadcast")
             pendingResponseTimer:Cancel()
             pendingResponseTimer = nil
             pendingResponseDistribution = nil
@@ -165,7 +165,7 @@ function DailyQuestComms.OnCommReceived(prefix, message, distribution, sender)
         wipe(broadcastedQuestIds)
 
         if pendingResponseTimer then
-            Questie.Debug(Questie.DEBUG_DEVELOP, "[DailyQuestComms.OnCommReceived] Cancelling pending response timer")
+            QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[DailyQuestComms.OnCommReceived] Cancelling pending response timer")
             pendingResponseTimer:Cancel()
             pendingResponseTimer = nil
             pendingResponseDistribution = nil
@@ -204,16 +204,16 @@ function DailyQuestComms.RequestUnavailableDailyQuests(askGuild)
     --        return
     --    end
     --
-    --    Questie.Debug(Questie.DEBUG_DEVELOP, "[DailyQuestComms.RequestUnavailableDailyQuests] askGuild", askGuild)
+    --    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[DailyQuestComms.RequestUnavailableDailyQuests] askGuild", askGuild)
     --
     --    if askGuild and IsInGuild() then
-    --        Questie:SendCommMessage(COMM_PREFIX, serializedEvent, "GUILD")
+    --        QuestieSmazak:SendCommMessage(COMM_PREFIX, serializedEvent, "GUILD")
     --    end
     --
     --    if IsInRaid() then
-    --        Questie:SendCommMessage(COMM_PREFIX, serializedEvent, "RAID")
+    --        QuestieSmazak:SendCommMessage(COMM_PREFIX, serializedEvent, "RAID")
     --    elseif IsInGroup() then
-    --        Questie:SendCommMessage(COMM_PREFIX, serializedEvent, "PARTY")
+    --        QuestieSmazak:SendCommMessage(COMM_PREFIX, serializedEvent, "PARTY")
     --    end
 end
 
@@ -230,7 +230,7 @@ function DailyQuestComms.BroadcastUnavailableDailyQuests(npcId, questIds)
     --        }
     --    }
     --
-    --    Questie.Debug(Questie.DEBUG_DEVELOP, "[DailyQuestComms.BroadcastUnavailableDailyQuests] Sending for NPC", npcId, "Quest IDs:", table.concat(questIds, ", "))
+    --    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[DailyQuestComms.BroadcastUnavailableDailyQuests] Sending for NPC", npcId, "Quest IDs:", table.concat(questIds, ", "))
     --
     --    local serializedEvent = CommsEncoding:EncodePayload(event)
     --    if (not serializedEvent) then
@@ -238,13 +238,13 @@ function DailyQuestComms.BroadcastUnavailableDailyQuests(npcId, questIds)
     --    end
     --
     --    if IsInGuild() then
-    --        Questie:SendCommMessage(COMM_PREFIX, serializedEvent, "GUILD")
+    --        QuestieSmazak:SendCommMessage(COMM_PREFIX, serializedEvent, "GUILD")
     --    end
     --
     --    if IsInRaid() then
-    --        Questie:SendCommMessage(COMM_PREFIX, serializedEvent, "RAID")
+    --        QuestieSmazak:SendCommMessage(COMM_PREFIX, serializedEvent, "RAID")
     --    elseif IsInGroup() then
-    --        Questie:SendCommMessage(COMM_PREFIX, serializedEvent, "PARTY")
+    --        QuestieSmazak:SendCommMessage(COMM_PREFIX, serializedEvent, "PARTY")
     --    end
 end
 
@@ -264,12 +264,12 @@ function DailyQuestComms.AnswerUnavailableDailyQuests(npcId, questIds, distribut
     --        }
     --    }
     --
-    --    Questie.Debug(Questie.DEBUG_DEVELOP, "[DailyQuestComms.AnswerUnavailableDailyQuests] Sending for NPC", npcId, "Quest IDs:", table.concat(questIds, ", "))
+    --    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[DailyQuestComms.AnswerUnavailableDailyQuests] Sending for NPC", npcId, "Quest IDs:", table.concat(questIds, ", "))
     --
     --    local serializedEvent = CommsEncoding:EncodePayload(event)
     --    if (not serializedEvent) then
     --        return
     --    end
     --
-    --    Questie:SendCommMessage(COMM_PREFIX, serializedEvent, distribution)
+    --    QuestieSmazak:SendCommMessage(COMM_PREFIX, serializedEvent, distribution)
 end

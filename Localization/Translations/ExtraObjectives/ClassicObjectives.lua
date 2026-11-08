@@ -1,5 +1,5 @@
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 
 local classicObjectiveLocales = {
     ["Summon Dagun the Ravenous using an Enchanted Sea Kelp"] = { -- 735 736

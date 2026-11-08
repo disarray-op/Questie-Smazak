@@ -1,6 +1,6 @@
 dofile("setupTests.lua")
 
-local QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+local QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
 
 ---@param override GossipQuestUIInfo
 local function getAvailableTestQuest(override)
@@ -40,16 +40,16 @@ describe("AutoQuesting", function()
     local QuestieDB
 
     before_each(function()
-        Questie.db.profile.autocomplete = true
-        Questie.db.profile.autoAccept = {
+        QuestieSmazak.db.profile.autocomplete = true
+        QuestieSmazak.db.profile.autoAccept = {
             enabled = true,
             trivial = false,
             repeatable = true,
             pvp = true,
             rejectSharedInBattleground = false
         }
-        Questie.db.profile.autoModifier = "disabled"
-        Questie.Print = spy.new(function() end)
+        QuestieSmazak.db.profile.autoModifier = "disabled"
+        QuestieSmazak.Print = spy.new(function() end)
         QuestieCompat.GetAvailableQuests = spy.new(function() return {} end)
         QuestieCompat.SelectAvailableQuest = spy.new(function() end)
         QuestieCompat.GetActiveQuests = spy.new(function() return {} end)
@@ -82,11 +82,11 @@ describe("AutoQuesting", function()
             end
         }
 
-        QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+        QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
         dofile("Localization/l10n.lua")
 
         dofile("Modules/Auto/AutoQuesting.lua")
-        AutoQuesting = QuestieLoader:ImportModule("AutoQuesting")
+        AutoQuesting = QuestieSmazakLoader:ImportModule("AutoQuesting")
         AutoQuesting.private.disallowedNPCs = {}
         AutoQuesting.private.disallowedQuests = {
             accept = {},
@@ -113,7 +113,7 @@ describe("AutoQuesting", function()
             _G.GetNumActiveQuests = spy.new(function() return 0 end)
             _G.GetNumAvailableQuests = spy.new(function() return 1 end)
             QuestieCompat.GetAvailableQuests = spy.new(function() return {getAvailableTestQuest({questID = 123})} end)
-            Questie.db.profile.autoAccept.trivial = true
+            QuestieSmazak.db.profile.autoAccept.trivial = true
         end)
 
         after_each(function()
@@ -130,8 +130,8 @@ describe("AutoQuesting", function()
         }) do
             local methodName, enabled = unpack(case)
             it(methodName .. " skips secret NPCs with automation " .. (enabled and "enabled" or "disabled"), function()
-                Questie.db.profile.autoAccept.enabled = enabled
-                Questie.db.profile.autocomplete = enabled
+                QuestieSmazak.db.profile.autoAccept.enabled = enabled
+                QuestieSmazak.db.profile.autocomplete = enabled
 
                 AutoQuesting[methodName]()
 
@@ -201,7 +201,7 @@ describe("AutoQuesting", function()
             _G.GetQuestID = function() return 123 end
             _G.GetNumActiveQuests = function() return 0 end
             _G.GetNumAvailableQuests = function() return 1 end
-            Questie.db.profile.autoAccept.trivial = true
+            QuestieSmazak.db.profile.autoAccept.trivial = true
             QuestieCompat.GetAvailableQuests = function() return {getAvailableTestQuest({questID = 123})} end
         end)
 
@@ -277,7 +277,7 @@ describe("AutoQuesting", function()
         end)
 
         it("should not accept quest when auto accept is disabled", function()
-            Questie.db.profile.autoAccept.enabled = false
+            QuestieSmazak.db.profile.autoAccept.enabled = false
 
             AutoQuesting.OnQuestDetail()
 
@@ -285,7 +285,7 @@ describe("AutoQuesting", function()
         end)
 
         it("should not accept quest when auto modifier is held", function()
-            Questie.db.profile.autoModifier = "shift"
+            QuestieSmazak.db.profile.autoModifier = "shift"
             _G.IsShiftKeyDown = function() return true end
 
             AutoQuesting.OnQuestDetail()
@@ -326,7 +326,7 @@ describe("AutoQuesting", function()
         end)
 
         it("should accept trivial quest when setting is enabled", function()
-            Questie.db.profile.autoAccept.trivial = true
+            QuestieSmazak.db.profile.autoAccept.trivial = true
             _G.GetQuestID = function() return 123 end
 
             AutoQuesting.OnQuestDetail()
@@ -345,8 +345,8 @@ describe("AutoQuesting", function()
         end)
 
         it("should not re-allow trivial quest when repeatable and PvP checks pass", function()
-            Questie.db.profile.autoAccept.repeatable = false
-            Questie.db.profile.autoAccept.pvp = false
+            QuestieSmazak.db.profile.autoAccept.repeatable = false
+            QuestieSmazak.db.profile.autoAccept.pvp = false
             _G.GetQuestID = function() return 123 end
             QuestieDB.QueryQuestSingle = spy.new(function() return 10 end)
             QuestieDB.IsTrivial = spy.new(function() return true end)
@@ -359,8 +359,8 @@ describe("AutoQuesting", function()
         end)
 
         it("should accept repeatable quest when setting is enabled", function()
-            Questie.db.profile.autoAccept.trivial = true
-            Questie.db.profile.autoAccept.repeatable = true
+            QuestieSmazak.db.profile.autoAccept.trivial = true
+            QuestieSmazak.db.profile.autoAccept.repeatable = true
             _G.GetQuestID = function() return 123 end
             QuestieDB.IsRepeatable = spy.new()
 
@@ -371,8 +371,8 @@ describe("AutoQuesting", function()
         end)
 
         it("should not accept repeatable quest when setting is disabled", function()
-            Questie.db.profile.autoAccept.trivial = true
-            Questie.db.profile.autoAccept.repeatable = false
+            QuestieSmazak.db.profile.autoAccept.trivial = true
+            QuestieSmazak.db.profile.autoAccept.repeatable = false
             _G.GetQuestID = function() return 123 end
             QuestieDB.IsRepeatable = spy.new(function() return true end)
 
@@ -383,9 +383,9 @@ describe("AutoQuesting", function()
         end)
 
         it("should not re-allow repeatable quest when PvP check passes", function()
-            Questie.db.profile.autoAccept.trivial = true
-            Questie.db.profile.autoAccept.repeatable = false
-            Questie.db.profile.autoAccept.pvp = false
+            QuestieSmazak.db.profile.autoAccept.trivial = true
+            QuestieSmazak.db.profile.autoAccept.repeatable = false
+            QuestieSmazak.db.profile.autoAccept.pvp = false
             _G.GetQuestID = function() return 123 end
             QuestieDB.IsRepeatable = spy.new(function() return true end)
             QuestieDB.IsPvPQuest = spy.new(function() return false end)
@@ -396,8 +396,8 @@ describe("AutoQuesting", function()
         end)
 
         it("should accept PvP quest when setting is enabled", function()
-            Questie.db.profile.autoAccept.trivial = true
-            Questie.db.profile.autoAccept.pvp = true
+            QuestieSmazak.db.profile.autoAccept.trivial = true
+            QuestieSmazak.db.profile.autoAccept.pvp = true
             _G.GetQuestID = function() return 123 end
             QuestieDB.IsPvPQuest = spy.new()
 
@@ -408,8 +408,8 @@ describe("AutoQuesting", function()
         end)
 
         it("should not accept PvP quest when setting is disabled", function()
-            Questie.db.profile.autoAccept.trivial = true
-            Questie.db.profile.autoAccept.pvp = false
+            QuestieSmazak.db.profile.autoAccept.trivial = true
+            QuestieSmazak.db.profile.autoAccept.pvp = false
             _G.GetQuestID = function() return 123 end
             QuestieDB.IsPvPQuest = spy.new(function() return true end)
 
@@ -420,7 +420,7 @@ describe("AutoQuesting", function()
         end)
 
         it("should not accept PvP quests when setting is enabled but questId is 0 - happens when some other addon is faster", function()
-            Questie.db.profile.autoAccept.pvp = false
+            QuestieSmazak.db.profile.autoAccept.pvp = false
             _G.GetQuestID = function() return 0 end
             QuestieDB.IsPvPQuest = spy.new()
 
@@ -434,8 +434,8 @@ describe("AutoQuesting", function()
             _G.GetQuestID = function() return 123 end
             _G.UnitInBattleground = function() return true end
             _G.UnitGUID = function() return nil end
-            Questie.db.profile.autoAccept.trivial = true
-            Questie.db.profile.autoAccept.rejectSharedInBattleground = true
+            QuestieSmazak.db.profile.autoAccept.trivial = true
+            QuestieSmazak.db.profile.autoAccept.rejectSharedInBattleground = true
 
             AutoQuesting.OnQuestDetail()
 
@@ -447,12 +447,12 @@ describe("AutoQuesting", function()
             _G.GetQuestID = function() return 123 end
             _G.UnitInBattleground = spy.new(function() return true end)
             _G.UnitGUID = spy.new(function() return "Player-0-0-0-0-0-0" end)
-            Questie.db.profile.autoAccept.rejectSharedInBattleground = true
+            QuestieSmazak.db.profile.autoAccept.rejectSharedInBattleground = true
 
             AutoQuesting.OnQuestDetail()
 
             assert.spy(_G.DeclineQuest).was.called()
-            assert.spy(Questie.Print).was.called()
+            assert.spy(QuestieSmazak.Print).was.called()
             assert.spy(_G.AcceptQuest).was.not_called()
             assert.spy(_G.UnitGUID).was.called_with("questnpc")
             assert.spy(_G.UnitInBattleground).was.called_with("player")
@@ -464,13 +464,13 @@ describe("AutoQuesting", function()
             _G.UnitGUID = spy.new(function() return "Player-0-0-0-0-0-0" end)
             QuestieDB.QueryQuestSingle = spy.new(function() return 10 end)
             QuestieDB.IsTrivial = spy.new(function() return false end)
-            Questie.db.profile.autoAccept.rejectSharedInBattleground = false
+            QuestieSmazak.db.profile.autoAccept.rejectSharedInBattleground = false
 
             AutoQuesting.OnQuestDetail()
 
             assert.spy(_G.AcceptQuest).was.called()
             assert.spy(_G.DeclineQuest).was.not_called()
-            assert.spy(Questie.Print).was.not_called()
+            assert.spy(QuestieSmazak.Print).was.not_called()
             assert.spy(_G.UnitGUID).was.called(1)
             assert.spy(_G.UnitInBattleground).was.not_called()
         end)
@@ -479,13 +479,13 @@ describe("AutoQuesting", function()
             _G.GetQuestID = function() return 123 end
             _G.UnitInBattleground = spy.new(function() return true end)
             _G.UnitGUID = spy.new(function() return "Creature-0-0-0-0-0-0" end)
-            Questie.db.profile.autoAccept.rejectSharedInBattleground = true
+            QuestieSmazak.db.profile.autoAccept.rejectSharedInBattleground = true
 
             AutoQuesting.OnQuestDetail()
 
             assert.spy(_G.AcceptQuest).was.called()
             assert.spy(_G.DeclineQuest).was.not_called()
-            assert.spy(Questie.Print).was.not_called()
+            assert.spy(QuestieSmazak.Print).was.not_called()
             assert.spy(_G.UnitGUID).was.called_with("questnpc")
             assert.spy(_G.UnitInBattleground).was.called_with("player")
         end)
@@ -494,13 +494,13 @@ describe("AutoQuesting", function()
             _G.GetQuestID = function() return 123 end
             _G.UnitInBattleground = spy.new(function() return nil end)
             _G.UnitGUID = spy.new(function() return "Player-0-0-0-0-0-0" end)
-            Questie.db.profile.autoAccept.rejectSharedInBattleground = true
+            QuestieSmazak.db.profile.autoAccept.rejectSharedInBattleground = true
 
             AutoQuesting.OnQuestDetail()
 
             assert.spy(_G.AcceptQuest).was.called()
             assert.spy(_G.DeclineQuest).was.not_called()
-            assert.spy(Questie.Print).was.not_called()
+            assert.spy(QuestieSmazak.Print).was.not_called()
             assert.spy(_G.UnitGUID).was.called(1)
             assert.spy(_G.UnitInBattleground).was.called_with("player")
         end)
@@ -509,7 +509,7 @@ describe("AutoQuesting", function()
     describe("OnQuestGreeting", function()
         it("should accept quests", function()
             _G.GetNumAvailableQuests = function() return 2 end
-            Questie.db.profile.autocomplete = false
+            QuestieSmazak.db.profile.autocomplete = false
 
             AutoQuesting.OnQuestGreeting()
 
@@ -518,8 +518,8 @@ describe("AutoQuesting", function()
 
         it("should not accept quest when auto accept is disabled", function()
             _G.GetNumAvailableQuests = function() return 2 end
-            Questie.db.profile.autoAccept.enabled = false
-            Questie.db.profile.autocomplete = false
+            QuestieSmazak.db.profile.autoAccept.enabled = false
+            QuestieSmazak.db.profile.autocomplete = false
 
             AutoQuesting.OnQuestGreeting()
 
@@ -528,7 +528,7 @@ describe("AutoQuesting", function()
 
         it("should not accept quest when auto modifier is held", function()
             _G.GetNumAvailableQuests = function() return 2 end
-            Questie.db.profile.autoModifier = "shift"
+            QuestieSmazak.db.profile.autoModifier = "shift"
             _G.IsShiftKeyDown = function() return true end
 
             AutoQuesting.OnQuestGreeting()
@@ -540,8 +540,8 @@ describe("AutoQuesting", function()
             _G.UnitGUID = function() return "Creature-0-0-0-0-123-0" end
             AutoQuesting.private.disallowedNPCs[123] = true
             _G.SelectAvailableQuest = spy.new()
-            Questie.db.profile.autoAccept.enabled = true
-            Questie.db.profile.autocomplete = false
+            QuestieSmazak.db.profile.autoAccept.enabled = true
+            QuestieSmazak.db.profile.autocomplete = false
 
             AutoQuesting.OnQuestGreeting()
 
@@ -580,8 +580,8 @@ describe("AutoQuesting", function()
         it("should not turn in quest when auto turn in is disabled", function()
             _G.GetNumActiveQuests = function() return 2 end
             _G.SelectActiveQuest = spy.new()
-            Questie.db.profile.autoAccept.enabled = false
-            Questie.db.profile.autocomplete = false
+            QuestieSmazak.db.profile.autoAccept.enabled = false
+            QuestieSmazak.db.profile.autocomplete = false
 
             AutoQuesting.OnQuestGreeting()
 
@@ -592,8 +592,8 @@ describe("AutoQuesting", function()
             _G.UnitGUID = function() return "Creature-0-0-0-0-123-0" end
             AutoQuesting.private.disallowedNPCs[123] = true
             _G.SelectAvailableQuest = spy.new()
-            Questie.db.profile.autoAccept.enabled = false
-            Questie.db.profile.autocomplete = true
+            QuestieSmazak.db.profile.autoAccept.enabled = false
+            QuestieSmazak.db.profile.autocomplete = true
 
             AutoQuesting.OnQuestGreeting()
 
@@ -632,7 +632,7 @@ describe("AutoQuesting", function()
             QuestieCompat.GetAvailableQuests = function()
                 return {getAvailableTestQuest({})}
             end
-            Questie.db.profile.autoAccept.enabled = false
+            QuestieSmazak.db.profile.autoAccept.enabled = false
 
             AutoQuesting.OnGossipShow()
 
@@ -643,7 +643,7 @@ describe("AutoQuesting", function()
             QuestieCompat.GetAvailableQuests = function()
                 return {getAvailableTestQuest({})}
             end
-            Questie.db.profile.autoModifier = "shift"
+            QuestieSmazak.db.profile.autoModifier = "shift"
             _G.IsShiftKeyDown = function() return true end
 
             AutoQuesting.OnGossipShow()
@@ -664,7 +664,7 @@ describe("AutoQuesting", function()
         end)
 
         it("should accept trivial quest when setting is enabled", function()
-            Questie.db.profile.autoAccept.trivial = true
+            QuestieSmazak.db.profile.autoAccept.trivial = true
             QuestieCompat.GetAvailableQuests = function()
                 return {getAvailableTestQuest({isTrivial = true})}
             end
@@ -695,7 +695,7 @@ describe("AutoQuesting", function()
         end)
 
         it("should accept repeatable quest when setting is enabled", function()
-            Questie.db.profile.autoAccept.repeatable = true
+            QuestieSmazak.db.profile.autoAccept.repeatable = true
             QuestieCompat.GetAvailableQuests = function()
                 return {getAvailableTestQuest({repeatable = true})}
             end
@@ -706,7 +706,7 @@ describe("AutoQuesting", function()
         end)
 
         it("should not accept repeatable quest when setting is disabled", function()
-            Questie.db.profile.autoAccept.repeatable = false
+            QuestieSmazak.db.profile.autoAccept.repeatable = false
             QuestieCompat.GetAvailableQuests = function()
                 return {getAvailableTestQuest({repeatable = true})}
             end
@@ -717,7 +717,7 @@ describe("AutoQuesting", function()
         end)
 
         it("should skip repeatable quest when setting is disabled and accept non-repeatable", function()
-            Questie.db.profile.autoAccept.repeatable = false
+            QuestieSmazak.db.profile.autoAccept.repeatable = false
             QuestieCompat.GetAvailableQuests = function()
                 return {getAvailableTestQuest({repeatable = true}), getAvailableTestQuest({})}
             end
@@ -728,7 +728,7 @@ describe("AutoQuesting", function()
         end)
 
         it("should accept PvP quest when setting is enabled", function()
-            Questie.db.profile.autoAccept.pvp = true
+            QuestieSmazak.db.profile.autoAccept.pvp = true
             QuestieCompat.GetAvailableQuests = function()
                 return {getAvailableTestQuest({})}
             end
@@ -740,7 +740,7 @@ describe("AutoQuesting", function()
         end)
 
         it("should not accept PvP quest when setting is disabled", function()
-            Questie.db.profile.autoAccept.pvp = false
+            QuestieSmazak.db.profile.autoAccept.pvp = false
             QuestieCompat.GetAvailableQuests = function()
                 return {getAvailableTestQuest({})}
             end
@@ -752,7 +752,7 @@ describe("AutoQuesting", function()
         end)
 
         it("should skip PvP quest when setting is disabled and accept non-PvP", function()
-            Questie.db.profile.autoAccept.pvp = false
+            QuestieSmazak.db.profile.autoAccept.pvp = false
             QuestieCompat.GetAvailableQuests = function()
                 return {getAvailableTestQuest({questID = 1}), getAvailableTestQuest({questID = 2})}
             end
@@ -764,9 +764,9 @@ describe("AutoQuesting", function()
         end)
 
         it("should skip PvP quest when trivial and repeatable settings are enabled", function()
-            Questie.db.profile.autoAccept.trivial = true
-            Questie.db.profile.autoAccept.repeatable = true
-            Questie.db.profile.autoAccept.pvp = false
+            QuestieSmazak.db.profile.autoAccept.trivial = true
+            QuestieSmazak.db.profile.autoAccept.repeatable = true
+            QuestieSmazak.db.profile.autoAccept.pvp = false
             QuestieCompat.GetAvailableQuests = function()
                 return {getAvailableTestQuest({questID = 1}), getAvailableTestQuest({questID = 2})}
             end
@@ -789,7 +789,7 @@ describe("AutoQuesting", function()
         end)
 
         it("should not turn in quest when auto turn in is disabled", function()
-            Questie.db.profile.autocomplete = false
+            QuestieSmazak.db.profile.autocomplete = false
 
             AutoQuesting.OnGossipShow()
 
@@ -798,7 +798,7 @@ describe("AutoQuesting", function()
         end)
 
         it("should not turn in quest when auto modifier is held", function()
-            Questie.db.profile.autoModifier = "shift"
+            QuestieSmazak.db.profile.autoModifier = "shift"
             _G.IsShiftKeyDown = function() return true end
 
             AutoQuesting.OnGossipShow()
@@ -809,8 +809,8 @@ describe("AutoQuesting", function()
         end)
 
         it("should not turn in or accept quest when auto accept and turn in are disabled", function()
-            Questie.db.profile.autoAccept.enabled = false
-            Questie.db.profile.autocomplete = false
+            QuestieSmazak.db.profile.autoAccept.enabled = false
+            QuestieSmazak.db.profile.autocomplete = false
 
             AutoQuesting.OnGossipShow()
 
@@ -822,7 +822,7 @@ describe("AutoQuesting", function()
 
     describe("OnQuestProgress", function()
         it("should not complete quest when manual mode is active", function()
-            Questie.db.profile.autoModifier = "shift"
+            QuestieSmazak.db.profile.autoModifier = "shift"
             _G.IsShiftKeyDown = function() return true end
 
             AutoQuesting.OnQuestProgress()
@@ -831,7 +831,7 @@ describe("AutoQuesting", function()
         end)
 
         it("should not complete quest when auto turn in is disabled", function()
-            Questie.db.profile.autocomplete = false
+            QuestieSmazak.db.profile.autocomplete = false
 
             AutoQuesting.OnQuestProgress()
 
@@ -867,7 +867,7 @@ describe("AutoQuesting", function()
 
     describe("OnQuestComplete", function()
         it("should not complete quest when manual mode is active", function()
-            Questie.db.profile.autoModifier = "shift"
+            QuestieSmazak.db.profile.autoModifier = "shift"
             _G.IsShiftKeyDown = function() return true end
 
             AutoQuesting.OnQuestComplete()
@@ -876,7 +876,7 @@ describe("AutoQuesting", function()
         end)
 
         it("should not complete quest when manual mode is active and coming from gossip", function()
-            Questie.db.profile.autoModifier = "shift"
+            QuestieSmazak.db.profile.autoModifier = "shift"
             _G.IsShiftKeyDown = function() return true end
 
             AutoQuesting.OnGossipShow()
@@ -888,7 +888,7 @@ describe("AutoQuesting", function()
         end)
 
         it("should not complete quest when auto turn in is disabled", function()
-            Questie.db.profile.autocomplete = false
+            QuestieSmazak.db.profile.autocomplete = false
 
             AutoQuesting.OnQuestComplete()
 
@@ -930,7 +930,7 @@ describe("AutoQuesting", function()
         end)
 
         it("should not confirm quest accept when auto accept is disabled", function()
-            Questie.db.profile.autoAccept.enabled = false
+            QuestieSmazak.db.profile.autoAccept.enabled = false
 
             AutoQuesting.OnQuestAcceptConfirm()
 
@@ -940,7 +940,7 @@ describe("AutoQuesting", function()
 
     describe("OnQuestFinished", function()
         it("should reset when no frame exists", function()
-            Questie.db.profile.autoModifier = "shift"
+            QuestieSmazak.db.profile.autoModifier = "shift"
             _G.IsShiftKeyDown = function() return true end
             local resetSpy = spy.on(AutoQuesting, "Reset")
 
@@ -962,7 +962,7 @@ describe("AutoQuesting", function()
             _G.GossipFrame = {
                 IsVisible = function() return true end
             }
-            Questie.db.profile.autoModifier = "shift"
+            QuestieSmazak.db.profile.autoModifier = "shift"
             _G.IsShiftKeyDown = function() return true end
             local resetSpy = spy.on(AutoQuesting, "Reset")
 
@@ -976,7 +976,7 @@ describe("AutoQuesting", function()
             _G.GossipFrameGreetingPanel = {
                 IsVisible = function() return true end
             }
-            Questie.db.profile.autoModifier = "shift"
+            QuestieSmazak.db.profile.autoModifier = "shift"
             _G.IsShiftKeyDown = function() return true end
             local resetSpy = spy.on(AutoQuesting, "Reset")
 
@@ -990,7 +990,7 @@ describe("AutoQuesting", function()
             _G.QuestFrameGreetingPanel = {
                 IsVisible = function() return true end
             }
-            Questie.db.profile.autoModifier = "shift"
+            QuestieSmazak.db.profile.autoModifier = "shift"
             _G.IsShiftKeyDown = function() return true end
             local resetSpy = spy.on(AutoQuesting, "Reset")
 
@@ -1004,7 +1004,7 @@ describe("AutoQuesting", function()
             _G.QuestFrameDetailPanel = {
                 IsVisible = function() return true end
             }
-            Questie.db.profile.autoModifier = "shift"
+            QuestieSmazak.db.profile.autoModifier = "shift"
             _G.IsShiftKeyDown = function() return true end
             local resetSpy = spy.on(AutoQuesting, "Reset")
 
@@ -1018,7 +1018,7 @@ describe("AutoQuesting", function()
             _G.QuestFrameProgressPanel = {
                 IsVisible = function() return true end
             }
-            Questie.db.profile.autoModifier = "shift"
+            QuestieSmazak.db.profile.autoModifier = "shift"
             _G.IsShiftKeyDown = function() return true end
             local resetSpy = spy.on(AutoQuesting, "Reset")
 
@@ -1032,7 +1032,7 @@ describe("AutoQuesting", function()
             _G.QuestFrameRewardPanel = {
                 IsVisible = function() return true end
             }
-            Questie.db.profile.autoModifier = "shift"
+            QuestieSmazak.db.profile.autoModifier = "shift"
             _G.IsShiftKeyDown = function() return true end
             local resetSpy = spy.on(AutoQuesting, "Reset")
 
@@ -1048,7 +1048,7 @@ describe("AutoQuesting", function()
                     IsVisible = function() return true end
                 }
             }
-            Questie.db.profile.autoModifier = "shift"
+            QuestieSmazak.db.profile.autoModifier = "shift"
             _G.IsShiftKeyDown = function() return true end
             local resetSpy = spy.on(AutoQuesting, "Reset")
 
@@ -1062,7 +1062,7 @@ describe("AutoQuesting", function()
             _G.ImmersionContentFrame = {
                 IsVisible = function() return true end
             }
-            Questie.db.profile.autoModifier = "shift"
+            QuestieSmazak.db.profile.autoModifier = "shift"
             _G.IsShiftKeyDown = function() return true end
             local resetSpy = spy.on(AutoQuesting, "Reset")
 
@@ -1075,7 +1075,7 @@ describe("AutoQuesting", function()
 
     describe("OnGossipClosed", function()
         it("should reset when no frame exists", function()
-            Questie.db.profile.autoModifier = "shift"
+            QuestieSmazak.db.profile.autoModifier = "shift"
             _G.IsShiftKeyDown = function() return true end
             local resetSpy = spy.on(AutoQuesting, "Reset")
 
@@ -1096,34 +1096,34 @@ describe("AutoQuesting", function()
 
     describe("IsModifierHeld", function()
         it("should return true when auto modifier is shift and held", function()
-            Questie.db.profile.autoModifier = "shift"
+            QuestieSmazak.db.profile.autoModifier = "shift"
             _G.IsShiftKeyDown = function() return true end
 
             assert.is_true(AutoQuesting.IsModifierHeld())
         end)
 
         it("should return true when auto modifier is ctrl and held", function()
-            Questie.db.profile.autoModifier = "ctrl"
+            QuestieSmazak.db.profile.autoModifier = "ctrl"
             _G.IsControlKeyDown = function() return true end
 
             assert.is_true(AutoQuesting.IsModifierHeld())
         end)
 
         it("should return true when auto modifier is alt and held", function()
-            Questie.db.profile.autoModifier = "alt"
+            QuestieSmazak.db.profile.autoModifier = "alt"
             _G.IsAltKeyDown = function() return true end
 
             assert.is_true(AutoQuesting.IsModifierHeld())
         end)
 
         it("should return false when auto modifier is disabled", function()
-            Questie.db.profile.autoModifier = "disabled"
+            QuestieSmazak.db.profile.autoModifier = "disabled"
 
             assert.is_false(AutoQuesting.IsModifierHeld())
         end)
 
         it("should return false when auto modifier is nil", function()
-            Questie.db.profile.autoModifier = nil
+            QuestieSmazak.db.profile.autoModifier = nil
 
             assert.is_false(AutoQuesting.IsModifierHeld())
         end)
@@ -1132,7 +1132,7 @@ describe("AutoQuesting", function()
     describe("Accept Flow", function()
         it("should not accept quest from details when coming from greetings and auto modifier was held", function()
             _G.GetNumAvailableQuests = function() return 2 end
-            Questie.db.profile.autoModifier = "shift"
+            QuestieSmazak.db.profile.autoModifier = "shift"
             _G.IsShiftKeyDown = function() return true end
 
             AutoQuesting.OnQuestGreeting()
@@ -1147,7 +1147,7 @@ describe("AutoQuesting", function()
         it("should not accept quest from greetings when auto modifier was held and manually accepting a quest", function()
             _G.C_Timer.After = function() end
             _G.GetNumAvailableQuests = function() return 2 end
-            Questie.db.profile.autoModifier = "shift"
+            QuestieSmazak.db.profile.autoModifier = "shift"
             _G.IsShiftKeyDown = function() return true end
 
             AutoQuesting.OnQuestGreeting()
@@ -1164,7 +1164,7 @@ describe("AutoQuesting", function()
 
         it("should not select available quest from greetings when coming from details and auto modifier was held", function()
             _G.GetNumAvailableQuests = function() return 2 end
-            Questie.db.profile.autoModifier = "shift"
+            QuestieSmazak.db.profile.autoModifier = "shift"
             _G.IsShiftKeyDown = function() return true end
 
             AutoQuesting.OnQuestGreeting()
@@ -1181,8 +1181,8 @@ describe("AutoQuesting", function()
 
         it("should select available quest from greetings when re-talking to an NPC after auto modifier was held", function()
             _G.GetNumAvailableQuests = function() return 2 end
-            Questie.db.profile.autoModifier = "shift"
-            Questie.db.profile.autocomplete = false
+            QuestieSmazak.db.profile.autoModifier = "shift"
+            QuestieSmazak.db.profile.autocomplete = false
             _G.IsShiftKeyDown = function() return true end
 
             AutoQuesting.OnQuestGreeting()
@@ -1199,7 +1199,7 @@ describe("AutoQuesting", function()
             QuestieCompat.GetAvailableQuests = function()
                 return {getAvailableTestQuest({})}
             end
-            Questie.db.profile.autoModifier = "shift"
+            QuestieSmazak.db.profile.autoModifier = "shift"
             _G.IsShiftKeyDown = function() return true end
 
             AutoQuesting.OnGossipShow()

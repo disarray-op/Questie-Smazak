@@ -6,11 +6,11 @@ describe("QuestieStatus", function()
     local reportError
 
     before_each(function()
-        originalQuestie = _G.Questie
+        originalQuestie = _G.QuestieSmazak
         originalProvider = _G.LibQuestieDB
         originalUIParent = _G.UIParent
         originalGetErrorHandler = _G.geterrorhandler
-        _G.Questie = nil
+        _G.QuestieSmazak = nil
         _G.LibQuestieDB = nil
         _G.UIParent = nil
         reportError = spy.new(function() end)
@@ -18,11 +18,11 @@ describe("QuestieStatus", function()
             return function(message) reportError(message) end
         end
         dofile("Modules/Status/QuestieStatus.lua")
-        QuestieStatus = QuestieLoader:ImportModule("QuestieStatus")
+        QuestieStatus = QuestieSmazakLoader:ImportModule("QuestieStatus")
     end)
 
     after_each(function()
-        _G.Questie = originalQuestie
+        _G.QuestieSmazak = originalQuestie
         _G.LibQuestieDB = originalProvider
         _G.UIParent = originalUIParent
         _G.geterrorhandler = originalGetErrorHandler

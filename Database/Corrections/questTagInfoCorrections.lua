@@ -1,12 +1,12 @@
 ---@type QuestieDBPrivate
-local _QuestieDB = QuestieLoader:ImportModule("QuestieDB").private
+local _QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB").private
 
 ---@type Expansions
-local Expansions = QuestieLoader:ImportModule("Expansions")
+local Expansions = QuestieSmazakLoader:ImportModule("Expansions")
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 ---@type TitanReforgedQuestTags
-local TitanReforgedQuestTags = QuestieLoader:ImportModule("TitanReforgedQuestTags")
+local TitanReforgedQuestTags = QuestieSmazakLoader:ImportModule("TitanReforgedQuestTags")
 
 
 --- Tag corrections for quests for which the GetQuestTagInfo API returns the wrong values.
@@ -2619,7 +2619,7 @@ function _QuestieDB.InitializeQuestTagInfoCorrections()
     }
 
     -- Keep Titan tags behind the same flavor and season boundary as the provider's Titan Quest records.
-    if Questie.IsTitanReforged then
+    if QuestieSmazak.IsTitanReforged then
         for questId, tagInfo in pairs(TitanReforgedQuestTags.LoadQuestTagCorrections()) do
             _QuestieDB.questTagCorrections[questId] = tagInfo
         end

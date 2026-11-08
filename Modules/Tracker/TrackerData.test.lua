@@ -1,7 +1,7 @@
 dofile("setupTests.lua")
 dofile("Modules/Quest/ActiveQuests.lua")
 ---@type ActiveQuests
-local ActiveQuests = QuestieLoader:ImportModule("ActiveQuests")
+local ActiveQuests = QuestieSmazakLoader:ImportModule("ActiveQuests")
 
 describe("TrackerData", function()
     local TrackerData, QuestieLib, QuestieDB, QuestiePlayer, QuestLogCache, compat
@@ -9,7 +9,7 @@ describe("TrackerData", function()
     local originalGetNumEntries, originalGetTitle, originalGetIndex, originalGetQuestSortIndex, originalGetInfo
 
     before_each(function()
-        compat = QuestieLoader:ImportModule("QuestieCompat")
+        compat = QuestieSmazakLoader:ImportModule("QuestieCompat")
         originalGetNumEntries = compat.GetNumQuestLogEntries
         originalGetTitle = compat.GetQuestLogTitle
         originalGetIndex = compat.GetQuestLogIndexByID
@@ -17,7 +17,7 @@ describe("TrackerData", function()
         originalGetInfo = C_QuestLog.GetInfo
         _G.GetQuestSortIndex = nil
         C_QuestLog.GetInfo = nil
-        Questie.db.profile = {trackerColorObjectives = "minimal"}
+        QuestieSmazak.db.profile = {trackerColorObjectives = "minimal"}
         entries = {
             {title = "Northshire Abbey", isHeader = true},
             {title = "Nibbled-On Book", id = 91741, level = 2},
@@ -35,30 +35,30 @@ describe("TrackerData", function()
                 if entry.id == id then return index end
             end
         end
-        QuestLogCache = QuestieLoader:ImportModule("QuestLogCache")
+        QuestLogCache = QuestieSmazakLoader:ImportModule("QuestLogCache")
         QuestLogCache.TryGetQuest = function(id) return cached[id] end
         QuestLogCache.GetQuest = spy.new(function() error("Reporting getter must not be used for optional reads") end)
-        QuestiePlayer = QuestieLoader:ImportModule("QuestiePlayer")
+        QuestiePlayer = QuestieSmazakLoader:ImportModule("QuestiePlayer")
         ActiveQuests.Reset()
         QuestiePlayer.GetPlayerLevel = function() return 2 end
-        QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+        QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
         QuestieDB.IsComplete = function() return completion end
         QuestieDB.QueryNPCSingle = function() return "Wolf" end
         QuestieDB.QueryItemSingle = function() return "Note" end
         QuestieDB.IsPvPQuest = function() return false end
         QuestieDB.GetQuestTagInfo = function() return nil end
-        local trackerUtils = QuestieLoader:ImportModule("TrackerUtils")
+        local trackerUtils = QuestieSmazakLoader:ImportModule("TrackerUtils")
         trackerUtils.GetQuestItemIds = function() return {} end
         trackerUtils.GetCompletionText = function() return nil end
-        QuestieLoader:ImportModule("QuestieEvent").IsEventQuest = function() return false end
+        QuestieSmazakLoader:ImportModule("QuestieEvent").IsEventQuest = function() return false end
         dofile("Localization/l10n.lua")
         dofile("Modules/Libs/QuestieLib.lua")
-        QuestieLib = QuestieLoader:ImportModule("QuestieLib")
+        QuestieLib = QuestieSmazakLoader:ImportModule("QuestieLib")
         QuestieLib.GetLoadedQuestObjectives = spy.new(function() error("Tracker must not load objectives") end)
         QuestieLib.GetLevelString = function(_, _, level) return "[" .. level .. "] " end
         dofile("Modules/Tracker/TrackerQuestieBehavior.lua")
         dofile("Modules/Tracker/TrackerData.lua")
-        TrackerData = QuestieLoader:ImportModule("TrackerData")
+        TrackerData = QuestieSmazakLoader:ImportModule("TrackerData")
     end)
 
     after_each(function()
@@ -269,7 +269,7 @@ describe("TrackerData", function()
             [3] = {text = "Return the book.", type = "log",
                 numFulfilled = 1, numRequired = 1, finished = true},
         }}
-        local behavior = QuestieLoader:ImportModule("TrackerQuestieBehavior")
+        local behavior = QuestieSmazakLoader:ImportModule("TrackerQuestieBehavior")
         local appliedQuest
         behavior.Apply = spy.new(function(displayQuest, snapshot, nativeComplete)
             appliedQuest = displayQuest
@@ -380,7 +380,7 @@ describe("TrackerData", function()
     end)
 
     it("keeps partial-progress colors without rebuilding the text from counts", function()
-        Questie.db.profile.trackerColorObjectives = "redToGreen"
+        QuestieSmazak.db.profile.trackerColorObjectives = "redToGreen"
         cached[91741] = {objectives = {{text = "Wolf slain: 1/4", type = "monster",
             numFulfilled = 1, numRequired = 4, finished = false}}}
 
@@ -390,7 +390,7 @@ describe("TrackerData", function()
     end)
 
     it("uses cached completion for counted objectives even when their counts disagree", function()
-        Questie.db.profile.trackerColorObjectives = "whiteAndGreen"
+        QuestieSmazak.db.profile.trackerColorObjectives = "whiteAndGreen"
         cached[91741] = {objectives = {{text = "Wolf slain: 3/5", type = "monster",
             numFulfilled = 3, numRequired = 5, finished = true, raw_finished = false}}}
 
@@ -470,7 +470,7 @@ describe("TrackerData", function()
         assert.are.same({}, current.Objectives)
     end)
 
-    it("preserves Questie's additional completion boolean independently of the numeric state", function()
+    it("preserves QuestieSmazak's additional completion boolean independently of the numeric state", function()
         cached[91741] = {objectives = {}}
         ActiveQuests.Add(91741, {isComplete = true, Objectives = {}})
 
@@ -517,7 +517,7 @@ describe("TrackerData", function()
         assert.are.equal("|cFFEEEEEEWolf: 2/5", TrackerData.GetObjectiveText(objective))
 
         dofile("Modules/Libs/DistanceUtils.lua")
-        local DistanceUtils = QuestieLoader:ImportModule("DistanceUtils")
+        local DistanceUtils = QuestieSmazakLoader:ImportModule("DistanceUtils")
         DistanceUtils.GetNearestObjective = spy.new(function() return {10, 20}, 12, "Wolf", 100 end)
 
         local spawn = DistanceUtils.GetNearestSpawnForQuest(displayQuest)
@@ -709,7 +709,7 @@ describe("TrackerData", function()
 
         before_each(function()
             originalQuestLog, originalHaveData = _G.C_QuestLog, _G.HaveQuestData
-            originalTimer, originalTime, originalForever = _G.C_Timer, _G.GetTime, Questie.IsForever
+            originalTimer, originalTime, originalForever = _G.C_Timer, _G.GetTime, QuestieSmazak.IsForever
             nativeObjectives, haveData, callbacks, retryTimers, now = nil, true, {}, {}, 100
             _G.C_QuestLog = {GetQuestObjectives = spy.new(function() return nativeObjectives end)}
             _G.HaveQuestData = function() return haveData end
@@ -723,46 +723,46 @@ describe("TrackerData", function()
                     return timer
                 end,
             }
-            Questie.IsForever = true
-            Questie.db.profile.autoAccept = {enabled = false}
-            local sounds = QuestieLoader:ImportModule("Sounds")
+            QuestieSmazak.IsForever = true
+            QuestieSmazak.db.profile.autoAccept = {enabled = false}
+            local sounds = QuestieSmazakLoader:ImportModule("Sounds")
             sounds.PlayQuestComplete = function() end
             sounds.PlayObjectiveComplete = function() end
             sounds.PlayObjectiveProgress = function() end
 
             dofile("Modules/Quest/QuestLogCache.lua")
-            QuestLogCache = QuestieLoader:ImportModule("QuestLogCache")
+            QuestLogCache = QuestieSmazakLoader:ImportModule("QuestLogCache")
             QuestieDB.IsComplete = function(id) return QuestLogCache.GetQuest(id).isComplete end
             QuestieDB.GetQuest = function() return nil end
             QuestieLib.RepairMissingItemNames = function() end
-            local questModule = QuestieLoader:ImportModule("QuestieQuest")
+            local questModule = QuestieSmazakLoader:ImportModule("QuestieQuest")
             questModule.SetObjectivesDirty = function() end
-            QuestLifecycle = QuestieLoader:ImportModule("QuestLifecycle")
+            QuestLifecycle = QuestieSmazakLoader:ImportModule("QuestLifecycle")
             QuestLifecycle.AcceptQuest = spy.new(function() end)
             QuestLifecycle.UpdateQuest = function() end
-            QuestieLoader:ImportModule("QuestieJourney").AcceptQuest = function() end
-            QuestieLoader:ImportModule("QuestieAnnounce").AcceptedQuest = function() end
-            QuestieLoader:ImportModule("QuestieNameplate").UpdateNameplate = function() end
-            QuestieLoader:ImportModule("QuestiePartyObjectives").ScheduleUpdate = function() end
-            QuestieLoader:ImportModule("BreadcrumbQuests").CheckQuestBreadcrumbs = function() end
+            QuestieSmazakLoader:ImportModule("QuestieJourney").AcceptQuest = function() end
+            QuestieSmazakLoader:ImportModule("QuestieAnnounce").AcceptedQuest = function() end
+            QuestieSmazakLoader:ImportModule("QuestieNameplate").UpdateNameplate = function() end
+            QuestieSmazakLoader:ImportModule("QuestiePartyObjectives").ScheduleUpdate = function() end
+            QuestieSmazakLoader:ImportModule("BreadcrumbQuests").CheckQuestBreadcrumbs = function() end
             dofile("Public/Enums.lua")
-            QuestieLoader:ImportModule("QuestieAPI").PropagateQuestUpdate = function() end
-            QuestieLoader:ImportModule("QuestieCombatQueue").Queue = function(_, callback) callback() end
-            local tracker = QuestieLoader:ImportModule("QuestieTracker")
+            QuestieSmazakLoader:ImportModule("QuestieAPI").PropagateQuestUpdate = function() end
+            QuestieSmazakLoader:ImportModule("QuestieCombatQueue").Queue = function(_, callback) callback() end
+            local tracker = QuestieSmazakLoader:ImportModule("QuestieTracker")
             tracker.Update = function() TrackerData.Refresh() end
             tracker.UpdateQuestLines = function(id) TrackerData.RefreshQuest(id) end
             dofile("Modules/EventHandler/QuestEventHandler.lua")
-            QuestEventHandler = QuestieLoader:ImportModule("QuestEventHandler")
+            QuestEventHandler = QuestieSmazakLoader:ImportModule("QuestEventHandler")
         end)
 
         after_each(function()
             _G.C_QuestLog, _G.HaveQuestData = originalQuestLog, originalHaveData
-            _G.C_Timer, _G.GetTime, Questie.IsForever = originalTimer, originalTime, originalForever
+            _G.C_Timer, _G.GetTime, QuestieSmazak.IsForever = originalTimer, originalTime, originalForever
         end)
 
         it("keeps Falling With Style unfinished at 1/1 until the cached finished flag changes", function()
             entries[2] = {title = "Falling With Style", id = 92474, level = 2}
-            Questie.db.profile.trackerColorObjectives = "whiteAndGreen"
+            QuestieSmazak.db.profile.trackerColorObjectives = "whiteAndGreen"
             nativeObjectives = {{text = "Use Walk on Air", type = "object", numFulfilled = 1, numRequired = 1, finished = false}}
             QuestLogCache.CheckForChanges(nil)
 
@@ -900,7 +900,7 @@ describe("TrackerData", function()
 
     it("formats titles and chat links from the live name and level", function()
         local displayQuest = TrackerData.RefreshQuest(91741)
-        Questie.db.profile.trackerShowQuestLevel = true
+        QuestieSmazak.db.profile.trackerShowQuestLevel = true
 
         assert.are.equal("|cFFFFFF00[2] Nibbled-On Book|r", TrackerData.GetColoredQuestName(displayQuest, true, false))
         assert.are.equal("[[2] Nibbled-On Book (91741)]", TrackerData.GetQuestLink(displayQuest))
@@ -910,7 +910,7 @@ describe("TrackerData", function()
         local trackerUtils, originalTagIds, originalGetQuestTimers
 
         before_each(function()
-            trackerUtils = QuestieLoader:ImportModule("TrackerUtils")
+            trackerUtils = QuestieSmazakLoader:ImportModule("TrackerUtils")
             originalTagIds = QuestieDB.questTagIds
             originalGetQuestTimers = compat.GetQuestTimers
             cached[91741] = {objectives = {{text = "9/15 Windstone Cluster", type = "item",

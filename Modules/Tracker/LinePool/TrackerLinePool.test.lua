@@ -6,15 +6,15 @@ describe("TrackerLinePool", function()
     local originalObjectiveColor
 
     before_each(function()
-        originalObjectiveColor = Questie.db.profile.trackerColorObjectives
-        TrackerData = QuestieLoader:ImportModule("TrackerData")
+        originalObjectiveColor = QuestieSmazak.db.profile.trackerColorObjectives
+        TrackerData = QuestieSmazakLoader:ImportModule("TrackerData")
         TrackerData.GetObjectiveText = spy.new(function() return "Updated objective text" end)
         dofile("Modules/Tracker/LinePool/TrackerLinePool.lua")
-        TrackerLinePool = QuestieLoader:ImportModule("TrackerLinePool")
+        TrackerLinePool = QuestieSmazakLoader:ImportModule("TrackerLinePool")
     end)
 
     after_each(function()
-        Questie.db.profile.trackerColorObjectives = originalObjectiveColor
+        QuestieSmazak.db.profile.trackerColorObjectives = originalObjectiveColor
     end)
 
     describe("UpdateQuestLines", function()
@@ -36,7 +36,7 @@ describe("TrackerLinePool", function()
         it("keeps unfamiliar objective types text-only during incremental updates", function()
             dofile("Modules/Libs/QuestieLib.lua")
             dofile("Modules/Tracker/TrackerData.lua")
-            Questie.db.profile.trackerColorObjectives = "minimal"
+            QuestieSmazak.db.profile.trackerColorObjectives = "minimal"
             local objective = {
                 Index = 1, Type = "future-objective", Description = "Read the book.",
                 Collected = 1, Needed = 1, Completed = true,
@@ -111,10 +111,10 @@ describe("TrackerLinePool", function()
         end
 
         before_each(function()
-            Questie.db.profile.trackerDisableHoverFade = false
+            QuestieSmazak.db.profile.trackerDisableHoverFade = false
             lines = {}
-            local TrackerLine = QuestieLoader:ImportModule("TrackerLine")
-            local TrackerItemButton = QuestieLoader:ImportModule("TrackerItemButton")
+            local TrackerLine = QuestieSmazakLoader:ImportModule("TrackerLine")
+            local TrackerItemButton = QuestieSmazakLoader:ImportModule("TrackerItemButton")
             originalTrackerLineNew, originalItemButtonNew, originalQuestLog = TrackerLine.New, TrackerItemButton.New, _G.C_QuestLog
             TrackerLine.New = function()
                 local line = _Line()
@@ -129,7 +129,7 @@ describe("TrackerLinePool", function()
             _G.C_QuestLog = {GetMaxNumQuestsCanAccept = function() return 1 end}
 
             dofile("Modules/Tracker/LinePool/TrackerLinePool.lua")
-            TrackerLinePool = QuestieLoader:ImportModule("TrackerLinePool")
+            TrackerLinePool = QuestieSmazakLoader:ImportModule("TrackerLinePool")
             local co = coroutine.create(TrackerLinePool.Initialize)
             while coroutine.status(co) ~= "dead" do
                 assert(coroutine.resume(co, {}))
@@ -140,8 +140,8 @@ describe("TrackerLinePool", function()
         end)
 
         after_each(function()
-            QuestieLoader:ImportModule("TrackerLine").New = originalTrackerLineNew
-            QuestieLoader:ImportModule("TrackerItemButton").New = originalItemButtonNew
+            QuestieSmazakLoader:ImportModule("TrackerLine").New = originalTrackerLineNew
+            QuestieSmazakLoader:ImportModule("TrackerItemButton").New = originalItemButtonNew
             _G.C_QuestLog = originalQuestLog
         end)
 

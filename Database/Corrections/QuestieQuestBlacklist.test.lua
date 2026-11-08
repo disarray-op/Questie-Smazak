@@ -5,17 +5,17 @@ dofile("Database/Corrections/ContentPhases/SeasonOfMastery.lua")
 dofile("Database/Corrections/ContentPhases/SeasonOfDiscovery.lua")
 
 dofile("Database/Corrections/ContentPhases/ContentPhases.lua")
-local ContentPhases = QuestieLoader:ImportModule("ContentPhases")
+local ContentPhases = QuestieSmazakLoader:ImportModule("ContentPhases")
 dofile("Database/Corrections/QuestieQuestBlacklist.lua")
-local QuestieQuestBlacklist = QuestieLoader:ImportModule("QuestieQuestBlacklist")
+local QuestieQuestBlacklist = QuestieSmazakLoader:ImportModule("QuestieQuestBlacklist")
 
 describe("QuestieQuestBlacklist", function()
     before_each(function()
         _G.GetLocale = function() return "enUS" end
-        Questie.IsSoD = false
-        Questie.IsTBC = false
-        Questie.IsMoP = false
-        Questie.IsTitanReforged = false
+        QuestieSmazak.IsSoD = false
+        QuestieSmazak.IsTBC = false
+        QuestieSmazak.IsMoP = false
+        QuestieSmazak.IsTitanReforged = false
     end)
 
     it("does not use the general blacklist to isolate Titan-only quests", function()
@@ -40,7 +40,7 @@ describe("QuestieQuestBlacklist", function()
     end)
 
     it("should blacklist SoD quests which are never available", function()
-        Questie.IsSoD = true
+        QuestieSmazak.IsSoD = true
 
         local questToBlacklist = QuestieQuestBlacklist:Load()
 
@@ -52,9 +52,9 @@ describe("QuestieQuestBlacklist", function()
     end)
 
     it("should blacklist Classic Anniversary quests", function()
-        Questie.IsSoM = false
-        Questie.IsSoD = false
-        Questie.IsAnniversaryEra = true
+        QuestieSmazak.IsSoM = false
+        QuestieSmazak.IsSoD = false
+        QuestieSmazak.IsAnniversaryEra = true
         ContentPhases.activePhases.Anniversary = 3
 
         local questToBlacklist = QuestieQuestBlacklist:Load()
@@ -67,10 +67,10 @@ describe("QuestieQuestBlacklist", function()
     end)
 
     it("should blacklist Classic Anniversary quests", function()
-        Questie.IsSoM = false
-        Questie.IsSoD = false
-        Questie.IsAnniversaryEra = false
-        Questie.IsAnniversaryHardcore = true
+        QuestieSmazak.IsSoM = false
+        QuestieSmazak.IsSoD = false
+        QuestieSmazak.IsAnniversaryEra = false
+        QuestieSmazak.IsAnniversaryHardcore = true
         ContentPhases.activePhases.Anniversary = 3
 
         local questToBlacklist = QuestieQuestBlacklist:Load()
@@ -83,9 +83,9 @@ describe("QuestieQuestBlacklist", function()
     end)
 
     it("should blacklist SoM quests", function()
-        Questie.IsSoM = true
-        Questie.IsSoD = false
-        Questie.IsAnniversaryEra = false
+        QuestieSmazak.IsSoM = true
+        QuestieSmazak.IsSoD = false
+        QuestieSmazak.IsAnniversaryEra = false
         ContentPhases.activePhases.SoM = 3
 
         local questToBlacklist = QuestieQuestBlacklist:Load()

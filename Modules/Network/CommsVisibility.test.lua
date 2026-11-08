@@ -46,36 +46,36 @@ describe("CommsVisibility", function()
             end
         }
 
-        Questie.RegisterComm = function() end
-        Questie.db = {char = {}}
+        QuestieSmazak.RegisterComm = function() end
+        QuestieSmazak.db = {char = {}}
 
-        CommsEncoding = QuestieLoader:ImportModule("CommsEncoding")
+        CommsEncoding = QuestieSmazakLoader:ImportModule("CommsEncoding")
         CommsEncoding.hasCodecSupport = true
         CommsEncoding.EncodePayload = function() return "encodedPayload" end
         CommsEncoding.DecodePayload = function() return {} end
 
-        CommsRouting = QuestieLoader:ImportModule("CommsRouting")
+        CommsRouting = QuestieSmazakLoader:ImportModule("CommsRouting")
         CommsRouting.IsSelf = function() return false end
         CommsRouting.IsMessageFromGroupMember = function() return true end
         CommsRouting.GetGroupBroadcastDistribution = function() return "" end
 
-        QuestLogCache = QuestieLoader:ImportModule("QuestLogCache")
+        QuestLogCache = QuestieSmazakLoader:ImportModule("QuestLogCache")
         QuestLogCache.questLog_DO_NOT_MODIFY = {}
 
-        QuestieQuest = QuestieLoader:ImportModule("QuestieQuest")
+        QuestieQuest = QuestieSmazakLoader:ImportModule("QuestieQuest")
         QuestieQuest.IsQuestTracked = function() return true end
 
-        QuestiePartyObjectives = QuestieLoader:ImportModule("QuestiePartyObjectives")
+        QuestiePartyObjectives = QuestieSmazakLoader:ImportModule("QuestiePartyObjectives")
         QuestiePartyObjectives.ScheduleUpdate = spy.new(function() end)
 
-        QuestiePlayer = QuestieLoader:ImportModule("QuestiePlayer")
+        QuestiePlayer = QuestieSmazakLoader:ImportModule("QuestiePlayer")
         QuestiePlayer.GetGroupType = function() return "party" end
 
         _G.GetNumGroupMembers = function() return 2 end
         _G.C_QuestLog.GetMaxNumQuestsCanAccept = function() return 25 end
 
         dofile("Modules/Network/CommsVisibility.lua")
-        CommsVisibility = QuestieLoader:ImportModule("CommsVisibility")
+        CommsVisibility = QuestieSmazakLoader:ImportModule("CommsVisibility")
         -- ResetAll resets the initialized guard so Initialize can be exercised per-test.
         CommsVisibility:ResetAll()
         CommsVisibility:Initialize()
@@ -84,43 +84,43 @@ describe("CommsVisibility", function()
     describe("Initialize", function()
         it("should not register comm when codec support is unavailable", function()
             CommsEncoding.hasCodecSupport = false
-            Questie.RegisterComm = spy.new(function() end)
+            QuestieSmazak.RegisterComm = spy.new(function() end)
 
             -- Reload to reset the module-level initialized guard.
             dofile("Modules/Network/CommsVisibility.lua")
-            local freshCommsVisibility = QuestieLoader:ImportModule("CommsVisibility")
+            local freshCommsVisibility = QuestieSmazakLoader:ImportModule("CommsVisibility")
             freshCommsVisibility:ResetAll()
 
             freshCommsVisibility:Initialize()
 
-            assert.spy(Questie.RegisterComm).was.not_called()
+            assert.spy(QuestieSmazak.RegisterComm).was.not_called()
         end)
 
         it("should register comm when codec support is available", function()
-            Questie.RegisterComm = spy.new(function() end)
+            QuestieSmazak.RegisterComm = spy.new(function() end)
 
             -- Reload to reset the module-level initialized guard.
             dofile("Modules/Network/CommsVisibility.lua")
-            local freshCommsVisibility = QuestieLoader:ImportModule("CommsVisibility")
+            local freshCommsVisibility = QuestieSmazakLoader:ImportModule("CommsVisibility")
             freshCommsVisibility:ResetAll()
 
             freshCommsVisibility:Initialize()
 
-            assert.spy(Questie.RegisterComm).was.called_with(Questie, "QuestieV1", freshCommsVisibility.OnCommReceived)
+            assert.spy(QuestieSmazak.RegisterComm).was.called_with(QuestieSmazak, "QuestieV1", freshCommsVisibility.OnCommReceived)
         end)
 
         it("should not re-register comm when already initialized", function()
-            Questie.RegisterComm = spy.new(function() end)
+            QuestieSmazak.RegisterComm = spy.new(function() end)
 
             -- Reload fresh and initialize once.
             dofile("Modules/Network/CommsVisibility.lua")
-            local freshCommsVisibility = QuestieLoader:ImportModule("CommsVisibility")
+            local freshCommsVisibility = QuestieSmazakLoader:ImportModule("CommsVisibility")
             freshCommsVisibility:ResetAll()
             freshCommsVisibility:Initialize()
 
             freshCommsVisibility:Initialize()
 
-            assert.spy(Questie.RegisterComm).was.called(1)
+            assert.spy(QuestieSmazak.RegisterComm).was.called(1)
         end)
     end)
 
@@ -139,7 +139,7 @@ describe("CommsVisibility", function()
         it("should not send when group grows too large before the timer fires", function()
             -- Group is small when scheduling...
             _G.GetNumGroupMembers = function() return 2 end
-            Questie.SendCommMessage = spy.new(function() end)
+            QuestieSmazak.SendCommMessage = spy.new(function() end)
 
             local capturedCallback
             _G.C_Timer = {
@@ -154,27 +154,27 @@ describe("CommsVisibility", function()
             _G.GetNumGroupMembers = function() return 6 end
             capturedCallback()
 
-            assert.spy(Questie.SendCommMessage).was.not_called()
+            assert.spy(QuestieSmazak.SendCommMessage).was.not_called()
         end)
 
         it("should not send when no broadcast distribution is available", function()
             CommsRouting.GetGroupBroadcastDistribution = function() return nil end
-            Questie.SendCommMessage = spy.new(function() end)
+            QuestieSmazak.SendCommMessage = spy.new(function() end)
             _G.C_Timer = _createInstantTimerMock()
 
             CommsVisibility:ScheduleSnapshot("test")
 
-            assert.spy(Questie.SendCommMessage).was.not_called()
+            assert.spy(QuestieSmazak.SendCommMessage).was.not_called()
         end)
 
         it("should not send when encoding fails", function()
             CommsEncoding.EncodePayload = function() return nil end
-            Questie.SendCommMessage = spy.new(function() end)
+            QuestieSmazak.SendCommMessage = spy.new(function() end)
             _G.C_Timer = _createInstantTimerMock()
 
             CommsVisibility:ScheduleSnapshot("test")
 
-            assert.spy(Questie.SendCommMessage).was.not_called()
+            assert.spy(QuestieSmazak.SendCommMessage).was.not_called()
         end)
 
         it("should send encoded snapshot to the broadcast distribution", function()
@@ -182,16 +182,16 @@ describe("CommsVisibility", function()
             QuestieQuest.IsQuestTracked = function() return true end
             CommsEncoding.EncodePayload = function() return "encodedPayload" end
             CommsRouting.GetGroupBroadcastDistribution = function() return "PARTY" end
-            Questie.SendCommMessage = spy.new(function() end)
+            QuestieSmazak.SendCommMessage = spy.new(function() end)
             _G.C_Timer = _createInstantTimerMock()
 
             CommsVisibility:ScheduleSnapshot("test")
 
-            assert.spy(Questie.SendCommMessage).was.called_with(Questie, "QuestieV1", "encodedPayload", "PARTY")
+            assert.spy(QuestieSmazak.SendCommMessage).was.called_with(QuestieSmazak, "QuestieV1", "encodedPayload", "PARTY")
         end)
 
         it("should mark hidden quests as false in snapshot", function()
-            Questie.db.char.hidden = {[100] = true}
+            QuestieSmazak.db.char.hidden = {[100] = true}
             QuestLogCache.questLog_DO_NOT_MODIFY = {[100] = true}
             local capturedPayload
             CommsEncoding.EncodePayload = function(_, payload)
@@ -206,7 +206,7 @@ describe("CommsVisibility", function()
         end)
 
         it("should mark tracked quests as true in snapshot", function()
-            Questie.db.char.hidden = {}
+            QuestieSmazak.db.char.hidden = {}
             QuestLogCache.questLog_DO_NOT_MODIFY = {[100] = true}
             QuestieQuest.IsQuestTracked = function() return true end
             local capturedPayload

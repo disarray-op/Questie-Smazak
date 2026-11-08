@@ -1,11 +1,11 @@
 ---@class QuestieNameplate
-local QuestieNameplate = QuestieLoader:CreateModule("QuestieNameplate")
+local QuestieNameplate = QuestieSmazakLoader:CreateModule("QuestieNameplate")
 local _QuestieNameplate = {}
 -------------------------
 --Import modules.
 -------------------------
 ---@type QuestieTooltips
-local QuestieTooltips = QuestieLoader:ImportModule("QuestieTooltips")
+local QuestieTooltips = QuestieSmazakLoader:ImportModule("QuestieTooltips")
 
 local activeGUIDs = {}
 local npFrames = {}
@@ -17,9 +17,9 @@ local activeTargetFrame
 
 ---@param token string
 function QuestieNameplate:NameplateCreated(token)
-    Questie.Debug(Questie.DEBUG_SPAM, "[QuestieNameplate:NameplateCreated]")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_SPAM, "[QuestieNameplate:NameplateCreated]")
     -- if nameplates are disabled, don't create new nameplates.
-    if (not Questie.db.profile.nameplateEnabled) or (Questie.IsForever and IsInInstance()) then
+    if (not QuestieSmazak.db.profile.nameplateEnabled) or (QuestieSmazak.IsForever and IsInInstance()) then
         return
     end
 
@@ -55,7 +55,7 @@ end
 
 ---@param token string
 function QuestieNameplate:NameplateDestroyed(token)
-    Questie.Debug(Questie.DEBUG_SPAM, "[QuestieNameplate:NameplateDestroyed]")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_SPAM, "[QuestieNameplate:NameplateDestroyed]")
 
     -- The removed unit's GUID may be missing or restricted. Clean up the identity we recorded at creation.
     for guid, activeToken in pairs(activeGUIDs) do
@@ -67,7 +67,7 @@ function QuestieNameplate:NameplateDestroyed(token)
 end
 
 function QuestieNameplate:UpdateNameplate()
-    Questie.Debug(Questie.DEBUG_SPAM, "[QuestieNameplate:UpdateNameplate]")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_SPAM, "[QuestieNameplate:UpdateNameplate]")
 
     for guid, token in pairs(activeGUIDs) do
         local unitName, _ = UnitName(token)
@@ -107,7 +107,7 @@ function QuestieNameplate.SetIconXPosition(xPos)
         return
     end
 
-    Questie.db.profile.nameplateX = xPos
+    QuestieSmazak.db.profile.nameplateX = xPos
 end
 
 ---@param yPos number
@@ -116,7 +116,7 @@ function QuestieNameplate.SetIconYPosition(yPos)
         return
     end
 
-    Questie.db.profile.nameplateY = yPos
+    QuestieSmazak.db.profile.nameplateY = yPos
 end
 
 ---@param scale number
@@ -125,14 +125,14 @@ function QuestieNameplate.SetIconScale(scale)
         return
     end
 
-    Questie.db.profile.nameplateScale = scale
+    QuestieSmazak.db.profile.nameplateScale = scale
 end
 
 function QuestieNameplate:RedrawIcons()
     for _, frame in pairs(npFrames) do
-        local iconScale = Questie.db.profile.nameplateScale
+        local iconScale = QuestieSmazak.db.profile.nameplateScale
 
-        frame:SetPoint("LEFT", Questie.db.profile.nameplateX, Questie.db.profile.nameplateY)
+        frame:SetPoint("LEFT", QuestieSmazak.db.profile.nameplateX, QuestieSmazak.db.profile.nameplateY)
         frame:SetWidth(16 * iconScale)
         frame:SetHeight(16 * iconScale)
     end
@@ -161,9 +161,9 @@ function QuestieNameplate.GetIcon(guid)
 end
 
 function QuestieNameplate:DrawTargetFrame()
-    Questie.Debug(Questie.DEBUG_SPAM, "[QuestieNameplate:DrawTargetFrame]")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_SPAM, "[QuestieNameplate:DrawTargetFrame]")
 
-    if (not Questie.db.profile.nameplateTargetFrameEnabled) or (Questie.IsForever and IsInInstance()) then
+    if (not QuestieSmazak.db.profile.nameplateTargetFrameEnabled) or (QuestieSmazak.IsForever and IsInInstance()) then
         return
     end
 
@@ -211,14 +211,14 @@ function QuestieNameplate:HideCurrentTargetFrame()
 end
 
 function QuestieNameplate:RedrawFrameIcon()
-    if (not Questie.db.profile.nameplateTargetFrameEnabled) or (not activeTargetFrame) then
+    if (not QuestieSmazak.db.profile.nameplateTargetFrameEnabled) or (not activeTargetFrame) then
         return
     end
 
-    local iconScale = Questie.db.profile.nameplateTargetFrameScale
+    local iconScale = QuestieSmazak.db.profile.nameplateTargetFrameScale
     activeTargetFrame:SetWidth(16 * iconScale)
     activeTargetFrame:SetHeight(16 * iconScale)
-    activeTargetFrame:SetPoint("RIGHT", Questie.db.profile.nameplateTargetFrameX, Questie.db.profile.nameplateTargetFrameY)
+    activeTargetFrame:SetPoint("RIGHT", QuestieSmazak.db.profile.nameplateTargetFrameX, QuestieSmazak.db.profile.nameplateTargetFrameY)
 end
 
 ---@param guid string
@@ -236,7 +236,7 @@ function _QuestieNameplate.GetFrame(guid)
         npFramesCount = npFramesCount + 1
     end
 
-    local iconScale = Questie.db.profile.nameplateScale
+    local iconScale = QuestieSmazak.db.profile.nameplateScale
 
     frame:SetFrameStrata("HIGH")
     frame:SetFrameLevel(10)
@@ -244,7 +244,7 @@ function _QuestieNameplate.GetFrame(guid)
     frame:SetHeight(16 * iconScale)
     frame:EnableMouse(false)
     frame:SetParent(parent)
-    frame:SetPoint("LEFT", Questie.db.profile.nameplateX, Questie.db.profile.nameplateY)
+    frame:SetPoint("LEFT", QuestieSmazak.db.profile.nameplateX, QuestieSmazak.db.profile.nameplateY)
 
     frame.Icon = frame:CreateTexture(nil, "ARTWORK")
     frame.Icon:ClearAllPoints()
@@ -258,7 +258,7 @@ end
 function _QuestieNameplate.GetTargetFrameIconFrame()
     local frame = CreateFrame("Frame")
 
-    local iconScale = Questie.db.profile.nameplateTargetFrameScale
+    local iconScale = QuestieSmazak.db.profile.nameplateTargetFrameScale
     local strata = "MEDIUM"
 
     local targetFrame = TargetFrame -- Default Blizzard target frame
@@ -290,7 +290,7 @@ function _QuestieNameplate.GetTargetFrameIconFrame()
     frame:SetHeight(16 * iconScale)
     frame:EnableMouse(false)
 
-    frame:SetPoint("RIGHT", Questie.db.profile.nameplateTargetFrameX, Questie.db.profile.nameplateTargetFrameY)
+    frame:SetPoint("RIGHT", QuestieSmazak.db.profile.nameplateTargetFrameX, QuestieSmazak.db.profile.nameplateTargetFrameY)
 
     frame.Icon = frame:CreateTexture(nil, "ARTWORK")
     frame.Icon:ClearAllPoints()
@@ -321,32 +321,32 @@ function _QuestieNameplate.GetValidIcon(tooltips) -- helper function to get the 
         if tooltip.objective and tooltip.objective.Update then
             tooltip.objective:Update() -- get latest qlog data if its outdated
             if (not tooltip.objective.Completed) and tooltip.objective.Icon then
-                -- If the tooltip icon is Questie.ICON_TYPE_OBJECT we use Questie.ICON_TYPE_LOOT because NPCs should never show
+                -- If the tooltip icon is QuestieSmazak.ICON_TYPE_OBJECT we use QuestieSmazak.ICON_TYPE_LOOT because NPCs should never show
                 -- a cogwheel icon (for pfquest only).
                 local iconType = tooltip.objective.Icon
-                if iconType == Questie.ICON_TYPE_LOOT then
-                    return Questie.db.profile.iconTheme == 'pfquest' and Questie.icons["loot"] or Questie.db.profile.ICON_LOOT or Questie.icons["loot"]
-                elseif iconType == Questie.ICON_TYPE_OBJECT then
-                    return Questie.db.profile.iconTheme == 'pfquest' and Questie.icons["loot"] or Questie.db.profile.ICON_LOOT or Questie.icons["loot"]
-                elseif iconType == Questie.ICON_TYPE_SLAY then
-                    return Questie.db.profile.iconTheme == 'pfquest' and Questie.icons["slay"] or Questie.db.profile.ICON_SLAY or Questie.icons["slay"]
-                elseif iconType == Questie.ICON_TYPE_EVENT then
-                    return Questie.db.profile.iconTheme == 'pfquest' and Questie.icons["event"] or Questie.db.profile.ICON_EVENT or Questie.icons["event"]
-                elseif iconType == Questie.ICON_TYPE_TALK then
-                    return Questie.db.profile.iconTheme == 'pfquest' and Questie.icons["talk"] or Questie.db.profile.ICON_TALK or Questie.icons["talk"]
-                elseif iconType == Questie.ICON_TYPE_INTERACT then
-                    return Questie.db.profile.iconTheme == 'pfquest' and Questie.icons["interact"] or Questie.db.profile.ICON_INTERACT or Questie.icons["interact"]
-                elseif iconType == Questie.ICON_TYPE_MOUNT_UP then
-                    return Questie.db.profile.iconTheme == 'pfquest' and Questie.icons["mount_up"] or Questie.db.profile.MOUNT_UP or Questie.icons["mount_up"]
-                elseif iconType == Questie.ICON_TYPE_PET_BATTLE then
-                    return Questie.db.profile.iconTheme == 'pfquest' and Questie.icons["petbattle"] or Questie.db.profile.ICON_TYPE_PET_BATTLE or Questie.icons["petbattle"]
+                if iconType == QuestieSmazak.ICON_TYPE_LOOT then
+                    return QuestieSmazak.db.profile.iconTheme == 'pfquest' and QuestieSmazak.icons["loot"] or QuestieSmazak.db.profile.ICON_LOOT or QuestieSmazak.icons["loot"]
+                elseif iconType == QuestieSmazak.ICON_TYPE_OBJECT then
+                    return QuestieSmazak.db.profile.iconTheme == 'pfquest' and QuestieSmazak.icons["loot"] or QuestieSmazak.db.profile.ICON_LOOT or QuestieSmazak.icons["loot"]
+                elseif iconType == QuestieSmazak.ICON_TYPE_SLAY then
+                    return QuestieSmazak.db.profile.iconTheme == 'pfquest' and QuestieSmazak.icons["slay"] or QuestieSmazak.db.profile.ICON_SLAY or QuestieSmazak.icons["slay"]
+                elseif iconType == QuestieSmazak.ICON_TYPE_EVENT then
+                    return QuestieSmazak.db.profile.iconTheme == 'pfquest' and QuestieSmazak.icons["event"] or QuestieSmazak.db.profile.ICON_EVENT or QuestieSmazak.icons["event"]
+                elseif iconType == QuestieSmazak.ICON_TYPE_TALK then
+                    return QuestieSmazak.db.profile.iconTheme == 'pfquest' and QuestieSmazak.icons["talk"] or QuestieSmazak.db.profile.ICON_TALK or QuestieSmazak.icons["talk"]
+                elseif iconType == QuestieSmazak.ICON_TYPE_INTERACT then
+                    return QuestieSmazak.db.profile.iconTheme == 'pfquest' and QuestieSmazak.icons["interact"] or QuestieSmazak.db.profile.ICON_INTERACT or QuestieSmazak.icons["interact"]
+                elseif iconType == QuestieSmazak.ICON_TYPE_MOUNT_UP then
+                    return QuestieSmazak.db.profile.iconTheme == 'pfquest' and QuestieSmazak.icons["mount_up"] or QuestieSmazak.db.profile.MOUNT_UP or QuestieSmazak.icons["mount_up"]
+                elseif iconType == QuestieSmazak.ICON_TYPE_PET_BATTLE then
+                    return QuestieSmazak.db.profile.iconTheme == 'pfquest' and QuestieSmazak.icons["petbattle"] or QuestieSmazak.db.profile.ICON_TYPE_PET_BATTLE or QuestieSmazak.icons["petbattle"]
                 --? icon types below here are never reached or just not used on nameplates ?
-                elseif iconType == Questie.ICON_TYPE_AVAILABLE or iconType == Questie.ICON_TYPE_AVAILABLE_GRAY then
-                    return Questie.icons["available"]
-                elseif iconType == Questie.ICON_TYPE_REPEATABLE then
-                    return Questie.icons["repeatable"]
-                elseif iconType == Questie.ICON_TYPE_COMPLETE then
-                    return Questie.icons["complete"]
+                elseif iconType == QuestieSmazak.ICON_TYPE_AVAILABLE or iconType == QuestieSmazak.ICON_TYPE_AVAILABLE_GRAY then
+                    return QuestieSmazak.icons["available"]
+                elseif iconType == QuestieSmazak.ICON_TYPE_REPEATABLE then
+                    return QuestieSmazak.icons["repeatable"]
+                elseif iconType == QuestieSmazak.ICON_TYPE_COMPLETE then
+                    return QuestieSmazak.icons["complete"]
                 end
             end
         end

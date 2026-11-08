@@ -33,20 +33,20 @@ describe("QuestieReputation", function()
             return nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil
         end)
 
-        Expansions = QuestieLoader:ImportModule("Expansions")
-        QuestiePlayer = QuestieLoader:ImportModule("QuestiePlayer")
+        Expansions = QuestieSmazakLoader:ImportModule("Expansions")
+        QuestiePlayer = QuestieSmazakLoader:ImportModule("QuestiePlayer")
         QuestiePlayer.HasRequiredRace = spy.new(function() return false end)
-        QuestieQuest = QuestieLoader:ImportModule("QuestieQuest")
+        QuestieQuest = QuestieSmazakLoader:ImportModule("QuestieQuest")
         QuestieQuest.ResetAutoblacklistCategory = spy.new(function() end)
 
         -- QuestieDB binds the provider schema and queries at file load.
         LoadQuestieDBMock()
         dofile("Database/QuestieDB.lua")
-        QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+        QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
         QuestieDB.raceKeys = {HUMAN = 1}
 
         dofile("Modules/QuestieReputation.lua")
-        QuestieReputation = QuestieLoader:ImportModule("QuestieReputation")
+        QuestieReputation = QuestieSmazakLoader:ImportModule("QuestieReputation")
     end)
 
     describe("HasFactionAndReputationLevel", function()
@@ -164,7 +164,7 @@ describe("QuestieReputation", function()
             before_each(function()
                 originalInCombatLockdown = _G.InCombatLockdown
                 originalUnitAura = _G.UnitAura
-                originalIsForever = Questie.IsForever
+                originalIsForever = QuestieSmazak.IsForever
                 originalCTraits = _G.C_Traits
                 diplomatRank = 0
                 _G.C_Traits = {
@@ -177,7 +177,7 @@ describe("QuestieReputation", function()
                 }
                 originalExpansion = Expansions.Current
                 Expansions.Current = Expansions.Era
-                Questie.IsForever = true
+                QuestieSmazak.IsForever = true
                 _G.InCombatLockdown = function() return false end
                 _G.UnitAura = spy.new(function(_, index)
                     if index == 1 then return nil, nil, nil, nil, nil, nil, nil, nil, nil, 46668 end
@@ -189,7 +189,7 @@ describe("QuestieReputation", function()
                 _G.InCombatLockdown = originalInCombatLockdown
                 _G.UnitAura = originalUnitAura
                 _G.C_Traits = originalCTraits
-                Questie.IsForever = originalIsForever
+                QuestieSmazak.IsForever = originalIsForever
                 Expansions.Current = originalExpansion
             end)
 
@@ -210,7 +210,7 @@ describe("QuestieReputation", function()
             end)
 
             it("keeps Classic reputation buff calculations active during combat", function()
-                Questie.IsForever = false
+                QuestieSmazak.IsForever = false
                 _G.InCombatLockdown = function() return true end
 
                 assert.are_same({{909, 82.5}}, QuestieReputation.GetReputationReward(1))
@@ -219,7 +219,7 @@ describe("QuestieReputation", function()
         end)
 
         it("should return the reputation reward for a quest", function()
-            Questie.IsCata = false
+            QuestieSmazak.IsCata = false
             Expansions.Current = Expansions.Wotlk
             QuestieDB.QueryQuestSingle = spy.new(function()
                 return {{909, 250}}
@@ -232,7 +232,7 @@ describe("QuestieReputation", function()
         end)
 
         it("should return an empty table when a quest has no reputation reward", function()
-            Questie.IsCata = true
+            QuestieSmazak.IsCata = true
             Expansions.Current = Expansions.Cata
             QuestieDB.QueryQuestSingle = spy.new(function()
                 return nil
@@ -244,8 +244,8 @@ describe("QuestieReputation", function()
             assert.are_same({}, reputationReward)
         end)
 
-        it("should return 10 as reward value for difficulty 1 when Questie.IsCata is true", function()
-            Questie.IsCata = true
+        it("should return 10 as reward value for difficulty 1 when QuestieSmazak.IsCata is true", function()
+            QuestieSmazak.IsCata = true
             Expansions.Current = Expansions.Cata
             QuestieDB.QueryQuestSingle = spy.new(function()
                 return {{909, 1}}
@@ -256,8 +256,8 @@ describe("QuestieReputation", function()
             assert.are_same({{909, 10}}, reputationReward)
         end)
 
-        it("should return 25 as reward value for difficulty 2 when Questie.IsCata is true", function()
-            Questie.IsCata = true
+        it("should return 25 as reward value for difficulty 2 when QuestieSmazak.IsCata is true", function()
+            QuestieSmazak.IsCata = true
             Expansions.Current = Expansions.Cata
             QuestieDB.QueryQuestSingle = spy.new(function()
                 return {{909, 2}}
@@ -268,8 +268,8 @@ describe("QuestieReputation", function()
             assert.are_same({{909, 25}}, reputationReward)
         end)
 
-        it("should return 75 as reward value for difficulty 3 when Questie.IsCata is true", function()
-            Questie.IsCata = true
+        it("should return 75 as reward value for difficulty 3 when QuestieSmazak.IsCata is true", function()
+            QuestieSmazak.IsCata = true
             Expansions.Current = Expansions.Cata
             QuestieDB.QueryQuestSingle = spy.new(function()
                 return {{909, 3}}
@@ -280,8 +280,8 @@ describe("QuestieReputation", function()
             assert.are_same({{909, 75}}, reputationReward)
         end)
 
-        it("should return 150 as reward value for difficulty 4 when Questie.IsCata is true", function()
-            Questie.IsCata = true
+        it("should return 150 as reward value for difficulty 4 when QuestieSmazak.IsCata is true", function()
+            QuestieSmazak.IsCata = true
             Expansions.Current = Expansions.Cata
             QuestieDB.QueryQuestSingle = spy.new(function()
                 return {{909, 4}}
@@ -292,8 +292,8 @@ describe("QuestieReputation", function()
             assert.are_same({{909, 150}}, reputationReward)
         end)
 
-        it("should return 250 as reward value for difficulty 5 when Questie.IsCata is true", function()
-            Questie.IsCata = true
+        it("should return 250 as reward value for difficulty 5 when QuestieSmazak.IsCata is true", function()
+            QuestieSmazak.IsCata = true
             Expansions.Current = Expansions.Cata
             QuestieDB.QueryQuestSingle = spy.new(function()
                 return {{909, 5}}
@@ -304,8 +304,8 @@ describe("QuestieReputation", function()
             assert.are_same({{909, 250}}, reputationReward)
         end)
 
-        it("should return 350 as reward value for difficulty 6 when Questie.IsCata is true", function()
-            Questie.IsCata = true
+        it("should return 350 as reward value for difficulty 6 when QuestieSmazak.IsCata is true", function()
+            QuestieSmazak.IsCata = true
             Expansions.Current = Expansions.Cata
             QuestieDB.QueryQuestSingle = spy.new(function()
                 return {{909, 6}}
@@ -316,8 +316,8 @@ describe("QuestieReputation", function()
             assert.are_same({{909, 350}}, reputationReward)
         end)
 
-        it("should return 500 as reward value for difficulty 7 when Questie.IsCata is true", function()
-            Questie.IsCata = true
+        it("should return 500 as reward value for difficulty 7 when QuestieSmazak.IsCata is true", function()
+            QuestieSmazak.IsCata = true
             Expansions.Current = Expansions.Cata
             QuestieDB.QueryQuestSingle = spy.new(function()
                 return {{909, 7}}
@@ -328,8 +328,8 @@ describe("QuestieReputation", function()
             assert.are_same({{909, 500}}, reputationReward)
         end)
 
-        it("should return 1000 as reward value for difficulty 8 when Questie.IsCata is true", function()
-            Questie.IsCata = true
+        it("should return 1000 as reward value for difficulty 8 when QuestieSmazak.IsCata is true", function()
+            QuestieSmazak.IsCata = true
             Expansions.Current = Expansions.Cata
             QuestieDB.QueryQuestSingle = spy.new(function()
                 return {{909, 8}}
@@ -340,8 +340,8 @@ describe("QuestieReputation", function()
             assert.are_same({{909, 1000}}, reputationReward)
         end)
 
-        it("should return 5 as reward value for difficulty 9 when Questie.IsCata is true", function()
-            Questie.IsCata = true
+        it("should return 5 as reward value for difficulty 9 when QuestieSmazak.IsCata is true", function()
+            QuestieSmazak.IsCata = true
             Expansions.Current = Expansions.Cata
             QuestieDB.QueryQuestSingle = spy.new(function()
                 return {{909, 9}}
@@ -352,8 +352,8 @@ describe("QuestieReputation", function()
             assert.are_same({{909, 5}}, reputationReward)
         end)
 
-        it("should return DB value for unknown difficulty when Questie.IsCata is true", function()
-            Questie.IsCata = true
+        it("should return DB value for unknown difficulty when QuestieSmazak.IsCata is true", function()
+            QuestieSmazak.IsCata = true
             Expansions.Current = Expansions.Cata
             QuestieDB.QueryQuestSingle = spy.new(function()
                 return {{909, 99}}
@@ -364,8 +364,8 @@ describe("QuestieReputation", function()
             assert.are_same({{909, 99}}, reputationReward)
         end)
 
-        it("should return -10 as reward value for difficulty -1 when Questie.IsCata is true", function()
-            Questie.IsCata = true
+        it("should return -10 as reward value for difficulty -1 when QuestieSmazak.IsCata is true", function()
+            QuestieSmazak.IsCata = true
             Expansions.Current = Expansions.Cata
             QuestieDB.QueryQuestSingle = spy.new(function()
                 return {{909, -1}}
@@ -429,7 +429,7 @@ describe("QuestieReputation", function()
         end)
 
         it("should respect Mr. Popularity rank 1 guild perk", function()
-            Questie.IsCata = true
+            QuestieSmazak.IsCata = true
             Expansions.Current = Expansions.Cata
             QuestieDB.QueryQuestSingle = spy.new(function()
                 return {{909, 3}}
@@ -445,7 +445,7 @@ describe("QuestieReputation", function()
         end)
 
         it("should respect Mr. Popularity rank 2 guild perk", function()
-            Questie.IsCata = true
+            QuestieSmazak.IsCata = true
             Expansions.Current = Expansions.Cata
             QuestieDB.QueryQuestSingle = spy.new(function()
                 return {{909, 3}}

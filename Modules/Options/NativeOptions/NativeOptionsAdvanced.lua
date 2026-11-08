@@ -1,33 +1,33 @@
 ---@type QuestiePopup
-local Popup = QuestieLoader:ImportModule("QuestiePopup")
+local Popup = QuestieSmazakLoader:ImportModule("QuestiePopup")
 
 -------------------------
 --Import modules.
 -------------------------
 ---@type QuestieQuest
-local QuestieQuest = QuestieLoader:ImportModule("QuestieQuest")
+local QuestieQuest = QuestieSmazakLoader:ImportModule("QuestieQuest")
 ---@type QuestieOptions
-local QuestieOptions = QuestieLoader:ImportModule("QuestieOptions")
+local QuestieOptions = QuestieSmazakLoader:ImportModule("QuestieOptions")
 ---@type QuestieOptionsEngine
-local QuestieOptionsEngine = QuestieLoader:ImportModule("QuestieOptionsEngine")
+local QuestieOptionsEngine = QuestieSmazakLoader:ImportModule("QuestieOptionsEngine")
 ---@type QuestieOptionsDefaults
-local QuestieOptionsDefaults = QuestieLoader:ImportModule("QuestieOptionsDefaults")
+local QuestieOptionsDefaults = QuestieSmazakLoader:ImportModule("QuestieOptionsDefaults")
 ---@type QuestieOptionsUtils
-local QuestieOptionsUtils = QuestieLoader:ImportModule("QuestieOptionsUtils")
+local QuestieOptionsUtils = QuestieSmazakLoader:ImportModule("QuestieOptionsUtils")
 ---@type QuestieTracker
-local QuestieTracker = QuestieLoader:ImportModule("QuestieTracker")
+local QuestieTracker = QuestieSmazakLoader:ImportModule("QuestieTracker")
 ---@type IsleOfQuelDanas
-local IsleOfQuelDanas = QuestieLoader:ImportModule("IsleOfQuelDanas")
+local IsleOfQuelDanas = QuestieSmazakLoader:ImportModule("IsleOfQuelDanas")
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 ---@type Expansions
-local Expansions = QuestieLoader:ImportModule("Expansions")
+local Expansions = QuestieSmazakLoader:ImportModule("Expansions")
 ---@type QuestieJourney
-local QuestieJourney = QuestieLoader:ImportModule("QuestieJourney")
+local QuestieJourney = QuestieSmazakLoader:ImportModule("QuestieJourney")
 ---@type QuestieProfiler
-local QuestieProfiler = QuestieLoader:ImportModule("Profiler")
+local QuestieProfiler = QuestieSmazakLoader:ImportModule("Profiler")
 ---@type QuestieWaypoints
-local QuestieWaypoints = QuestieLoader:ImportModule("QuestieWaypoints")
+local QuestieWaypoints = QuestieSmazakLoader:ImportModule("QuestieWaypoints")
 
 QuestieOptionsEngine.tabs.advanced = { ... }
 local optionsDefaults = QuestieOptionsDefaults:Load()
@@ -60,10 +60,10 @@ function QuestieOptionsEngine.tabs.advanced:Initialize()
                 visible = false,
                 width = "full",
                 get = function()
-                    return Questie.db.profile.hideStartupWarnings
+                    return QuestieSmazak.db.profile.hideStartupWarnings
                 end,
                 set = function(self, value)
-                    Questie.db.profile.hideStartupWarnings = value
+                    QuestieSmazak.db.profile.hideStartupWarnings = value
                 end,
             },
             enableIconLimit = {
@@ -73,10 +73,10 @@ function QuestieOptionsEngine.tabs.advanced:Initialize()
                 tooltip = "Enable the limit of icons drawn per type.",
                 width = "full",
                 get = function()
-                    return Questie.db.profile.enableIconLimit
+                    return QuestieSmazak.db.profile.enableIconLimit
                 end,
                 set = function(self, value)
-                    Questie.db.profile.enableIconLimit = value
+                    QuestieSmazak.db.profile.enableIconLimit = value
                     QuestieOptionsUtils:Delay(0.5, QuestieQuest.SmoothReset, l10n("Setting icon limit value to %s : Redrawing!", value))
                 end,
             },
@@ -90,13 +90,13 @@ function QuestieOptionsEngine.tabs.advanced:Initialize()
                 max = 5000,
                 step = 10,
                 enabled = function()
-                    return Questie.db.profile.enableIconLimit
+                    return QuestieSmazak.db.profile.enableIconLimit
                 end,
                 get = function()
-                    return Questie.db.profile.iconLimit
+                    return QuestieSmazak.db.profile.iconLimit
                 end,
                 set = function(self, value)
-                    Questie.db.profile.iconLimit = value
+                    QuestieSmazak.db.profile.iconLimit = value
                     QuestieOptionsUtils:Delay(0.5, QuestieQuest.SmoothReset, l10n("Setting icon limit value to %s : Redrawing!", value))
                 end,
             },
@@ -110,13 +110,13 @@ function QuestieOptionsEngine.tabs.advanced:Initialize()
                 max = 5,
                 step = 1,
                 enabled = function()
-                    return Questie.db.profile.enabled
+                    return QuestieSmazak.db.profile.enabled
                 end,
                 get = function()
-                    return Questie.db.profile.objectiveFilterDistance
+                    return QuestieSmazak.db.profile.objectiveFilterDistance
                 end,
                 set = function(self, value)
-                    Questie.db.profile.objectiveFilterDistance = value
+                    QuestieSmazak.db.profile.objectiveFilterDistance = value
                     QuestieOptionsUtils:Delay(0.5, QuestieQuest.SmoothReset, l10n("Setting objective filter distance to %s : Redrawing!", value))
                 end,
             },
@@ -130,13 +130,13 @@ function QuestieOptionsEngine.tabs.advanced:Initialize()
                 max = 100,
                 step = 1,
                 enabled = function()
-                    return Questie.db.profile.enabled
+                    return QuestieSmazak.db.profile.enabled
                 end,
                 get = function()
-                    return Questie.db.profile.spawnFilterDistance
+                    return QuestieSmazak.db.profile.spawnFilterDistance
                 end,
                 set = function(self, value)
-                    Questie.db.profile.spawnFilterDistance = value
+                    QuestieSmazak.db.profile.spawnFilterDistance = value
                     QuestieOptionsUtils:Delay(0.5, QuestieQuest.SmoothReset, l10n("Setting icon limit value to %s : Redrawing!", value))
                 end,
             },
@@ -150,13 +150,13 @@ function QuestieOptionsEngine.tabs.advanced:Initialize()
                 max = 500,
                 step = 1,
                 enabled = function()
-                    return Questie.db.profile.enabled
+                    return QuestieSmazak.db.profile.enabled
                 end,
                 get = function()
-                    return Questie.db.profile.availableIconLimit
+                    return QuestieSmazak.db.profile.availableIconLimit
                 end,
                 set = function(self, value)
-                    Questie.db.profile.availableIconLimit = value
+                    QuestieSmazak.db.profile.availableIconLimit = value
                     QuestieOptionsUtils:Delay(0.5, QuestieQuest.SmoothReset, l10n("Setting icon limit value to %s : Redrawing!", value))
                 end,
             },
@@ -164,7 +164,7 @@ function QuestieOptionsEngine.tabs.advanced:Initialize()
                 type = "container",
                 order = 1.5,
                 title = "Quel'Danas Settings",
-                visible = Questie.IsTBC,
+                visible = QuestieSmazak.IsTBC,
                 items = {
                     isleOfQuelDanasPhase = {
                         type = "dropdown",
@@ -177,10 +177,10 @@ function QuestieOptionsEngine.tabs.advanced:Initialize()
                             return Expansions.Current > Expansions.Tbc
                         end,
                         get = function()
-                            return Questie.db.profile.isleOfQuelDanasPhase
+                            return QuestieSmazak.db.profile.isleOfQuelDanasPhase
                         end,
                         set = function(key)
-                            Questie.db.profile.isleOfQuelDanasPhase = key
+                            QuestieSmazak.db.profile.isleOfQuelDanasPhase = key
                             QuestieQuest:SmoothReset()
                         end,
                     },
@@ -194,10 +194,10 @@ function QuestieOptionsEngine.tabs.advanced:Initialize()
                             return Expansions.Current > Expansions.Tbc
                         end,
                         get = function()
-                            return Questie.db.profile.isIsleOfQuelDanasPhaseReminderDisabled
+                            return QuestieSmazak.db.profile.isIsleOfQuelDanasPhaseReminderDisabled
                         end,
                         set = function(self, value)
-                            Questie.db.profile.isIsleOfQuelDanasPhaseReminderDisabled = value
+                            QuestieSmazak.db.profile.isIsleOfQuelDanasPhaseReminderDisabled = value
                         end,
                     },
                 },
@@ -215,13 +215,13 @@ function QuestieOptionsEngine.tabs.advanced:Initialize()
                 width = "half",
                 options = _GetLanguages,
                 get = function()
-                    if not Questie.db.global.questieLocaleDiff then
+                    if not QuestieSmazak.db.global.questieLocaleDiff then
                         return "auto"
                     end
                     return l10n:GetUILocale()
                 end,
                 set = function(lang)
-                    local currentSelectedLocale = Questie.db.global.questieLocaleDiff and l10n:GetUILocale() or "auto"
+                    local currentSelectedLocale = QuestieSmazak.db.global.questieLocaleDiff and l10n:GetUILocale() or "auto"
                     if lang == currentSelectedLocale then
                         return
                     end
@@ -233,8 +233,8 @@ function QuestieOptionsEngine.tabs.advanced:Initialize()
 
                     if currentEffectiveLocale == newEffectiveLocale then
                         l10n:SetUILocale(newEffectiveLocale)
-                        Questie.db.global.questieLocale = newEffectiveLocale
-                        Questie.db.global.questieLocaleDiff = (lang ~= "auto")
+                        QuestieSmazak.db.global.questieLocale = newEffectiveLocale
+                        QuestieSmazak.db.global.questieLocaleDiff = (lang ~= "auto")
                         return
                     end
 
@@ -245,30 +245,30 @@ function QuestieOptionsEngine.tabs.advanced:Initialize()
             reset_header = {
                 type = "divider",
                 order = 4,
-                title = "Reset Questie",
+                title = "Reset QuestieSmazak",
                 width = "full",
             },
             reset_text = {
                 type = "text",
                 order = 4.1,
-                title = "Hitting this button will reset all of the Questie configuration settings back to their default values. (Excluding Localization)",
+                title = "Hitting this button will reset all of the QuestieSmazak configuration settings back to their default values. (Excluding Localization)",
                 width = "full",
                 titleSize = 12,
             },
             github_text = {
                 type = "text",
                 order = 4.15,
-                title = "Questie is under active development for World of Warcraft: Classic. Please check GitHub for the latest alpha builds or to report issues. Or join us on our discord! (( https://github.com/Questie/Questie/ ))",
-                titleFormat = function(var) return Questie:Colorize(var, "purple") end,
+                title = "QuestieSmazak is under active development for World of Warcraft: Classic. Please check GitHub for the latest alpha builds or to report issues. Or join us on our discord! (( https://github.com/QuestieSmazak/QuestieSmazak/ ))",
+                titleFormat = function(var) return QuestieSmazak:Colorize(var, "purple") end,
                 width = "full",
                 titleSize = 12,
             },
             questieReset = {
                 type = "button",
                 order = 4.2,
-                title = "Reset Questie",
-                btnLabel = "Reset Questie",
-                tooltip = "Reset Questie to the default values for all settings.",
+                title = "Reset QuestieSmazak",
+                btnLabel = "Reset QuestieSmazak",
+                tooltip = "Reset QuestieSmazak to the default values for all settings.",
                 width = "half",
                 align = "CENTER",
                 func = function()
@@ -278,8 +278,8 @@ function QuestieOptionsEngine.tabs.advanced:Initialize()
             questieJourneyReset = {
                 type = "button",
                 order = 4.3,
-                title = "Reset Questie Journey",
-                btnLabel = "Reset Questie Journey",
+                title = "Reset QuestieSmazak Journey",
+                btnLabel = "Reset QuestieSmazak Journey",
                 tooltip = "Clear the Journey of the current character",
                 width = "half",
                 align = "CENTER",
@@ -292,7 +292,7 @@ function QuestieOptionsEngine.tabs.advanced:Initialize()
                 order = 4.4,
                 title = "Open Profiler",
                 btnLabel = "Open Profiler",
-                tooltip = "Open the Questie profiler, this is useful for tracking down the source of lag / frame spikes.",
+                tooltip = "Open the QuestieSmazak profiler, this is useful for tracking down the source of lag / frame spikes.",
                 width = "half",
                 align = "CENTER",
                 func = function()
@@ -321,13 +321,13 @@ function QuestieOptionsEngine.tabs.advanced:Initialize()
                 type = "checkbox",
                 order = 5.01,
                 title = "Enable bug workarounds",
-                tooltip = "If checked, Questie will hotfix vanilla UI bugs.",
+                tooltip = "If checked, QuestieSmazak will hotfix vanilla UI bugs.",
                 width = "half",
                 get = function()
-                    return Questie.db.profile.bugWorkarounds
+                    return QuestieSmazak.db.profile.bugWorkarounds
                 end,
                 set = function(self, value)
-                    Questie.db.profile.bugWorkarounds = value
+                    QuestieSmazak.db.profile.bugWorkarounds = value
                 end,
             },
             enableBugHintsForAllFlavors = {
@@ -335,13 +335,13 @@ function QuestieOptionsEngine.tabs.advanced:Initialize()
                 order = 5.015,
                 title = "Enable bug hints for all game versions",
                 tooltip = "Enables the bug hint windows for all game versions, usually used for bug reports in SoD.",
-                visible = not Questie.IsSoD,
+                visible = not QuestieSmazak.IsSoD,
                 width = "half",
                 get = function()
-                    return Questie.db.profile.enableBugHintsForAllFlavors
+                    return QuestieSmazak.db.profile.enableBugHintsForAllFlavors
                 end,
                 set = function(self, value)
-                    Questie.db.profile.enableBugHintsForAllFlavors = value
+                    QuestieSmazak.db.profile.enableBugHintsForAllFlavors = value
                 end,
             },
             showItemIDs = {
@@ -351,13 +351,13 @@ function QuestieOptionsEngine.tabs.advanced:Initialize()
                 tooltip = "If checked, the ID of items will shown in tooltips.",
                 width = "half",
                 enabled = function()
-                    return Questie.db.profile.enableTooltips
+                    return QuestieSmazak.db.profile.enableTooltips
                 end,
                 get = function()
-                    return Questie.db.profile.enableTooltipsItemID
+                    return QuestieSmazak.db.profile.enableTooltipsItemID
                 end,
                 set = function(self, value)
-                    Questie.db.profile.enableTooltipsItemID = value
+                    QuestieSmazak.db.profile.enableTooltipsItemID = value
                 end,
             },
             showNPCIDs = {
@@ -367,13 +367,13 @@ function QuestieOptionsEngine.tabs.advanced:Initialize()
                 tooltip = "If checked, the ID of NPCs will be shown in tooltips.",
                 width = "half",
                 enabled = function()
-                    return Questie.db.profile.enableTooltips
+                    return QuestieSmazak.db.profile.enableTooltips
                 end,
                 get = function()
-                    return Questie.db.profile.enableTooltipsNPCID
+                    return QuestieSmazak.db.profile.enableTooltipsNPCID
                 end,
                 set = function(self, value)
-                    Questie.db.profile.enableTooltipsNPCID = value
+                    QuestieSmazak.db.profile.enableTooltipsNPCID = value
                 end,
             },
             showObjectIDs = {
@@ -383,13 +383,13 @@ function QuestieOptionsEngine.tabs.advanced:Initialize()
                 tooltip = "If checked, the ID of objects will be shown in tooltips. These are guesses and only show the first matching ID in the QuestieDB.",
                 width = "half",
                 enabled = function()
-                    return Questie.db.profile.enableTooltips
+                    return QuestieSmazak.db.profile.enableTooltips
                 end,
                 get = function()
-                    return Questie.db.profile.enableTooltipsObjectID
+                    return QuestieSmazak.db.profile.enableTooltipsObjectID
                 end,
                 set = function(self, value)
-                    Questie.db.profile.enableTooltipsObjectID = value
+                    QuestieSmazak.db.profile.enableTooltipsObjectID = value
                     if value then
                         LibQuestieDB.Object.BuildNameIndex()
                     end
@@ -402,13 +402,13 @@ function QuestieOptionsEngine.tabs.advanced:Initialize()
                 tooltip = "If checked, the ID of spells will be shown in tooltips.",
                 width = "half",
                 enabled = function()
-                    return Questie.db.profile.enableTooltips
+                    return QuestieSmazak.db.profile.enableTooltips
                 end,
                 get = function()
-                    return Questie.db.profile.enableTooltipsSpellID
+                    return QuestieSmazak.db.profile.enableTooltipsSpellID
                 end,
                 set = function(self, value)
-                    Questie.db.profile.enableTooltipsSpellID = value
+                    QuestieSmazak.db.profile.enableTooltipsSpellID = value
                 end,
             },
             showQuestIDs = {
@@ -418,13 +418,13 @@ function QuestieOptionsEngine.tabs.advanced:Initialize()
                 tooltip = "If checked, the ID of quests will show in tooltips and the tracker.",
                 width = "half",
                 enabled = function()
-                    return Questie.db.profile.enableTooltips
+                    return QuestieSmazak.db.profile.enableTooltips
                 end,
                 get = function()
-                    return Questie.db.profile.enableTooltipsQuestID
+                    return QuestieSmazak.db.profile.enableTooltipsQuestID
                 end,
                 set = function(self, value)
-                    Questie.db.profile.enableTooltipsQuestID = value
+                    QuestieSmazak.db.profile.enableTooltipsQuestID = value
                     QuestieTracker:Update()
                 end,
             },
@@ -435,10 +435,10 @@ function QuestieOptionsEngine.tabs.advanced:Initialize()
                 tooltip = "Draws the area around each patrol path on the world map where hovering shows its NPC.",
                 width = "half",
                 get = function()
-                    return Questie.db.profile.waypointDebugHover
+                    return QuestieSmazak.db.profile.waypointDebugHover
                 end,
                 set = function(self, value)
-                    Questie.db.profile.waypointDebugHover = value
+                    QuestieSmazak.db.profile.waypointDebugHover = value
                     QuestieWaypoints.Refresh()
                 end,
             },
@@ -449,12 +449,12 @@ function QuestieOptionsEngine.tabs.advanced:Initialize()
                 tooltip = "Enable or disable debug functionality.",
                 width = "half",
                 get = function()
-                    return Questie.db.profile.debugEnabled
+                    return QuestieSmazak.db.profile.debugEnabled
                 end,
                 set = function(self, value)
-                    Questie.db.profile.debugEnabled = value
-                    if Questie.db.profile.debugEnabled then
-                        QuestieLoader:PopulateGlobals()
+                    QuestieSmazak.db.profile.debugEnabled = value
+                    if QuestieSmazak.db.profile.debugEnabled then
+                        QuestieSmazakLoader:PopulateGlobals()
                     end
                 end,
             },
@@ -465,13 +465,13 @@ function QuestieOptionsEngine.tabs.advanced:Initialize()
                 tooltip = "Enable or disable debug print functionality.",
                 width = "half",
                 enabled = function()
-                    return Questie.db.profile.debugEnabled
+                    return QuestieSmazak.db.profile.debugEnabled
                 end,
                 get = function()
-                    return Questie.db.profile.debugEnabledPrint
+                    return QuestieSmazak.db.profile.debugEnabledPrint
                 end,
                 set = function(self, value)
-                    Questie.db.profile.debugEnabledPrint = value
+                    QuestieSmazak.db.profile.debugEnabledPrint = value
                 end,
             },
             debugLevelContainer = {
@@ -479,7 +479,7 @@ function QuestieOptionsEngine.tabs.advanced:Initialize()
                 order = 5.08,
                 title = "Debug level to print",
                 enabled = function()
-                    return Questie.db.profile.debugEnabled and Questie.db.profile.debugEnabledPrint
+                    return QuestieSmazak.db.profile.debugEnabled and QuestieSmazak.db.profile.debugEnabledPrint
                 end,
                 items = {
                     debugCritical = {
@@ -488,17 +488,17 @@ function QuestieOptionsEngine.tabs.advanced:Initialize()
                         title = "DEBUG_CRITICAL",
                         width = "third",
                         enabled = function()
-                            return Questie.db.profile.debugEnabled and Questie.db.profile.debugEnabledPrint
+                            return QuestieSmazak.db.profile.debugEnabled and QuestieSmazak.db.profile.debugEnabledPrint
                         end,
                         get = function()
-                            return bit.band(Questie.db.profile.debugLevel or 0, 1) > 0
+                            return bit.band(QuestieSmazak.db.profile.debugLevel or 0, 1) > 0
                         end,
                         set = function(self, val)
-                            local current = Questie.db.profile.debugLevel or 0
+                            local current = QuestieSmazak.db.profile.debugLevel or 0
                             if val then
-                                Questie.db.profile.debugLevel = bit.bor(current, 1)
+                                QuestieSmazak.db.profile.debugLevel = bit.bor(current, 1)
                             else
-                                Questie.db.profile.debugLevel = bit.band(current, bit.bnot(1))
+                                QuestieSmazak.db.profile.debugLevel = bit.band(current, bit.bnot(1))
                             end
                         end,
                     },
@@ -508,17 +508,17 @@ function QuestieOptionsEngine.tabs.advanced:Initialize()
                         title = "DEBUG_ELEVATED",
                         width = "third",
                         enabled = function()
-                            return Questie.db.profile.debugEnabled and Questie.db.profile.debugEnabledPrint
+                            return QuestieSmazak.db.profile.debugEnabled and QuestieSmazak.db.profile.debugEnabledPrint
                         end,
                         get = function()
-                            return bit.band(Questie.db.profile.debugLevel or 0, 2) > 0
+                            return bit.band(QuestieSmazak.db.profile.debugLevel or 0, 2) > 0
                         end,
                         set = function(self, val)
-                            local current = Questie.db.profile.debugLevel or 0
+                            local current = QuestieSmazak.db.profile.debugLevel or 0
                             if val then
-                                Questie.db.profile.debugLevel = bit.bor(current, 2)
+                                QuestieSmazak.db.profile.debugLevel = bit.bor(current, 2)
                             else
-                                Questie.db.profile.debugLevel = bit.band(current, bit.bnot(2))
+                                QuestieSmazak.db.profile.debugLevel = bit.band(current, bit.bnot(2))
                             end
                         end,
                     },
@@ -528,17 +528,17 @@ function QuestieOptionsEngine.tabs.advanced:Initialize()
                         title = "DEBUG_INFO",
                         width = "third",
                         enabled = function()
-                            return Questie.db.profile.debugEnabled and Questie.db.profile.debugEnabledPrint
+                            return QuestieSmazak.db.profile.debugEnabled and QuestieSmazak.db.profile.debugEnabledPrint
                         end,
                         get = function()
-                            return bit.band(Questie.db.profile.debugLevel or 0, 4) > 0
+                            return bit.band(QuestieSmazak.db.profile.debugLevel or 0, 4) > 0
                         end,
                         set = function(self, val)
-                            local current = Questie.db.profile.debugLevel or 0
+                            local current = QuestieSmazak.db.profile.debugLevel or 0
                             if val then
-                                Questie.db.profile.debugLevel = bit.bor(current, 4)
+                                QuestieSmazak.db.profile.debugLevel = bit.bor(current, 4)
                             else
-                                Questie.db.profile.debugLevel = bit.band(current, bit.bnot(4))
+                                QuestieSmazak.db.profile.debugLevel = bit.band(current, bit.bnot(4))
                             end
                         end,
                     },
@@ -548,17 +548,17 @@ function QuestieOptionsEngine.tabs.advanced:Initialize()
                         title = "DEBUG_DEVELOP",
                         width = "third",
                         enabled = function()
-                            return Questie.db.profile.debugEnabled and Questie.db.profile.debugEnabledPrint
+                            return QuestieSmazak.db.profile.debugEnabled and QuestieSmazak.db.profile.debugEnabledPrint
                         end,
                         get = function()
-                            return bit.band(Questie.db.profile.debugLevel or 0, 8) > 0
+                            return bit.band(QuestieSmazak.db.profile.debugLevel or 0, 8) > 0
                         end,
                         set = function(self, val)
-                            local current = Questie.db.profile.debugLevel or 0
+                            local current = QuestieSmazak.db.profile.debugLevel or 0
                             if val then
-                                Questie.db.profile.debugLevel = bit.bor(current, 8)
+                                QuestieSmazak.db.profile.debugLevel = bit.bor(current, 8)
                             else
-                                Questie.db.profile.debugLevel = bit.band(current, bit.bnot(8))
+                                QuestieSmazak.db.profile.debugLevel = bit.band(current, bit.bnot(8))
                             end
                         end,
                     },
@@ -568,17 +568,17 @@ function QuestieOptionsEngine.tabs.advanced:Initialize()
                         title = "DEBUG_SPAM",
                         width = "third",
                         enabled = function()
-                            return Questie.db.profile.debugEnabled and Questie.db.profile.debugEnabledPrint
+                            return QuestieSmazak.db.profile.debugEnabled and QuestieSmazak.db.profile.debugEnabledPrint
                         end,
                         get = function()
-                            return bit.band(Questie.db.profile.debugLevel or 0, 16) > 0
+                            return bit.band(QuestieSmazak.db.profile.debugLevel or 0, 16) > 0
                         end,
                         set = function(self, val)
-                            local current = Questie.db.profile.debugLevel or 0
+                            local current = QuestieSmazak.db.profile.debugLevel or 0
                             if val then
-                                Questie.db.profile.debugLevel = bit.bor(current, 16)
+                                QuestieSmazak.db.profile.debugLevel = bit.bor(current, 16)
                             else
-                                Questie.db.profile.debugLevel = bit.band(current, bit.bnot(16))
+                                QuestieSmazak.db.profile.debugLevel = bit.band(current, bit.bnot(16))
                             end
                         end,
                     },
@@ -594,27 +594,27 @@ Popup.Dialogs["QUESTIE_RESET_CONFIRM_NATIVE"] = {
     button2 = NO,
     OnAccept = function(self)
         for k, v in pairs(optionsDefaults.profile) do
-            Questie.db.profile[k] = v
+            QuestieSmazak.db.profile[k] = v
         end
 
-        if not Questie.db.profile.enabled then
-            Questie.db.profile.enabled = true
+        if not QuestieSmazak.db.profile.enabled then
+            QuestieSmazak.db.profile.enabled = true
         end
 
-        Questie.db.profile.enabled = optionsDefaults.profile.enabled
-        Questie.db.profile.lowLevelStyle = optionsDefaults.profile.lowLevelStyle
-        Questie.db.profile.migrationVersion = nil
-        Questie.db.profile.minimap.hide = optionsDefaults.profile.minimap.hide
+        QuestieSmazak.db.profile.enabled = optionsDefaults.profile.enabled
+        QuestieSmazak.db.profile.lowLevelStyle = optionsDefaults.profile.lowLevelStyle
+        QuestieSmazak.db.profile.migrationVersion = nil
+        QuestieSmazak.db.profile.minimap.hide = optionsDefaults.profile.minimap.hide
 
-        Questie.db.char.hidden = nil
-        Questie.db.char.hiddenDailies = optionsDefaults.char.hiddenDailies
-        Questie.db.global.unavailableQuestsDeterminedByTalking = {}
-        Questie.db.global.unavailableDailyQuestsByNpc = {}
+        QuestieSmazak.db.char.hidden = nil
+        QuestieSmazak.db.char.hiddenDailies = optionsDefaults.char.hiddenDailies
+        QuestieSmazak.db.global.unavailableQuestsDeterminedByTalking = {}
+        QuestieSmazak.db.global.unavailableDailyQuestsByNpc = {}
 
         ReloadUI()
     end,
     OnShow = function(self)
-        local confirmText = l10n("Are you sure you want to reset Questie to default settings?")
+        local confirmText = l10n("Are you sure you want to reset QuestieSmazak to default settings?")
         self.Text:SetText(confirmText)
         self:SetFrameStrata("FULLSCREEN_DIALOG")
         self:Raise()
@@ -629,11 +629,11 @@ Popup.Dialogs["QUESTIE_JOURNEY_RESET_CONFIRM_NATIVE"] = {
     button1 = YES,
     button2 = NO,
     OnAccept = function(self)
-        Questie.db.char.journey = nil
+        QuestieSmazak.db.char.journey = nil
         ReloadUI()
     end,
     OnShow = function(self)
-        local confirmText = l10n("Are you sure you want to reset the Questie Journey for this character?")
+        local confirmText = l10n("Are you sure you want to reset the QuestieSmazak Journey for this character?")
         self.Text:SetText(confirmText)
         self:SetFrameStrata("FULLSCREEN_DIALOG")
         self:Raise()
@@ -657,8 +657,8 @@ Popup.Dialogs["QUESTIE_LOCALE_CHANGE_CONFIRM_NATIVE"] = {
             or l10n:GetFallbackLocale(pendingLocaleSelection)
 
         l10n:SetUILocale(effectiveLocale)
-        Questie.db.global.questieLocale = effectiveLocale
-        Questie.db.global.questieLocaleDiff = (pendingLocaleSelection ~= "auto")
+        QuestieSmazak.db.global.questieLocale = effectiveLocale
+        QuestieSmazak.db.global.questieLocaleDiff = (pendingLocaleSelection ~= "auto")
         pendingLocaleSelection = nil
         ReloadUI()
     end,

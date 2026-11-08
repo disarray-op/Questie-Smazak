@@ -1,12 +1,12 @@
 -- Builds the header, title and objective lines of the tracker sections.
 -- A section decides what to show, the builder decides how a line is sized and placed.
 ---@class LineBuilder
-local LineBuilder = QuestieLoader:CreateModule("LineBuilder")
+local LineBuilder = QuestieSmazakLoader:CreateModule("LineBuilder")
 
 ---@type TrackerLayout
-local TrackerLayout = QuestieLoader:ImportModule("TrackerLayout")
+local TrackerLayout = QuestieSmazakLoader:ImportModule("TrackerLayout")
 ---@type TrackerLinePool
-local TrackerLinePool = QuestieLoader:ImportModule("TrackerLinePool")
+local TrackerLinePool = QuestieSmazakLoader:ImportModule("TrackerLinePool")
 
 ---@class HeaderLineOptions
 ---@field key string The collapsedZones key, e.g. "Elwynn Forest", "Achievements" or "Recipes"
@@ -16,8 +16,8 @@ local TrackerLinePool = QuestieLoader:ImportModule("TrackerLinePool")
 --- Zero out the minAllQuestsInZone table of a zone, when it holds no more quest ids.
 ---@param key string
 local function _CleanUpMinAllQuestsInZone(key)
-    local minAllQuests = Questie.db.char.minAllQuestsInZone[key]
-    if minAllQuests == nil or minAllQuests.isTrue or Questie.db.char.collapsedZones[key] then
+    local minAllQuests = QuestieSmazak.db.char.minAllQuestsInZone[key]
+    if minAllQuests == nil or minAllQuests.isTrue or QuestieSmazak.db.char.collapsedZones[key] then
         return
     end
 
@@ -27,7 +27,7 @@ local function _CleanUpMinAllQuestsInZone(key)
         end
     end
 
-    Questie.db.char.minAllQuestsInZone[key] = nil
+    QuestieSmazak.db.char.minAllQuestsInZone[key] = nil
 end
 
 ---@alias LineClickMode "quest"|"achieve"|"recipe"
@@ -55,7 +55,7 @@ function LineBuilder.AddHeader(options)
     end
 
     local margins = TrackerLayout.GetMargins()
-    local collapsed = Questie.db.char.collapsedZones[options.key] and true or false
+    local collapsed = QuestieSmazak.db.char.collapsedZones[options.key] and true or false
 
     line:SetMode("zone")
     line:SetZone(options.key)
@@ -116,7 +116,7 @@ function LineBuilder.AddTitle(options)
 
     local margins = TrackerLayout.GetMargins()
     local collapseId = options.collapseId
-    local collapsed = collapseId ~= nil and Questie.db.char.collapsedQuests[collapseId] and true or false
+    local collapsed = collapseId ~= nil and QuestieSmazak.db.char.collapsedQuests[collapseId] and true or false
 
     -- Achievement titles must not be mistaken for quest titles by TrackerLinePool.ForEachQuestTitleLine
     line:SetMode(options.clickMode == "achieve" and "achieve" or "quest")
@@ -149,7 +149,7 @@ function LineBuilder.AddTitle(options)
 
         -- The minAllQuestsInZone table is always blank until a player Shift+Clicks the zone header (MouseDown).
         -- QuestieTracker:Update is triggered and the table is then filled with all ids in the same zone.
-        local minAllQuests = options.zoneKey and Questie.db.char.minAllQuestsInZone[options.zoneKey]
+        local minAllQuests = options.zoneKey and QuestieSmazak.db.char.minAllQuestsInZone[options.zoneKey]
         if minAllQuests and minAllQuests.isTrue then
             minAllQuests[collapseId] = true
         end
@@ -281,5 +281,5 @@ function LineBuilder.FinishEntry(line)
     line = line or TrackerLinePool.GetLastLine()
 
     -- Adds 2 pixels and the "Padding Between Quests" setting
-    line:SetHeight(line.label:GetHeight() + (Questie.db.profile.trackerQuestPadding + 2))
+    line:SetHeight(line.label:GetHeight() + (QuestieSmazak.db.profile.trackerQuestPadding + 2))
 end

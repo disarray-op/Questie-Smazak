@@ -7,47 +7,47 @@ describe("LoaderUsage", function()
         local cases = {
             {
                 name = "accepts an import call",
-                line = 'local QuestieDB = QuestieLoader:ImportModule("QuestieDB")',
+                line = 'local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")',
                 expected = true,
             },
             {
                 name = "accepts a CreateModule call",
-                line = 'local QuestieTooltips = QuestieLoader:CreateModule("QuestieTooltips")',
+                line = 'local QuestieTooltips = QuestieSmazakLoader:CreateModule("QuestieTooltips")',
                 expected = true,
             },
             {
                 name = "accepts a chained call",
-                line = 'QuestieLoader:ImportModule("Profiler"):Start()',
+                line = 'QuestieSmazakLoader:ImportModule("Profiler"):Start()',
                 expected = true,
             },
             {
                 name = "accepts a bracket-indexed call, which reaches the same function",
-                line = '    QuestieLoader["ImportModule"](QuestieLoader, "QuestieDB")',
+                line = '    QuestieSmazakLoader["ImportModule"](QuestieSmazakLoader, "QuestieDB")',
                 expected = true,
             },
             {
                 name = "accepts a bracket-indexed call through a variable",
-                line = '    QuestieLoader[methodName](QuestieLoader, "QuestieDB")',
+                line = '    QuestieSmazakLoader[methodName](QuestieSmazakLoader, "QuestieDB")',
                 expected = true,
             },
             {
                 name = "rejects indexing into a loader field, which is not a module call",
-                line = '    local module = QuestieLoader._modules["QuestieDB"]',
+                line = '    local module = QuestieSmazakLoader._modules["QuestieDB"]',
                 expected = false,
             },
             {
                 name = "rejects a whole-line comment",
-                line = '    -- local QuestieDB = QuestieLoader:ImportModule("QuestieDB")',
+                line = '    -- local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")',
                 expected = false,
             },
             {
                 name = "rejects a call quoted in a trailing comment",
-                line = 'local function toggle(key) -- /run QuestieLoader:ImportModule("QuestieMap"):ShowNPC(525)',
+                line = 'local function toggle(key) -- /run QuestieSmazakLoader:ImportModule("QuestieMap"):ShowNPC(525)',
                 expected = false,
             },
             {
-                name = "rejects QuestieLoader declaring its own method",
-                line = 'function QuestieLoader:ImportModule(name)',
+                name = "rejects QuestieSmazakLoader declaring its own method",
+                line = 'function QuestieSmazakLoader:ImportModule(name)',
                 expected = false,
             },
             {
@@ -57,7 +57,7 @@ describe("LoaderUsage", function()
             },
             {
                 name = "accepts a dot call, which reaches the same function",
-                line = 'local QuestieDB = QuestieLoader.ImportModule(QuestieLoader, "QuestieDB")',
+                line = 'local QuestieDB = QuestieSmazakLoader.ImportModule(QuestieSmazakLoader, "QuestieDB")',
                 expected = true,
             },
         }
@@ -72,33 +72,33 @@ describe("LoaderUsage", function()
     describe("IsInsideFunction", function()
         it("reports a file-scope import as main chunk", function()
             assert.is_false(LoaderUsage.IsInsideFunction([[
-local QuestieDB = QuestieLoader:ImportModule("QuestieDB")]]))
+local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")]]))
         end)
 
         it("reports an import inside a function", function()
             assert.is_true(LoaderUsage.IsInsideFunction([[
 function Something.Update()
-    local QuestieDB = QuestieLoader:ImportModule("QuestieDB")]]))
+    local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")]]))
         end)
 
         it("treats a file-scope if block as main chunk", function()
             -- Indentation alone would call this a runtime call; the block is still the main chunk.
             assert.is_false(LoaderUsage.IsInsideFunction([[
 if Expansions.Current >= Expansions.Wotlk then
-    local QuestieDB = QuestieLoader:ImportModule("QuestieDB")]]))
+    local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")]]))
         end)
 
         it("treats a file-scope table constructor as main chunk", function()
             assert.is_false(LoaderUsage.IsInsideFunction([[
 local handlers = {
-    db = QuestieLoader:ImportModule("QuestieDB")]]))
+    db = QuestieSmazakLoader:ImportModule("QuestieDB")]]))
         end)
 
         it("reports an unindented call inside a function", function()
             -- Indentation alone would miss this entirely.
             assert.is_true(LoaderUsage.IsInsideFunction([[
 function Something.Update()
-local QuestieDB = QuestieLoader:ImportModule("QuestieDB")]]))
+local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")]]))
         end)
 
         it("reports a callback nested deep inside options tables", function()
@@ -108,27 +108,27 @@ QuestieOptions.tabs.general = {
         yell = {
             set = function(_, value)
                 if not value then
-                    QuestieLoader:ImportModule("QuestieComms"):RemoveAllRemotePlayers()]]))
+                    QuestieSmazakLoader:ImportModule("QuestieComms"):RemoveAllRemotePlayers()]]))
         end)
 
         it("reports a call inside a loop inside a function", function()
             assert.is_true(LoaderUsage.IsInsideFunction([[
 function Something.Update()
     for i = 1, 10 do
-        QuestieLoader:ImportModule("QuestieDB")]]))
+        QuestieSmazakLoader:ImportModule("QuestieDB")]]))
         end)
 
         it("reports a call inside a repeat block inside a function", function()
             assert.is_true(LoaderUsage.IsInsideFunction([[
 function Something.Update()
     repeat
-        QuestieLoader:ImportModule("QuestieDB")]]))
+        QuestieSmazakLoader:ImportModule("QuestieDB")]]))
         end)
     end)
 
     describe("JudgedFragment", function()
         it("judges scope at the call, so a one-line function body cannot pass as main chunk", function()
-            local line = 'function Foo() local x = QuestieLoader:ImportModule("X") end'
+            local line = 'function Foo() local x = QuestieSmazakLoader:ImportModule("X") end'
 
             -- Judged at end of line, the body's own `end` closes the function and the call reads as main
             -- chunk - the dangerous direction, since this validator exists to reject runtime calls.
@@ -137,7 +137,7 @@ function Something.Update()
         end)
 
         it("keeps the whole line for the bracket form, which has no call to cut at", function()
-            local line = '    QuestieLoader["ImportModule"](QuestieLoader, "QuestieDB")'
+            local line = '    QuestieSmazakLoader["ImportModule"](QuestieSmazakLoader, "QuestieDB")'
 
             assert.are_same(line .. "\n", LoaderUsage.JudgedFragment(line))
         end)
@@ -159,7 +159,7 @@ function Something.Update()
             assert.are_same({"if", "function"}, LoaderUsage.EnclosingBlocks([[
 function Something.Update()
     if ready then
-        QuestieLoader:ImportModule("QuestieDB")]]))
+        QuestieSmazakLoader:ImportModule("QuestieDB")]]))
         end)
 
         it("returns no blocks at file scope", function()
@@ -201,14 +201,14 @@ function Something.Update()
 
     describe("ReadTocLuaPaths", function()
         it("returns lua entries in load order with forward slashes", function()
-            local paths = LoaderUsage.ReadTocLuaPaths("Questie_Vanilla.toc")
+            local paths = LoaderUsage.ReadTocLuaPaths("QuestieSmazak_Vanilla.toc")
 
-            assert.are_same("Modules/Libs/QuestieLoader.lua", paths[1])
+            assert.are_same("Modules/Libs/QuestieSmazakLoader.lua", paths[1])
             assert.is_true(#paths > 100)
         end)
 
         it("skips commented entries", function()
-            for _, path in ipairs(LoaderUsage.ReadTocLuaPaths("Questie_Vanilla.toc")) do
+            for _, path in ipairs(LoaderUsage.ReadTocLuaPaths("QuestieSmazak_Vanilla.toc")) do
                 assert.are_same(nil, string.match(path, "^#"))
             end
         end)

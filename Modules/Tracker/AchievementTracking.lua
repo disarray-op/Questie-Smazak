@@ -1,10 +1,10 @@
 -- The only module that knows which game API is used to read and change the game's tracked achievements:
 -- the legacy globals (WotLK, Cata, MoP) or C_ContentTracking (Forever). The API is chosen per call, by checking what exists.
 ---@class AchievementTracking
-local AchievementTracking = QuestieLoader:CreateModule("AchievementTracking")
+local AchievementTracking = QuestieSmazakLoader:CreateModule("AchievementTracking")
 
 ---@type Expansions
-local Expansions = QuestieLoader:ImportModule("Expansions")
+local Expansions = QuestieSmazakLoader:ImportModule("Expansions")
 
 local DEFAULT_MAX_TRACKED = 10
 

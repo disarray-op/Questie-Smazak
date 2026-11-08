@@ -4,10 +4,10 @@
 --   Globals/Locals   --
 ------------------------
 ---@class QuestieDBMIntegration
-local QuestieDBMIntegration = QuestieLoader:CreateModule("QuestieDBMIntegration");
+local QuestieDBMIntegration = QuestieSmazakLoader:CreateModule("QuestieDBMIntegration");
 
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 
 --Libs
 local HBD = LibStub("HereBeDragonsQuestie-2.0")
@@ -29,33 +29,33 @@ local QuestieHUDEnabled = false
 local function AddHudQuestIcon(tableString, icon, AreaID, x, y, r, g, b)
     if tableString and not AddedHudIds[tableString] then
         --Icon based filters, if icon is disabled, return without adding
-        if  not Questie.db.profile.dbmHUDShowSlay and icon == Questie.ICON_TYPE_SLAY or
-            not Questie.db.profile.dbmHUDShowQuest and (
-                icon == Questie.ICON_TYPE_AVAILABLE or
-                icon == Questie.ICON_TYPE_AVAILABLE_GRAY or
-                icon == Questie.ICON_TYPE_COMPLETE or
-                icon == Questie.ICON_TYPE_EVENTQUEST or
-                icon == Questie.ICON_TYPE_EVENTQUEST_COMPLETE or
-                icon == Questie.ICON_TYPE_INCOMPLETE or
-                icon == Questie.ICON_TYPE_PVPQUEST or
-                icon == Questie.ICON_TYPE_PVPQUEST_COMPLETE or
-                icon == Questie.ICON_TYPE_REPEATABLE or
-                icon == Questie.ICON_TYPE_REPEATABLE_COMPLETE or
-                icon == Questie.ICON_TYPE_SODRUNE) or
-            not Questie.db.profile.dbmHUDShowInteract and icon == Questie.ICON_TYPE_OBJECT or
-            not Questie.db.profile.dbmHUDShowLoot and icon == Questie.ICON_TYPE_LOOT then
+        if  not QuestieSmazak.db.profile.dbmHUDShowSlay and icon == QuestieSmazak.ICON_TYPE_SLAY or
+            not QuestieSmazak.db.profile.dbmHUDShowQuest and (
+                icon == QuestieSmazak.ICON_TYPE_AVAILABLE or
+                icon == QuestieSmazak.ICON_TYPE_AVAILABLE_GRAY or
+                icon == QuestieSmazak.ICON_TYPE_COMPLETE or
+                icon == QuestieSmazak.ICON_TYPE_EVENTQUEST or
+                icon == QuestieSmazak.ICON_TYPE_EVENTQUEST_COMPLETE or
+                icon == QuestieSmazak.ICON_TYPE_INCOMPLETE or
+                icon == QuestieSmazak.ICON_TYPE_PVPQUEST or
+                icon == QuestieSmazak.ICON_TYPE_PVPQUEST_COMPLETE or
+                icon == QuestieSmazak.ICON_TYPE_REPEATABLE or
+                icon == QuestieSmazak.ICON_TYPE_REPEATABLE_COMPLETE or
+                icon == QuestieSmazak.ICON_TYPE_SODRUNE) or
+            not QuestieSmazak.db.profile.dbmHUDShowInteract and icon == QuestieSmazak.ICON_TYPE_OBJECT or
+            not QuestieSmazak.db.profile.dbmHUDShowLoot and icon == QuestieSmazak.ICON_TYPE_LOOT then
             return
         end
         if not DBM.HudMap.HUDEnabled then
             --Force a fixed zoom, if one is not set, hudmap tries to zoom out until all registered icons fit, that's no good for world wide quest icons
-            DBM.HudMap:SetFixedZoom(Questie.db.profile.DBMHUDZoom or 100)
-            QuestieDBMIntegration:ChangeRefreshRate(Questie.db.profile.DBMHUDRefresh or 0.03)
+            DBM.HudMap:SetFixedZoom(QuestieSmazak.db.profile.DBMHUDZoom or 100)
+            QuestieDBMIntegration:ChangeRefreshRate(QuestieSmazak.db.profile.DBMHUDRefresh or 0.03)
         end
         --uniqueID, name, texture, x, y, radius, duration, r, g, b, a, blend, useLocalMap, LocalMapId
-        if Questie.db.profile.dbmHUDShowAlert then
-            DBM.HudMap:RegisterPositionMarker(tableString, "Questie", Questie.usedIcons[icon], x, y, Questie.db.profile.dbmHUDRadius or 3, nil, r, g, b, 1, nil, true, AreaID):Appear():RegisterForAlerts()
+        if QuestieSmazak.db.profile.dbmHUDShowAlert then
+            DBM.HudMap:RegisterPositionMarker(tableString, "QuestieSmazak", QuestieSmazak.usedIcons[icon], x, y, QuestieSmazak.db.profile.dbmHUDRadius or 3, nil, r, g, b, 1, nil, true, AreaID):Appear():RegisterForAlerts()
         else
-            DBM.HudMap:RegisterPositionMarker(tableString, "Questie", Questie.usedIcons[icon], x, y, Questie.db.profile.dbmHUDRadius or 3, nil, r, g, b, 1, nil, true, AreaID):Appear()
+            DBM.HudMap:RegisterPositionMarker(tableString, "QuestieSmazak", QuestieSmazak.usedIcons[icon], x, y, QuestieSmazak.db.profile.dbmHUDRadius or 3, nil, r, g, b, 1, nil, true, AreaID):Appear()
         end
         AddedHudIds[tableString] = true
         --print("Adding "..tableString)
@@ -65,7 +65,7 @@ end
 --Removes icons from hud display
 local function RemoveHudQuestIcon(tableString)
     if tableString and AddedHudIds[tableString] then
-        DBM.HudMap:FreeEncounterMarkerByTarget(tableString, "Questie")
+        DBM.HudMap:FreeEncounterMarkerByTarget(tableString, "QuestieSmazak")
         AddedHudIds[tableString] = nil
         --print("Removing "..tableString)
     end
@@ -75,7 +75,7 @@ end
 --   Event/Enable/Disable Handlers   --
 ---------------------------------------
 do
-    local eventFrame = CreateFrame("frame", "QuestieDBMIntegration", UIParent)
+    local eventFrame = CreateFrame("frame", "QuestieSmazakDBMIntegration", UIParent)
     local GetInstanceInfo, IsInInstance = GetInstanceInfo, IsInInstance
     local warningShown = false
 
@@ -156,7 +156,7 @@ do
             DelayedMapCheck()
             DBM:Schedule(1, DelayedMapCheck)
             if not warningShown then
-                DBM:AddMsg(l10n("Questie has activated DBM HUD overlay. For more options, visit DBM HUD tab in Questie options"))
+                DBM:AddMsg(l10n("QuestieSmazak has activated DBM HUD overlay. For more options, visit DBM HUD tab in QuestieSmazak options"))
                 warningShown = true
             end
         end
@@ -175,7 +175,7 @@ do
         --Hud Markers will be regenerated when questie regenerates it's own icons
         if DBM and DBM.HudMap and QuestieHUDEnabled then
             for tableString, points in pairs(AddedHudIds) do
-                DBM.HudMap:FreeEncounterMarkerByTarget(tableString, "Questie")
+                DBM.HudMap:FreeEncounterMarkerByTarget(tableString, "QuestieSmazak")
                 AddedHudIds[tableString] = nil
             end
             KalimdorPoints = {}
@@ -354,7 +354,7 @@ function QuestieDBMIntegration:EdgeTo(tableString)
     if not UIParent or not DBM or not DBM.HudMap or not tableString then return end
     if not AddedHudIds[tableString.."edge"] then
         --Request Marker table from DBM for specific tableString
-        local marker2 = DBM.HudMap:GetEncounterMarker(tableString.."Questie")
+        local marker2 = DBM.HudMap:GetEncounterMarker(tableString.."QuestieSmazak")
         if marker2 and type(marker2) == "table" then
             --Now, create a practically invisible point on player to establish edge from location
             local marker1 = DBM.HudMap:RegisterRangeMarkerOnPartyMember(tableString, "party", playerName, 0.1, nil, 0, 1, 0, 1, nil, false):Appear()--objectId, texture, person, radius, duration, r, g, b, a, blend, canFilterSelf

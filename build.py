@@ -60,7 +60,7 @@ from typing import Iterable
 import changelog
 
 
-addonDir = "Questie"
+addonDir = "QuestieSmazak"
 includedExpansions = []
 # Expansion settings shared by selection, packaging, and addon-manager metadata.
 # Defaults apply only when no flavor is selected.
@@ -107,13 +107,13 @@ tocs = {}
 dbTocs = {}
 allTocs = {}
 for number, expansion in EXPANSIONS.items():
-    tocs[number] = f"Questie_{expansion['toc_suffix']}.toc"
+    tocs[number] = f"QuestieSmazak_{expansion['toc_suffix']}.toc"
     dbTocs[number] = f"QuestieDB_{expansion['toc_suffix']}.toc"
     # Extra TOCs are shipped and stamped alongside the primary one.
-    allTocs[number] = [tocs[number]] + [f"Questie_{suffix}.toc" for suffix in expansion.get("extra_toc_suffixes", ())]
+    allTocs[number] = [tocs[number]] + [f"QuestieSmazak_{suffix}.toc" for suffix in expansion.get("extra_toc_suffixes", ())]
 
 directoriesToInclude = ["Database", "Icons", "Libs", "Localization", "Modules", "Public"]
-filesToInclude = ["Bindings.xml", "embeds.xml", "Questie.lua", "Questie.toc", "README.md", "README_ES.md", "README_CN.md", "LICENSE.md", "gpl-3.0.md"]
+filesToInclude = ["Bindings.xml", "embeds.xml", "Questie.lua", "QuestieSmazak.toc", "README.md", "README_ES.md", "README_CN.md", "LICENSE.md", "gpl-3.0.md"]
 # originals hold texture sources and the scripts that render them; only their output ships.
 ignorePatterns = ["*.test.lua", "originals"]
 
@@ -389,7 +389,7 @@ def zip_release_folder(zip_name, version_dir, is_release_build, dbVersion=None, 
     root = os.getcwd()
     os.chdir("releases/%s" % version_dir)
     try:
-        archive_root = "tmp/Questie"
+        archive_root = "tmp/%s" % addonDir
         if dbVersion is not None:
             zip_name += "+v" + dbVersion
             if not is_release_build:
@@ -429,7 +429,7 @@ def get_branch():
 
 def get_interface_versions(expansion):
     """Read every interface version from the source TOC for this flavor suffix."""
-    with open("Questie_%s.toc" % expansion, "r") as toc:
+    with open("QuestieSmazak_%s.toc" % expansion, "r") as toc:
         match = re.match("## Interface: (.*?)\n", toc.read(), re.DOTALL)
         return [v.strip() for v in match.group(1).split(",")]
 

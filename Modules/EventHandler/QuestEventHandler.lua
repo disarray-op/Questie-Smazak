@@ -1,55 +1,55 @@
 ---@type QuestieCompat
-local QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+local QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
 
 ---@class QuestEventHandler
-local QuestEventHandler = QuestieLoader:CreateModule("QuestEventHandler")
+local QuestEventHandler = QuestieSmazakLoader:CreateModule("QuestEventHandler")
 ---@class QuestEventHandlerPrivate
 local _QuestEventHandler = QuestEventHandler.private
 
 ---@type QuestEventHandlerPrivate
 QuestEventHandler.private = QuestEventHandler.private or {}
 ---@type QuestLogCache
-local QuestLogCache = QuestieLoader:ImportModule("QuestLogCache")
+local QuestLogCache = QuestieSmazakLoader:ImportModule("QuestLogCache")
 ---@type QuestieQuest
-local QuestieQuest = QuestieLoader:ImportModule("QuestieQuest")
+local QuestieQuest = QuestieSmazakLoader:ImportModule("QuestieQuest")
 ---@type QuestieJourney
-local QuestieJourney = QuestieLoader:ImportModule("QuestieJourney")
+local QuestieJourney = QuestieSmazakLoader:ImportModule("QuestieJourney")
 ---@type QuestieNameplate
-local QuestieNameplate = QuestieLoader:ImportModule("QuestieNameplate")
+local QuestieNameplate = QuestieSmazakLoader:ImportModule("QuestieNameplate")
 ---@type QuestieLib
-local QuestieLib = QuestieLoader:ImportModule("QuestieLib")
+local QuestieLib = QuestieSmazakLoader:ImportModule("QuestieLib")
 ---@type QuestieDB
-local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
 ---@type AutoQuesting
-local AutoQuesting = QuestieLoader:ImportModule("AutoQuesting")
+local AutoQuesting = QuestieSmazakLoader:ImportModule("AutoQuesting")
 ---@type QuestieAnnounce
-local QuestieAnnounce = QuestieLoader:ImportModule("QuestieAnnounce")
+local QuestieAnnounce = QuestieSmazakLoader:ImportModule("QuestieAnnounce")
 ---@type ActiveQuests
-local ActiveQuests = QuestieLoader:ImportModule("ActiveQuests")
+local ActiveQuests = QuestieSmazakLoader:ImportModule("ActiveQuests")
 ---@type IsleOfQuelDanas
-local IsleOfQuelDanas = QuestieLoader:ImportModule("IsleOfQuelDanas")
+local IsleOfQuelDanas = QuestieSmazakLoader:ImportModule("IsleOfQuelDanas")
 ---@type Expansions
-local Expansions = QuestieLoader:ImportModule("Expansions")
+local Expansions = QuestieSmazakLoader:ImportModule("Expansions")
 ---@type QuestLifecycle
-local QuestLifecycle = QuestieLoader:ImportModule("QuestLifecycle")
+local QuestLifecycle = QuestieSmazakLoader:ImportModule("QuestLifecycle")
 ---@type QuestieCombatQueue
-local QuestieCombatQueue = QuestieLoader:ImportModule("QuestieCombatQueue")
+local QuestieCombatQueue = QuestieSmazakLoader:ImportModule("QuestieCombatQueue")
 ---@type QuestieTracker
-local QuestieTracker = QuestieLoader:ImportModule("QuestieTracker")
+local QuestieTracker = QuestieSmazakLoader:ImportModule("QuestieTracker")
 ---@type AutoCompleteFrame
-local AutoCompleteFrame = QuestieLoader:ImportModule("AutoCompleteFrame")
+local AutoCompleteFrame = QuestieSmazakLoader:ImportModule("AutoCompleteFrame")
 ---@type WatchFrameHook
-local WatchFrameHook = QuestieLoader:ImportModule("WatchFrameHook")
+local WatchFrameHook = QuestieSmazakLoader:ImportModule("WatchFrameHook")
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 ---@type QuestieAPI
-local QuestieAPI = QuestieLoader:ImportModule("QuestieAPI")
+local QuestieAPI = QuestieSmazakLoader:ImportModule("QuestieAPI")
 ---@type QuestiePartyObjectives
-local QuestiePartyObjectives = QuestieLoader:ImportModule("QuestiePartyObjectives")
+local QuestiePartyObjectives = QuestieSmazakLoader:ImportModule("QuestiePartyObjectives")
 ---@type AvailableQuests
-local AvailableQuests = QuestieLoader:ImportModule("AvailableQuests")
+local AvailableQuests = QuestieSmazakLoader:ImportModule("AvailableQuests")
 ---@type BreadcrumbQuests
-local BreadcrumbQuests = QuestieLoader:ImportModule("BreadcrumbQuests")
+local BreadcrumbQuests = QuestieSmazakLoader:ImportModule("BreadcrumbQuests")
 
 local GetItemInfo = QuestieCompat.GetItemInfo
 
@@ -126,7 +126,7 @@ local function _ResetQuestLogRetryBackoff()
 end
 
 function QuestEventHandler:Initialize()
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[Quest Event] Initialize")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[Quest Event] Initialize")
 
     -- StaticPopup dialog hooks. Deleting Quest items do not always trigger a Quest Log Update.
     if StaticPopup_Show then
@@ -138,7 +138,7 @@ function QuestEventHandler:Initialize()
                 local questName
                 local foundQuestItem = false
 
-                Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieQuest] StaticPopup_Show: Item Name: ", text_arg1)
+                QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieQuest] StaticPopup_Show: Item Name: ", text_arg1)
 
                 if deletedQuestItem == true then
                     deletedQuestItem = false
@@ -214,7 +214,7 @@ function QuestEventHandler:Initialize()
                                 StaticPopup_ResizeShownDialogs()
                                 deletedQuestItem = true
 
-                                Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieQuest] StaticPopup_Show: Quest Item Detected. Updating Static Popup.")
+                                QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieQuest] StaticPopup_Show: Quest Item Detected. Updating Static Popup.")
                             end
                         end)
                     else
@@ -231,7 +231,7 @@ function QuestEventHandler:Initialize()
                                 QuestieCompat.StaticPopup_Resize(frame, which)
                                 deletedQuestItem = true
 
-                                Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieQuest] StaticPopup_Show: Quest Item Detected. Updating Static Popup.")
+                                QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieQuest] StaticPopup_Show: Quest Item Detected. Updating Static Popup.")
                                 break
                             end
                         end
@@ -245,7 +245,7 @@ function QuestEventHandler:Initialize()
         hooksecurefunc("DeleteCursorItem", function()
             -- Hook DeleteCursorItem so we know when the player clicks the Accept button
             if deletedQuestItem then
-                Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieQuest] DeleteCursorItem: Quest Item deleted. Update all quests.")
+                QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieQuest] DeleteCursorItem: Quest Item deleted. Update all quests.")
 
                 _QuestEventHandler:UpdateAllQuests(true)
                 deletedQuestItem = false
@@ -272,7 +272,7 @@ end
 ---@param questLogIndex number
 ---@param questId number
 function QuestEventHandler.QuestAccepted(questLogIndex, questId)
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[Quest Event] QUEST_ACCEPTED", questLogIndex, questId)
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[Quest Event] QUEST_ACCEPTED", questLogIndex, questId)
 
     if questLog[questId] and questLog[questId].timer then
         -- We had a QUEST_REMOVED event which started this timer and now it was accepted again.
@@ -284,7 +284,7 @@ function QuestEventHandler.QuestAccepted(questLogIndex, questId)
         end)
     end
 
-    -- No state means the client accepted the quest, but Questie's acceptance work is waiting for valid objectives.
+    -- No state means the client accepted the quest, but QuestieSmazak's acceptance work is waiting for valid objectives.
     -- This new table also identifies this particular acceptance to delayed callbacks after removal/reacceptance.
     questLog[questId] = {}
     lastMarkerQuestEventTime = GetTime()
@@ -310,7 +310,7 @@ function _QuestEventHandler:HandleQuestAccepted(questId, isRetry)
     -- The quest may have been abandoned (e.g. auto-abandon for incomplete breadcrumb) while waiting for the cache
     local questLogIndex = QuestieCompat.GetQuestLogIndexByID(questId)
     if not questLogIndex or questLogIndex == 0 then
-        Questie.Debug(Questie.DEBUG_INFO, "Quest", questId, "is no longer in the quest log, skipping accept logic")
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_INFO, "Quest", questId, "is no longer in the quest log, skipping accept logic")
         return
     end
 
@@ -319,7 +319,7 @@ function _QuestEventHandler:HandleQuestAccepted(questId, isRetry)
     local cacheMiss, _ = QuestLogCache.CheckForChanges({[questId] = true})
     if cacheMiss then
         -- if cacheMiss, no need to check changes as only 1 questId
-        Questie.Debug(Questie.DEBUG_INFO, "Objectives are not cached yet")
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_INFO, "Objectives are not cached yet")
         if (not isRetry) then
             -- Keep the quick retry for ordinary load delays; the shared fallback covers silence after it fails.
             _ScheduleQuestLogRetry()
@@ -333,7 +333,7 @@ function _QuestEventHandler:HandleQuestAccepted(questId, isRetry)
         return
     end
 
-    Questie.Debug(Questie.DEBUG_INFO, "Objectives are correct. Calling accept logic. quest:", questId)
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_INFO, "Objectives are correct. Calling accept logic. quest:", questId)
     questLog[questId].state = QUEST_LOG_STATES.QUEST_ACCEPTED
     QuestieQuest:SetObjectivesDirty(questId)
 
@@ -342,13 +342,13 @@ function _QuestEventHandler:HandleQuestAccepted(questId, isRetry)
 
     QuestieAPI.PropagateQuestUpdate(questId, {}, QuestieAPI.Enums.QuestUpdateTriggerReason.QUEST_ACCEPTED)
 
-    local isLastIslePhase = Questie.db.global.isleOfQuelDanasPhase == IsleOfQuelDanas.MAX_ISLE_OF_QUEL_DANAS_PHASES
+    local isLastIslePhase = QuestieSmazak.db.global.isleOfQuelDanasPhase == IsleOfQuelDanas.MAX_ISLE_OF_QUEL_DANAS_PHASES
     if Expansions.Current >= Expansions.Tbc and (not isLastIslePhase) and IsleOfQuelDanas.CheckForActivePhase(questId) then
         QuestieQuest:SmoothReset()
     else
         QuestLifecycle:AcceptQuest(questId)
 
-        if Questie.db.profile.autoAccept.enabled and (not AutoQuesting.IsModifierHeld()) and ImmersionFrame and ImmersionFrame:IsShown() then
+        if QuestieSmazak.db.profile.autoAccept.enabled and (not AutoQuesting.IsModifierHeld()) and ImmersionFrame and ImmersionFrame:IsShown() then
             ImmersionFrame:Hide()
         end
     end
@@ -362,7 +362,7 @@ end
 ---@param xpReward number
 ---@param moneyReward number
 function QuestEventHandler.QuestTurnedIn(questId, xpReward, moneyReward)
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[Quest Event] QUEST_TURNED_IN", xpReward, moneyReward, questId)
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[Quest Event] QUEST_TURNED_IN", xpReward, moneyReward, questId)
 
     if questLog[questId] and questLog[questId].lateTurnInExpected then
         -- The late event of a quest MarkQuestAsAbandoned found flagged completed and turned in already. Running it
@@ -378,7 +378,7 @@ function QuestEventHandler.QuestTurnedIn(questId, xpReward, moneyReward)
         questLog[questId].timer = nil
     end
 
-    Questie.Debug(Questie.DEBUG_INFO, "Quest:", questId, "was turned in and is completed")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_INFO, "Quest:", questId, "was turned in and is completed")
 
     if questLog[questId] then
         -- There are quests which you just turn in so there is no preceding QUEST_ACCEPTED event and questLog[questId]
@@ -391,14 +391,14 @@ function QuestEventHandler.QuestTurnedIn(questId, xpReward, moneyReward)
     if parentQuest and parentQuest > 0 then
         -- Quests like "The Warsong Reports" have child quests which are just turned in. These child quests only
         -- fire QUEST_TURNED_IN + QUEST_LOG_UPDATE
-        Questie.Debug(Questie.DEBUG_DEVELOP, "Quest:", questId, "Has a Parent Quest - do a full Quest Log check")
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "Quest:", questId, "Has a Parent Quest - do a full Quest Log check")
         lastMarkerQuestEventTime = GetTime()
     end
 
     local _, _, _, quality, _, itemID = GetQuestLogRewardInfo(GetNumQuestLogRewards(questId), questId)
 
     if itemID ~= nil and quality == Enum.ItemQuality.Standard then
-        Questie.Debug(Questie.DEBUG_DEVELOP, "Quest:", questId, "Received a possible Quest Item - do a full Quest Log check")
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "Quest:", questId, "Received a possible Quest Item - do a full Quest Log check")
         lastMarkerQuestEventTime = GetTime()
     end
 
@@ -417,18 +417,18 @@ end
 --- Fires when a quest is removed from the quest log. This includes turning it in and abandoning it.
 ---@param questId number
 function QuestEventHandler.QuestRemoved(questId)
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[Quest Event] QUEST_REMOVED", questId)
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[Quest Event] QUEST_REMOVED", questId)
 
     if (not questLog[questId]) then
         questLog[questId] = {}
     end
 
     -- The party members don't care whether a quest was turned in or abandoned, so we can just broadcast here
-    Questie:SendMessage("QC_ID_BROADCAST_QUEST_REMOVE", questId)
+    QuestieSmazak:SendMessage("QC_ID_BROADCAST_QUEST_REMOVE", questId)
 
     -- QUEST_TURNED_IN was called before QUEST_REMOVED --> quest was turned in
     if questLog[questId].state == QUEST_LOG_STATES.QUEST_TURNED_IN then
-        Questie.Debug(Questie.DEBUG_INFO, "Quest:", questId, "was turned in before. Nothing do to.")
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_INFO, "Quest:", questId, "was turned in before. Nothing do to.")
         questLog[questId] = nil
         return
     end
@@ -448,19 +448,19 @@ end
 
 ---@param questId number
 function _QuestEventHandler:MarkQuestAsAbandoned(questId)
-    Questie.Debug(Questie.DEBUG_DEVELOP, "QuestEventHandler:MarkQuestAsAbandoned")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "QuestEventHandler:MarkQuestAsAbandoned")
     if questLog[questId] and questLog[questId].state == QUEST_LOG_STATES.QUEST_REMOVED then
         -- Forever can report QUEST_TURNED_IN seconds or a minute after QUEST_REMOVED, or not at all. The server flags a
-        -- turned-in quest completed by QUEST_REMOVED; an abandoned one stays unflagged. A quest Questie already counts
+        -- turned-in quest completed by QUEST_REMOVED; an abandoned one stays unflagged. A quest QuestieSmazak already counts
         -- as complete cannot be told apart by the flag, so it keeps the abandon path.
-        if QuestieCompat.IsQuestFlaggedCompleted(questId) and not Questie.db.char.complete[questId] then
-            Questie.Debug(Questie.DEBUG_INFO, "Quest:", questId, "is flagged completed: turned in")
+        if QuestieCompat.IsQuestFlaggedCompleted(questId) and not QuestieSmazak.db.char.complete[questId] then
+            QuestieSmazak.Debug(QuestieSmazak.DEBUG_INFO, "Quest:", questId, "is flagged completed: turned in")
             QuestEventHandler.QuestTurnedIn(questId)
             questLog[questId].lateTurnInExpected = true
             return
         end
 
-        Questie.Debug(Questie.DEBUG_INFO, "Quest:", questId, "was abandoned")
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_INFO, "Quest:", questId, "was abandoned")
 
         -- As for a turn-in: the acceptance ends before the quest leaves QuestLogCache
         QuestLifecycle:AbandonQuest(questId)
@@ -480,7 +480,7 @@ end
 
 ---Fires when the quest log changed in any way. This event fires very often!
 function QuestEventHandler.QuestLogUpdate()
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[Quest Event] QUEST_LOG_UPDATE")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[Quest Event] QUEST_LOG_UPDATE")
 
     -- Pending accepts must keep retrying after the initial timer, including beyond the marker window.
     for questId, data in pairs(questLog) do
@@ -491,14 +491,14 @@ function QuestEventHandler.QuestLogUpdate()
 
     local now = GetTime()
     if lastMarkerQuestEventTime > 0 and (now - lastMarkerQuestEventTime) > MARKER_EVENT_TIMEFRAME then
-        Questie.Debug(Questie.DEBUG_DEVELOP, "[Quest Event] QUEST_LOG_UPDATE - No recent marker; skipping objective scan")
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[Quest Event] QUEST_LOG_UPDATE - No recent marker; skipping objective scan")
     else
         _QuestEventHandler:UpdateAllQuests(true)
     end
 
     -- Don't update tracker if we're in a pet battle
-    if Expansions.Current >= Expansions.MoP and Questie.db.profile.hideTrackerInPetBattles and C_PetBattles and C_PetBattles.IsInBattle() then
-        Questie.Debug(Questie.DEBUG_DEVELOP, "[Quest Event] Skipped tracker update - in pet battle")
+    if Expansions.Current >= Expansions.MoP and QuestieSmazak.db.profile.hideTrackerInPetBattles and C_PetBattles and C_PetBattles.IsInBattle() then
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[Quest Event] Skipped tracker update - in pet battle")
         return
     end
 
@@ -510,7 +510,7 @@ end
 --- Fires whenever a quest objective progressed
 ---@param questId number
 function QuestEventHandler.QuestWatchUpdate(questId)
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[Quest Event] QUEST_WATCH_UPDATE", questId)
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[Quest Event] QUEST_WATCH_UPDATE", questId)
 
     -- We do a full scan even though we have the questId because many QUEST_WATCH_UPDATE can fire before
     -- a QUEST_LOG_UPDATE. Also not every QUEST_WATCH_UPDATE gets a single QUEST_LOG_UPDATE and doing a full
@@ -522,9 +522,9 @@ end
 ---Good quest to test this: https://www.wowhead.com/quest=24502/necessary-roughness
 ---@param questId number
 function QuestEventHandler.QuestAutoComplete(questId)
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[Quest Event] QUEST_AUTOCOMPLETE", questId)
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[Quest Event] QUEST_AUTOCOMPLETE", questId)
 
-    if Questie.db.profile.trackerEnabled then
+    if QuestieSmazak.db.profile.trackerEnabled then
         QuestieCombatQueue:Queue(WatchFrameHook.Hide)
         AutoCompleteFrame.ShowAutoComplete(questId)
     end
@@ -549,7 +549,7 @@ function QuestEventHandler.UnitQuestLogChanged(unitTarget)
     lastMarkerQuestEventTime = GetTime()
 end
 
----True once Questie has finished accepting the quest: objectives loaded and accept side effects ran.
+---True once QuestieSmazak has finished accepting the quest: objectives loaded and accept side effects ran.
 ---Quests in the native log at login count as accepted. Independent of QuestieDB.
 ---@param questId QuestId
 ---@return boolean
@@ -567,7 +567,7 @@ end
 --- since the last check
 ---@param doRetryWithoutChanges boolean @If true, the function will be called again at next QUEST_LOG_UPDATE even if there were no changes
 function _QuestEventHandler:UpdateAllQuests(doRetryWithoutChanges)
-    Questie.Debug(Questie.DEBUG_INFO, "Running full questlog check")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_INFO, "Running full questlog check")
     -- Cancel only when a scan actually runs. Cancelling on every incoming event would lose recovery when
     -- QuestLogUpdate skips the scan because its marker expired. This also covers scans started by other callers.
     if questLogRetryTimer then
@@ -589,9 +589,9 @@ function _QuestEventHandler:UpdateAllQuests(doRetryWithoutChanges)
     end
 
     local cacheMiss, changes, _, questIdsUnlisted = QuestLogCache.CheckForChanges(questIdsToCheck)
-    -- A quest can join the game's log without a QUEST_ACCEPTED Questie saw: the server's quest log arrived after
+    -- A quest can join the game's log without a QUEST_ACCEPTED QuestieSmazak saw: the server's quest log arrived after
     -- startup filled the cache, or the accept fired before the event was registered. Adopt it as at login, without a
-    -- Journey entry or announcement: Questie cannot tell a missed accept from a quest the log already had.
+    -- Journey entry or announcement: QuestieSmazak cannot tell a missed accept from a quest the log already had.
     -- A quest turned in after its QUEST_REMOVED keeps its entry, e.g. for a late QUEST_TURNED_IN, and can be adopted
     -- too. Between a QUEST_TURNED_IN and its QUEST_REMOVED the quest is still in the log: it is not adopted again.
     local adopted = {}
@@ -619,7 +619,7 @@ function _QuestEventHandler:UpdateAllQuests(doRetryWithoutChanges)
 
     if next(changes) then
         for questId, objIds in pairs(changes) do
-            Questie.Debug(Questie.DEBUG_INFO, "Quest:", questId, "will be updated")
+            QuestieSmazak.Debug(QuestieSmazak.DEBUG_INFO, "Quest:", questId, "will be updated")
             QuestieQuest:SetObjectivesDirty(questId)
 
             QuestieNameplate:UpdateNameplate()
@@ -628,12 +628,12 @@ function _QuestEventHandler:UpdateAllQuests(doRetryWithoutChanges)
             elseif QuestieDB.GetQuest(questId) then
                 -- Not in the player's quest log: adopted above, or not in the cache right after login (e.g. the API is
                 -- really slow). AdoptQuest adds and draws it as at login, completion included, so no UpdateQuest here.
-                Questie.Debug(Questie.DEBUG_INFO, "Quest:", questId, "is not in the player's quest log, but is in the questLog of QuestEventHandler")
+                QuestieSmazak.Debug(QuestieSmazak.DEBUG_INFO, "Quest:", questId, "is not in the player's quest log, but is in the questLog of QuestEventHandler")
                 QuestLifecycle:AdoptQuest(questId)
                 -- The local player now has this quest, so stop drawing it as a party member's objective.
                 QuestiePartyObjectives:ScheduleUpdate(questId)
-            elseif not (Questie.IsSoD or Questie.IsForever) then
-                Questie.Error("Quest", questId, "is not in the player's quest log and not in the QuestDB. Please report this on Github or Discord!")
+            elseif not (QuestieSmazak.IsSoD or QuestieSmazak.IsForever) then
+                QuestieSmazak.Error("Quest", questId, "is not in the player's quest log and not in the QuestDB. Please report this on Github or Discord!")
             end
             QuestieTracker.UpdateQuestLines(questId)
 
@@ -642,15 +642,15 @@ function _QuestEventHandler:UpdateAllQuests(doRetryWithoutChanges)
         QuestieCombatQueue:Queue(function()
             C_Timer.After(1.0, function()
                 -- Don't update tracker if we're in a pet battle
-                if Expansions.Current >= Expansions.MoP and Questie.db.profile.hideTrackerInPetBattles and C_PetBattles and C_PetBattles.IsInBattle() then
-                    Questie.Debug(Questie.DEBUG_DEVELOP, "[Quest Event] Skipped UnitQuestLogChanged tracker update - in pet battle")
+                if Expansions.Current >= Expansions.MoP and QuestieSmazak.db.profile.hideTrackerInPetBattles and C_PetBattles and C_PetBattles.IsInBattle() then
+                    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[Quest Event] Skipped UnitQuestLogChanged tracker update - in pet battle")
                     return
                 end
                 QuestieTracker:Update()
             end)
         end)
     else
-        Questie.Debug(Questie.DEBUG_INFO, "Nothing to update")
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_INFO, "Nothing to update")
     end
 
     if doRetryWithoutChanges or cacheMiss then
@@ -666,14 +666,14 @@ function _QuestEventHandler:QuestRelatedFrameClosed(event)
     local now = GetTime()
     -- Don't do update if event fired twice
     if lastTimeQuestRelatedFrameClosedEvent ~= now then
-        Questie.Debug(Questie.DEBUG_DEVELOP, "[Quest Event]", event)
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[Quest Event]", event)
 
         lastTimeQuestRelatedFrameClosedEvent = now
         _QuestEventHandler:UpdateAllQuests(false)
 
         -- Don't update tracker if we're in a pet battle
-        if Expansions.Current >= Expansions.MoP and Questie.db.profile.hideTrackerInPetBattles and C_PetBattles and C_PetBattles.IsInBattle() then
-            Questie.Debug(Questie.DEBUG_DEVELOP, "[Quest Event] Skipped QuestRelatedFrameClosed tracker update - in pet battle")
+        if Expansions.Current >= Expansions.MoP and QuestieSmazak.db.profile.hideTrackerInPetBattles and C_PetBattles and C_PetBattles.IsInBattle() then
+            QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[Quest Event] Skipped QuestRelatedFrameClosed tracker update - in pet battle")
             return
         end
 
@@ -682,7 +682,7 @@ function _QuestEventHandler:QuestRelatedFrameClosed(event)
 end
 
 function QuestEventHandler.ReputationChange()
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[Quest Event] CHAT_MSG_COMBAT_FACTION_CHANGE")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[Quest Event] CHAT_MSG_COMBAT_FACTION_CHANGE")
 
     -- Reputational quest progression doesn't fire UNIT_QUEST_LOG_CHANGED event, only QUEST_LOG_UPDATE event.
     lastMarkerQuestEventTime = GetTime()
@@ -690,14 +690,14 @@ end
 
 -- Spell objectives; Runes in SoD count as recipes because "Engraving" is a profession?
 function QuestEventHandler.NewRecipeLearned()
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[EVENT] NEW_RECIPE_LEARNED (QuestEventHandler)")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[EVENT] NEW_RECIPE_LEARNED (QuestEventHandler)")
 
     -- If this event is related to a spell objective, a QUEST_LOG_UPDATE will be fired afterwards
     lastMarkerQuestEventTime = GetTime()
 end
 
 function QuestEventHandler.CurrencyDisplayUpdate()
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[EVENT] CURRENCY_DISPLAY_UPDATE (QuestEventHandler)")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[EVENT] CURRENCY_DISPLAY_UPDATE (QuestEventHandler)")
 
     -- We want to make sure we are doing a full quest log scan, when the currency changed. There are quests which reward a currency and this
     -- currency is also a quest objective.
@@ -705,7 +705,7 @@ function QuestEventHandler.CurrencyDisplayUpdate()
 end
 
 function QuestEventHandler.PlayerInteractionManagerFrameHide(eventType)
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[Quest Event] PLAYER_INTERACTION_MANAGER_FRAME_HIDE", eventType)
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[Quest Event] PLAYER_INTERACTION_MANAGER_FRAME_HIDE", eventType)
 
     local eventName
     if eventType == 1 then

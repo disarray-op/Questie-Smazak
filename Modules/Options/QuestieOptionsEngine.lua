@@ -1,21 +1,21 @@
----Questie's settings: the tabs, both places they are shown, and building them when they are first opened.
+---QuestieSmazak's settings: the tabs, both places they are shown, and building them when they are first opened.
 ---@class QuestieOptionsEngine
-local QuestieOptionsEngine = QuestieLoader:CreateModule("QuestieOptionsEngine");
+local QuestieOptionsEngine = QuestieSmazakLoader:CreateModule("QuestieOptionsEngine");
 
 ---@type QuestieOptionsControls
-local QuestieOptionsControls = QuestieLoader:ImportModule("QuestieOptionsControls")
+local QuestieOptionsControls = QuestieSmazakLoader:ImportModule("QuestieOptionsControls")
 ---@type QuestieOptionsLayout
-local QuestieOptionsLayout = QuestieLoader:ImportModule("QuestieOptionsLayout")
+local QuestieOptionsLayout = QuestieSmazakLoader:ImportModule("QuestieOptionsLayout")
 ---@type QuestieOptionsUtils
-local QuestieOptionsUtils = QuestieLoader:ImportModule("QuestieOptionsUtils")
+local QuestieOptionsUtils = QuestieSmazakLoader:ImportModule("QuestieOptionsUtils")
 ---@type QuestieOptionsWindow
-local QuestieOptionsWindow = QuestieLoader:ImportModule("QuestieOptionsWindow")
+local QuestieOptionsWindow = QuestieSmazakLoader:ImportModule("QuestieOptionsWindow")
 ---@type QuestieJourney
-local QuestieJourney = QuestieLoader:ImportModule("QuestieJourney")
+local QuestieJourney = QuestieSmazakLoader:ImportModule("QuestieJourney")
 ---@type ThreadLib
-local ThreadLib = QuestieLoader:ImportModule("ThreadLib")
+local ThreadLib = QuestieSmazakLoader:ImportModule("ThreadLib")
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 
 local coYield = coroutine.yield
 
@@ -25,7 +25,7 @@ local coYield = coroutine.yield
 -- Element - Any object placed on a canvas. All controls are elements, but there are also
 --           non-control elements like containers, dividers, and text.
 -- Canvas  - The area showing one tab. Every tab has one canvas in Blizzard's settings panel,
---           and one in Questie's own window.
+--           and one in QuestieSmazak's own window.
 --
 -- There are four parts:
 -- - The tab files in NativeOptions/ hold the data: which settings exist and how they read and write.
@@ -41,8 +41,8 @@ local coYield = coroutine.yield
 -- A tab file registers on QuestieOptionsEngine.tabs, and its Initialize function returns:
 --   title     Tab name. Also the name of its category in Blizzard's settings panel.
 --   subtitle  Shown next to the title at the top of the tab.
---   order     Tabs are sorted by this. The first tab becomes the main Questie category in Blizzard's settings panel.
---   icon      Texture of the tab's button in Questie's own window.
+--   order     Tabs are sorted by this. The first tab becomes the main QuestieSmazak category in Blizzard's settings panel.
+--   icon      Texture of the tab's button in QuestieSmazak's own window.
 --   visible   False skips the whole tab, for example when an addon it integrates with is missing.
 --   items     The elements of the tab, by key. Their fields are listed in QuestieOptionsLayout.
 --
@@ -66,7 +66,7 @@ local coYield = coroutine.yield
 ---Tab files register here while they load.
 QuestieOptionsEngine.tabs = {}
 
----Questie's own settings window. Stays nil until it is first opened.
+---QuestieSmazak's own settings window. Stays nil until it is first opened.
 ---@type Frame?
 QuestieOptionsEngine.popup = nil
 
@@ -92,9 +92,9 @@ local visibleTabs
 ---@type Frame[] Every canvas, built or not, in both modes
 local canvases = {}
 
----@type table<string, Frame> Canvases of Questie's own window by tab key
+---@type table<string, Frame> Canvases of QuestieSmazak's own window by tab key
 local popupCanvases = {}
----@type table<string, Frame> Buttons of Questie's own window by tab key
+---@type table<string, Frame> Buttons of QuestieSmazak's own window by tab key
 local sideTabs = {}
 
 local _BuildCanvas
@@ -116,7 +116,7 @@ end
 local function _OnCanvasShown(canvas)
     if not canvas.isBuildStarted then
         canvas.isBuildStarted = true
-        ThreadLib.Thread(function() _BuildCanvas(canvas) end, 0, "Error while building a Questie settings tab:", nil, nil, "QuestieOptionsEngine.BuildCanvas")
+        ThreadLib.Thread(function() _BuildCanvas(canvas) end, 0, "Error while building a QuestieSmazak settings tab:", nil, nil, "QuestieOptionsEngine.BuildCanvas")
         return
     end
 
@@ -136,7 +136,7 @@ end
 local function _CreateCanvas(parent, tab, mode)
     local modeName = mode == RenderMode.POPUP and "Popup" or "Blizz"
 
-    local canvas = CreateFrame("Frame", "QuestieOptionsTab_" .. modeName .. "_" .. tab.key, parent)
+    local canvas = CreateFrame("Frame", "QuestieSmazakOptionsTab_" .. modeName .. "_" .. tab.key, parent)
     canvas:SetAllPoints(parent)
     canvas:Hide()
     canvas.tab = tab
@@ -160,7 +160,7 @@ local function _CreateCanvasHeader(canvas, leftInset)
 
     local title = canvas:CreateFontString(nil, "OVERLAY", "GameFontNormalHuge")
     title:SetPoint("TOPLEFT", canvas, "TOPLEFT", 8 + leftInset, -4)
-    title:SetText("Questie")
+    title:SetText("Questie-Smazak")
 
     local bullet = canvas:CreateFontString(nil, "OVERLAY", "Game13Font")
     bullet:SetPoint("LEFT", title, "RIGHT", 4, -1)
@@ -286,7 +286,7 @@ _BuildCanvas = function(canvas)
 end
 
 -------------------------
--- Questie's own window
+-- QuestieSmazak's own window
 -------------------------
 
 ---@param selectedKey string
@@ -348,7 +348,7 @@ function QuestieOptionsEngine:Initialize()
         if mainCategory then
             category = Settings.RegisterCanvasLayoutSubcategory(mainCategory, canvas, tab.data.title)
         else
-            category = Settings.RegisterCanvasLayoutCategory(canvas, "Questie")
+            category = Settings.RegisterCanvasLayoutCategory(canvas, "Questie-Smazak")
             mainCategory = category
         end
         Settings.RegisterAddOnCategory(category)
@@ -393,7 +393,7 @@ end
 function QuestieOptionsEngine:ShowFrame()
     -- Only reachable right after login, because Initialize runs for just a few frames
     if not visibleTabs then
-        print(Questie:Colorize(l10n("Please wait a moment for Questie to finish loading")))
+        print(QuestieSmazak:Colorize(l10n("Please wait a moment for QuestieSmazak to finish loading")))
         return
     end
 

@@ -1,15 +1,15 @@
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 
 local trackerUILocales = {
-    ["Questie Tracker"] = {
+    ["QuestieSmazak Tracker"] = {
         ["enUS"] = true,
         ["deDE"] = "Aktive Quests",
-        ["esES"] = "Rastreador de Questie",
-        ["esMX"] = "Rastreador de Questie",
-        ["frFR"] = "Suivi de Questie",
+        ["esES"] = "Rastreador de QuestieSmazak",
+        ["esMX"] = "Rastreador de QuestieSmazak",
+        ["frFR"] = "Suivi de QuestieSmazak",
         ["koKR"] = "활성 퀘스트",
-        ["ptBR"] = "Rastreador de Questie",
+        ["ptBR"] = "Rastreador de QuestieSmazak",
         ["ruRU"] = "Активные задания",
         ["zhCN"] = "Questie追踪器",
         ["zhTW"] = "任務",
@@ -77,7 +77,7 @@ local trackerUILocales = {
         ["zhTW"] = "手動模式下忽略任務清單的高度比例",
     },
     ---------------------------------------------------------
-    -- Questie Icon (Active Quest Header)
+    -- QuestieSmazak Icon (Active Quest Header)
     ["Toggle Options"] = {
         ["enUS"] = true,
         ["deDE"] = "Einstellungen anzeigen/verstecken",
@@ -115,7 +115,7 @@ local trackerUILocales = {
         ["zhCN"] = "锁定时拖动",
         ["zhTW"] = "鎖定時拖曳移動",
     },
-    ["Questie Tracker Integrations"] = {
+    ["QuestieSmazak Tracker Integrations"] = {
         ["enUS"] = true,
         ["deDE"] = "Tracker-Integrationen",
         ["esES"] = "Integraciones del rastreador",
@@ -153,15 +153,15 @@ local trackerUILocales = {
         ["zhCN"] = "Ctrl + 左键单击或右键单击任务标题",
         ["zhTW"] = "Ctrl+左鍵或右鍵點擊任務標題",
     },
-    ["Toggle Questie Tracker"] = {
+    ["Toggle QuestieSmazak Tracker"] = {
         ["enUS"] = true,
-        ["deDE"] = "Questie-Tracker zeigen/verstecken",
-        ["esES"] = "Mostrar/ocultar el rastreador de Questie",
-        ["esMX"] = "Mostrar/ocultar el rastreador de Questie",
-        ["frFR"] = "Afficher/cacher le suivi de quêtes de Questie",
-        ["koKR"] = "Questie 추적기 표시",
-        ["ptBR"] = "Mostrar/ocultar o rastreador do Questie",
-        ["ruRU"] = "Включить трекер Questie",
+        ["deDE"] = "QuestieSmazak-Tracker zeigen/verstecken",
+        ["esES"] = "Mostrar/ocultar el rastreador de QuestieSmazak",
+        ["esMX"] = "Mostrar/ocultar el rastreador de QuestieSmazak",
+        ["frFR"] = "Afficher/cacher le suivi de quêtes de QuestieSmazak",
+        ["koKR"] = "QuestieSmazak 추적기 표시",
+        ["ptBR"] = "Mostrar/ocultar o rastreador do QuestieSmazak",
+        ["ruRU"] = "Включить трекер QuestieSmazak",
         ["zhCN"] = "切换Questie追踪器",
         ["zhTW"] = "切換Questie追蹤器",
     },
@@ -377,16 +377,16 @@ local trackerUILocales = {
         ["zhCN"] = "任务失败！",
         ["zhTW"] = "任務失敗！",
     },
-    ["Opening the quest log from Questie is disabled in controller mode. Open it with your controller instead."] = {
+    ["Opening the quest log from QuestieSmazak is disabled in controller mode. Open it with your controller instead."] = {
         ["enUS"] = true,
-        ["deDE"] = "Das Öffnen des Questlogs über Questie ist im Controller-Modus deaktiviert. Öffne es stattdessen mit deinem Controller.", -- AI 🤖
-        ["esES"] = "Abrir el registro de misiones desde Questie está desactivado en el modo mando. Ábrelo con tu mando en su lugar.", -- AI 🤖
-        ["esMX"] = "Abrir el registro de misiones desde Questie está desactivado en el modo de control. Ábrelo con tu control en su lugar.", -- AI 🤖
-        ["frFR"] = "L'ouverture du journal de quêtes depuis Questie est désactivée en mode manette. Ouvrez-le plutôt avec votre manette.", -- AI 🤖
+        ["deDE"] = "Das Öffnen des Questlogs über QuestieSmazak ist im Controller-Modus deaktiviert. Öffne es stattdessen mit deinem Controller.", -- AI 🤖
+        ["esES"] = "Abrir el registro de misiones desde QuestieSmazak está desactivado en el modo mando. Ábrelo con tu mando en su lugar.", -- AI 🤖
+        ["esMX"] = "Abrir el registro de misiones desde QuestieSmazak está desactivado en el modo de control. Ábrelo con tu control en su lugar.", -- AI 🤖
+        ["frFR"] = "L'ouverture du journal de quêtes depuis QuestieSmazak est désactivée en mode manette. Ouvrez-le plutôt avec votre manette.", -- AI 🤖
         ["koKR"] = "컨트롤러 모드에서는 Questie에서 퀘스트 로그를 여는 기능이 비활성 화됩니다. 대신 컨트롤러로 여세요.", -- AI 🤖
-        ["ptBR"] = "Abrir o diário de missões pelo Questie está desativado no modo controle. Abra-o com o seu controle.", -- AI 🤖
-        ["ruRU"] = "Открытие журнала заданий через Questie отключено в режиме контроллера. Откройте его с помощью контроллера.", -- AI 🤖
-        ["zhCN"] = "在手柄模式下，无法通过 Questie 打开任务日志。请改用手柄打开。", -- AI 🤖
+        ["ptBR"] = "Abrir o diário de missões pelo QuestieSmazak está desativado no modo controle. Abra-o com o seu controle.", -- AI 🤖
+        ["ruRU"] = "Открытие журнала заданий через QuestieSmazak отключено в режиме контроллера. Откройте его с помощью контроллера.", -- AI 🤖
+        ["zhCN"] = "在手柄模式下，无法通过 QuestieSmazak 打开任务日志。请改用手柄打开。", -- AI 🤖
         ["zhTW"] = "在控制器模式下，無法透過 Questie開啟任務日誌。請改用控制器開 啟。", -- AI 🤖
     },
     ["Can't open Quest Log while in combat. Open it manually."] = {

@@ -27,14 +27,14 @@ describe("QuestieOptionsControls", function()
         ui = FakeUI.Install()
         parent = CreateFrame("Frame", nil, UIParent)
 
-        dofile("Modules/Libs/QuestieLoader.lua")
+        dofile("Modules/Libs/QuestieSmazakLoader.lua")
         dofile("Localization/l10n.lua")
-        QuestieOptionsEngine = QuestieLoader:ImportModule("QuestieOptionsEngine")
+        QuestieOptionsEngine = QuestieSmazakLoader:ImportModule("QuestieOptionsEngine")
         QuestieOptionsEngine.RefreshStates = spy.new(function() end)
         QuestieOptionsEngine.QueueRefresh = spy.new(function() end)
         dofile("Modules/Options/QuestieOptionsUtils.lua")
         dofile("Modules/Options/QuestieOptionsControls.lua")
-        QuestieOptionsControls = QuestieLoader:ImportModule("QuestieOptionsControls")
+        QuestieOptionsControls = QuestieSmazakLoader:ImportModule("QuestieOptionsControls")
     end)
 
     after_each(function()
@@ -806,7 +806,7 @@ describe("QuestieOptionsControls", function()
         local originalIsForever
 
         before_each(function()
-            originalIsForever = Questie.IsForever
+            originalIsForever = QuestieSmazak.IsForever
             ColorPickerFrame.SetupColorPickerAndShow = function(_, info) ColorPickerFrame.info = info end
             ColorPickerFrame.GetColorRGB = function() return 0.1, 0.2, 0.3 end
             ColorPickerFrame.GetColorAlpha = function() return 0.25 end
@@ -814,7 +814,7 @@ describe("QuestieOptionsControls", function()
         end)
 
         after_each(function()
-            Questie.IsForever = originalIsForever
+            QuestieSmazak.IsForever = originalIsForever
         end)
 
         local function CreatePicker(set, hasOpacity)
@@ -835,7 +835,7 @@ describe("QuestieOptionsControls", function()
         it("should store each change immediately and combine the refreshes", function()
             local set = spy.new(function() end)
             local control = CreatePicker(set, true)
-            Questie.IsForever = true
+            QuestieSmazak.IsForever = true
 
             control.widget:Click()
             ColorPickerFrame.info.swatchFunc()
@@ -857,7 +857,7 @@ describe("QuestieOptionsControls", function()
         it("should invert the opacity on Classic, which reports it the other way around", function()
             local set = spy.new(function() end)
             local control = CreatePicker(set, true)
-            Questie.IsForever = false
+            QuestieSmazak.IsForever = false
 
             control.widget:Click()
             ColorPickerFrame.info.opacityFunc()
@@ -872,7 +872,7 @@ describe("QuestieOptionsControls", function()
             -- Follows Blizzard_FrameXML/Classic/ColorPickerFrame: setting it up reports the color right away,
             -- with whatever the slider still has. Only being shown moves the slider, which reports again.
             before_each(function()
-                Questie.IsForever = false
+                QuestieSmazak.IsForever = false
                 sliderValue = 0
                 ColorPickerFrame:Hide()
                 ColorPickerFrame.GetColorAlpha = function() return sliderValue end
@@ -925,7 +925,7 @@ describe("QuestieOptionsControls", function()
         it("should restore the previous color when cancelled", function()
             local set = spy.new(function() end)
             local control = CreatePicker(set, true)
-            Questie.IsForever = true
+            QuestieSmazak.IsForever = true
 
             control.widget:Click()
             ColorPickerFrame.info.cancelFunc()

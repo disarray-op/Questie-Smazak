@@ -1,31 +1,31 @@
 ---@type QuestieCompat
-local QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+local QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
 
 ---@class QuestieLink
-local QuestieLink = QuestieLoader:CreateModule("QuestieLink")
+local QuestieLink = QuestieSmazakLoader:CreateModule("QuestieLink")
 -------------------------
 --Import modules
 -------------------------
 ---@type QuestieDB
-local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
 ---@type QuestieLib
-local QuestieLib = QuestieLoader:ImportModule("QuestieLib")
+local QuestieLib = QuestieSmazakLoader:ImportModule("QuestieLib")
 ---@type QuestLogCache
-local QuestLogCache = QuestieLoader:ImportModule("QuestLogCache")
+local QuestLogCache = QuestieSmazakLoader:ImportModule("QuestLogCache")
 ---@type ActiveQuests
-local ActiveQuests = QuestieLoader:ImportModule("ActiveQuests")
+local ActiveQuests = QuestieSmazakLoader:ImportModule("ActiveQuests")
 ---@type TrackerUtils
-local TrackerUtils = QuestieLoader:ImportModule("TrackerUtils")
+local TrackerUtils = QuestieSmazakLoader:ImportModule("TrackerUtils")
 ---@type QuestieEvent
-local QuestieEvent = QuestieLoader:ImportModule("QuestieEvent")
+local QuestieEvent = QuestieSmazakLoader:ImportModule("QuestieEvent")
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 ---@type ZoneDB
-local ZoneDB = QuestieLoader:ImportModule("ZoneDB")
+local ZoneDB = QuestieSmazakLoader:ImportModule("ZoneDB")
 ---@type QuestieReputation
-local QuestieReputation = QuestieLoader:ImportModule("QuestieReputation")
+local QuestieReputation = QuestieSmazakLoader:ImportModule("QuestieReputation")
 ---@type HandleSetHyperlink
-local HandleSetHyperlink = QuestieLoader:ImportModule("HandleSetHyperlink")
+local HandleSetHyperlink = QuestieSmazakLoader:ImportModule("HandleSetHyperlink")
 
 -- Forward declaration
 local _AddQuestTitle, _AddQuestStatus, _AddQuestDescription, _AddQuestRequirements, _AddDungeonInfo, _GetQuestStarter, _GetQuestFinisher, _AddPlayerQuestProgress
@@ -38,7 +38,7 @@ function QuestieLink.Initialize()
     _InstallHyperlinkClickHook()
 end
 
---- Returns a plain, chat-safe quest link string in Questie's own bracket format.
+--- Returns a plain, chat-safe quest link string in QuestieSmazak's own bracket format.
 --- This is used for manual linking (shift-click in Tracker/Journey, etc.) where
 --- we want a predictable representation that works in chat regardless of whether
 --- the quest is in the player's quest log.
@@ -51,7 +51,7 @@ function QuestieLink.GetQuestLinkStringById(questId)
     end
     local questLevel, _ = QuestieLib.GetEffectiveQuestLevel(questId)
 
-    if Questie.db.profile.trackerShowQuestLevel then
+    if QuestieSmazak.db.profile.trackerShowQuestLevel then
         return "[[" .. tostring(questLevel) .. "] " .. questName .. " (" .. tostring(questId) .. ")]"
     else
         return "[" .. questName .. " (" .. tostring(questId) .. ")]"
@@ -59,7 +59,7 @@ function QuestieLink.GetQuestLinkStringById(questId)
 end
 
 --- Prefers the native Blizzard quest link (works for any player, addon or not),
---- falling back to the Questie format when the API is unavailable or the quest
+--- falling back to the QuestieSmazak format when the API is unavailable or the quest
 --- is not in the player's quest log (GetQuestLink only works for those).
 ---@param questId QuestId
 ---@return string|nil
@@ -82,7 +82,7 @@ function QuestieLink:GetQuestHyperLink(questId, senderGUID)
         return nil
     end
 
-    local coloredQuestName = QuestieLib:GetColoredQuestName(questId, Questie.db.profile.trackerShowQuestLevel, true)
+    local coloredQuestName = QuestieLib:GetColoredQuestName(questId, QuestieSmazak.db.profile.trackerShowQuestLevel, true)
     local questLevel, _ = QuestieLib.GetEffectiveQuestLevel(questId)
     local isRepeatable = QuestieDB.IsRepeatable(questId)
     local isEventQuest = QuestieEvent.IsEventQuest(questId)
@@ -103,8 +103,8 @@ end
 ---@param tooltip Frame
 function QuestieLink:CreateQuestTooltip(link, tooltip)
     -- Fixes error when clicking quest links before full init
-    if (not Questie.started) then
-        print(Questie:Colorize(l10n("Please wait a moment for Questie to finish loading")))
+    if (not QuestieSmazak.started) then
+        print(QuestieSmazak:Colorize(l10n("Please wait a moment for QuestieSmazak to finish loading")))
         return
     end
     local isQuestieLink, _, _ = string.match(link, "questie:(%d+):.*")
@@ -141,7 +141,7 @@ end
 ---@param color string
 ---@param wrapText boolean?
 _AddColoredTooltipLine = function(tooltip, text, color, wrapText)
-    text = Questie:Colorize(text, color)
+    text = QuestieSmazak:Colorize(text, color)
     tooltip:AddLine(text, 1, 1, 1, wrapText)
 end
 
@@ -158,11 +158,11 @@ _AddQuestTitle = function(tooltip, quest)
     local questLevelString = QuestieLib:GetLevelString(questId, questLevel)
     local titleColor = string.sub(QuestieLib:PrintDifficultyColor(questLevel, "", isRepeatableQuest, isEventQuest, isPvPQuest, questId), 5, 10)
 
-    if Questie.db.profile.trackerShowQuestLevel and Questie.db.profile.enableTooltipsQuestID then
+    if QuestieSmazak.db.profile.trackerShowQuestLevel and QuestieSmazak.db.profile.enableTooltipsQuestID then
         _AddColoredTooltipLine(tooltip, questLevelString .. questName .. " (" .. questId .. ")", titleColor)
-    elseif Questie.db.profile.trackerShowQuestLevel and (not Questie.db.profile.enableTooltipsQuestID) then
+    elseif QuestieSmazak.db.profile.trackerShowQuestLevel and (not QuestieSmazak.db.profile.enableTooltipsQuestID) then
         _AddColoredTooltipLine(tooltip, questLevelString .. questName, titleColor)
-    elseif Questie.db.profile.enableTooltipsQuestID and (not Questie.db.profile.trackerShowQuestLevel) then
+    elseif QuestieSmazak.db.profile.enableTooltipsQuestID and (not QuestieSmazak.db.profile.trackerShowQuestLevel) then
         _AddColoredTooltipLine(tooltip, questName .. " (" .. questId .. ")", titleColor)
     else
         _AddColoredTooltipLine(tooltip, questName, titleColor)
@@ -179,9 +179,9 @@ _AddQuestStatus = function(tooltip, quest)
         local stateText
         local questIsComplete = QuestieDB.IsComplete(quest.Id)
         if questIsComplete == 1 then
-            stateText = Questie:Colorize(l10n("Complete"), "green")
+            stateText = QuestieSmazak:Colorize(l10n("Complete"), "green")
         elseif questIsComplete == -1 then
-            stateText = Questie:Colorize(l10n("Failed"), "red")
+            stateText = QuestieSmazak:Colorize(l10n("Failed"), "red")
         end
 
         if stateText then
@@ -189,7 +189,7 @@ _AddQuestStatus = function(tooltip, quest)
         else
             _AddColoredTooltipLine(tooltip, onQuestText, "green")
         end
-    elseif Questie.db.char.complete[quest.Id] then
+    elseif QuestieSmazak.db.char.complete[quest.Id] then
         _AddColoredTooltipLine(tooltip, l10n("You have completed this quest"), "green")
     elseif returnReason ~= DoableStates.AVAILABLE then
         _AddColoredTooltipLine(tooltip, eligibilityText, "red")
@@ -252,7 +252,7 @@ end
 ---@param quest Quest
 _AddQuestRequirements = function(tooltip, quest)
     local questId = quest.Id
-    if ActiveQuests.Get(questId) or Questie.db.char.complete[questId] then
+    if ActiveQuests.Get(questId) or QuestieSmazak.db.char.complete[questId] then
         return
     end
 
@@ -281,7 +281,7 @@ _AddQuestRequirements = function(tooltip, quest)
         return
     end
 
-    -- Fallback: use Questie's static database objective data
+    -- Fallback: use QuestieSmazak's static database objective data
     if #quest.ObjectiveData > 0 then
         for i = 1, #quest.ObjectiveData do
             local currentObjective = quest.ObjectiveData[i]
@@ -417,21 +417,21 @@ _AddPlayerQuestProgress = function(tooltip, quest, starterName, starterZoneName,
             -- Completed Quest (not turned in): display quest ended by npc and zone
             if finisherName then
                 _AddTooltipLine(tooltip, " ")
-                _AddTooltipLine(tooltip, (l10n("Ended by") .. l10n(": ") .. Questie:Colorize(finisherName, "gray")))
+                _AddTooltipLine(tooltip, (l10n("Ended by") .. l10n(": ") .. QuestieSmazak:Colorize(finisherName, "gray")))
             end
             if finisherZoneName then
                 _AddTooltipLine(tooltip, " ")
-                _AddTooltipLine(tooltip, (l10n("Found in") .. l10n(": ") .. Questie:Colorize(finisherZoneName, "gray")))
+                _AddTooltipLine(tooltip, (l10n("Found in") .. l10n(": ") .. QuestieSmazak:Colorize(finisherZoneName, "gray")))
             end
         end
     else
         -- Completed Quest (turned in)
-        if Questie.db.char.complete[quest.Id] == true then
-            if Questie.db.char.journey then
+        if QuestieSmazak.db.char.complete[quest.Id] == true then
+            if QuestieSmazak.db.char.journey then
                 local timestamp
-                for i = 1, #Questie.db.char.journey do
-                    if Questie.db.char.journey[i].Quest ~= nil and Questie.db.char.journey[i].Quest == quest.Id then
-                        timestamp = Questie:Colorize(QuestieLib.FormatDate(Questie.db.char.journey[i].Timestamp) .. " ", "lightBlue")
+                for i = 1, #QuestieSmazak.db.char.journey do
+                    if QuestieSmazak.db.char.journey[i].Quest ~= nil and QuestieSmazak.db.char.journey[i].Quest == quest.Id then
+                        timestamp = QuestieSmazak:Colorize(QuestieLib.FormatDate(QuestieSmazak.db.char.journey[i].Timestamp) .. " ", "lightBlue")
                     end
                 end
                 if timestamp then
@@ -444,10 +444,10 @@ _AddPlayerQuestProgress = function(tooltip, quest, starterName, starterZoneName,
             -- Not on Quest: display quest started by npc and zone
             if starterName then
                 _AddTooltipLine(tooltip, " ")
-                _AddTooltipLine(tooltip, (l10n("Started by") .. l10n(": ") .. Questie:Colorize(starterName, "gray")))
+                _AddTooltipLine(tooltip, (l10n("Started by") .. l10n(": ") .. QuestieSmazak:Colorize(starterName, "gray")))
             end
             if starterZoneName then
-                _AddTooltipLine(tooltip, (l10n("Found in") .. l10n(": ") .. Questie:Colorize(starterZoneName, "gray")))
+                _AddTooltipLine(tooltip, (l10n("Found in") .. l10n(": ") .. QuestieSmazak:Colorize(starterZoneName, "gray")))
             end
         end
     end
@@ -456,7 +456,7 @@ end
 _InstallSetHyperlinkOverride = function()
     -- Replacing ItemRefTooltip.SetHyperlink taints every link click on Forever, which breaks
     -- Blizzard's ItemRefSetHyperlink with secret values in instances. Use the link handler API there.
-    if Questie.IsForever then
+    if QuestieSmazak.IsForever then
         LinkUtil.RegisterLinkHandler("questie", HandleSetHyperlink.ProcessLink)
         LinkUtil.RegisterLinkHandler("quest", HandleSetHyperlink.ProcessLink)
         return
@@ -464,7 +464,7 @@ _InstallSetHyperlinkOverride = function()
 
     local oldItemSetHyperlink = ItemRefTooltip.SetHyperlink
 
-    --- Override of the default SetHyperlink function to filter Questie links
+    --- Override of the default SetHyperlink function to filter QuestieSmazak links
     ---@param link string
     function ItemRefTooltip:SetHyperlink(link, ...)
         HandleSetHyperlink.Run(self, oldItemSetHyperlink, link, ...)
@@ -536,7 +536,7 @@ end
 
 -- Try Chattynator first (returns true if Chattynator is active),
 -- otherwise hook the default chat frames, and handle Chattynator loading
--- after Questie via ADDON_LOADED.
+-- after QuestieSmazak via ADDON_LOADED.
 _InstallChatFrameHoverHooks = function()
     local chattynatorHooked = HookChattynator()
 
@@ -559,15 +559,15 @@ end
 
 -- Compatibility: 2.5.5+ uses ChatFrameMixin:OnHyperlinkClick instead of ChatFrame_OnHyperlinkShow
 local function HandleHyperlinkClick(link, button)
-    -- If Questie hasn't started yet, do nothing to avoid accessing uninitialized DB
-    if (not Questie.started) then
+    -- If QuestieSmazak hasn't started yet, do nothing to avoid accessing uninitialized DB
+    if (not QuestieSmazak.started) then
         return
     end
 
     if (IsShiftKeyDown() and ChatEdit_GetActiveWindow() and button == "LeftButton") then
         local linkType, questId, _ = string.split(":", link)
         if linkType and linkType == "questie" and questId then
-            Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieTooltips:OnHyperlinkClick] Relinking Quest Link to chat:", link)
+            QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieTooltips:OnHyperlinkClick] Relinking Quest Link to chat:", link)
             questId = tonumber(questId)
 
             local questLink = QuestieLink.GetQuestLinkStringById(questId)

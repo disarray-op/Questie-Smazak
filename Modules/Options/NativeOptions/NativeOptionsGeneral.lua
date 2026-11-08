@@ -1,33 +1,33 @@
 ---@type QuestieOptions
-local QuestieOptions = QuestieLoader:ImportModule("QuestieOptions");
+local QuestieOptions = QuestieSmazakLoader:ImportModule("QuestieOptions");
 ---@type QuestieOptionsEngine
-local QuestieOptionsEngine = QuestieLoader:ImportModule("QuestieOptionsEngine");
+local QuestieOptionsEngine = QuestieSmazakLoader:ImportModule("QuestieOptionsEngine");
 ---@type QuestieOptionsDefaults
-local QuestieOptionsDefaults = QuestieLoader:ImportModule("QuestieOptionsDefaults");
+local QuestieOptionsDefaults = QuestieSmazakLoader:ImportModule("QuestieOptionsDefaults");
 ---@type QuestieOptionsUtils
-local QuestieOptionsUtils = QuestieLoader:ImportModule("QuestieOptionsUtils");
+local QuestieOptionsUtils = QuestieSmazakLoader:ImportModule("QuestieOptionsUtils");
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 ---@type WorldMapButton
-local WorldMapButton = QuestieLoader:ImportModule("WorldMapButton")
+local WorldMapButton = QuestieSmazakLoader:ImportModule("WorldMapButton")
 ---@type QuestieCoords
-local QuestieCoords = QuestieLoader:ImportModule("QuestieCoords");
+local QuestieCoords = QuestieSmazakLoader:ImportModule("QuestieCoords");
 ---@type QuestieTracker
-local QuestieTracker = QuestieLoader:ImportModule("QuestieTracker");
+local QuestieTracker = QuestieSmazakLoader:ImportModule("QuestieTracker");
 ---@type QuestieShutUp
-local QuestieShutUp = QuestieLoader:ImportModule("QuestieShutUp")
+local QuestieShutUp = QuestieSmazakLoader:ImportModule("QuestieShutUp")
 ---@type Sounds
-local Sounds = QuestieLoader:ImportModule("Sounds")
+local Sounds = QuestieSmazakLoader:ImportModule("Sounds")
 ---@type AvailableQuests
-local AvailableQuests = QuestieLoader:ImportModule("AvailableQuests")
+local AvailableQuests = QuestieSmazakLoader:ImportModule("AvailableQuests")
 ---@type Expansions
-local Expansions = QuestieLoader:ImportModule("Expansions")
+local Expansions = QuestieSmazakLoader:ImportModule("Expansions")
 ---@type MinimapIcon
-local MinimapIcon = QuestieLoader:ImportModule("MinimapIcon")
+local MinimapIcon = QuestieSmazakLoader:ImportModule("MinimapIcon")
 ---@type QuestiePartyObjectives
-local QuestiePartyObjectives = QuestieLoader:ImportModule("QuestiePartyObjectives")
+local QuestiePartyObjectives = QuestieSmazakLoader:ImportModule("QuestiePartyObjectives")
 ---@type QuestieComms
-local QuestieComms = QuestieLoader:ImportModule("QuestieComms")
+local QuestieComms = QuestieSmazakLoader:ImportModule("QuestieComms")
 
 QuestieOptionsEngine.tabs.general = { ... }
 local optionsDefaults = QuestieOptionsDefaults:Load()
@@ -63,12 +63,12 @@ function QuestieOptionsEngine.tabs.general:Initialize()
                     filterQuestieAnnounce = {
                         type = "checkbox",
                         order = 7.1,
-                        title = "Questie ShutUp!",
-                        description = "Remove all Questie chat messages coming from other players and disable sending your own.",
+                        title = "QuestieSmazak ShutUp!",
+                        description = "Remove all QuestieSmazak chat messages coming from other players and disable sending your own.",
                         width = 0.6,
-                        get = function () return Questie.db.profile.questieShutUp end,
+                        get = function () return QuestieSmazak.db.profile.questieShutUp end,
                         set = function (info, value)
-                            Questie.db.profile.questieShutUp = value
+                            QuestieSmazak.db.profile.questieShutUp = value
                             QuestieShutUp:ToggleFilters(value)
                         end,
                     },
@@ -76,27 +76,27 @@ function QuestieOptionsEngine.tabs.general:Initialize()
                         type = "dropdown",
                         order = 7.2,
                         options = _GetAnnounceChannels(),
-                        enabled = function() return not Questie.db.profile.questieShutUp end,
+                        enabled = function() return not QuestieSmazak.db.profile.questieShutUp end,
                         title = "Channels to announce in",
                         tooltip = "Announce quest updates to other players in your group",
                         width = 0.39,
-                        get = function() return Questie.db.profile.questAnnounceChannel; end,
+                        get = function() return QuestieSmazak.db.profile.questAnnounceChannel; end,
                         set = function(key)
-                            Questie.db.profile.questAnnounceChannel = key
-                            Questie.Debug(Questie.DEBUG_DEVELOP, "Channels to announce changed to:", key)
+                            QuestieSmazak.db.profile.questAnnounceChannel = key
+                            QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "Channels to announce changed to:", key)
                         end,
                     },
                     printLocalMessages = {
                         type = "checkbox",
                         order = 7.3,
                         title = "Announce quest updates to yourself",
-                        tooltip = "Questie will print your update messages to chat. Other players will NOT be able to see this.",
-                        enabled = function() return not Questie.db.profile.questieShutUp end,
+                        tooltip = "QuestieSmazak will print your update messages to chat. Other players will NOT be able to see this.",
+                        enabled = function() return not QuestieSmazak.db.profile.questieShutUp end,
                         width = "full",
-                        get = function () return Questie.db.profile.questAnnounceLocally end,
+                        get = function () return QuestieSmazak.db.profile.questAnnounceLocally end,
                         set = function (info, value)
-                            Questie.db.profile.questAnnounceLocally = value
-                            Questie.Debug(Questie.DEBUG_DEVELOP, "Quest announce locally changed to:", value)
+                            QuestieSmazak.db.profile.questAnnounceLocally = value
+                            QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "Quest announce locally changed to:", value)
                         end,
                     },
                     showPartyQuestObjectives = {
@@ -105,9 +105,9 @@ function QuestieOptionsEngine.tabs.general:Initialize()
                         title = "Show party members' tracked quest objectives",
                         tooltip = "Show tracked quest objectives from party members on the map and minimap, even for quests you don't have or have already completed. Only your tracked quests will show for your party members.",
                         width = "full",
-                        get = function() return Questie.db.profile.showPartyQuestObjectives end,
+                        get = function() return QuestieSmazak.db.profile.showPartyQuestObjectives end,
                         set = function(info, value)
-                            Questie.db.profile.showPartyQuestObjectives = value
+                            QuestieSmazak.db.profile.showPartyQuestObjectives = value
                             QuestiePartyObjectives:Update()
                         end,
                     },
@@ -116,7 +116,7 @@ function QuestieOptionsEngine.tabs.general:Initialize()
                         order = 7.5,
                         inline = true,
                         title = "Types of updates to announce in chat",
-                        enabled = function() return not (_IsAnnounceDisabled() or Questie.db.profile.questieShutUp); end,
+                        enabled = function() return not (_IsAnnounceDisabled() or QuestieSmazak.db.profile.questieShutUp); end,
                         items = {
                             questAnnounceItems = {
                                 type = "checkbox",
@@ -124,11 +124,11 @@ function QuestieOptionsEngine.tabs.general:Initialize()
                                 title = "Items starting a quest",
                                 tooltip = "Announce looted items that start a quest to other players",
                                 width = "half",
-                                enabled = function() return not (_IsAnnounceDisabled() or Questie.db.profile.questieShutUp); end,
-                                get = function() return Questie.db.profile.questAnnounceItems; end,
+                                enabled = function() return not (_IsAnnounceDisabled() or QuestieSmazak.db.profile.questieShutUp); end,
+                                get = function() return QuestieSmazak.db.profile.questAnnounceItems; end,
                                 set = function(info, value)
-                                    Questie.db.profile.questAnnounceItems = value
-                                    Questie.Debug(Questie.DEBUG_DEVELOP, "Items starting a quest changed to:", value)
+                                    QuestieSmazak.db.profile.questAnnounceItems = value
+                                    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "Items starting a quest changed to:", value)
                                 end,
                             },
                             questAnnounceAccepted = {
@@ -137,11 +137,11 @@ function QuestieOptionsEngine.tabs.general:Initialize()
                                 title = "Quest accepted",
                                 tooltip = "Announce quest acceptance to other players",
                                 width = "half",
-                                enabled = function() return not (_IsAnnounceDisabled() or Questie.db.profile.questieShutUp); end,
-                                get = function() return Questie.db.profile.questAnnounceAccepted; end,
+                                enabled = function() return not (_IsAnnounceDisabled() or QuestieSmazak.db.profile.questieShutUp); end,
+                                get = function() return QuestieSmazak.db.profile.questAnnounceAccepted; end,
                                 set = function(info, value)
-                                    Questie.db.profile.questAnnounceAccepted = value
-                                    Questie.Debug(Questie.DEBUG_DEVELOP, "Quest accepted announce changed to:", value)
+                                    QuestieSmazak.db.profile.questAnnounceAccepted = value
+                                    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "Quest accepted announce changed to:", value)
                                 end,
                             },
                             questAnnounceAbandoned = {
@@ -150,11 +150,11 @@ function QuestieOptionsEngine.tabs.general:Initialize()
                                 title = "Quest abandoned",
                                 tooltip = "Announce quest abortion to other players",
                                 width = "half",
-                                enabled = function() return not (_IsAnnounceDisabled() or Questie.db.profile.questieShutUp); end,
-                                get = function() return Questie.db.profile.questAnnounceAbandoned; end,
+                                enabled = function() return not (_IsAnnounceDisabled() or QuestieSmazak.db.profile.questieShutUp); end,
+                                get = function() return QuestieSmazak.db.profile.questAnnounceAbandoned; end,
                                 set = function(info, value)
-                                    Questie.db.profile.questAnnounceAbandoned = value
-                                    Questie.Debug(Questie.DEBUG_DEVELOP, "Quest abandoned announce changed to:", value)
+                                    QuestieSmazak.db.profile.questAnnounceAbandoned = value
+                                    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "Quest abandoned announce changed to:", value)
                                 end,
                             },
                             questAnnounceObjectives = {
@@ -163,11 +163,11 @@ function QuestieOptionsEngine.tabs.general:Initialize()
                                 title = "Objective completed",
                                 tooltip = "Announce completed objectives to other players",
                                 width = "half",
-                                enabled = function() return not (_IsAnnounceDisabled() or Questie.db.profile.questieShutUp); end,
-                                get = function() return Questie.db.profile.questAnnounceObjectives; end,
+                                enabled = function() return not (_IsAnnounceDisabled() or QuestieSmazak.db.profile.questieShutUp); end,
+                                get = function() return QuestieSmazak.db.profile.questAnnounceObjectives; end,
                                 set = function(info, value)
-                                    Questie.db.profile.questAnnounceObjectives = value
-                                    Questie.Debug(Questie.DEBUG_DEVELOP, "Objective completed announce changed to:", value)
+                                    QuestieSmazak.db.profile.questAnnounceObjectives = value
+                                    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "Objective completed announce changed to:", value)
                                 end,
                             },
                             questAnnounceCompleted = {
@@ -176,11 +176,11 @@ function QuestieOptionsEngine.tabs.general:Initialize()
                                 title = "Quest completed",
                                 tooltip = "Announce quest completion to other players",
                                 width = "half",
-                                enabled = function() return not (_IsAnnounceDisabled() or Questie.db.profile.questieShutUp); end,
-                                get = function() return Questie.db.profile.questAnnounceCompleted; end,
+                                enabled = function() return not (_IsAnnounceDisabled() or QuestieSmazak.db.profile.questieShutUp); end,
+                                get = function() return QuestieSmazak.db.profile.questAnnounceCompleted; end,
                                 set = function(info, value)
-                                    Questie.db.profile.questAnnounceCompleted = value
-                                    Questie.Debug(Questie.DEBUG_DEVELOP, "Quest completed announce changed to:", value)
+                                    QuestieSmazak.db.profile.questAnnounceCompleted = value
+                                    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "Quest completed announce changed to:", value)
                                 end,
                             },
                             questAnnounceIncompleteBreadcrumb = {
@@ -189,11 +189,11 @@ function QuestieOptionsEngine.tabs.general:Initialize()
                                 title = "Incomplete breadcrumb",
                                 tooltip = "Announce that you just picked up a quest for which you have an incomplete breadcrumb quest",
                                 width = "half",
-                                enabled = function() return not (_IsAnnounceDisabled() or Questie.db.profile.questieShutUp); end,
-                                get = function() return Questie.db.profile.questAnnounceIncompleteBreadcrumb; end,
+                                enabled = function() return not (_IsAnnounceDisabled() or QuestieSmazak.db.profile.questieShutUp); end,
+                                get = function() return QuestieSmazak.db.profile.questAnnounceIncompleteBreadcrumb; end,
                                 set = function(info, value)
-                                    Questie.db.profile.questAnnounceIncompleteBreadcrumb = value
-                                    Questie.Debug(Questie.DEBUG_DEVELOP, "Quest announce incomplete breadcrumb changed to:", value)
+                                    QuestieSmazak.db.profile.questAnnounceIncompleteBreadcrumb = value
+                                    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "Quest announce incomplete breadcrumb changed to:", value)
                                 end,
                             },
                         },
@@ -230,22 +230,22 @@ function QuestieOptionsEngine.tabs.general:Initialize()
                         type = "checkbox",
                         order = 5.2,
                         title = "Show custom quest frame icons",
-                        tooltip = "Use custom Questie icons for NPC dialogs, reflecting the status and type of each quest.",
+                        tooltip = "Use custom QuestieSmazak icons for NPC dialogs, reflecting the status and type of each quest.",
                         width = "half",
-                        get = function() return Questie.db.profile.enableQuestFrameIcons; end,
+                        get = function() return QuestieSmazak.db.profile.enableQuestFrameIcons; end,
                         set = function(info, value)
-                            Questie.db.profile.enableQuestFrameIcons = value
+                            QuestieSmazak.db.profile.enableQuestFrameIcons = value
                         end,
                     },
                     mapShowHideEnabled = {
                         type = "checkbox",
                         order = 5.25,
-                        title = "Show Questie Map Button",
-                        tooltip = "Enable or disable the Show/Hide Questie Button on Map (May fix some Map Addon interactions).",
+                        title = "Show QuestieSmazak Map Button",
+                        tooltip = "Enable or disable the Show/Hide QuestieSmazak Button on Map (May fix some Map Addon interactions).",
                         width = "half",
-                        get = function(info) return Questie.db.profile.mapShowHideEnabled; end,
+                        get = function(info) return QuestieSmazak.db.profile.mapShowHideEnabled; end,
                         set = function(info, value)
-                            Questie.db.profile.mapShowHideEnabled = value
+                            QuestieSmazak.db.profile.mapShowHideEnabled = value
                             WorldMapButton.Toggle(value)
                         end,
                     },
@@ -253,9 +253,9 @@ function QuestieOptionsEngine.tabs.general:Initialize()
                         type = "checkbox",
                         order = 5.3,
                         title = "Show Minimap Button",
-                        tooltip = "Enable or disable the Questie minimap button. You can still access the options menu with /questie.",
+                        tooltip = "Enable or disable the QuestieSmazak minimap button. You can still access the options menu with /questie.",
                         width = "half",
-                        get = function() return not Questie.db.profile.minimap.hide; end,
+                        get = function() return not QuestieSmazak.db.profile.minimap.hide; end,
                         set = function(info, value)
                             MinimapIcon.Toggle(value)
                         end,
@@ -263,11 +263,11 @@ function QuestieOptionsEngine.tabs.general:Initialize()
                     compartmentButtonEnabled = {
                         type = "checkbox",
                         order = 5.35,
-                        title = "Show Questie in addon compartment",
-                        tooltip = "Enable or disable the Questie button in the addon compartment. You can still access the options menu with /questie.",
+                        title = "Show QuestieSmazak in addon compartment",
+                        tooltip = "Enable or disable the QuestieSmazak button in the addon compartment. You can still access the options menu with /questie.",
                         width = "half",
                         visible = _G.AddonCompartmentFrame ~= nil,
-                        get = function() return Questie.db.profile.minimap.showInCompartment; end,
+                        get = function() return QuestieSmazak.db.profile.minimap.showInCompartment; end,
                         set = function(info, value)
                             MinimapIcon.ToggleCompartment(value)
                         end,
@@ -278,9 +278,9 @@ function QuestieOptionsEngine.tabs.general:Initialize()
                         title = "Show Map Coordinates",
                         tooltip = "Place the Player's coordinates and Cursor's coordinates on the Map's title.",
                         width = "half",
-                        get = function(info) return Questie.db.profile.mapCoordinatesEnabled; end,
+                        get = function(info) return QuestieSmazak.db.profile.mapCoordinatesEnabled; end,
                         set = function(info, value)
-                            Questie.db.profile.mapCoordinatesEnabled = value
+                            QuestieSmazak.db.profile.mapCoordinatesEnabled = value
                             if not value then
                                 QuestieCoords.ResetMapText();
                                 QuestieCoords:ResetMiniWorldMapText();
@@ -293,9 +293,9 @@ function QuestieOptionsEngine.tabs.general:Initialize()
                         title = "Show Minimap Coordinates",
                         tooltip = "Place the Player's coordinates on the Minimap title.",
                         width = "half",
-                        get = function(info) return Questie.db.profile.minimapCoordinatesEnabled; end,
+                        get = function(info) return QuestieSmazak.db.profile.minimapCoordinatesEnabled; end,
                         set = function(info, value)
-                            Questie.db.profile.minimapCoordinatesEnabled = value
+                            QuestieSmazak.db.profile.minimapCoordinatesEnabled = value
 
                             if not value then
                                 QuestieCoords:ResetMinimapText();
@@ -311,10 +311,10 @@ function QuestieOptionsEngine.tabs.general:Initialize()
                         min = 0,
                         max = 5,
                         step = 1,
-                        enabled = function() return Questie.db.profile.mapCoordinatesEnabled end,
-                        get = function(info) return Questie.db.profile.mapCoordinatePrecision; end,
+                        enabled = function() return QuestieSmazak.db.profile.mapCoordinatesEnabled end,
+                        get = function(info) return QuestieSmazak.db.profile.mapCoordinatePrecision; end,
                         set = function(info, value)
-                            Questie.db.profile.mapCoordinatePrecision = value
+                            QuestieSmazak.db.profile.mapCoordinatePrecision = value
                         end,
                     },
                 },
@@ -326,7 +326,7 @@ function QuestieOptionsEngine.tabs.general:Initialize()
                 items = {
                     level_text = {
                         order = 1,
-                        description = "By default, Questie only shows quests that are relevant for your level. You can change this behavior below.",
+                        description = "By default, QuestieSmazak only shows quests that are relevant for your level. You can change this behavior below.",
                         type = "text",
                         width = "full",
                         descriptionAlign = "LEFT",
@@ -341,13 +341,13 @@ function QuestieOptionsEngine.tabs.general:Initialize()
                                 title = "Show only quests granting experience (Default)",
                                 type = "radioButton",
                                 width = "full",
-                                value = Questie.LOWLEVEL_NONE,
-                                get = function(value) return Questie.db.profile.lowLevelStyle == value end,
+                                value = QuestieSmazak.LOWLEVEL_NONE,
+                                get = function(value) return QuestieSmazak.db.profile.lowLevelStyle == value end,
                                 set = function(value)
-                                    Questie.db.profile.lowLevelStyle = value
+                                    QuestieSmazak.db.profile.lowLevelStyle = value
                                     AvailableQuests.ResetLevelRequirementCache()
                                     AvailableQuests.CalculateAndDrawAll()
-                                    Questie.Debug(Questie.DEBUG_DEVELOP, "Lowlevel Quests set to:", value)
+                                    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "Lowlevel Quests set to:", value)
                                 end,
                             },
                             levelRadio_all = {
@@ -355,13 +355,13 @@ function QuestieOptionsEngine.tabs.general:Initialize()
                                 title = "Show all low level quests",
                                 type = "radioButton",
                                 width = "full",
-                                value = Questie.LOWLEVEL_ALL,
-                                get = function(value) return Questie.db.profile.lowLevelStyle == value end,
+                                value = QuestieSmazak.LOWLEVEL_ALL,
+                                get = function(value) return QuestieSmazak.db.profile.lowLevelStyle == value end,
                                 set = function(value)
-                                    Questie.db.profile.lowLevelStyle = value
+                                    QuestieSmazak.db.profile.lowLevelStyle = value
                                     AvailableQuests.ResetLevelRequirementCache()
                                     AvailableQuests.CalculateAndDrawAll()
-                                    Questie.Debug(Questie.DEBUG_DEVELOP, "Lowlevel Quests set to:", value)
+                                    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "Lowlevel Quests set to:", value)
                                 end,
                             },
                             levelRadio_offset = {
@@ -369,13 +369,13 @@ function QuestieOptionsEngine.tabs.general:Initialize()
                                 title = "Show quests to a set level below the player",
                                 type = "radioButton",
                                 width = "full",
-                                value = Questie.LOWLEVEL_OFFSET,
-                                get = function(value) return Questie.db.profile.lowLevelStyle == value end,
+                                value = QuestieSmazak.LOWLEVEL_OFFSET,
+                                get = function(value) return QuestieSmazak.db.profile.lowLevelStyle == value end,
                                 set = function(value)
-                                    Questie.db.profile.lowLevelStyle = value
+                                    QuestieSmazak.db.profile.lowLevelStyle = value
                                     AvailableQuests.ResetLevelRequirementCache()
                                     AvailableQuests.CalculateAndDrawAll()
-                                    Questie.Debug(Questie.DEBUG_DEVELOP, "Lowlevel Quests set to:", value)
+                                    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "Lowlevel Quests set to:", value)
                                 end,
                             },
                             levelRadio_range = {
@@ -383,13 +383,13 @@ function QuestieOptionsEngine.tabs.general:Initialize()
                                 title = "Show quests between two set levels",
                                 type = "radioButton",
                                 width = "full",
-                                value = Questie.LOWLEVEL_RANGE,
-                                get = function(value) return Questie.db.profile.lowLevelStyle == value end,
+                                value = QuestieSmazak.LOWLEVEL_RANGE,
+                                get = function(value) return QuestieSmazak.db.profile.lowLevelStyle == value end,
                                 set = function(value)
-                                    Questie.db.profile.lowLevelStyle = value
+                                    QuestieSmazak.db.profile.lowLevelStyle = value
                                     AvailableQuests.ResetLevelRequirementCache()
                                     AvailableQuests.CalculateAndDrawAll()
-                                    Questie.Debug(Questie.DEBUG_DEVELOP, "Lowlevel Quests set to:", value)
+                                    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "Lowlevel Quests set to:", value)
                                 end,
                             },
                         },
@@ -403,10 +403,10 @@ function QuestieOptionsEngine.tabs.general:Initialize()
                         min = 0,
                         max = GetMaxPlayerLevel(),
                         step = 1,
-                        enabled = function() return (Questie.db.profile.lowLevelStyle == Questie.LOWLEVEL_OFFSET) end,
-                        get = function() return Questie.db.profile.manualLevelOffset end,
+                        enabled = function() return (QuestieSmazak.db.profile.lowLevelStyle == QuestieSmazak.LOWLEVEL_OFFSET) end,
+                        get = function() return QuestieSmazak.db.profile.manualLevelOffset end,
                         set = function(info, value)
-                            Questie.db.profile.manualLevelOffset = value;
+                            QuestieSmazak.db.profile.manualLevelOffset = value;
                             QuestieOptionsUtils:Delay(0.3, function()
                                 AvailableQuests.ResetLevelRequirementCache()
                                 AvailableQuests.CalculateAndDrawAll()
@@ -422,13 +422,13 @@ function QuestieOptionsEngine.tabs.general:Initialize()
                         min = 1,
                         max = GetMaxPlayerLevel(),
                         step = 1,
-                        enabled = function() return (Questie.db.profile.lowLevelStyle == Questie.LOWLEVEL_RANGE) end,
-                        get = function() return Questie.db.profile.minLevelFilter; end,
+                        enabled = function() return (QuestieSmazak.db.profile.lowLevelStyle == QuestieSmazak.LOWLEVEL_RANGE) end,
+                        get = function() return QuestieSmazak.db.profile.minLevelFilter; end,
                         set = function(info, value)
-                            if value > Questie.db.profile.maxLevelFilter then
-                                value = Questie.db.profile.maxLevelFilter
+                            if value > QuestieSmazak.db.profile.maxLevelFilter then
+                                value = QuestieSmazak.db.profile.maxLevelFilter
                             end
-                            Questie.db.profile.minLevelFilter = value;
+                            QuestieSmazak.db.profile.minLevelFilter = value;
                             QuestieOptionsUtils:Delay(0.3, function()
                                 AvailableQuests.ResetLevelRequirementCache()
                                 AvailableQuests.CalculateAndDrawAll()
@@ -444,13 +444,13 @@ function QuestieOptionsEngine.tabs.general:Initialize()
                         min = 1,
                         max = GetMaxPlayerLevel(),
                         step = 1,
-                        enabled = function() return (Questie.db.profile.lowLevelStyle == Questie.LOWLEVEL_RANGE) end,
-                        get = function() return Questie.db.profile.maxLevelFilter; end,
+                        enabled = function() return (QuestieSmazak.db.profile.lowLevelStyle == QuestieSmazak.LOWLEVEL_RANGE) end,
+                        get = function() return QuestieSmazak.db.profile.maxLevelFilter; end,
                         set = function(info, value)
-                            if value < Questie.db.profile.minLevelFilter then
-                                value = Questie.db.profile.minLevelFilter
+                            if value < QuestieSmazak.db.profile.minLevelFilter then
+                                value = QuestieSmazak.db.profile.minLevelFilter
                             end
-                            Questie.db.profile.maxLevelFilter = value;
+                            QuestieSmazak.db.profile.maxLevelFilter = value;
                             QuestieOptionsUtils:Delay(0.3, function()
                                 AvailableQuests.ResetLevelRequirementCache()
                                 AvailableQuests.CalculateAndDrawAll()
@@ -470,8 +470,8 @@ function QuestieOptionsEngine.tabs.general:Initialize()
                         title = "Enable World Tooltips",
                         tooltip = "If checked, quest info will be added to relevant mob/item tooltips.",
                         width = "half",
-                        get = function() return Questie.db.profile.enableTooltips; end,
-                        set = function(info, value) Questie.db.profile.enableTooltips = value end
+                        get = function() return QuestieSmazak.db.profile.enableTooltips; end,
+                        set = function(info, value) QuestieSmazak.db.profile.enableTooltips = value end
                     },
                     questsInNpcTooltip = {
                         type = "checkbox",
@@ -479,9 +479,9 @@ function QuestieOptionsEngine.tabs.general:Initialize()
                         title = "Show quests in NPC tooltips",
                         tooltip = "Show quests (available/complete) in the NPC tooltips.",
                         width = "half",
-                        enabled = function() return Questie.db.profile.enableTooltips; end,
-                        get = function() return Questie.db.profile.showQuestsInNpcTooltip; end,
-                        set = function(info, value) Questie.db.profile.showQuestsInNpcTooltip = value end
+                        enabled = function() return QuestieSmazak.db.profile.enableTooltips; end,
+                        get = function() return QuestieSmazak.db.profile.showQuestsInNpcTooltip; end,
+                        set = function(info, value) QuestieSmazak.db.profile.showQuestsInNpcTooltip = value end
                     },
                     showQuestLevels = {
                         type = "checkbox",
@@ -489,11 +489,11 @@ function QuestieOptionsEngine.tabs.general:Initialize()
                         title = "Show quest level in tooltips",
                         tooltip = "If checked, the level of quests will show in the tooltips.",
                         width = "half",
-                        get = function() return Questie.db.profile.enableTooltipsQuestLevel; end,
+                        get = function() return QuestieSmazak.db.profile.enableTooltipsQuestLevel; end,
                         set = function(info, value)
-                            Questie.db.profile.enableTooltipsQuestLevel = value
-                            if value and not Questie.db.profile.trackerShowQuestLevel then
-                                Questie.db.profile.trackerShowQuestLevel = true
+                            QuestieSmazak.db.profile.enableTooltipsQuestLevel = value
+                            if value and not QuestieSmazak.db.profile.trackerShowQuestLevel then
+                                QuestieSmazak.db.profile.trackerShowQuestLevel = true
                                 QuestieTracker:Update()
                             end
                         end
@@ -504,8 +504,8 @@ function QuestieOptionsEngine.tabs.general:Initialize()
                         title = "Show quest XP at max level",
                         tooltip = "Shows the quest XP values on quests even at max level.",
                         width = "half",
-                        get = function() return Questie.db.profile.showQuestXpAtMaxLevel; end,
-                        set = function(info, value) Questie.db.profile.showQuestXpAtMaxLevel = value end
+                        get = function() return QuestieSmazak.db.profile.showQuestXpAtMaxLevel; end,
+                        set = function(info, value) QuestieSmazak.db.profile.showQuestXpAtMaxLevel = value end
                     },
                     showNextInChain = {
                         type = "checkbox",
@@ -513,9 +513,9 @@ function QuestieOptionsEngine.tabs.general:Initialize()
                         title = "Show next quests in chain",
                         tooltip = "If checked, the next quests in the chain will show in the expanded map tooltips.",
                         width = "half",
-                        get = function() return Questie.db.profile.enableTooltipsNextInChain; end,
+                        get = function() return QuestieSmazak.db.profile.enableTooltipsNextInChain; end,
                         set = function(info, value)
-                            Questie.db.profile.enableTooltipsNextInChain = value
+                            QuestieSmazak.db.profile.enableTooltipsNextInChain = value
                         end
                     },
                     showBreadcrumbQuests = {
@@ -524,9 +524,9 @@ function QuestieOptionsEngine.tabs.general:Initialize()
                         title = "Show breadcrumb quests",
                         tooltip = "If checked, breadcrumb quests will show in the expanded map tooltips.",
                         width = "half",
-                        get = function() return Questie.db.profile.enableTooltipsBreadcrumbQuests; end,
+                        get = function() return QuestieSmazak.db.profile.enableTooltipsBreadcrumbQuests; end,
                         set = function(info, value)
-                            Questie.db.profile.enableTooltipsBreadcrumbQuests = value
+                            QuestieSmazak.db.profile.enableTooltipsBreadcrumbQuests = value
                         end
                     },
                     showDropRates = {
@@ -535,9 +535,9 @@ function QuestieOptionsEngine.tabs.general:Initialize()
                         title = "Show item drop rates",
                         tooltip = "If checked, drop rates for quest objectives will show on mob tooltips.",
                         width = "half",
-                        get = function() return Questie.db.profile.enableTooltipDroprates; end,
+                        get = function() return QuestieSmazak.db.profile.enableTooltipDroprates; end,
                         set = function(info, value)
-                            Questie.db.profile.enableTooltipDroprates = value
+                            QuestieSmazak.db.profile.enableTooltipDroprates = value
                         end
                     },
                 },
@@ -562,10 +562,10 @@ function QuestieOptionsEngine.tabs.general:Initialize()
                         end,
                         sortOrder = {"Master", "Music", "SFX", "Ambience", "Dialog"},
                         title = "Sound Channel",
-                        tooltip = "The sound channel used for Questie's notification sounds.",
-                        get = function() return Questie.db.profile.soundChannel or "Master" end,
+                        tooltip = "The sound channel used for QuestieSmazak's notification sounds.",
+                        get = function() return QuestieSmazak.db.profile.soundChannel or "Master" end,
                         set = function(value)
-                            Questie.db.profile.soundChannel = value
+                            QuestieSmazak.db.profile.soundChannel = value
                         end,
                     },
                     loadCustomSounds = {
@@ -575,8 +575,8 @@ function QuestieOptionsEngine.tabs.general:Initialize()
                         tooltip = "If checked, sounds added through LibSharedMedia are loaded.",
                         width = "half",
                         newline = true,
-                        get = function() return Questie.db.profile.loadCustomSounds; end,
-                        set = function(info, value) Questie.db.profile.loadCustomSounds = value end
+                        get = function() return QuestieSmazak.db.profile.loadCustomSounds; end,
+                        set = function(info, value) QuestieSmazak.db.profile.loadCustomSounds = value end
                     },
                     questCompleteSound = {
                         type = "checkbox",
@@ -585,16 +585,16 @@ function QuestieOptionsEngine.tabs.general:Initialize()
                         tooltip = "Play a short sound when completing a quest when it is ready to turn in.",
                         width = 0.5,
                         newline = true,
-                        get = function() return Questie.db.profile.soundOnQuestComplete; end,
+                        get = function() return QuestieSmazak.db.profile.soundOnQuestComplete; end,
                         set = function(info, value)
-                            Questie.db.profile.soundOnQuestComplete = value
+                            QuestieSmazak.db.profile.soundOnQuestComplete = value
                         end,
                     },
                     questCompleteSoundButton = {
                         order = 9.02,
                         type = "soundButton",
                         width = 0.08,
-                        func = function() PlaySoundFile(Sounds.GetSelectedSoundFile(Questie.db.profile.questCompleteSoundChoiceName), Questie.db.profile.soundChannel) end,
+                        func = function() PlaySoundFile(Sounds.GetSelectedSoundFile(QuestieSmazak.db.profile.questCompleteSoundChoiceName), QuestieSmazak.db.profile.soundChannel) end,
                     },
                     questCompleteSoundChoice = {
                         type = "dropdown",
@@ -604,10 +604,10 @@ function QuestieOptionsEngine.tabs.general:Initialize()
                         title = "Quest Complete Sound Selection",
                         width = 0.4,
                         tooltip = "The sound you hear when a quest is completed",
-                        get = function() return Questie.db.profile.questCompleteSoundChoiceName or "None"; end,
-                        enabled = function() return (Questie.db.profile.soundOnQuestComplete); end,
+                        get = function() return QuestieSmazak.db.profile.questCompleteSoundChoiceName or "None"; end,
+                        enabled = function() return (QuestieSmazak.db.profile.soundOnQuestComplete); end,
                         set = function(value)
-                            Questie.db.profile.questCompleteSoundChoiceName = value
+                            QuestieSmazak.db.profile.questCompleteSoundChoiceName = value
                         end,
                     },
                     objectiveCompleteSound = {
@@ -617,16 +617,16 @@ function QuestieOptionsEngine.tabs.general:Initialize()
                         tooltip = "Play a short sound when completing a quest objective.",
                         width = 0.5,
                         newline = true,
-                        get = function() return Questie.db.profile.soundOnObjectiveComplete; end,
+                        get = function() return QuestieSmazak.db.profile.soundOnObjectiveComplete; end,
                         set = function(info, value)
-                            Questie.db.profile.soundOnObjectiveComplete = value
+                            QuestieSmazak.db.profile.soundOnObjectiveComplete = value
                         end,
                     },
                     objectiveCompleteSoundButton = {
                         order = 9.06,
                         type = "soundButton",
                         width = 0.08,
-                        func = function() PlaySoundFile(Sounds.GetSelectedSoundFile(Questie.db.profile.objectiveCompleteSoundChoiceName), Questie.db.profile.soundChannel) end,
+                        func = function() PlaySoundFile(Sounds.GetSelectedSoundFile(QuestieSmazak.db.profile.objectiveCompleteSoundChoiceName), QuestieSmazak.db.profile.soundChannel) end,
                     },
                     objectiveCompleteSoundChoice = {
                         type = "dropdown",
@@ -636,10 +636,10 @@ function QuestieOptionsEngine.tabs.general:Initialize()
                         title = "Objective Complete Sound Selection",
                         width = 0.4,
                         tooltip = "The sound you hear when an objective is completed",
-                        get = function() return Questie.db.profile.objectiveCompleteSoundChoiceName; end,
-                        enabled = function() return (Questie.db.profile.soundOnObjectiveComplete); end,
+                        get = function() return QuestieSmazak.db.profile.objectiveCompleteSoundChoiceName; end,
+                        enabled = function() return (QuestieSmazak.db.profile.soundOnObjectiveComplete); end,
                         set = function(value)
-                            Questie.db.profile.objectiveCompleteSoundChoiceName = value
+                            QuestieSmazak.db.profile.objectiveCompleteSoundChoiceName = value
                         end,
                     },
                     objectiveProgressSound = {
@@ -649,16 +649,16 @@ function QuestieOptionsEngine.tabs.general:Initialize()
                         tooltip = "Play a short sound when making progress on a quest objective.",
                         width = 0.5,
                         newline = true,
-                        get = function() return Questie.db.profile.soundOnObjectiveProgress; end,
+                        get = function() return QuestieSmazak.db.profile.soundOnObjectiveProgress; end,
                         set = function(info, value)
-                            Questie.db.profile.soundOnObjectiveProgress = value
+                            QuestieSmazak.db.profile.soundOnObjectiveProgress = value
                         end,
                     },
                     objectiveProgressSoundButton = {
                         order = 9.09,
                         type = "soundButton",
                         width = 0.08,
-                        func = function() PlaySoundFile(Sounds.GetSelectedSoundFile(Questie.db.profile.objectiveProgressSoundChoiceName), Questie.db.profile.soundChannel) end,
+                        func = function() PlaySoundFile(Sounds.GetSelectedSoundFile(QuestieSmazak.db.profile.objectiveProgressSoundChoiceName), QuestieSmazak.db.profile.soundChannel) end,
                     },
                     objectiveProgressSoundChoice = {
                         type = "dropdown",
@@ -668,10 +668,10 @@ function QuestieOptionsEngine.tabs.general:Initialize()
                         title = "Objective Progress Sound Selection",
                         width = 0.4,
                         tooltip = "The sound you hear when you make progress on a quest objective",
-                        get = function() return Questie.db.profile.objectiveProgressSoundChoiceName; end,
-                        enabled = function() return (Questie.db.profile.soundOnObjectiveProgress); end,
+                        get = function() return QuestieSmazak.db.profile.objectiveProgressSoundChoiceName; end,
+                        enabled = function() return (QuestieSmazak.db.profile.soundOnObjectiveProgress); end,
                         set = function(value)
-                            Questie.db.profile.objectiveProgressSoundChoiceName = value
+                            QuestieSmazak.db.profile.objectiveProgressSoundChoiceName = value
                         end,
                     },
                     soundDelay = {
@@ -684,9 +684,9 @@ function QuestieOptionsEngine.tabs.general:Initialize()
                         min = 0.0,
                         max = 1.0,
                         step = 0.01,
-                        get = function(info) return Questie.db.profile.soundDelay; end,
+                        get = function(info) return QuestieSmazak.db.profile.soundDelay; end,
                         set = function(_, value)
-                            Questie.db.profile.soundDelay = value
+                            QuestieSmazak.db.profile.soundDelay = value
                         end,
                     },
                 },
@@ -706,7 +706,7 @@ end
 
 ---@return boolean
 _IsAnnounceDisabled = function()
-    return (not Questie.db.profile.questAnnounceChannel) or (Questie.db.profile.questAnnounceChannel == "disabled")
+    return (not QuestieSmazak.db.profile.questAnnounceChannel) or (QuestieSmazak.db.profile.questAnnounceChannel == "disabled")
 end
 
 _GetQuestSoundChoices = function()
@@ -732,14 +732,14 @@ _GetQuestSoundChoices = function()
         ["Zug Zug"]          = l10n("Zug Zug"),
     }
 
-    if Expansions.Current >= Expansions.Tbc or Questie.IsForever then
+    if Expansions.Current >= Expansions.Tbc or QuestieSmazak.IsForever then
         options["Draenei Male"]     = l10n("Draenei Male")
         options["Draenei Female"]   = l10n("Draenei Female")
         options["Blood Elf Male"]   = l10n("Blood Elf Male")
         options["Blood Elf Female"] = l10n("Blood Elf Female")
     end
 
-    if Expansions.Current >= Expansions.Cata or Questie.IsForever then
+    if Expansions.Current >= Expansions.Cata or QuestieSmazak.IsForever then
         options["Goblin Male"]    = l10n("Goblin Male")
         options["Goblin Female"]  = l10n("Goblin Female")
         options["Worgen Male"]    = l10n("Worgen Male")
@@ -748,12 +748,12 @@ _GetQuestSoundChoices = function()
         options["Gilnean Female"] = l10n("Gilnean Female")
     end
 
-    if Expansions.Current >= Expansions.MoP or Questie.IsForever then
+    if Expansions.Current >= Expansions.MoP or QuestieSmazak.IsForever then
         options["Pandaren Male"]    = l10n("Pandaren Male")
         options["Pandaren Female"]  = l10n("Pandaren Female")
     end
 
-    if Questie.db.profile.loadCustomSounds then
+    if QuestieSmazak.db.profile.loadCustomSounds then
         for _, sound in pairs(LSM30:List(LSM30.MediaType.SOUND)) do
             options[sound] = sound
         end
@@ -772,7 +772,7 @@ _GetObjectiveSoundChoices = function()
         ["Bell Toll Alliance"] = l10n("Bell Toll Alliance"),
         ["Bell Toll Horde"]    = l10n("Bell Toll Horde"),
     }
-    if Expansions.Current >= Expansions.Tbc or Questie.IsForever then
+    if Expansions.Current >= Expansions.Tbc or QuestieSmazak.IsForever then
         options["Explosion"] = l10n("Explosion")
         options["Shing!"] = l10n("Shing!")
         options["Wham!"] = l10n("Wham!")
@@ -782,7 +782,7 @@ _GetObjectiveSoundChoices = function()
         options["Short Circuit"] = l10n("Short Circuit")
     end
 
-    if Questie.db.profile.loadCustomSounds then
+    if QuestieSmazak.db.profile.loadCustomSounds then
         for _, sound in pairs(LSM30:List(LSM30.MediaType.SOUND)) do
             options[sound] = sound
         end
@@ -802,7 +802,7 @@ _GetObjectiveProgressSoundChoices = function()
         ["Bell Toll Alliance"] = l10n("Bell Toll Alliance"),
         ["Bell Toll Horde"]    = l10n("Bell Toll Horde"),
     }
-    if Expansions.Current >= Expansions.Tbc or Questie.IsForever then
+    if Expansions.Current >= Expansions.Tbc or QuestieSmazak.IsForever then
         options["Explosion"] = l10n("Explosion")
         options["Shing!"] = l10n("Shing!")
         options["Wham!"] = l10n("Wham!")
@@ -812,7 +812,7 @@ _GetObjectiveProgressSoundChoices = function()
         options["Short Circuit"] = l10n("Short Circuit")
     end
 
-    if Questie.db.profile.loadCustomSounds then
+    if QuestieSmazak.db.profile.loadCustomSounds then
         for _, sound in pairs(LSM30:List(LSM30.MediaType.SOUND)) do
             options[sound] = sound
         end

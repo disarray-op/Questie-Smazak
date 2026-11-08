@@ -1,16 +1,16 @@
 ---@type QuestieCompat
-local QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+local QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
 
 ---@class QuestieReputation
-local QuestieReputation = QuestieLoader:CreateModule("QuestieReputation")
+local QuestieReputation = QuestieSmazakLoader:CreateModule("QuestieReputation")
 ---@type QuestiePlayer
-local QuestiePlayer = QuestieLoader:ImportModule("QuestiePlayer")
+local QuestiePlayer = QuestieSmazakLoader:ImportModule("QuestiePlayer")
 ---@type QuestieQuest
-local QuestieQuest = QuestieLoader:ImportModule("QuestieQuest")
+local QuestieQuest = QuestieSmazakLoader:ImportModule("QuestieQuest")
 ---@type QuestieDB
-local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
 ---@type Expansions
-local Expansions = QuestieLoader:ImportModule("Expansions")
+local Expansions = QuestieSmazakLoader:ImportModule("Expansions")
 
 local playerReputations = {}
 
@@ -24,7 +24,7 @@ local tinsert, floor = table.insert, math.floor
 --- reached a new reputation level
 ---@param isInit boolean? @
 function QuestieReputation:Update(isInit)
-    Questie.Debug(Questie.DEBUG_DEVELOP, "QuestieReputation: Update")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "QuestieReputation: Update")
     ExpandFactionHeader(0) -- Expand all header
 
     local factionChanged = false
@@ -44,7 +44,7 @@ function QuestieReputation:Update(isInit)
             if (not isInit) and (
                     _ReachedNewStanding(previousValues, standingId)
                     or _WinterSaberChanged(factionID, previousValues, barValue)) then
-                Questie.Debug(Questie.DEBUG_DEVELOP, "QuestieReputation: Update - faction \"" .. name .. "\" (" .. factionID .. ") changed")
+                QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "QuestieReputation: Update - faction \"" .. name .. "\" (" .. factionID .. ") changed")
                 factionChanged = true
             end
         end
@@ -201,7 +201,7 @@ function QuestieReputation:HasFactionAndReputationLevel(requiredMinRep, required
     return aboveMinRep, hasMinFaction, belowMaxRep, hasMaxFaction
 end
 
---- Checkout https://github.com/Questie/Questie/wiki/Corrections#reputation-levels for more information
+--- Checkout https://github.com/QuestieSmazak/QuestieSmazak/wiki/Corrections#reputation-levels for more information
 ---@return boolean HasReputation Is the player within the required reputation ranges specified by the parameters
 function QuestieReputation.HasReputation(requiredMinRep, requiredMaxRep)
     local aboveMinRep, hasMinFaction, belowMaxRep, hasMaxFaction = QuestieReputation:HasFactionAndReputationLevel(requiredMinRep, requiredMaxRep)
@@ -354,12 +354,12 @@ _GetRewardMultiplier = function()
     local multiplier = 1 + buffMultiplier
 
     -- in Forever the Classic human racial is now a legacy talent, available for every race
-    if Questie.IsForever then
+    if QuestieSmazak.IsForever then
         local diplomatRanks = _GetActiveDiplomatStacks()
         multiplier = multiplier + diplomatRanks * 0.02 -- 2% bonus reputation for each rank of Diplomat
     else
         local playerIsHuman = QuestiePlayer.HasRequiredRace(QuestieDB.raceKeys.HUMAN)
-        if playerIsHuman and not Questie.IsTitanReforged then
+        if playerIsHuman and not QuestieSmazak.IsTitanReforged then
             multiplier = multiplier + 0.1 -- 10% bonus reputation from Diplomacy (Human Racial, not present on Titan servers)
         end
     end
@@ -377,7 +377,7 @@ end
 ---This changes only the displayed estimate; racial and other non-aura modifiers still apply.
 ---@return number
 _GetBuffMultiplier = function()
-    if Questie.IsForever and (InCombatLockdown() or IsInInstance()) then return 0 end
+    if QuestieSmazak.IsForever and (InCombatLockdown() or IsInInstance()) then return 0 end
 
     local buffMultiplier = 0
     for i = 1, 40 do
@@ -393,7 +393,7 @@ _GetBuffMultiplier = function()
         elseif spellId == 24705 then
             buffMultiplier = buffMultiplier + 0.1 -- 10% bonus reputation from Grim Visage (Hallow's End Horde)
         elseif spellId == 377749 then
-            buffMultiplier = buffMultiplier + (Questie.IsTitanReforged and 1 or 0) -- 100% bonus reputation from Joyous Journeys (Titan server only)
+            buffMultiplier = buffMultiplier + (QuestieSmazak.IsTitanReforged and 1 or 0) -- 100% bonus reputation from Joyous Journeys (Titan server only)
         end
     end
 

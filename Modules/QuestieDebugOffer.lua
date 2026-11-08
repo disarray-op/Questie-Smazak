@@ -1,22 +1,22 @@
 ---@type QuestieCompat
-local QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+local QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
 
 ---@class QuestieDebugOffer
-local QuestieDebugOffer = QuestieLoader:CreateModule("QuestieDebugOffer")
+local QuestieDebugOffer = QuestieSmazakLoader:CreateModule("QuestieDebugOffer")
 
 ---@type QuestieDB
-local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
 ---@type ZoneDB
-local ZoneDB = QuestieLoader:ImportModule("ZoneDB")
+local ZoneDB = QuestieSmazakLoader:ImportModule("ZoneDB")
 ---@type QuestieLib
-local QuestieLib = QuestieLoader:ImportModule("QuestieLib")
+local QuestieLib = QuestieSmazakLoader:ImportModule("QuestieLib")
 ---@type QuestLogCache
-local QuestLogCache = QuestieLoader:ImportModule("QuestLogCache")
+local QuestLogCache = QuestieSmazakLoader:ImportModule("QuestLogCache")
 ---@type QuestieCorrections
-local QuestieCorrections = QuestieLoader:ImportModule("QuestieCorrections")
+local QuestieCorrections = QuestieSmazakLoader:ImportModule("QuestieCorrections")
 
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 
 local DebugInformation = {} -- stores text of debug data dump per session
 local debugIndex = 0 -- current debug index, used so we can still retrieve info from previous offers
@@ -35,11 +35,11 @@ local questnpc = "questnpc"
 local _, playerRace = UnitRace(player)
 local playerClass = UnitClassBase(player)
 
--- By checking each object in Questie
+-- By checking each object in QuestieSmazak
 -- We can find out which version is currently running.
 local gameType = ""
 do
-    for k, v in pairs(Questie) do
+    for k, v in pairs(QuestieSmazak) do
         if type(k) == "string" then
             if k:sub(1, 2) == "Is" and type(v) == "boolean" then
                 if v then
@@ -263,7 +263,7 @@ local itemWhitelist = {
 local itemTripCodes = {
     ['ItemWhitelisted'] = 0, -- itemID is whitelisted; we want all its data anyway
     ['ItemMissingFromDB'] = 1, -- error when itemID is missing from DB entirely
-    ['StartQuestIDMismatch'] = 2, -- error when item quest start ID does not match Questie ItemDB
+    ['StartQuestIDMismatch'] = 2, -- error when item quest start ID does not match QuestieSmazak ItemDB
     ['MissingDropFromNPC'] = 3, -- error when item dropped from npc (corpses) not matching ItemDB
     ['MissingDropFromObject'] = 4, -- error when item dropped from object (chests in world) not matching ItemDB
     ['MissingDropFromItem'] = 5, -- error when item dropped from item (lockboxes in inventory) not matching ItemDB
@@ -281,7 +281,7 @@ local function filterItem(itemID, itemInfo, containerGUID)
     -- return true if we should create debug offer, false if not
     if itemID <= 0 or itemID == nil or containerGUID == nil then -- if itemID or containerGUID is invalid don't bother going further
         return nil
-    elseif itemID < 190000 and (not Questie.db.profile.enableBugHintsForAllFlavors) then
+    elseif itemID < 190000 and (not QuestieSmazak.db.profile.enableBugHintsForAllFlavors) then
         -- temporary catch-all for any item added before SoD so we only get SoD reports;
         -- OG chronoboon displacer was 184937 so safe to say any SoD items are higher than 190000
         return nil
@@ -289,13 +289,13 @@ local function filterItem(itemID, itemInfo, containerGUID)
         if tContains(itemWhitelist, itemID) then -- if item is in our whitelist, we want it no matter what
             return itemTripCodes.ItemWhitelisted
         elseif tContains(sodItemBlacklist, itemID) or QuestieCorrections.questItemBlacklist[itemID] then -- if item is in our blacklist, ignore it
-            Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieDebugOffer] - ItemFilter - Item " .. itemID .. " is in debug offer item blacklist, ignoring")
+            QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieDebugOffer] - ItemFilter - Item " .. itemID .. " is in debug offer item blacklist, ignoring")
             return nil
         elseif UnitLevel(player) < minLevelForDebugOffers then -- if player level is below our threshold, ignore it
-            Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieDebugOffer] - ItemFilter - Player does not meet level threshold for debug offers, ignoring")
+            QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieDebugOffer] - ItemFilter - Player does not meet level threshold for debug offers, ignoring")
             return nil
         elseif QuestieCorrections.questItemBlacklist[itemID] then
-            Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieDebugOffer] - ItemFilter - Item " .. itemID .. " is in QuestieCorrections item blacklist, ignoring")
+            QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieDebugOffer] - ItemFilter - Item " .. itemID .. " is in QuestieCorrections item blacklist, ignoring")
             return nil
         end
 
@@ -320,16 +320,16 @@ local function filterItem(itemID, itemInfo, containerGUID)
         end
 
         if itemQuality == Enum.ItemQuality.Poor then
-            Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieDebugOffer] - ItemFilter - Item " .. itemID .. " is poor quality, ignoring")
+            QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieDebugOffer] - ItemFilter - Item " .. itemID .. " is poor quality, ignoring")
             return nil
         elseif classID == Enum.ItemClass.Consumable then
-            Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieDebugOffer] - ItemFilter - Item " .. itemID .. " is a Consumable, ignoring")
+            QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieDebugOffer] - ItemFilter - Item " .. itemID .. " is a Consumable, ignoring")
             return nil
         elseif classID == Enum.ItemClass.Weapon then
-            Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieDebugOffer] - ItemFilter - Item " .. itemID .. " is a Weapon, ignoring")
+            QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieDebugOffer] - ItemFilter - Item " .. itemID .. " is a Weapon, ignoring")
             return nil
         elseif classID == Enum.ItemClass.Armor then
-            Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieDebugOffer] - ItemFilter - Item " .. itemID .. " is Armor, ignoring")
+            QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieDebugOffer] - ItemFilter - Item " .. itemID .. " is Armor, ignoring")
             return nil
         end
 
@@ -338,10 +338,10 @@ local function filterItem(itemID, itemInfo, containerGUID)
             if questID ~= QuestieDB.QueryItemSingle(itemID, "startQuest") then
                 return itemTripCodes.StartQuestIDMismatch
             else
-                Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieDebugOffer] - ItemFilter - QuestID for " .. itemID .. " present but matches DB, ignoring")
+                QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieDebugOffer] - ItemFilter - QuestID for " .. itemID .. " present but matches DB, ignoring")
             end
         else
-            Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieDebugOffer] - ItemFilter - QuestID value not present, ignoring")
+            QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieDebugOffer] - ItemFilter - QuestID value not present, ignoring")
         end
 
         -- check loot source data
@@ -356,7 +356,7 @@ local function filterItem(itemID, itemInfo, containerGUID)
             if not lootTable or tContains(lootTable, containerID) == false then
                 return itemTripCodes.MissingDropFromNPC
             else
-                Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieDebugOffer] - ItemFilter - NPC drop data for item " .. itemID .. " OK, ignoring")
+                QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieDebugOffer] - ItemFilter - NPC drop data for item " .. itemID .. " OK, ignoring")
             end
         elseif containerType == "GameObject" and containerID > 0 then -- if container is an object
             -- first check if object is even in our DB
@@ -370,7 +370,7 @@ local function filterItem(itemID, itemInfo, containerGUID)
                 if tContains(lootTable, containerID) == false then
                     return itemTripCodes.MissingDropFromObject
                 else
-                    Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieDebugOffer] - ItemFilter - Object drop data for item " .. itemID .. " OK, ignoring")
+                    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieDebugOffer] - ItemFilter - Object drop data for item " .. itemID .. " OK, ignoring")
                 end
             end
         elseif containerType == "Item" and containerID > 0 then -- if container is an item and there is an containerID for it
@@ -386,12 +386,12 @@ local function filterItem(itemID, itemInfo, containerGUID)
                 if tContains(lootTable, containerID) == false then
                     return itemTripCodes.MissingDropFromItem
                 else
-                    Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieDebugOffer] - ItemFilter - ItemSource drop data for item " .. itemID .. " OK, ignoring")
+                    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieDebugOffer] - ItemFilter - ItemSource drop data for item " .. itemID .. " OK, ignoring")
                 end
             end
         end
     end
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieDebugOffer] - ItemFilter - No data mismatches found for " .. itemID .. ", ignoring")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieDebugOffer] - ItemFilter - No data mismatches found for " .. itemID .. ", ignoring")
     return nil -- if no exceptions raised, we don't need to create a debug offer
 end
 
@@ -427,7 +427,7 @@ local function _AppendUniversalText(input)
 
     text = text .. "\n|cFFAAAAAAQuestLog:|r " .. questLog
     text = text .. "\n|cFFAAAAAAClient:|r " .. GetBuildInfo() .. " " .. gameType
-    text = text .. "\n|cFFAAAAAAQuestie:|r " .. QuestieLib:GetAddonVersionString()
+    text = text .. "\n|cFFAAAAAAQuestieSmazak:|r " .. QuestieLib:GetAddonVersionString()
     text = text .. "\n|cFFAAAAAALocale:|r " .. GetLocale()
 
     return text
@@ -439,7 +439,7 @@ function QuestieDebugOffer.LootWindow()
     local debugContainer, _ = GetLootSourceInfo(1) -- happens early in case the rest of the code is so slow that the container closes before we're ready
     local inInstance, _ = IsInInstance()
     if inInstance == true then
-        Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieDebugOffer] - ItemLoot - Player looting item is in instance, ignoring")
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieDebugOffer] - ItemLoot - Player looting item is in instance, ignoring")
         return -- temporary for SoD to reduce new raid loot triggering debug spam
     end
 
@@ -456,7 +456,7 @@ function QuestieDebugOffer.LootWindow()
 
         local tripCode = filterItem(itemID, itemInfo, debugContainer)
         if tripCode then
-            Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieDebugOffer] - ItemLoot - Creating debug offer for item " .. itemID .. " reason " .. tripCode)
+            QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieDebugOffer] - ItemLoot - Creating debug offer for item " .. itemID .. " reason " .. tripCode)
             debugIndex = debugIndex + 1
             if tripCode == itemTripCodes.ItemWhitelisted then
                 DebugInformation[debugIndex] = "ItemDB is missing some data about this item!"
@@ -485,7 +485,7 @@ function QuestieDebugOffer.LootWindow()
             DebugInformation[debugIndex] = DebugInformation[debugIndex] .. "\n|cFFAAAAAAQuest ID:|r " .. tostring(itemInfo.questId)
             DebugInformation[debugIndex] = DebugInformation[debugIndex] .. "\n|cFFAAAAAAContainer:|r " .. tostring(debugContainer)
             DebugInformation[debugIndex] = _AppendUniversalText(DebugInformation[debugIndex])
-            Questie:Print(l10n("An item you just encountered has data missing from the Questie database.") .. " " .. l10n("Would you like to help us fix it?") .. " |cff71d5ff|Haddon:questie:offer:" .. debugIndex .. "|h[" .. l10n("More Info") .. "]|h|r")
+            QuestieSmazak:Print(l10n("An item you just encountered has data missing from the QuestieSmazak database.") .. " " .. l10n("Would you like to help us fix it?") .. " |cff71d5ff|Haddon:questie:offer:" .. debugIndex .. "|h[" .. l10n("More Info") .. "]|h|r")
             return -- we only want to show one debug offer per interaction, so break on the first one
         end
     end
@@ -495,11 +495,11 @@ end
 function QuestieDebugOffer.QuestDialog()
     local questID = GetQuestID() -- obtain quest ID from dialog
     if questID <= 0 or questID == nil then
-        Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieDebugOffer] - QuestDialog - Invalid quest ID from API, ignoring")
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieDebugOffer] - QuestDialog - Invalid quest ID from API, ignoring")
         return -- invalid data from API, abandon offer attempt
     end
     if UnitLevel(player) < minLevelForDebugOffers then -- if player level is below our threshold, ignore it
-        Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieDebugOffer] - QuestDialog - Player does not meet level threshold for debug offers, ignoring")
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieDebugOffer] - QuestDialog - Player does not meet level threshold for debug offers, ignoring")
         return
     end
     if QuestieDB.QueryQuestSingle(questID, "name") == nil then -- if ID not in our DB
@@ -528,7 +528,7 @@ function QuestieDebugOffer.QuestDialog()
         DebugInformation[debugIndex] = DebugInformation[debugIndex] .. "\n|cFFAAAAAAReward XP:|r " .. tostring(rewardXP)
         DebugInformation[debugIndex] = DebugInformation[debugIndex] .. "\n|cFFAAAAAAQuestgiver:|r " .. tostring(giverGuid)
         DebugInformation[debugIndex] = _AppendUniversalText(DebugInformation[debugIndex])
-        Questie:Print(l10n("A quest you just encountered is missing from the Questie database.") .. " " .. l10n("Would you like to help us fix it?") .. " |cff71d5ff|Haddon:questie:offer:" .. debugIndex .. "|h[" .. l10n("More Info") .. "]|h|r")
+        QuestieSmazak:Print(l10n("A quest you just encountered is missing from the QuestieSmazak database.") .. " " .. l10n("Would you like to help us fix it?") .. " |cff71d5ff|Haddon:questie:offer:" .. debugIndex .. "|h[" .. l10n("More Info") .. "]|h|r")
     end
 end
 
@@ -536,7 +536,7 @@ end
 ---@param questID number
 function QuestieDebugOffer.QuestTracking(questID) -- ID supplied by tracker during update
     if UnitLevel(player) < minLevelForDebugOffers then -- if player level is below our threshold, ignore it
-        Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieDebugOffer] - QuestTracking - Player does not meet level threshold for debug offers, ignoring")
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieDebugOffer] - QuestTracking - Player does not meet level threshold for debug offers, ignoring")
         return
     end
     if QuestieDB.QueryQuestSingle(questID, "name") == nil then -- if ID not in our DB
@@ -555,7 +555,7 @@ function QuestieDebugOffer.QuestTracking(questID) -- ID supplied by tracker duri
                 DebugInformation[debugIndex] = DebugInformation[debugIndex] .. "\n|cFFAAAAAAQuest Text:|r " .. tostring(questText)
                 DebugInformation[debugIndex] = DebugInformation[debugIndex] .. "\n|cFFAAAAAAObjective Text:|r " .. tostring(objectiveText)
                 DebugInformation[debugIndex] = _AppendUniversalText(DebugInformation[debugIndex])
-                Questie:Print(l10n("A quest in your quest log is missing from the Questie database and can't be tracked.") .. " " .. l10n("Would you like to help us fix it?") .. " |cff71d5ff|Haddon:questie:offer:" .. debugIndex .. "|h[" .. l10n("More Info") .. "]|h|r")
+                QuestieSmazak:Print(l10n("A quest in your quest log is missing from the QuestieSmazak database and can't be tracked.") .. " " .. l10n("Would you like to help us fix it?") .. " |cff71d5ff|Haddon:questie:offer:" .. debugIndex .. "|h[" .. l10n("More Info") .. "]|h|r")
                 --print(tostring(QuestieDB.IsSoDRuneQuest(questlogid)))
             end
         end
@@ -568,12 +568,12 @@ local timeoutDurationInstance = 600 -- how many seconds to ignore re-passes outs
 -- Missing NPC ID when targeting
 function QuestieDebugOffer.NPCTarget()
     if UnitLevel(player) < minLevelForDebugOffers then -- if player level is below our threshold, ignore it
-        Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieDebugOffer] - NPCTarget - Player does not meet level threshold for debug offers, ignoring")
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieDebugOffer] - NPCTarget - Player does not meet level threshold for debug offers, ignoring")
         return
     end
     local inInstance, _ = IsInInstance()
     if inInstance == true then -- temporary override for SoD launch to not prompt NPC debug offers inside instances at all, to prevent BFD spam
-        Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieDebugOffer] - NPCTarget - Player targeting NPC is in instance, ignoring")
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieDebugOffer] - NPCTarget - Player targeting NPC is in instance, ignoring")
         return
     end
     local targetGUID = UnitGUID(target)
@@ -581,11 +581,11 @@ function QuestieDebugOffer.NPCTarget()
     if unit_type == "Creature" then -- if target is an NPC
         local npcID = tonumber(targetGUID:match("-(%d+)-%x+$"), 10) -- obtain NPC ID
         if targetTimeout[npcID] == true then -- if target was already targeted recently
-            Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieDebugOffer] - NPCTarget - Targeted NPC was targeted recently, ignoring")
+            QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieDebugOffer] - NPCTarget - Targeted NPC was targeted recently, ignoring")
             return
         else -- if target was NOT targeted recently
             if tContains(npcBlacklist, npcID) then -- if NPC is in our blacklist, ignore it
-                Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieDebugOffer] - NPCTarget - Targeted NPC is in NPC blacklist, ignoring")
+                QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieDebugOffer] - NPCTarget - Targeted NPC is in NPC blacklist, ignoring")
                 return
             end
             targetTimeout[npcID] = true
@@ -612,7 +612,7 @@ function QuestieDebugOffer.NPCTarget()
                 DebugInformation[debugIndex] = DebugInformation[debugIndex] .. "\n|cFFAAAAAANPC Health, Max:|r " .. tostring(npcHealth) .. ", " .. tostring(npcHealthMax)
                 DebugInformation[debugIndex] = DebugInformation[debugIndex] .. "\n|cFFAAAAAANPC Allegiance:|r " .. tostring(npcStatus)
                 DebugInformation[debugIndex] = _AppendUniversalText(DebugInformation[debugIndex])
-                Questie:Print(l10n("The NPC you just targeted is missing from the Questie database.") .. " " .. l10n("Would you like to help us fix it?") .. " |cff71d5ff|Haddon:questie:offer:" .. debugIndex .. "|h[" .. l10n("More Info") .. "]|h|r")
+                QuestieSmazak:Print(l10n("The NPC you just targeted is missing from the QuestieSmazak database.") .. " " .. l10n("Would you like to help us fix it?") .. " |cff71d5ff|Haddon:questie:offer:" .. debugIndex .. "|h[" .. l10n("More Info") .. "]|h|r")
             end
             if inInstance == false then
                 C_Timer.NewTimer (timeoutDurationOverworld, function() targetTimeout[npcID] = false end)
@@ -641,14 +641,14 @@ if SetItemRef then
 end
 
 ---@param popupText string --@A string containing the lines of text to be displayed in the popup
----@param discordURL string --@A string containing the URL to the Questie Discord
+---@param discordURL string --@A string containing the URL to the QuestieSmazak Discord
 ---@param index number --@Integer containing the index of the DebugOffer in question
 local function _CreateOfferFrame(popupText, discordURL, index)
     if openDebugWindows[index] == true then
-        Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieDebugOffer] - An offer is already open, not creating new frame")
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieDebugOffer] - An offer is already open, not creating new frame")
         return
     end
-    local debugFrame = CreateFrame("Frame", "QuestieDebugOfferFrame", UIParent, BackdropTemplateMixin and "BackdropTemplate")
+    local debugFrame = CreateFrame("Frame", "QuestieSmazakDebugOfferFrame", UIParent, BackdropTemplateMixin and "BackdropTemplate")
     debugFrame:SetPoint("CENTER")
     debugFrame:SetMovable(true)
     debugFrame:EnableMouse(true)
@@ -665,7 +665,7 @@ local function _CreateOfferFrame(popupText, discordURL, index)
 
     debugFrame.title = debugFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
     debugFrame.title:SetPoint("TOP", 0, -15)
-    debugFrame.title:SetText("|TInterface\\Addons\\Questie\\Icons\\startendstart.tga:16|t |cFFFED218" .. l10n("Questie Debug Info") .. "|r |TInterface\\Addons\\Questie\\Icons\\startendstart.tga:16|t")
+    debugFrame.title:SetText("|TInterface\\Addons\\QuestieSmazak\\Icons\\startendstart.tga:16|t |cFFFED218" .. l10n("QuestieSmazak Debug Info") .. "|r |TInterface\\Addons\\QuestieSmazak\\Icons\\startendstart.tga:16|t")
 
     -- Create a single large edit box with no background
     debugFrame.dataEditBox = CreateFrame("EditBox", nil, debugFrame)
@@ -688,7 +688,7 @@ local function _CreateOfferFrame(popupText, discordURL, index)
 
     debugFrame.discordText = debugFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
     debugFrame.discordText:SetPoint("TOP", debugFrame.dataEditBox, "BOTTOM", 0, -15)
-    debugFrame.discordText:SetText("|cFFAAAAAA" .. l10n("Please share this info with us on") .. "  |TInterface\\Addons\\Questie\\Icons\\discord.blp:16|t |cFF5765ECDiscord|r\n" .. l10n("(") .. l10n("You can copy the data above") .. l10n(")"))
+    debugFrame.discordText:SetText("|cFFAAAAAA" .. l10n("Please share this info with us on") .. "  |TInterface\\Addons\\QuestieSmazak\\Icons\\discord.blp:16|t |cFF5765ECDiscord|r\n" .. l10n("(") .. l10n("You can copy the data above") .. l10n(")"))
 
     debugFrame.discordLinkEditBox = CreateFrame("EditBox", nil, debugFrame, "InputBoxTemplate")
     debugFrame.discordLinkEditBox:SetSize(200, 20)

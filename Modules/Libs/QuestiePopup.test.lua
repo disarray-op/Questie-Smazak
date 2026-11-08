@@ -4,7 +4,7 @@ describe("QuestiePopup consumers", function()
     local Popup, externalPopup, visible, widgets, nativeButtons, options, addon
     local savedGlobals, exportedGlobals
     local globalNames = {"QuestiePopup", "YES", "NO", "CLOSE", "GetLocale", "QUESTIE_LOCALES_OVERRIDE",
-        "ReloadUI", "UISpecialFrames", "LibStub", "CreateFrame", "QuestieConfig"}
+        "ReloadUI", "UISpecialFrames", "LibStub", "CreateFrame", "QuestieSmazakConfig"}
 
     -- UI-only fixture: consumer definitions and callbacks are loaded from production files.
     local function Widget()
@@ -38,8 +38,8 @@ describe("QuestiePopup consumers", function()
         _G.QUESTIE_LOCALES_OVERRIDE = nil
         _G.ReloadUI = spy.new(function() end)
         _G.UISpecialFrames = {}
-        Questie.Colorize = function(_, text) return text end
-        Questie.started = true
+        QuestieSmazak.Colorize = function(_, text) return text end
+        QuestieSmazak.started = true
         visible, widgets, nativeButtons = {}, {}, {}
 
         -- Mock the external popup API, including cancellation on reuse and data-before-OnShow.
@@ -60,8 +60,8 @@ describe("QuestiePopup consumers", function()
             if info.OnShow then info.OnShow(frame, data) end
             return frame
         end
-        assert(loadfile("Modules/Libs/QuestiePopup.lua"))("Questie", addon)
-        Popup = QuestieLoader:ImportModule("QuestiePopup")
+        assert(loadfile("Modules/Libs/QuestiePopup.lua"))("QuestieSmazak", addon)
+        Popup = QuestieSmazakLoader:ImportModule("QuestiePopup")
 
         local aceGUI = {}
         function aceGUI:Create(kind)
@@ -77,12 +77,12 @@ describe("QuestiePopup consumers", function()
             return frame
         end
 
-        options = QuestieLoader:ImportModule("QuestieOptions")
+        options = QuestieSmazakLoader:ImportModule("QuestieOptions")
         options.tabs = {}
-        QuestieLoader:ImportModule("QuestieOptionsDefaults").Load = function()
+        QuestieSmazakLoader:ImportModule("QuestieOptionsDefaults").Load = function()
             return {profile = {enabled = true, lowLevelStyle = "default", minimap = {hide = false}}, char = {hiddenDailies = {}}}
         end
-        QuestieLoader:ImportModule("QuestieOptionsUtils").Spacer = function() return {} end
+        QuestieSmazakLoader:ImportModule("QuestieOptionsUtils").Spacer = function() return {} end
     end)
 
     after_each(function()
@@ -92,8 +92,8 @@ describe("QuestiePopup consumers", function()
 
     it("does not replace the library when debug globals are populated", function()
         exportedGlobals = {}
-        for name in pairs(QuestieLoader._modules) do exportedGlobals[name] = {_G[name]} end
-        QuestieLoader:PopulateGlobals()
+        for name in pairs(QuestieSmazakLoader._modules) do exportedGlobals[name] = {_G[name]} end
+        QuestieSmazakLoader:PopulateGlobals()
         assert.equals(externalPopup, addon.Dialog)
         assert.equals(Popup, _G.QuestiePopup)
     end)
@@ -105,22 +105,22 @@ describe("QuestiePopup consumers", function()
         assert.equals(externalPopup.Hide, Popup.Hide)
     end)
 
-    it("lets controller B close Questie dialogs on Forever only", function()
-        local originalIsForever = Questie.IsForever
+    it("lets controller B close QuestieSmazak dialogs on Forever only", function()
+        local originalIsForever = QuestieSmazak.IsForever
         local ok, err = pcall(function()
-            Questie.IsForever = false
+            QuestieSmazak.IsForever = false
             assert.is_false(externalPopup.UseGamePadClose())
-            Questie.IsForever = true
+            QuestieSmazak.IsForever = true
             assert.is_true(externalPopup.UseGamePadClose())
         end)
-        Questie.IsForever = originalIsForever
+        QuestieSmazak.IsForever = originalIsForever
         assert(ok, err)
     end)
 
     it("runs locale reuse, cancellation and acceptance through the real dialog", function()
         local fixture = dofile("cli/testData/addonDialog/PopupUIHarness.lua")
         local _, errors, _, private = fixture.NewEnvironment()
-        assert(loadfile("Modules/Libs/QuestiePopup.lua"))("Questie", private)
+        assert(loadfile("Modules/Libs/QuestiePopup.lua"))("QuestieSmazak", private)
         dofile("Modules/Options/AdvancedTab/QuestieOptionsAdvanced.lua")
         local args = options.tabs.advanced:Initialize().args
         args.locale_dropdown.set(nil, "deDE")
@@ -129,11 +129,11 @@ describe("QuestiePopup consumers", function()
         assert.is_not_nil(frame)
         frame:GetButton2():Click()
         assert.spy(ReloadUI).was.not_called()
-        assert.is_nil(Questie.db.global.questieLocale)
+        assert.is_nil(QuestieSmazak.db.global.questieLocale)
         args.locale_dropdown.set(nil, "deDE")
         frame = Popup.FindVisible("QUESTIE_LOCALE_CHANGE_CONFIRM")
         frame:GetButton1():Click()
-        assert.equals("deDE", Questie.db.global.questieLocale)
+        assert.equals("deDE", QuestieSmazak.db.global.questieLocale)
         assert.spy(ReloadUI).was.called(1)
         assert.same({}, errors)
     end)
@@ -141,19 +141,19 @@ describe("QuestiePopup consumers", function()
     it("uses direct edit-box references and keeps styles separate between dialog purposes", function()
         local fixture = dofile("cli/testData/addonDialog/PopupUIHarness.lua")
         local _, errors, _, private = fixture.NewEnvironment()
-        assert(loadfile("Modules/Libs/QuestiePopup.lua"))("Questie", private)
+        assert(loadfile("Modules/Libs/QuestiePopup.lua"))("QuestieSmazak", private)
         dofile("Modules/Options/AdvancedTab/QuestieOptionsAdvanced.lua")
         options.tabs.advanced:Initialize().args.questieReset.func()
         local first = Popup.FindVisible("QUESTIE_RESET_CONFIRM")
         assert.equals("FULLSCREEN_DIALOG", first:GetFrameStrata())
         Popup.Hide("QUESTIE_RESET_CONFIRM")
 
-        Questie.db.profile.debugEnabled = true
-        QuestieLoader:ImportModule("QuestieDB").QueryQuestSingle = function(id, field)
+        QuestieSmazak.db.profile.debugEnabled = true
+        QuestieSmazakLoader:ImportModule("QuestieDB").QueryQuestSingle = function(id, field)
             if id == 1 and field == "objectives" then return {nil, nil, {{17}}} end
         end
         dofile("Modules/QuestieSlash.lua")
-        QuestieLoader:ImportModule("QuestieSlash").HandleCommands("itemdrop")
+        QuestieSmazakLoader:ImportModule("QuestieSlash").HandleCommands("itemdrop")
         local frame = Popup.FindVisible("QUESTIE_ITEMDROPOUTPUT")
         assert.is_not_nil(frame)
         assert.are_not.equal(first, frame)
@@ -172,13 +172,13 @@ describe("QuestiePopup consumers", function()
         local args = options.tabs.advanced:Initialize().args
         args.locale_dropdown.set(nil, "deDE")
         args.locale_dropdown.set(nil, "frFR")
-        assert.is_nil(Questie.db.global.questieLocale)
+        assert.is_nil(QuestieSmazak.db.global.questieLocale)
         assert.spy(ReloadUI).was.not_called()
 
         local key = "QUESTIE_LOCALE_CHANGE_CONFIRM"
         Popup.Dialogs[key].OnAccept(Popup.FindVisible(key))
-        assert.equals("frFR", Questie.db.global.questieLocale)
-        assert.is_true(Questie.db.global.questieLocaleDiff)
+        assert.equals("frFR", QuestieSmazak.db.global.questieLocale)
+        assert.is_true(QuestieSmazak.db.global.questieLocaleDiff)
         assert.spy(ReloadUI).was.called(1)
     end)
 
@@ -188,77 +188,77 @@ describe("QuestiePopup consumers", function()
         local info = Popup.Dialogs.QUESTIE_LOCALE_CHANGE_CONFIRM
         info.OnCancel()
         info.OnAccept()
-        assert.is_nil(Questie.db.global.questieLocale)
+        assert.is_nil(QuestieSmazak.db.global.questieLocale)
         assert.spy(ReloadUI).was.not_called()
     end)
 
     it("resets settings only on acceptance and preserves localization", function()
         dofile("Modules/Options/AdvancedTab/QuestieOptionsAdvanced.lua")
-        Questie.db.profile.enabled = false
-        Questie.db.profile.migrationVersion = 42
-        Questie.db.char.hidden = {123}
-        Questie.db.global.questieLocale = "deDE"
+        QuestieSmazak.db.profile.enabled = false
+        QuestieSmazak.db.profile.migrationVersion = 42
+        QuestieSmazak.db.char.hidden = {123}
+        QuestieSmazak.db.global.questieLocale = "deDE"
         options.tabs.advanced:Initialize().args.questieReset.func()
-        assert.is_false(Questie.db.profile.enabled)
+        assert.is_false(QuestieSmazak.db.profile.enabled)
         assert.spy(ReloadUI).was.not_called()
         Popup.Dialogs.QUESTIE_RESET_CONFIRM.OnAccept()
-        assert.is_true(Questie.db.profile.enabled)
-        assert.is_nil(Questie.db.profile.migrationVersion)
-        assert.is_nil(Questie.db.char.hidden)
-        assert.equals("deDE", Questie.db.global.questieLocale)
+        assert.is_true(QuestieSmazak.db.profile.enabled)
+        assert.is_nil(QuestieSmazak.db.profile.migrationVersion)
+        assert.is_nil(QuestieSmazak.db.char.hidden)
+        assert.equals("deDE", QuestieSmazak.db.global.questieLocale)
         assert.spy(ReloadUI).was.called(1)
     end)
 
     it("resets only the current character journey after acceptance", function()
         dofile("Modules/Options/AdvancedTab/QuestieOptionsAdvanced.lua")
-        Questie.db.char.journey = {{Event = "Note"}}
+        QuestieSmazak.db.char.journey = {{Event = "Note"}}
         options.tabs.advanced:Initialize().args.questieJourneyReset.func()
-        assert.equals(1, #Questie.db.char.journey)
+        assert.equals(1, #QuestieSmazak.db.char.journey)
         assert.spy(ReloadUI).was.not_called()
         Popup.Dialogs.QUESTIE_JOURNEY_RESET_CONFIRM.OnAccept()
-        assert.is_nil(Questie.db.char.journey)
+        assert.is_nil(QuestieSmazak.db.char.journey)
         assert.spy(ReloadUI).was.called(1)
     end)
 
     it("imports the latest selected journey when the confirmation is reopened", function()
         local first = {{Event = "Level", Timestamp = 1, NewLevel = 2}}
         local second = {{Event = "Level", Timestamp = 2, NewLevel = 3}}
-        _G.QuestieConfig = {char = {["Alice - Realm"] = {journey = first}, ["Bob - Realm"] = {journey = second}}}
-        Questie.db.char.journey = {}
+        _G.QuestieSmazakConfig = {char = {["Alice - Realm"] = {journey = first}, ["Bob - Realm"] = {journey = second}}}
+        QuestieSmazak.db.char.journey = {}
         dofile("Modules/Journey/QuestieJourneyShare.lua")
-        QuestieLoader:ImportModule("QuestieJourney"):ShowCharacterBrowserFrame()
+        QuestieSmazakLoader:ImportModule("QuestieJourney"):ShowCharacterBrowserFrame()
         nativeButtons[1].callbacks.OnClick()
         widgets.Dropdown.callbacks.OnValueChanged(nil, nil, "Bob - Realm")
         nativeButtons[1].callbacks.OnClick()
-        assert.same({}, Questie.db.char.journey)
+        assert.same({}, QuestieSmazak.db.char.journey)
         Popup.Dialogs.QUESTIE_JOURNEY_IMPORT_CONFIRM.OnAccept()
-        assert.equals(second, Questie.db.char.journey)
+        assert.equals(second, QuestieSmazak.db.char.journey)
         assert.is_true(widgets.Frame.hidden)
         assert.spy(ReloadUI).was.not_called()
     end)
 
     it("does not import a journey when cancelled or dismissed programmatically", function()
         local original = {{Event = "Level", Timestamp = 1, NewLevel = 2}}
-        _G.QuestieConfig = {char = {["Alice - Realm"] = {journey = {{Event = "Level", Timestamp = 2, NewLevel = 3}}}}}
-        Questie.db.char.journey = original
+        _G.QuestieSmazakConfig = {char = {["Alice - Realm"] = {journey = {{Event = "Level", Timestamp = 2, NewLevel = 3}}}}}
+        QuestieSmazak.db.char.journey = original
         dofile("Modules/Journey/QuestieJourneyShare.lua")
-        QuestieLoader:ImportModule("QuestieJourney"):ShowCharacterBrowserFrame()
+        QuestieSmazakLoader:ImportModule("QuestieJourney"):ShowCharacterBrowserFrame()
         nativeButtons[1].callbacks.OnClick()
         Popup.Dialogs.QUESTIE_JOURNEY_IMPORT_CONFIRM.OnCancel()
-        assert.equals(original, Questie.db.char.journey)
+        assert.equals(original, QuestieSmazak.db.char.journey)
         nativeButtons[1].callbacks.OnClick()
         Popup.Hide("QUESTIE_JOURNEY_IMPORT_CONFIRM")
-        assert.equals(original, Questie.db.char.journey)
+        assert.equals(original, QuestieSmazak.db.char.journey)
     end)
 
     it("shows the selected note title before acceptance and deletes that note", function()
-        Questie.db.char.journey = {
+        QuestieSmazak.db.char.journey = {
             {Event = "Note", Timestamp = 1, Title = "First", Note = "One"},
             {Event = "Note", Timestamp = 2, Title = "Second", Note = "Two"},
         }
-        QuestieLoader:ImportModule("QuestieLib").FormatDate = function() return "Today" end
-        QuestieLoader:ImportModule("QuestieJourneyUtils").Spacer = function() end
-        local journey = QuestieLoader:ImportModule("QuestieJourney").private
+        QuestieSmazakLoader:ImportModule("QuestieLib").FormatDate = function() return "Today" end
+        QuestieSmazakLoader:ImportModule("QuestieJourneyUtils").Spacer = function() end
+        local journey = QuestieSmazakLoader:ImportModule("QuestieJourney").private
         journey.GetHistory = function() return {} end
         journey.GetJourneyEntries = function() return {} end
         dofile("Modules/Journey/tabs/MyJourney/MyJourney.lua")
@@ -272,18 +272,18 @@ describe("QuestiePopup consumers", function()
         local popup = Popup.FindVisible("QUESTIE_DELETE_NOTE_CONFIRM")
         assert.equals(2, popup.data)
         assert.equals("Are you sure you want to delete this note?\n\nSecond", popup.Text.text)
-        assert.equals(2, #Questie.db.char.journey)
+        assert.equals(2, #QuestieSmazak.db.char.journey)
         Popup.Dialogs.QUESTIE_DELETE_NOTE_CONFIRM.OnAccept(popup)
-        assert.equals(1, #Questie.db.char.journey)
-        assert.equals("First", Questie.db.char.journey[1].Title)
+        assert.equals(1, #QuestieSmazak.db.char.journey)
+        assert.equals("First", QuestieSmazak.db.char.journey[1].Title)
     end)
 
     it("accepts only the current hide confirmation when its dedicated frame is reopened", function()
         local fixture = dofile("cli/testData/addonDialog/PopupUIHarness.lua")
         local _, errors, _, private = fixture.NewEnvironment()
-        assert(loadfile("Modules/Libs/QuestiePopup.lua"))("Questie", private)
+        assert(loadfile("Modules/Libs/QuestiePopup.lua"))("QuestieSmazak", private)
         dofile("Modules/FramePool/QuestieFramePool.lua")
-        local quest = QuestieLoader:ImportModule("QuestieQuest")
+        local quest = QuestieSmazakLoader:ImportModule("QuestieQuest")
         quest.HideQuest = spy.new(function() end)
         local first = Popup.Show("QUESTIE_CONFIRMHIDE", "First quest", nil, 123)
         local replacement = Popup.Show("QUESTIE_CONFIRMHIDE", "Second quest", nil, 456)
@@ -299,13 +299,13 @@ describe("QuestiePopup consumers", function()
     end)
 
     it("shows copyable item-drop output using the owned edit box", function()
-        Questie.db.profile.debugEnabled = true
-        QuestieLoader:ImportModule("QuestieDB").QueryQuestSingle = function(id, field)
+        QuestieSmazak.db.profile.debugEnabled = true
+        QuestieSmazakLoader:ImportModule("QuestieDB").QueryQuestSingle = function(id, field)
             if id == 1 and field == "objectives" then return {nil, nil, {{17}, {23}, {17}}} end
             if id == 2 and field == "requiredSourceItems" then return {23, 42} end
         end
         dofile("Modules/QuestieSlash.lua")
-        QuestieLoader:ImportModule("QuestieSlash").HandleCommands("itemdrop")
+        QuestieSmazakLoader:ImportModule("QuestieSlash").HandleCommands("itemdrop")
         local popup = Popup.FindVisible("QUESTIE_ITEMDROPOUTPUT")
         assert.equals("17,23,42", popup.EditBox.text)
         assert.is_true(popup.EditBox.focused)

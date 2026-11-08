@@ -11,7 +11,7 @@ describe("ContentPhases", function()
 
     before_each(function()
         dofile("Database/Corrections/ContentPhases/ContentPhases.lua")
-        ContentPhases = QuestieLoader:ImportModule("ContentPhases")
+        ContentPhases = QuestieSmazakLoader:ImportModule("ContentPhases")
     end)
 
     describe("BlacklistAnniversaryQuestsByPhase", function()

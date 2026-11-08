@@ -24,14 +24,14 @@ describe("QuestLifecycle", function()
 
     before_each(function()
         _G.WOW_PROJECT_ID = nil
-        Questie.db.char = {
+        QuestieSmazak.db.char = {
             complete = {},
             collapsedQuests = {},
             AutoUntrackedQuests = {},
         }
-        Questie.SendMessage = spy.new(function() end)
+        QuestieSmazak.SendMessage = spy.new(function() end)
 
-        QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+        QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
         QuestieDB.GetQuest = spy.new(function() return nil end)
         QuestieDB.QueryQuestSingle = spy.new(function() return nil end)
         QuestieDB.IsDailyQuest = spy.new(function() return false end)
@@ -39,31 +39,31 @@ describe("QuestLifecycle", function()
         QuestieDB.IsWeeklyQuest = spy.new(function() return false end)
         QuestieDB.IsMonthlyQuest = spy.new(function() return false end)
 
-        AvailableQuests = QuestieLoader:ImportModule("AvailableQuests")
+        AvailableQuests = QuestieSmazakLoader:ImportModule("AvailableQuests")
         AvailableQuests.RemoveQuest = spy.new(function() end)
         AvailableQuests.CalculateAndDrawAll = spy.new(function() end)
         dofile("Modules/Quest/ActiveQuests.lua")
-        ActiveQuests = QuestieLoader:ImportModule("ActiveQuests")
+        ActiveQuests = QuestieSmazakLoader:ImportModule("ActiveQuests")
 
-        QuestieTooltips = QuestieLoader:ImportModule("QuestieTooltips")
+        QuestieTooltips = QuestieSmazakLoader:ImportModule("QuestieTooltips")
         QuestieTooltips.RemoveQuest = spy.new(function() end)
 
-        QuestieTracker = QuestieLoader:ImportModule("QuestieTracker")
+        QuestieTracker = QuestieSmazakLoader:ImportModule("QuestieTracker")
         QuestieTracker.RemoveQuest = spy.new(function() end)
         QuestieTracker.Update = spy.new(function() end)
 
-        QuestieCombatQueue = QuestieLoader:ImportModule("QuestieCombatQueue")
+        QuestieCombatQueue = QuestieSmazakLoader:ImportModule("QuestieCombatQueue")
         QuestieCombatQueue.Queue = function(_, callback) callback() end
 
-        CommsVisibility = QuestieLoader:ImportModule("CommsVisibility")
+        CommsVisibility = QuestieSmazakLoader:ImportModule("CommsVisibility")
         CommsVisibility.ScheduleSnapshot = spy.new(function() end)
 
-        QuestLogCache = QuestieLoader:ImportModule("QuestLogCache")
+        QuestLogCache = QuestieSmazakLoader:ImportModule("QuestLogCache")
         QuestLogCache.TryGetQuest = spy.new(function() return {} end)
 
         dofile("Modules/Quest/Lifecycle/QuestLifecycle.lua")
-        QuestLifecycle = QuestieLoader:ImportModule("QuestLifecycle")
-        QuestieQuest = QuestieLoader:ImportModule("QuestieQuest")
+        QuestLifecycle = QuestieSmazakLoader:ImportModule("QuestLifecycle")
+        QuestieQuest = QuestieSmazakLoader:ImportModule("QuestieQuest")
 
         -- Stub out functions in QuestieQuest that are not under test here
         QuestieQuest.PopulateQuestLogInfo = spy.new(function() end)
@@ -74,13 +74,13 @@ describe("QuestLifecycle", function()
         it("tracks an unknown quest without creating map enrichment", function()
             QuestieDB.GetQuest = spy.new(function() return nil end)
 
-            Questie.db.char.collapsedQuests[999] = true
-            Questie.db.char.AutoUntrackedQuests[999] = true
+            QuestieSmazak.db.char.collapsedQuests[999] = true
+            QuestieSmazak.db.char.AutoUntrackedQuests[999] = true
 
             QuestLifecycle:AcceptQuest(999)
 
-            assert.is_nil(Questie.db.char.collapsedQuests[999])
-            assert.is_nil(Questie.db.char.AutoUntrackedQuests[999])
+            assert.is_nil(QuestieSmazak.db.char.collapsedQuests[999])
+            assert.is_nil(QuestieSmazak.db.char.AutoUntrackedQuests[999])
             assert.spy(QuestieTracker.Update).was.called(1)
             assert.spy(AvailableQuests.RemoveQuest).was.not_called()
             assert.spy(QuestieDB.QueryQuestSingle).was.not_called()
@@ -98,7 +98,7 @@ describe("QuestLifecycle", function()
             assert.spy(CommsVisibility.ScheduleSnapshot).was.called()
             assert.spy(AvailableQuests.RemoveQuest).was.called()
             assert.spy(QuestieQuest.PopulateQuestLogInfo).was.called_with(QuestieQuest, quest)
-            assert.spy(Questie.SendMessage).was.called_with(Questie, "QC_ID_BROADCAST_QUEST_UPDATE", 100)
+            assert.spy(QuestieSmazak.SendMessage).was.called_with(QuestieSmazak, "QC_ID_BROADCAST_QUEST_UPDATE", 100)
             assert.spy(QuestieQuest.PopulateObjectiveNotes).was.called_with(QuestieQuest, quest)
         end)
 
@@ -128,7 +128,7 @@ describe("QuestLifecycle", function()
 
             QuestLifecycle:AcceptQuest(allianceQuestId)
 
-            assert.is_true(Questie.db.char.complete[13686])
+            assert.is_true(QuestieSmazak.db.char.complete[13686])
         end)
 
         it("should set Horde tournament eligibility marker", function()
@@ -138,7 +138,7 @@ describe("QuestLifecycle", function()
 
             QuestLifecycle:AcceptQuest(hordeQuestId)
 
-            assert.is_true(Questie.db.char.complete[13687])
+            assert.is_true(QuestieSmazak.db.char.complete[13687])
         end)
 
         it("should set Xiao breadcrumb marker", function()
@@ -148,20 +148,20 @@ describe("QuestLifecycle", function()
 
             QuestLifecycle:AcceptQuest(xiaoQuestId)
 
-            assert.is_true(Questie.db.char.complete[30087])
+            assert.is_true(QuestieSmazak.db.char.complete[30087])
         end)
 
         it("should clear character flags on re-accept", function()
             local questId = 100
-            Questie.db.char.collapsedQuests = {[questId] = true}
-            Questie.db.char.AutoUntrackedQuests = {[questId] = true}
+            QuestieSmazak.db.char.collapsedQuests = {[questId] = true}
+            QuestieSmazak.db.char.AutoUntrackedQuests = {[questId] = true}
             local quest = {IsComplete = function() return 0 end}
             QuestieDB.GetQuest = spy.new(function() return quest end)
 
             QuestLifecycle:AcceptQuest(questId)
 
-            assert.is_nil(Questie.db.char.collapsedQuests[questId])
-            assert.is_nil(Questie.db.char.AutoUntrackedQuests[questId])
+            assert.is_nil(QuestieSmazak.db.char.collapsedQuests[questId])
+            assert.is_nil(QuestieSmazak.db.char.AutoUntrackedQuests[questId])
         end)
 
         it("should reset and repopulate a failed quest re-accepted in place", function()
@@ -196,7 +196,7 @@ describe("QuestLifecycle", function()
 
             assert.spy(QuestieQuest.PopulateQuestLogInfo).was.not_called()
             assert.spy(QuestieQuest.PopulateObjectiveNotes).was.not_called()
-            assert.spy(Questie.SendMessage).was.not_called_with(Questie, "QC_ID_BROADCAST_QUEST_UPDATE", questId)
+            assert.spy(QuestieSmazak.SendMessage).was.not_called_with(QuestieSmazak, "QC_ID_BROADCAST_QUEST_UPDATE", questId)
         end)
 
         it("should draw a quest abandoned and accepted again during the unload only for the new acceptance", function()
@@ -230,11 +230,11 @@ describe("QuestLifecycle", function()
                 end
             end)
             QuestieDB.IsDailyQuest = spy.new(function() return true end)
-            Questie.db.char.complete[childQuestId] = true
+            QuestieSmazak.db.char.complete[childQuestId] = true
 
             QuestLifecycle:AcceptQuest(questId)
 
-            assert.is_nil(Questie.db.char.complete[childQuestId])
+            assert.is_nil(QuestieSmazak.db.char.complete[childQuestId])
         end)
     end)
 
@@ -248,8 +248,8 @@ describe("QuestLifecycle", function()
             AvailableQuests.RemoveQuest = spy.new(function(id, callback)
                 removedQuestId, unloaded = id, callback
             end)
-            Questie.db.char.collapsedQuests[questId] = true
-            Questie.db.char.AutoUntrackedQuests[questId] = true
+            QuestieSmazak.db.char.collapsedQuests[questId] = true
+            QuestieSmazak.db.char.AutoUntrackedQuests[questId] = true
 
             QuestLifecycle:AdoptQuest(questId)
 
@@ -260,11 +260,11 @@ describe("QuestLifecycle", function()
             unloaded()
 
             assert.spy(QuestieQuest.AddToQuestLog).was.called_with(QuestieQuest, quest)
-            assert.spy(Questie.SendMessage).was.called_with(Questie, "QC_ID_BROADCAST_QUEST_UPDATE", questId)
+            assert.spy(QuestieSmazak.SendMessage).was.called_with(QuestieSmazak, "QC_ID_BROADCAST_QUEST_UPDATE", questId)
             assert.spy(AvailableQuests.CalculateAndDrawAll).was.called(1)
             assert.spy(CommsVisibility.ScheduleSnapshot).was.called(1)
-            assert.is_true(Questie.db.char.collapsedQuests[questId])
-            assert.is_true(Questie.db.char.AutoUntrackedQuests[questId])
+            assert.is_true(QuestieSmazak.db.char.collapsedQuests[questId])
+            assert.is_true(QuestieSmazak.db.char.AutoUntrackedQuests[questId])
         end)
 
         it("should not bring back a quest turned in before the giver's frames were unloaded", function()
@@ -281,7 +281,7 @@ describe("QuestLifecycle", function()
 
             assert.is_nil(ActiveQuests.Get(questId))
             assert.spy(QuestieQuest.AddToQuestLog).was.not_called()
-            assert.spy(Questie.SendMessage).was.not_called_with(Questie, "QC_ID_BROADCAST_QUEST_UPDATE", questId)
+            assert.spy(QuestieSmazak.SendMessage).was.not_called_with(QuestieSmazak, "QC_ID_BROADCAST_QUEST_UPDATE", questId)
         end)
 
         it("should not add a quest the database does not know", function()
@@ -376,7 +376,7 @@ describe("QuestLifecycle", function()
         end)
 
         it("should not update a quest the character has completed", function()
-            Questie.db.char.complete[questId] = true
+            QuestieSmazak.db.char.complete[questId] = true
 
             QuestLifecycle:UpdateQuest(questId)
 
@@ -386,14 +386,14 @@ describe("QuestLifecycle", function()
         it("should reset and redraw a quest that is no longer complete", function()
             quest.WasComplete = true
             quest.isComplete = true
-            Questie.db.char.collapsedQuests[questId] = true
+            QuestieSmazak.db.char.collapsedQuests[questId] = true
 
             QuestLifecycle:UpdateQuest(questId)
 
             assert.are_same({}, quest.Objectives)
             assert.is_nil(quest.WasComplete)
             assert.is_nil(quest.isComplete)
-            assert.is_nil(Questie.db.char.collapsedQuests[questId])
+            assert.is_nil(QuestieSmazak.db.char.collapsedQuests[questId])
             assert.spy(QuestieQuest.CheckQuestSourceItem).was.called_with(QuestieQuest, questId, true)
             assert.spy(QuestieQuest.UpdateQuest).was.not_called()
             assert.spy(QuestieQuest.PopulateObjectiveNotes).was.not_called()
@@ -401,7 +401,7 @@ describe("QuestLifecycle", function()
             unloaded()
 
             assert.spy(QuestieQuest.PopulateQuestLogInfo).was.called_with(QuestieQuest, quest)
-            assert.spy(Questie.SendMessage).was.called_with(Questie, "QC_ID_BROADCAST_QUEST_UPDATE", questId)
+            assert.spy(QuestieSmazak.SendMessage).was.called_with(QuestieSmazak, "QC_ID_BROADCAST_QUEST_UPDATE", questId)
             assert.spy(QuestieQuest.PopulateObjectiveNotes).was.called_with(QuestieQuest, quest)
             assert.spy(AvailableQuests.CalculateAndDrawAll).was.called(1)
         end)
@@ -474,7 +474,7 @@ describe("QuestLifecycle", function()
 
             QuestLifecycle:CompleteQuest(questId)
 
-            assert.is_true(Questie.db.char.complete[questId])
+            assert.is_true(QuestieSmazak.db.char.complete[questId])
         end)
 
         it("should not mark repeatable non-daily quest as complete", function()
@@ -486,7 +486,7 @@ describe("QuestLifecycle", function()
 
             QuestLifecycle:CompleteQuest(questId)
 
-            assert.is_false(Questie.db.char.complete[questId])
+            assert.is_false(QuestieSmazak.db.char.complete[questId])
         end)
 
         it("should mark repeatable daily quest as complete", function()
@@ -498,35 +498,35 @@ describe("QuestLifecycle", function()
 
             QuestLifecycle:CompleteQuest(questId)
 
-            assert.is_true(Questie.db.char.complete[questId])
+            assert.is_true(QuestieSmazak.db.char.complete[questId])
         end)
 
         it("should set Alliance champion marker and clear tournament eligibility marker on WotLK+", function()
             _G.WOW_PROJECT_ID = 11 -- WotLK
             dofile("Modules/Expansions.lua")
             local questId = 13699 -- in allianceChampionMarkerQuests
-            Questie.db.char.complete[13686] = true
+            QuestieSmazak.db.char.complete[13686] = true
 
             QuestLifecycle:CompleteQuest(questId)
 
             _G.WOW_PROJECT_ID = nil
             dofile("Modules/Expansions.lua")
-            assert.is_true(Questie.db.char.complete[13700])
-            assert.is_nil(Questie.db.char.complete[13686])
+            assert.is_true(QuestieSmazak.db.char.complete[13700])
+            assert.is_nil(QuestieSmazak.db.char.complete[13686])
         end)
 
         it("should set Horde champion marker and clear tournament eligibility marker on WotLK+", function()
             _G.WOW_PROJECT_ID = 11 -- WotLK
             dofile("Modules/Expansions.lua")
             local questId = 13726 -- in hordeChampionMarkerQuests
-            Questie.db.char.complete[13687] = true
+            QuestieSmazak.db.char.complete[13687] = true
 
             QuestLifecycle:CompleteQuest(questId)
 
             _G.WOW_PROJECT_ID = nil
             dofile("Modules/Expansions.lua")
-            assert.is_true(Questie.db.char.complete[13701])
-            assert.is_nil(Questie.db.char.complete[13687])
+            assert.is_true(QuestieSmazak.db.char.complete[13701])
+            assert.is_nil(QuestieSmazak.db.char.complete[13687])
         end)
 
         it("should remove child quests that are not in the quest log", function()
@@ -644,22 +644,22 @@ describe("QuestLifecycle", function()
             local questId = 13684 -- in allianceTournamentMarkerQuests
             ActiveQuests.Add(questId, {})
             QuestieDB.GetQuest = spy.new(function() return {} end)
-            Questie.db.char.complete[13686] = true
+            QuestieSmazak.db.char.complete[13686] = true
 
             QuestLifecycle:AbandonQuest(questId)
 
-            assert.is_nil(Questie.db.char.complete[13686])
+            assert.is_nil(QuestieSmazak.db.char.complete[13686])
         end)
 
         it("should clear Horde tournament eligibility marker", function()
             local questId = 13691 -- in hordeTournamentMarkerQuests
             ActiveQuests.Add(questId, {})
             QuestieDB.GetQuest = spy.new(function() return {} end)
-            Questie.db.char.complete[13687] = true
+            QuestieSmazak.db.char.complete[13687] = true
 
             QuestLifecycle:AbandonQuest(questId)
 
-            assert.is_nil(Questie.db.char.complete[13687])
+            assert.is_nil(QuestieSmazak.db.char.complete[13687])
         end)
 
         it("should remove child quests that are not in the quest log", function()

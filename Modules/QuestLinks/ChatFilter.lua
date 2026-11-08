@@ -1,12 +1,12 @@
 ---@type QuestieCompat
-local QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+local QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
 
 ---@class ChatFilter
-local ChatFilter = QuestieLoader:CreateModule("ChatFilter")
+local ChatFilter = QuestieSmazakLoader:CreateModule("ChatFilter")
 ---@type QuestieLink
-local QuestieLink = QuestieLoader:ImportModule("QuestieLink")
+local QuestieLink = QuestieSmazakLoader:ImportModule("QuestieLink")
 ---@type QuestieDB
-local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
 
 local ChatFrameAddMessageEventFilter = QuestieCompat.AddMessageEventFilter
 
@@ -81,7 +81,7 @@ end
 --- Message Event Filter which intercepts incoming linked quests and replaces them with Hyperlinks
 ChatFilter.Filter = function(chatFrame, _, msg, playerName, languageName, channelName, playerName2, specialFlags, zoneChannelID, channelIndex, channelBaseName,
     unused, lineID, senderGUID, bnSenderID, ...)
-    if (not Questie.started) then
+    if (not QuestieSmazak.started) then
         return
     end
 

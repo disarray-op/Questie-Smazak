@@ -1,45 +1,45 @@
 ---@type QuestieCompat
-local QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+local QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
 
 ---@class TrackerLine
-local TrackerLine = QuestieLoader:CreateModule("TrackerLine")
+local TrackerLine = QuestieSmazakLoader:CreateModule("TrackerLine")
 
 ---@type QuestieTracker
-local QuestieTracker = QuestieLoader:ImportModule("QuestieTracker") -- TODO: Remove this explicit dependency
+local QuestieTracker = QuestieSmazakLoader:ImportModule("QuestieTracker") -- TODO: Remove this explicit dependency
 ---@type TrackerUtils
-local TrackerUtils = QuestieLoader:ImportModule("TrackerUtils")
+local TrackerUtils = QuestieSmazakLoader:ImportModule("TrackerUtils")
 ---@type TrackerBaseFrame
-local TrackerBaseFrame = QuestieLoader:ImportModule("TrackerBaseFrame")
+local TrackerBaseFrame = QuestieSmazakLoader:ImportModule("TrackerBaseFrame")
 ---@type TrackerQuestTimers
-local TrackerQuestTimers = QuestieLoader:ImportModule("TrackerQuestTimers")
+local TrackerQuestTimers = QuestieSmazakLoader:ImportModule("TrackerQuestTimers")
 ---@type TrackerFadeTicker
-local TrackerFadeTicker = QuestieLoader:ImportModule("TrackerFadeTicker")
+local TrackerFadeTicker = QuestieSmazakLoader:ImportModule("TrackerFadeTicker")
 ---@type TrackerMenu
-local TrackerMenu = QuestieLoader:ImportModule("TrackerMenu")
+local TrackerMenu = QuestieSmazakLoader:ImportModule("TrackerMenu")
 ---@type VoiceOverPlayButton
-local VoiceOverPlayButton = QuestieLoader:ImportModule("VoiceOverPlayButton")
+local VoiceOverPlayButton = QuestieSmazakLoader:ImportModule("VoiceOverPlayButton")
 ---@type SpokenPlayButton
-local SpokenPlayButton = QuestieLoader:ImportModule("SpokenPlayButton")
+local SpokenPlayButton = QuestieSmazakLoader:ImportModule("SpokenPlayButton")
 ---@type AchievementCriteriaCheckmark
-local AchievementCriteriaCheckmark = QuestieLoader:ImportModule("AchievementCriteriaCheckmark")
+local AchievementCriteriaCheckmark = QuestieSmazakLoader:ImportModule("AchievementCriteriaCheckmark")
 ---@type ExpandQuestButton
-local ExpandQuestButton = QuestieLoader:ImportModule("ExpandQuestButton")
+local ExpandQuestButton = QuestieSmazakLoader:ImportModule("ExpandQuestButton")
 ---@type QuestFocusButton
-local QuestFocusButton = QuestieLoader:ImportModule("QuestFocusButton")
+local QuestFocusButton = QuestieSmazakLoader:ImportModule("QuestFocusButton")
 ---@type ExpandZoneButton
-local ExpandZoneButton = QuestieLoader:ImportModule("ExpandZoneButton")
+local ExpandZoneButton = QuestieSmazakLoader:ImportModule("ExpandZoneButton")
 ---@type QuestieCombatQueue
-local QuestieCombatQueue = QuestieLoader:ImportModule("QuestieCombatQueue")
+local QuestieCombatQueue = QuestieSmazakLoader:ImportModule("QuestieCombatQueue")
 ---@type TrackerData
-local TrackerData = QuestieLoader:ImportModule("TrackerData")
+local TrackerData = QuestieSmazakLoader:ImportModule("TrackerData")
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 ---@type Expansions
-local Expansions = QuestieLoader:ImportModule("Expansions")
+local Expansions = QuestieSmazakLoader:ImportModule("Expansions")
 ---@type AchievementTracking
-local AchievementTracking = QuestieLoader:ImportModule("AchievementTracking")
+local AchievementTracking = QuestieSmazakLoader:ImportModule("AchievementTracking")
 ---@type TrackerRecipes
-local TrackerRecipes = QuestieLoader:ImportModule("TrackerRecipes")
+local TrackerRecipes = QuestieSmazakLoader:ImportModule("TrackerRecipes")
 
 local LSM30 = LibStub("LibSharedMedia-3.0")
 local LibDropDown = LibStub:GetLibrary("LibUIDropDownMenuQuestie-4.0")
@@ -59,7 +59,7 @@ local lineMarginLeft = 10
 function TrackerLine.New(index, parent, previousLine, OnEnter, OnLeave, OnQuestAdded, OnScenarioCriteriaAdded)
     local timeElapsed = 0
     ---@class TrackerLineFrame : Button
-    local line = CreateFrame("Button", "linePool" .. index, parent)
+    local line = CreateFrame("Button", "QuestieSmazaklinePool" .. index, parent)
     line:SetWidth(1)
     line:SetHeight(1)
     line.label = line:CreateFontString(nil, "ARTWORK", "GameFontNormal")
@@ -198,16 +198,16 @@ _SetMode = function(self, mode)
     if mode ~= self.mode then
         self.mode = mode
         if mode == "zone" then
-            local trackerFontSizeZone = Questie.db.profile.trackerFontSizeZone
-            self.label:SetFont(LSM30:Fetch("font", Questie.db.profile.trackerFontZone), trackerFontSizeZone, Questie.db.profile.trackerFontOutline)
+            local trackerFontSizeZone = QuestieSmazak.db.profile.trackerFontSizeZone
+            self.label:SetFont(LSM30:Fetch("font", QuestieSmazak.db.profile.trackerFontZone), trackerFontSizeZone, QuestieSmazak.db.profile.trackerFontOutline)
             self.label:SetHeight(trackerFontSizeZone)
         elseif mode == "quest" or mode == "achieve" then
-            local trackerFontSizeQuest = Questie.db.profile.trackerFontSizeQuest
-            self.label:SetFont(LSM30:Fetch("font", Questie.db.profile.trackerFontQuest), trackerFontSizeQuest, Questie.db.profile.trackerFontOutline)
+            local trackerFontSizeQuest = QuestieSmazak.db.profile.trackerFontSizeQuest
+            self.label:SetFont(LSM30:Fetch("font", QuestieSmazak.db.profile.trackerFontQuest), trackerFontSizeQuest, QuestieSmazak.db.profile.trackerFontOutline)
             self.label:SetHeight(trackerFontSizeQuest)
         elseif mode == "objective" then
-            local trackerFontSizeObjective = Questie.db.profile.trackerFontSizeObjective
-            self.label:SetFont(LSM30:Fetch("font", Questie.db.profile.trackerFontObjective), trackerFontSizeObjective, Questie.db.profile.trackerFontOutline)
+            local trackerFontSizeObjective = QuestieSmazak.db.profile.trackerFontSizeObjective
+            self.label:SetFont(LSM30:Fetch("font", QuestieSmazak.db.profile.trackerFontObjective), trackerFontSizeObjective, QuestieSmazak.db.profile.trackerFontOutline)
             self.label:SetHeight(trackerFontSizeObjective)
         end
     end
@@ -216,7 +216,7 @@ end
 
 ---@param button string
 _OnClickQuest = function(self, button)
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[TrackerLine:_OnClickQuest]")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[TrackerLine:_OnClickQuest]")
     if (not self.Quest) then
         return
     end
@@ -225,9 +225,9 @@ _OnClickQuest = function(self, button)
         LibDropDown:CloseDropDownMenus()
     end
 
-    if TrackerUtils:IsBindTrue(Questie.db.profile.trackerbindSetTomTom, button) then
+    if TrackerUtils:IsBindTrue(QuestieSmazak.db.profile.trackerbindSetTomTom, button) then
         TrackerUtils.SetQuestTomTomTarget(self.Quest.Id, self.Quest.enrichment)
-    elseif TrackerUtils:IsBindTrue(Questie.db.profile.trackerbindUntrack, button) then
+    elseif TrackerUtils:IsBindTrue(QuestieSmazak.db.profile.trackerbindUntrack, button) then
         if (IsModifiedClick("CHATLINK") and ChatEdit_GetActiveWindow()) then
             ChatEdit_InsertLink(TrackerData.GetQuestLink(self.Quest))
         else
@@ -237,7 +237,7 @@ _OnClickQuest = function(self, button)
                 QuestieCompat.QuestLog_Update()
             end
         end
-    elseif TrackerUtils:IsBindTrue(Questie.db.profile.trackerbindOpenQuestLog, button) then
+    elseif TrackerUtils:IsBindTrue(QuestieSmazak.db.profile.trackerbindOpenQuestLog, button) then
         TrackerUtils:ShowQuestLog(self.Quest)
     elseif button == "RightButton" then
         local menu = TrackerMenu:GetMenuForQuest(self.Quest)
@@ -247,7 +247,7 @@ end
 
 ---@param button string
 _OnClickAchieve = function(self, button)
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[TrackerLine:_OnClickAchieve]")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[TrackerLine:_OnClickAchieve]")
     if (not self.Quest) then
         return
     end
@@ -256,7 +256,7 @@ _OnClickAchieve = function(self, button)
         LibDropDown:CloseDropDownMenus()
     end
 
-    if TrackerUtils:IsBindTrue(Questie.db.profile.trackerbindUntrack, button) then
+    if TrackerUtils:IsBindTrue(QuestieSmazak.db.profile.trackerbindUntrack, button) then
         if (IsModifiedClick("CHATLINK") and ChatEdit_GetActiveWindow()) then
             ChatEdit_InsertLink(GetAchievementLink(self.Quest.Id))
         else
@@ -277,7 +277,7 @@ _OnClickAchieve = function(self, button)
                 UIErrorsFrame:AddMessage(format(l10n("You can't untrack an objective of an achievement.")), 1.0, 0.1, 0.1, 1.0)
             end
         end
-    elseif TrackerUtils:IsBindTrue(Questie.db.profile.trackerbindOpenQuestLog, button) then
+    elseif TrackerUtils:IsBindTrue(QuestieSmazak.db.profile.trackerbindOpenQuestLog, button) then
         if (not AchievementFrame) then
             AchievementFrame_LoadUI()
         end
@@ -298,7 +298,7 @@ end
 
 ---@param button string
 _OnClickRecipe = function(self, button)
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[TrackerLine:_OnClickRecipe]")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[TrackerLine:_OnClickRecipe]")
     if (not self.Recipe) then
         return
     end
@@ -307,13 +307,13 @@ _OnClickRecipe = function(self, button)
         LibDropDown:CloseDropDownMenus()
     end
 
-    if TrackerUtils:IsBindTrue(Questie.db.profile.trackerbindUntrack, button) then
+    if TrackerUtils:IsBindTrue(QuestieSmazak.db.profile.trackerbindUntrack, button) then
         if (IsModifiedClick("CHATLINK") and ChatEdit_GetActiveWindow()) then
             ChatEdit_InsertLink(TrackerRecipes.GetLink(self.Recipe.Id))
         else
             TrackerRecipes.Untrack(self.Recipe.Id)
         end
-    elseif TrackerUtils:IsBindTrue(Questie.db.profile.trackerbindOpenQuestLog, button) then
+    elseif TrackerUtils:IsBindTrue(QuestieSmazak.db.profile.trackerbindOpenQuestLog, button) then
         TrackerRecipes.OpenRecipe(self.Recipe.Id)
     end
 end

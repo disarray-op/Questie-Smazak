@@ -1,5 +1,5 @@
 ---@class BlacklistFilter
-local BlacklistFilter = QuestieLoader:CreateModule("BlacklistFilter")
+local BlacklistFilter = QuestieSmazakLoader:CreateModule("BlacklistFilter")
 
 --- Removes all entries from the blacklist that are not marked as `true`.
 ---@param blacklist table<QuestId, boolean>

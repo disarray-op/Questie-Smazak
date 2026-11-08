@@ -28,9 +28,9 @@ describe("TrackerLayout", function()
     end
 
     before_each(function()
-        Questie.db.profile.trackerFontSizeQuest = 12
-        Questie.db.profile.trackerWidthRatio = 0.5
-        Questie.db.profile.trackerQuestPadding = 2
+        QuestieSmazak.db.profile.trackerFontSizeQuest = 12
+        QuestieSmazak.db.profile.trackerWidthRatio = 0.5
+        QuestieSmazak.db.profile.trackerQuestPadding = 2
         originalGetScreenWidth = _G.GetScreenWidth
         _G.GetScreenWidth = function() return 1000 end
 
@@ -40,7 +40,7 @@ describe("TrackerLayout", function()
         updateHeight = spy.new(function() end)
 
         dofile("Modules/Tracker/TrackerLayout.lua")
-        TrackerLayout = QuestieLoader:ImportModule("TrackerLayout")
+        TrackerLayout = QuestieSmazakLoader:ImportModule("TrackerLayout")
         focusSlotShown = false
         playSlotShown = false
         TrackerLayout.Initialize(baseFrame, updateWidth, updateHeight, function() return focusSlotShown end, function() return playSlotShown end)

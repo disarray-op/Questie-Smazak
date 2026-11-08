@@ -34,29 +34,29 @@ describe("RecipeSection", function()
         recipes = {}
         texts = {}
         recipeTargets = {}
-        Questie.db.char.collapsedZones = {}
-        Questie.db.char.minAllQuestsInZone = {}
-        Questie.db.profile.trackerQuestPadding = 2
-        Questie.db.profile.trackerColorObjectives = "white"
+        QuestieSmazak.db.char.collapsedZones = {}
+        QuestieSmazak.db.char.minAllQuestsInZone = {}
+        QuestieSmazak.db.profile.trackerQuestPadding = 2
+        QuestieSmazak.db.profile.trackerColorObjectives = "white"
 
-        TrackerRecipes = QuestieLoader:ImportModule("TrackerRecipes")
+        TrackerRecipes = QuestieSmazakLoader:ImportModule("TrackerRecipes")
         TrackerRecipes.GetTrackedRecipes = function() return recipes end
 
-        TrackerLayout = QuestieLoader:ImportModule("TrackerLayout")
+        TrackerLayout = QuestieSmazakLoader:ImportModule("TrackerLayout")
         TrackerLayout.GetMargins = function() return {left = 14, right = 30, quest = 20, objective = 30, itemButtonSize = 24, buttonSize = 15, playButtonRight = 13, playButtonSize = 17} end
         TrackerLayout.UpdateWidth = function() end
         TrackerLayout.GetBaseFrameWidth = function() return 200 end
         TrackerLayout.TrackLineWidth = function() end
         TrackerLayout.UpdateLineWidth = spy.new(function() end)
 
-        TrackerLinePool = QuestieLoader:ImportModule("TrackerLinePool")
+        TrackerLinePool = QuestieSmazakLoader:ImportModule("TrackerLinePool")
         TrackerLinePool.GetNextLine = spy.new(_FakeLine)
 
         dofile("Localization/l10n.lua")
         dofile("Modules/Libs/QuestieLib.lua")
         dofile("Modules/Tracker/LinePool/LineBuilder.lua")
         dofile("Modules/Tracker/Sections/RecipeSection.lua")
-        RecipeSection = QuestieLoader:ImportModule("RecipeSection")
+        RecipeSection = QuestieSmazakLoader:ImportModule("RecipeSection")
     end)
 
     it("should draw nothing when no recipe is tracked", function()
@@ -93,7 +93,7 @@ describe("RecipeSection", function()
 
     it("should only draw the header when it is collapsed", function()
         recipes = {{Id = 2538, Name = "Charred Wolf Meat", Reagents = {}}}
-        Questie.db.char.collapsedZones = {Recipes = true}
+        QuestieSmazak.db.char.collapsedZones = {Recipes = true}
 
         RecipeSection.Draw()
 

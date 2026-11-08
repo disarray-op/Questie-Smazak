@@ -1,5 +1,5 @@
 ---@type QuestieMap
-local QuestieMap = QuestieLoader:ImportModule("QuestieMap");
+local QuestieMap = QuestieSmazakLoader:ImportModule("QuestieMap");
 ---@class QuestieMapUtils
 QuestieMap.utils = QuestieMap.utils or {}
 
@@ -7,7 +7,7 @@ QuestieMap.utils = QuestieMap.utils or {}
 local pairs = pairs
 
 -- FrameLevel to be added for the icon based on its icon type.
--- ! Order of these in the table must be the same as values of the constants Questie.ICON_TYPE_* in Questie.lua
+-- ! Order of these in the table must be the same as values of the constants QuestieSmazak.ICON_TYPE_* in QuestieSmazak.lua
 local DRAW_ORDER_BY_ICON_TYPE_LOOKUP = {
     0, -- ICON_TYPE_SLAY
     0, -- ICON_TYPE_LOOT
@@ -122,11 +122,11 @@ function QuestieMap.utils.RescaleIcon(frameRef, mapScale)
             local scale
             if frame.miniMapIcon then
                 -- Use globalMiniMapTownsfolkScale for townsfolk icons, globalMiniMapScale for quest icons
-                local scaleProfile = frame.isManualIcon and Questie.db.profile.globalMiniMapTownsfolkScale or Questie.db.profile.globalMiniMapScale
+                local scaleProfile = frame.isManualIcon and QuestieSmazak.db.profile.globalMiniMapTownsfolkScale or QuestieSmazak.db.profile.globalMiniMapScale
                 scale = 16 * (frame.data.IconScale or 1) * (scaleProfile or 0.7);
             else
                 --? If you ever chanage this logic, make sure you change the logic in QuestieMap:ProcessQueue() too!
-                local scaleProfile = frame.isManualIcon and Questie.db.profile.globalTownsfolkScale or Questie.db.profile.globalScale
+                local scaleProfile = frame.isManualIcon and QuestieSmazak.db.profile.globalTownsfolkScale or QuestieSmazak.db.profile.globalScale
                 scale = (16 * (frame.data.IconScale or 1) * (scaleProfile or 0.7)) * iconScale;
             end
 
@@ -135,7 +135,7 @@ function QuestieMap.utils.RescaleIcon(frameRef, mapScale)
                 frame:GlowUpdate()
             end
         else
-            Questie.Error("A frame is lacking the GetIconScale function for resizing!", frame.data.Id);
+            QuestieSmazak.Error("A frame is lacking the GetIconScale function for resizing!", frame.data.Id);
         end
     end
 end

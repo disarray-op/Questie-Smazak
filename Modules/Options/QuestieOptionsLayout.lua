@@ -3,12 +3,12 @@
 ---Rows are filled left to right until the next control does not fit. A finished row is then aligned, because the
 ---tallest control is only known once wrapped text, including longer translations, has been measured.
 ---@class QuestieOptionsLayout
-local QuestieOptionsLayout = QuestieLoader:CreateModule("QuestieOptionsLayout")
+local QuestieOptionsLayout = QuestieSmazakLoader:CreateModule("QuestieOptionsLayout")
 
 ---@type QuestieOptionsControls
-local QuestieOptionsControls = QuestieLoader:ImportModule("QuestieOptionsControls")
+local QuestieOptionsControls = QuestieSmazakLoader:ImportModule("QuestieOptionsControls")
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 
 local HORIZONTAL_GAP = 10
 local VERTICAL_GAP = 10

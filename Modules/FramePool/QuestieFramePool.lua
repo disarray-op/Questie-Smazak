@@ -1,23 +1,23 @@
 ---@type QuestiePopup
-local Popup = QuestieLoader:ImportModule("QuestiePopup")
+local Popup = QuestieSmazakLoader:ImportModule("QuestiePopup")
 
 ---@class QuestieFramePool
-local QuestieFramePool = QuestieLoader:CreateModule("QuestieFramePool")
+local QuestieFramePool = QuestieSmazakLoader:CreateModule("QuestieFramePool")
 -------------------------
 --Import modules.
 -------------------------
 ---@type QuestieFrame
-local QuestieFrame = QuestieLoader:ImportModule("QuestieFrame")
+local QuestieFrame = QuestieSmazakLoader:ImportModule("QuestieSmazakFrame")
 ---@type QuestieQuest
-local QuestieQuest = QuestieLoader:ImportModule("QuestieQuest")
+local QuestieQuest = QuestieSmazakLoader:ImportModule("QuestieQuest")
 ---@type MapIconTooltip
-local MapIconTooltip = QuestieLoader:ImportModule("MapIconTooltip")
+local MapIconTooltip = QuestieSmazakLoader:ImportModule("MapIconTooltip")
 
 local HBDPins = LibStub("HereBeDragonsQuestie-Pins-2.0")
 
--- set pins parent to QuestieFrameGroup for easier compatibility with other addons
+-- set pins parent to QuestieSmazakFrameGroup for easier compatibility with other addons
 -- cant use this because it fucks with everything, but we gotta stick with HereBeDragonsQuestie anyway
-HBDPins.MinimapGroup = CreateFrame("Frame", "QuestieFrameGroup", Minimap)
+HBDPins.MinimapGroup = CreateFrame("Frame", "QuestieSmazakFrameGroup", Minimap)
 
 local numberOfFrames = 0
 
@@ -56,7 +56,7 @@ function QuestieFramePool:GetFrame()
         frame = QuestieFrame.CreateIconFrame(numberOfFrames, MapIconTooltip.Show)
 
         if numberOfFrames > 5000 then
-            Questie.Debug(Questie.DEBUG_CRITICAL, "[QuestieFramePool] Over 5000 frames... maybe there is a leak?", numberOfFrames)
+            QuestieSmazak.Debug(QuestieSmazak.DEBUG_CRITICAL, "[QuestieFramePool] Over 5000 frames... maybe there is a leak?", numberOfFrames)
         end
     end
 

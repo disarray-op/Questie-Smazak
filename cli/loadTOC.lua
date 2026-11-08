@@ -1,6 +1,6 @@
 -- Replays the addon's executable load graph for CLI validators. XML UI declarations are not emulated;
 -- only load-time Script and Include elements are executed, recursively and in document order.
-local addonName = "Questie"
+local addonName = "QuestieSmazak"
 local addonTable = {}
 
 local function NormalizePath(path)

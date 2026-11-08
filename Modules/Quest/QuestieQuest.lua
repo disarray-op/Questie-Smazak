@@ -1,8 +1,8 @@
 ---@type QuestieCompat
-local QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+local QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
 
 ---@class QuestieQuest
-local QuestieQuest = QuestieLoader:CreateModule("QuestieQuest")
+local QuestieQuest = QuestieSmazakLoader:CreateModule("QuestieQuest")
 QuestieQuest.private = QuestieQuest.private or {}
 ---@class QuestieQuestPrivate
 local _QuestieQuest = QuestieQuest.private
@@ -10,49 +10,49 @@ local _QuestieQuest = QuestieQuest.private
 --Import modules.
 -------------------------
 ---@type QuestieProfessions
-local QuestieProfessions = QuestieLoader:ImportModule("QuestieProfessions")
+local QuestieProfessions = QuestieSmazakLoader:ImportModule("QuestieProfessions")
 ---@type QuestieReputation
-local QuestieReputation = QuestieLoader:ImportModule("QuestieReputation")
+local QuestieReputation = QuestieSmazakLoader:ImportModule("QuestieReputation")
 ---@type QuestieTooltips
-local QuestieTooltips = QuestieLoader:ImportModule("QuestieTooltips")
+local QuestieTooltips = QuestieSmazakLoader:ImportModule("QuestieTooltips")
 ---@type QuestieTracker
-local QuestieTracker = QuestieLoader:ImportModule("QuestieTracker")
+local QuestieTracker = QuestieSmazakLoader:ImportModule("QuestieTracker")
 ---@type QuestieDBMIntegration
-local QuestieDBMIntegration = QuestieLoader:ImportModule("QuestieDBMIntegration")
+local QuestieDBMIntegration = QuestieSmazakLoader:ImportModule("QuestieDBMIntegration")
 ---@type QuestieMap
-local QuestieMap = QuestieLoader:ImportModule("QuestieMap")
+local QuestieMap = QuestieSmazakLoader:ImportModule("QuestieMap")
 ---@type QuestieFramePool
-local QuestieFramePool = QuestieLoader:ImportModule("QuestieFramePool")
+local QuestieFramePool = QuestieSmazakLoader:ImportModule("QuestieFramePool")
 ---@type QuestieLib
-local QuestieLib = QuestieLoader:ImportModule("QuestieLib")
+local QuestieLib = QuestieSmazakLoader:ImportModule("QuestieLib")
 ---@type QuestieDB
-local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
 ---@type ZoneDB
-local ZoneDB = QuestieLoader:ImportModule("ZoneDB")
+local ZoneDB = QuestieSmazakLoader:ImportModule("ZoneDB")
 ---@type QuestieCombatQueue
-local QuestieCombatQueue = QuestieLoader:ImportModule("QuestieCombatQueue")
+local QuestieCombatQueue = QuestieSmazakLoader:ImportModule("QuestieCombatQueue")
 ---@type QuestieAnnounce
-local QuestieAnnounce = QuestieLoader:ImportModule("QuestieAnnounce")
+local QuestieAnnounce = QuestieSmazakLoader:ImportModule("QuestieAnnounce")
 ---@type QuestieMenu
-local QuestieMenu = QuestieLoader:ImportModule("QuestieMenu")
+local QuestieMenu = QuestieSmazakLoader:ImportModule("QuestieMenu")
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 ---@type QuestLogCache
-local QuestLogCache = QuestieLoader:ImportModule("QuestLogCache")
+local QuestLogCache = QuestieSmazakLoader:ImportModule("QuestLogCache")
 ---@type ActiveQuests
-local ActiveQuests = QuestieLoader:ImportModule("ActiveQuests")
+local ActiveQuests = QuestieSmazakLoader:ImportModule("ActiveQuests")
 ---@type AvailableQuests
-local AvailableQuests = QuestieLoader:ImportModule("AvailableQuests")
+local AvailableQuests = QuestieSmazakLoader:ImportModule("AvailableQuests")
 ---@type Phasing
-local Phasing = QuestieLoader:ImportModule("Phasing")
+local Phasing = QuestieSmazakLoader:ImportModule("Phasing")
 ---@type QuestFinisher
-local QuestFinisher = QuestieLoader:ImportModule("QuestFinisher")
+local QuestFinisher = QuestieSmazakLoader:ImportModule("QuestFinisher")
 ---@type DistanceUtils
-local DistanceUtils = QuestieLoader:ImportModule("DistanceUtils")
+local DistanceUtils = QuestieSmazakLoader:ImportModule("DistanceUtils")
 ---@type ThreadLib
-local ThreadLib = QuestieLoader:ImportModule("ThreadLib")
+local ThreadLib = QuestieSmazakLoader:ImportModule("ThreadLib")
 ---@type CommsVisibility
-local CommsVisibility = QuestieLoader:ImportModule("CommsVisibility")
+local CommsVisibility = QuestieSmazakLoader:ImportModule("CommsVisibility")
 
 --We should really try and squeeze out all the performance we can, especially in this.
 local tostring = tostring;
@@ -83,15 +83,15 @@ local HBD = LibStub("HereBeDragonsQuestie-2.0")
 -- each code block may put a modifier on it, for instance 10x  if the loop is lightweight
 local TICKS_PER_YIELD = 60
 
-if Questie.IsHardcore then
+if QuestieSmazak.IsHardcore then
     -- The addon timing restrictions from the Blizzard watchdog are much higher for HC servers.
     -- Therefore we need a quite low tick rate to make sure we don't get bitten on less performant machines.
     TICKS_PER_YIELD = 30
 end
 
 function QuestieQuest:Initialize()
-    Questie.Debug(Questie.DEBUG_INFO, "[QuestieQuest]: Getting all completed quests")
-    Questie.db.char.complete = QuestieCompat.GetQuestsCompleted()
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_INFO, "[QuestieQuest]: Getting all completed quests")
+    QuestieSmazak.db.char.complete = QuestieCompat.GetQuestsCompleted()
 
     QuestieProfessions:Update()
     QuestieReputation:Update(true)
@@ -99,7 +99,7 @@ end
 
 ---@param category AutoBlacklistString
 function QuestieQuest.ResetAutoblacklistCategory(category)
-    Questie.Debug(Questie.DEBUG_SPAM, "[QuestieQuest]: Resetting autoblacklist category", category)
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_SPAM, "[QuestieQuest]: Resetting autoblacklist category", category)
     for questId, questCategory in pairs(QuestieDB.autoBlacklist) do
         if questCategory == category then
             QuestieDB.autoBlacklist[questId] = nil
@@ -108,7 +108,7 @@ function QuestieQuest.ResetAutoblacklistCategory(category)
 end
 
 function QuestieQuest.ToggleAvailableQuests(showIcons)
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieQuest:ToggleAvailableQuests] showIcons:", showIcons)
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieQuest:ToggleAvailableQuests] showIcons:", showIcons)
 
     ThreadLib.ThreadCallbackInstant(
         function()
@@ -129,7 +129,7 @@ function QuestieQuest.ToggleAvailableQuests(showIcons)
 end
 
 function QuestieQuest:ToggleNotes(showIcons)
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieQuest:ToggleNotes] showIcons:", showIcons)
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieQuest:ToggleNotes] showIcons:", showIcons)
 
     ThreadLib.ThreadCallbackInstant(
         function()
@@ -153,7 +153,7 @@ end
 ---Icons of hidden quests already exist, so the quest log is not rebuilt; that would redraw the finishers of complete quests.
 ---@param showIcons boolean @ Whether to show or hide the icons
 function QuestieQuest.ToggleQuestNotes(showIcons)
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieQuest.ToggleQuestNotes] showIcons:", showIcons)
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieQuest.ToggleQuestNotes] showIcons:", showIcons)
 
     ThreadLib.ThreadInstant(function()
         if showIcons then
@@ -168,7 +168,7 @@ end
 function QuestieQuest:ShowQuestIcons()
     assert(coroutine.running(), "ShowQuestIcons must be called from a coroutine")
 
-    local trackerHiddenQuests = Questie.db.char.TrackerHiddenQuests
+    local trackerHiddenQuests = QuestieSmazak.db.char.TrackerHiddenQuests
     local questCount = 0
     for questId, frameList in pairs(QuestieMap.questIdFrames) do
         if (not trackerHiddenQuests) or (not trackerHiddenQuests[questId]) then -- Skip quests which are completely hidden from the Tracker menu
@@ -176,7 +176,7 @@ function QuestieQuest:ShowQuestIcons()
                 ---@type IconFrame
                 local icon = _G[frameName];
                 local objectiveString = tostring(questId) .. " " .. tostring(icon.data.ObjectiveIndex)
-                if (not Questie.db.char.TrackerHiddenObjectives) or (not Questie.db.char.TrackerHiddenObjectives[objectiveString]) then
+                if (not QuestieSmazak.db.char.TrackerHiddenObjectives) or (not QuestieSmazak.db.char.TrackerHiddenObjectives[objectiveString]) then
                     if icon ~= nil and icon.hidden and (not icon:ShouldBeHidden()) then
                         icon:FakeShow()
                     end
@@ -350,7 +350,7 @@ local function _UpdateSpecials(questId)
 end
 
 function QuestieQuest:SmoothReset()
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieQuest:SmoothReset]")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieQuest:SmoothReset]")
     if QuestieQuest._isResetting then
         QuestieQuest._resetAgain = true
         return
@@ -403,7 +403,7 @@ function QuestieQuest:SmoothReset()
             QuestieDB.autoBlacklist = {}
 
             -- make sure complete db is correct
-            Questie.db.char.complete = QuestieCompat.GetQuestsCompleted()
+            QuestieSmazak.db.char.complete = QuestieCompat.GetQuestsCompleted()
             QuestieProfessions:Update()
             QuestieReputation:Update(true)
 
@@ -479,27 +479,27 @@ end
 ---@param questId number
 ---@return boolean @true if the local player is tracking this quest (independent of any option)
 function QuestieQuest:IsQuestTracked(questId)
-    -- When the Questie tracker is disabled the AutoUntrackedQuests / TrackedQuests tables are
+    -- When the QuestieSmazak tracker is disabled the AutoUntrackedQuests / TrackedQuests tables are
     -- never kept in sync: the AddQuestWatch / RemoveQuestWatch hooks that maintain them live in
     -- QuestieTracker:HookBaseTracker(), which only runs past the trackerEnabled gate in
     -- QuestieTracker.Initialize(). With the tracker off those tables go stale (an empty
     -- AutoUntrackedQuests reads as "everything tracked"), so the "Hide icons of untracked quests"
     -- map filter stops following what the player is actually watching. In that case the player is
     -- tracking through the default Blizzard tracker, so defer to the live quest-watch state.
-    if not Questie.db.profile.trackerEnabled then
+    if not QuestieSmazak.db.profile.trackerEnabled then
         return QuestieCompat.IsQuestWatched(QuestieCompat.GetQuestLogIndexByID(questId)) and true or false
     end
 
-    local autoWatch = Questie.db.profile.autoTrackQuests
-    local trackedAuto = autoWatch and (not Questie.db.char.AutoUntrackedQuests or not Questie.db.char.AutoUntrackedQuests[questId])
-    local trackedManual = not autoWatch and (Questie.db.char.TrackedQuests and Questie.db.char.TrackedQuests[questId])
+    local autoWatch = QuestieSmazak.db.profile.autoTrackQuests
+    local trackedAuto = autoWatch and (not QuestieSmazak.db.char.AutoUntrackedQuests or not QuestieSmazak.db.char.AutoUntrackedQuests[questId])
+    local trackedManual = not autoWatch and (QuestieSmazak.db.char.TrackedQuests and QuestieSmazak.db.char.TrackedQuests[questId])
     return (trackedAuto or trackedManual) and true or false
 end
 
 ---@param questId number
 ---@return boolean
 function QuestieQuest:ShouldShowQuestNotes(questId)
-    if not Questie.db.profile.hideUntrackedQuestsMapIcons then
+    if not QuestieSmazak.db.profile.hideUntrackedQuestsMapIcons then
         return true
     end
 
@@ -508,14 +508,14 @@ end
 
 ---@param questId QuestId
 function QuestieQuest:HideQuest(questId)
-    Questie.db.char.hidden[questId] = true
+    QuestieSmazak.db.char.hidden[questId] = true
     AvailableQuests.RemoveQuest(questId)
     CommsVisibility:ScheduleSnapshot("HIDE_QUEST")
 end
 
 ---@param questId QuestId
 function QuestieQuest:UnhideQuest(questId)
-    Questie.db.char.hidden[questId] = nil
+    QuestieSmazak.db.char.hidden[questId] = nil
     CommsVisibility:ScheduleSnapshot("UNHIDE_QUEST")
 
     if ActiveQuests.Get(questId) then
@@ -543,27 +543,27 @@ end
 ---objectives. Resetting a quest that is no longer complete is a lifecycle change, see QuestLifecycle:UpdateQuest.
 ---@param questId number
 function QuestieQuest:UpdateQuest(questId)
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieQuest:UpdateQuest]", questId)
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieQuest:UpdateQuest]", questId)
 
     local quest = QuestieDB.GetQuest(questId)
 
-    if quest and (not Questie.db.char.complete[questId]) then
+    if quest and (not QuestieSmazak.db.char.complete[questId]) then
         QuestieQuest:PopulateQuestLogInfo(quest)
 
         local isComplete = quest:IsComplete()
 
-        Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieQuest:UpdateQuest] QuestDB:IsComplete() flag is: " .. isComplete)
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieQuest:UpdateQuest] QuestDB:IsComplete() flag is: " .. isComplete)
 
         if isComplete == 1 then
             -- Quest is complete
-            Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieQuest:UpdateQuest] Quest is: Complete!")
+            QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieQuest:UpdateQuest] Quest is: Complete!")
 
             quest.WasComplete = true
 
             -- Register tooltips for completed quest objectives (synchronous, avoids QuestLogCache race if the quest is abandoned shortly after)
             QuestieQuest.RegisterObjectiveTooltips(quest)
             -- Synchronous too: the broadcast reads QuestLogCache, which a quick turn-in empties before the unload below finishes
-            Questie:SendMessage("QC_ID_BROADCAST_QUEST_UPDATE", questId)
+            QuestieSmazak:SendMessage("QC_ID_BROADCAST_QUEST_UPDATE", questId)
 
             -- Only remove the map icons, but keep the tooltips
             ThreadLib.ThreadCallbackInstant(function()
@@ -576,13 +576,13 @@ function QuestieQuest:UpdateQuest(questId)
             end)
         elseif isComplete == -1 then
             -- Failed quests should be shown as available again
-            Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieQuest:UpdateQuest] Quest has: Failed!")
+            QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieQuest:UpdateQuest] Quest has: Failed!")
 
             AvailableQuests.RecreateFailedQuest(quest)
 
             -- Reset any collapsed quest flags
-            if Questie.db.char.collapsedQuests then
-                Questie.db.char.collapsedQuests[questId] = nil
+            if QuestieSmazak.db.char.collapsedQuests then
+                QuestieSmazak.db.char.collapsedQuests[questId] = nil
             end
         elseif isComplete == 0 then
             -- Sometimes objective(s) are all complete but the quest doesn't get flagged as "1". So far the only
@@ -602,13 +602,13 @@ function QuestieQuest:UpdateQuest(questId)
                 -- objectives are counted, so a client row the database does not map must be finished too.
                 if numCompleteObjectives == #quest.Objectives and not QuestieCompat.IsQuestSequenced(questId)
                     and not _HasUnfinishedNativeObjective(questLogEntry and questLogEntry.objectives) then
-                    Questie.Debug(Questie.DEBUG_DEVELOP,
+                    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP,
                         "[QuestieQuest:UpdateQuest] All Quest Objective(s) are Complete! Manually setting quest to Complete!")
 
                     quest.WasComplete = true
                     quest.isComplete = true
                     -- Sent before the unload, as for a complete quest above
-                    Questie:SendMessage("QC_ID_BROADCAST_QUEST_UPDATE", questId)
+                    QuestieSmazak:SendMessage("QC_ID_BROADCAST_QUEST_UPDATE", questId)
 
                     -- Only remove the map icons, but keep the tooltips
                     ThreadLib.ThreadCallbackInstant(function()
@@ -619,7 +619,7 @@ function QuestieQuest:UpdateQuest(questId)
                         end
                     end)
                 else
-                    Questie.Debug(Questie.DEBUG_DEVELOP,
+                    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP,
                         "[QuestieQuest:UpdateQuest] Quest Objective Status is: " ..
                         numCompleteObjectives .. ", out of: " .. #quest.Objectives .. ". No updates required.")
 
@@ -627,7 +627,7 @@ function QuestieQuest:UpdateQuest(questId)
                     if QuestieQuest:ShouldShowQuestNotes(questId) then
                         QuestieQuest:UpdateObjectiveNotes(quest)
                     end
-                    Questie:SendMessage("QC_ID_BROADCAST_QUEST_UPDATE", questId)
+                    QuestieSmazak:SendMessage("QC_ID_BROADCAST_QUEST_UPDATE", questId)
                 end
             end
         end
@@ -645,7 +645,7 @@ function QuestieQuest:SetObjectivesDirty(questId)
     end
 end
 
----Adds a quest the game's quest log lists to Questie's and draws it, as at login: its objectives, or its finisher once
+---Adds a quest the game's quest log lists to QuestieSmazak's and draws it, as at login: its objectives, or its finisher once
 ---complete, with the icons the tracker hid kept hidden; a failed quest is drawn as available again. It removes no icons
 ---drawn before, so a quest already drawn as available needs AvailableQuests.RemoveQuest first.
 ---@param quest Quest
@@ -665,18 +665,18 @@ function QuestieQuest:AddToQuestLog(quest)
 
     -- Restore HideIcons flags from saved tracker state before spawning icons,
     -- so they are created in the correct hidden/visible state from the start.
-    if Questie.db.char.TrackerHiddenQuests[questId] then
+    if QuestieSmazak.db.char.TrackerHiddenQuests[questId] then
         quest.HideIcons = true
     end
 
     local questIdStr = tostring(questId)
     for _, objective in pairs(quest.Objectives) do
-        if Questie.db.char.TrackerHiddenObjectives[questIdStr .. " " .. tostring(objective.Index)] then
+        if QuestieSmazak.db.char.TrackerHiddenObjectives[questIdStr .. " " .. tostring(objective.Index)] then
             objective.HideIcons = true
         end
     end
     for _, objective in pairs(quest.SpecialObjectives) do
-        if Questie.db.char.TrackerHiddenObjectives[questIdStr .. " " .. tostring(objective.Index)] then
+        if QuestieSmazak.db.char.TrackerHiddenObjectives[questIdStr .. " " .. tostring(objective.Index)] then
             objective.HideIcons = true
         end
     end
@@ -691,7 +691,7 @@ end
 -- Run this if you want to re-create the quest log in ActiveQuests.
 -- This function needs to be called from within a coroutine.
 function QuestieQuest:GetAllQuestIds()
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieQuest] Getting all quests")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieQuest] Getting all quests")
 
     assert(coroutine.running(), "GetAllQuestIds must be called from a coroutine")
 
@@ -708,14 +708,14 @@ function QuestieQuest:GetAllQuestIds()
     for questId, title in pairs(questTitles) do
         if (not QuestLogCache.questLog_DO_NOT_MODIFY[questId]) then
             -- Turned in or abandoned while the rebuild yielded; the removal already unlogged it
-            Questie.Debug(Questie.DEBUG_INFO, "[QuestieQuest] Skipping the quest which left the quest log", questId)
+            QuestieSmazak.Debug(QuestieSmazak.DEBUG_INFO, "[QuestieQuest] Skipping the quest which left the quest log", questId)
         elseif (not QuestieDB.QuestPointers[questId]) then
-            if Questie.db.profile.debugEnabled and not Questie._sessionWarnings[questId] then
-                if not Questie.IsSoD then
-                    Questie.Warning(l10n("The quest %s is missing from Questie's database. Please report this on GitHub or Discord!",
+            if QuestieSmazak.db.profile.debugEnabled and not QuestieSmazak._sessionWarnings[questId] then
+                if not QuestieSmazak.IsSoD then
+                    QuestieSmazak.Warning(l10n("The quest %s is missing from QuestieSmazak's database. Please report this on GitHub or Discord!",
                         tostring(questId)))
                 end
-                Questie._sessionWarnings[questId] = true
+                QuestieSmazak._sessionWarnings[questId] = true
             end
         else
             --Keep the object in the questlog to save searching
@@ -727,7 +727,7 @@ function QuestieQuest:GetAllQuestIds()
                 ActiveQuests.Restore(questId)
             end
 
-            Questie.Debug(Questie.DEBUG_INFO, "[QuestieQuest] Adding the quest", questId)
+            QuestieSmazak.Debug(QuestieSmazak.DEBUG_INFO, "[QuestieQuest] Adding the quest", questId)
         end
 
         yieldCounter = yieldCounter + 1
@@ -753,7 +753,7 @@ local function _AddSourceItemObjective(quest)
             for _, itemObjectiveIndex in pairs(objectives) do
                 for _, itemObjectiveId in pairs(itemObjectiveIndex) do
                     if itemObjectiveId == quest.sourceItemId then
-                        Questie.Debug(Questie.DEBUG_INFO, "[QuestieQuest:_AddSourceItemObjective] This item is already part of a quest objective.")
+                        QuestieSmazak.Debug(QuestieSmazak.DEBUG_INFO, "[QuestieQuest:_AddSourceItemObjective] This item is already part of a quest objective.")
                         return
                     end
                 end
@@ -763,7 +763,7 @@ local function _AddSourceItemObjective(quest)
         local item = QuestieDB.QueryItemSingle(quest.sourceItemId, "name") --local item = QuestieDB:GetItem(quest.sourceItemId);
 
         if item then
-            Questie.Debug(Questie.DEBUG_INFO, "[QuestieQuest:_AddSourceItemObjective] Adding Source Item Id for:", quest.sourceItemId)
+            QuestieSmazak.Debug(QuestieSmazak.DEBUG_INFO, "[QuestieQuest:_AddSourceItemObjective] Adding Source Item Id for:", quest.sourceItemId)
 
             -- We fake an objective for the sourceItems because this allows us
             -- to simply reuse "QuestieTooltips.GetTooltip".
@@ -821,7 +821,7 @@ local function _AddRequiredSourceItemObjective(quest)
                 for _, itemObjectiveIndex in pairs(objectives) do
                     for _, itemObjectiveId in pairs(itemObjectiveIndex) do
                         if itemObjectiveId == requiredSourceItemId or quest.sourceItemId == requiredSourceItemId then
-                            Questie.Debug(Questie.DEBUG_INFO, "[QuestieQuest:_AddRequiredSourceItemObjective] This item is already part of a quest objective.")
+                            QuestieSmazak.Debug(QuestieSmazak.DEBUG_INFO, "[QuestieQuest:_AddRequiredSourceItemObjective] This item is already part of a quest objective.")
                             return
                         end
                     end
@@ -831,7 +831,7 @@ local function _AddRequiredSourceItemObjective(quest)
             local item = QuestieDB.QueryItemSingle(requiredSourceItemId, "name")
 
             if item then
-                Questie.Debug(Questie.DEBUG_INFO, "[QuestieQuest:_AddRequiredSourceItemObjective] Adding Source Item Id for:", requiredSourceItemId)
+                QuestieSmazak.Debug(QuestieSmazak.DEBUG_INFO, "[QuestieQuest:_AddRequiredSourceItemObjective] Adding Source Item Id for:", requiredSourceItemId)
 
                 -- We fake an objective for the requiredSourceItem because this allows us
                 -- to simply reuse "QuestieTooltips.GetTooltip".
@@ -852,17 +852,17 @@ local function _AddRequiredSourceItemObjective(quest)
 end
 
 function QuestieQuest:GetAllQuestIdsNoObjectives()
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieQuest] Getting all quests without objectives")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieQuest] Getting all quests without objectives")
     ActiveQuests.Reset()
 
     for questId, data in pairs(QuestLogCache.questLog_DO_NOT_MODIFY) do -- DO NOT MODIFY THE RETURNED TABLE
         if (not QuestieDB.QuestPointers[questId]) then
-            if Questie.db.profile.debugEnabled and not Questie._sessionWarnings[questId] then
-                if not Questie.IsSoD then
-                    Questie.Warning(l10n("The quest %s is missing from Questie's database. Please report this on GitHub or Discord!",
+            if QuestieSmazak.db.profile.debugEnabled and not QuestieSmazak._sessionWarnings[questId] then
+                if not QuestieSmazak.IsSoD then
+                    QuestieSmazak.Warning(l10n("The quest %s is missing from QuestieSmazak's database. Please report this on GitHub or Discord!",
                         tostring(questId)))
                 end
-                Questie._sessionWarnings[questId] = true
+                QuestieSmazak._sessionWarnings[questId] = true
             end
         else
             --Keep the object in the questlog to save searching
@@ -875,7 +875,7 @@ function QuestieQuest:GetAllQuestIdsNoObjectives()
                 ActiveQuests.Restore(questId)
             end
 
-            Questie.Debug(Questie.DEBUG_INFO, "[QuestieQuest] Adding the quest", questId)
+            QuestieSmazak.Debug(QuestieSmazak.DEBUG_INFO, "[QuestieQuest] Adding the quest", questId)
         end
     end
 end
@@ -883,7 +883,7 @@ end
 -- iterate all notes, update / remove as needed
 ---@param quest Quest
 function QuestieQuest:UpdateObjectiveNotes(quest)
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieQuest] UpdateObjectiveNotes:", quest.Id)
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieQuest] UpdateObjectiveNotes:", quest.Id)
     local acceptance = ActiveQuests.Get(quest.Id)
     if (not acceptance) then
         return
@@ -922,7 +922,7 @@ end
 -- This is used for complete quests where objectives are already populated and we only need tooltip registration
 ---@param quest Quest
 function QuestieQuest.RegisterObjectiveTooltips(quest)
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieQuest] RegisterObjectiveTooltips:", quest.Id)
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieQuest] RegisterObjectiveTooltips:", quest.Id)
 
     for objectiveIndex, objective in pairs(quest.Objectives) do
         -- Assign Index if not already set (e.g., for source item objectives created at line 916)
@@ -1000,12 +1000,12 @@ end
 ---@param blockItemTooltips any
 ---@param acceptance Acceptance? @Stops drawing after a yield once this acceptance ended
 function QuestieQuest:PopulateObjective(quest, objectiveIndex, objective, blockItemTooltips, acceptance)
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieQuest:PopulateObjective]", objective.Description)
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieQuest:PopulateObjective]", objective.Description)
 
     assert(coroutine.running(), "PopulateObjective must be called from a coroutine")
 
     if (not objective.Update) then
-        Questie.Debug(Questie.DEBUG_INFO, "[QuestieQuest:PopulateObjective] - Quest is already updated. --> Exiting!")
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_INFO, "[QuestieQuest:PopulateObjective] - Quest is already updated. --> Exiting!")
         return
     end
 
@@ -1032,7 +1032,7 @@ function QuestieQuest:PopulateObjective(quest, objectiveIndex, objective, blockI
     end
 
     if objective.spawnList and next(objective.spawnList) then
-        local maxPerType = Questie.db.profile.enableIconLimit and Questie.db.profile.iconLimit or 1500
+        local maxPerType = QuestieSmazak.db.profile.enableIconLimit and QuestieSmazak.db.profile.iconLimit or 1500
 
         local zoneCount = 0
         local zones = {}
@@ -1077,7 +1077,7 @@ function QuestieQuest:PopulateObjective(quest, objectiveIndex, objective, blockI
 end
 
 _RegisterObjectiveTooltips = function(objective, questId, blockItemTooltips)
-    Questie.Debug(Questie.DEBUG_INFO, "Registering objective tooltips for", objective.Description)
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_INFO, "Registering objective tooltips for", objective.Description)
 
     if objective.spawnList then
         if (not objective.hasRegisteredTooltips) then
@@ -1090,7 +1090,7 @@ _RegisterObjectiveTooltips = function(objective, questId, blockItemTooltips)
             objective.hasRegisteredTooltips = true
         end
     else
-        Questie.Error("[QuestieQuest]: [Tooltips] " ..
+        QuestieSmazak.Error("[QuestieQuest]: [Tooltips] " ..
             l10n("There was an error populating objectives for %s %s %s %s", objective.Description or "No objective text", questId or "No quest id",
                 0 or "No objective", "No error"));
     end
@@ -1130,7 +1130,7 @@ end
 ---@param objectiveIndex ObjectiveIndex
 ---@param objectiveCenter {x:X, y:Y}
 _DetermineIconsToDraw = function(quest, objective, objectiveIndex, objectiveCenter, acceptance)
-    Questie.Debug(Questie.DEBUG_INFO, "[QuestieQuest:_DetermineIconsToDraw]")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_INFO, "[QuestieQuest:_DetermineIconsToDraw]")
 
     local iconsToDraw = {}
     local spawnItemId
@@ -1145,7 +1145,7 @@ _DetermineIconsToDraw = function(quest, objective, objectiveIndex, objectiveCent
             objective.Icon = spawnData.Icon
         end
 
-        if (not objective.AlreadySpawned[id]) and (not objective.Completed) and Questie.db.profile.enableObjectives then
+        if (not objective.AlreadySpawned[id]) and (not objective.Completed) and QuestieSmazak.db.profile.enableObjectives then
             local data = {
                 Id = quest.Id,
                 ObjectiveIndex = objectiveIndex,
@@ -1224,7 +1224,7 @@ end
 ---@param placed table  array of {x, y} coords already placed in this zone
 ---@return boolean
 local function _HasProperDistanceToAlreadyPlacedObjectives(coords, placed)
-    local minDist = Questie.db.profile.objectiveFilterDistance
+    local minDist = QuestieSmazak.db.profile.objectiveFilterDistance
     if minDist == 0 then
         return true
     end
@@ -1237,7 +1237,7 @@ local function _HasProperDistanceToAlreadyPlacedObjectives(coords, placed)
 end
 
 _DrawObjectiveIcons = function(questId, iconsToDraw, objective, maxPerType, acceptance)
-    Questie.Debug(Questie.DEBUG_INFO, "[QuestieQuest:_DrawObjectiveIcons] Adding Icons for quest:", questId)
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_INFO, "[QuestieQuest:_DrawObjectiveIcons] Adding Icons for quest:", questId)
 
     local spawnedIconCount = 0
     local icon
@@ -1262,7 +1262,7 @@ _DrawObjectiveIcons = function(questId, iconsToDraw, objective, maxPerType, acce
     for i = 1, iconCount do
         icon = orderedList[i]
         if spawnedIconCount > maxPerType then
-            Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieQuest] Too many icons for quest:", questId)
+            QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieQuest] Too many icons for quest:", questId)
             break
         end
 
@@ -1274,7 +1274,7 @@ _DrawObjectiveIcons = function(questId, iconsToDraw, objective, maxPerType, acce
             zoneKey = entrance and ZoneDB:GetUiMapIdByAreaId(entrance[1])
         end
         if not zoneKey then
-            Questie.Warning("[QuestieQuest] Cannot draw quest", questId, "target", icon.data.ObjectiveTargetId,
+            QuestieSmazak.Warning("[QuestieQuest] Cannot draw quest", questId, "target", icon.data.ObjectiveTargetId,
                 "area", icon.zone, "missing dungeon entrance or UiMap mapping")
         elseif (not alreadyPlacedByZone[zoneKey]) then
             alreadyPlacedByZone[zoneKey] = {}
@@ -1400,7 +1400,7 @@ _DrawObjectiveWaypoints = function(objective, icon, iconPerZone, acceptance)
                 end
             end
 
-            Questie.Debug(Questie.DEBUG_INFO, "[QuestieQuest:_DrawObjectiveWaypoints]")
+            QuestieSmazak.Debug(QuestieSmazak.DEBUG_INFO, "[QuestieQuest:_DrawObjectiveWaypoints]")
         end
     end
 end
@@ -1412,7 +1412,7 @@ function QuestieQuest:PopulateObjectiveNotes(quest) -- this should be renamed to
     end
 
     if quest:IsComplete() == 1 then
-        Questie.Debug(Questie.DEBUG_INFO, "[QuestieQuest:PopulateObjectiveNotes] Quest Complete! Adding Finisher for:", quest.Id)
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_INFO, "[QuestieQuest:PopulateObjectiveNotes] Quest Complete! Adding Finisher for:", quest.Id)
 
         QuestieQuest:UpdateQuest(quest.Id)
         _AddSourceItemObjective(quest)
@@ -1426,7 +1426,7 @@ function QuestieQuest:PopulateObjectiveNotes(quest) -- this should be renamed to
         quest.Color = QuestieLib:ColorWheel()
     end
 
-    Questie.Debug(Questie.DEBUG_INFO, "[QuestieQuest:PopulateObjectiveNotes] Populating objectives for:", quest.Id)
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_INFO, "[QuestieQuest:PopulateObjectiveNotes] Populating objectives for:", quest.Id)
 
     QuestieQuest:UpdateObjectiveNotes(quest)
     _AddSourceItemObjective(quest)
@@ -1440,7 +1440,7 @@ function QuestieQuest:PopulateQuestLogInfo(quest)
         return
     end
 
-    Questie.Debug(Questie.DEBUG_INFO, "[QuestieQuest:PopulateQuestLogInfo] ", quest.Id)
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_INFO, "[QuestieQuest:PopulateQuestLogInfo] ", quest.Id)
 
     local questLogEntry = QuestLogCache.GetQuest(quest.Id) -- DO NOT MODIFY THE RETURNED TABLE
 
@@ -1461,7 +1461,7 @@ function QuestieQuest:PopulateQuestLogInfo(quest)
             if (not quest.ObjectiveData) or (not quest.ObjectiveData[objectiveIndex]) then
                 -- Log objectives are just empty.
                 if objective.type ~= "log" then
-                    Questie.Warning(l10n("Missing objective data for quest "), quest.Id, " ", objective.text)
+                    QuestieSmazak.Warning(l10n("Missing objective data for quest "), quest.Id, " ", objective.text)
                 end
             else
                 if not quest.Objectives[objectiveIndex] then
@@ -1486,7 +1486,7 @@ function QuestieQuest:PopulateQuestLogInfo(quest)
         end
 
         if (not quest.Objectives[objectiveIndex]) or (not quest.Objectives[objectiveIndex].Id) then
-            Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieQuest:PopulateQuestLogInfo] Error finding entry ID for objective", objectiveIndex, objective.type,
+            QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieQuest:PopulateQuestLogInfo] Error finding entry ID for objective", objectiveIndex, objective.type,
                 objective.text, "of questId:", quest.Id)
         end
     end
@@ -1559,7 +1559,7 @@ end
 ---@param questId number
 ---@return table<ObjectiveIndex, QuestLogCacheObjectiveData>|nil @DO NOT EDIT RETURNED TABLE
 function QuestieQuest:GetAllLeaderBoardDetails(questId)
-    Questie.Debug(Questie.DEBUG_INFO, "[QuestieQuest:GetAllLeaderBoardDetails] for questId", questId)
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_INFO, "[QuestieQuest:GetAllLeaderBoardDetails] for questId", questId)
 
     local questObjectives = QuestLogCache.GetQuestObjectives(questId) -- DO NOT MODIFY THE RETURNED TABLE
     if (not questObjectives) then return end

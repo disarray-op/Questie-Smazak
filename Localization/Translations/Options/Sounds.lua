@@ -1,5 +1,5 @@
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 
 local soundsOptionsLocales = {
     ["Sounds"] = {
@@ -206,17 +206,17 @@ local soundsOptionsLocales = {
         ["zhCN"] = "声道",
         ["zhTW"] = "聲道",
     },
-    ["The sound channel used for Questie's notification sounds."] = {
+    ["The sound channel used for QuestieSmazak's notification sounds."] = {
         ["enUS"] = true,
-        ["deDE"] = "Der Audio Kanal, um Questie Töne abzuspielen.",
-        ["esES"] = "El canal de sonido usado para los sonidos de notificación de Questie.",
-        ["esMX"] = "El canal de sonido usado para los sonidos de notificación de Questie.",
-        ["frFR"] = "Le canal audio utilisé pour les sons de notification de Questie.",
-        ["koKR"] = "Questie 알림음에 사용되는 사운드 채널입니다.",
-        ["ptBR"] = "O canal de som usado para os sons de notificação do Questie.",
-        ["ruRU"] = "Звуковой канал, используемый для уведомлений Questie",
+        ["deDE"] = "Der Audio Kanal, um QuestieSmazak Töne abzuspielen.",
+        ["esES"] = "El canal de sonido usado para los sonidos de notificación de QuestieSmazak.",
+        ["esMX"] = "El canal de sonido usado para los sonidos de notificación de QuestieSmazak.",
+        ["frFR"] = "Le canal audio utilisé pour les sons de notification de QuestieSmazak.",
+        ["koKR"] = "QuestieSmazak 알림음에 사용되는 사운드 채널입니다.",
+        ["ptBR"] = "O canal de som usado para os sons de notificação do QuestieSmazak.",
+        ["ruRU"] = "Звуковой канал, используемый для уведомлений QuestieSmazak",
         ["zhCN"] = "用于Questie通知音效的声道",
-        ["zhTW"] = "Questie 通知音效所使用的聲道",
+        ["zhTW"] = "QuestieSmazak 通知音效所使用的聲道",
     },
 }
 

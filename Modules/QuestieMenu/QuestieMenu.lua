@@ -1,38 +1,38 @@
 ---@class QuestieMenu
-local QuestieMenu = QuestieLoader:CreateModule("QuestieMenu")
+local QuestieMenu = QuestieSmazakLoader:CreateModule("QuestieMenu")
 
 ---@type QuestieLib
-local QuestieLib = QuestieLoader:ImportModule("QuestieLib")
+local QuestieLib = QuestieSmazakLoader:ImportModule("QuestieLib")
 ---@type QuestieOptions
-local QuestieOptions = QuestieLoader:ImportModule("QuestieOptions")
+local QuestieOptions = QuestieSmazakLoader:ImportModule("QuestieOptions")
 ---@type QuestieJourney
-local QuestieJourney = QuestieLoader:ImportModule("QuestieJourney")
+local QuestieJourney = QuestieSmazakLoader:ImportModule("QuestieJourney")
 ---@type QuestieMap
-local QuestieMap = QuestieLoader:ImportModule("QuestieMap")
+local QuestieMap = QuestieSmazakLoader:ImportModule("QuestieMap")
 ---@type QuestieDB
-local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
 ---@type MeetingStones
-local MeetingStones = QuestieLoader:ImportModule("MeetingStones")
+local MeetingStones = QuestieSmazakLoader:ImportModule("MeetingStones")
 ---@type QuestieProfessions
-local QuestieProfessions = QuestieLoader:ImportModule("QuestieProfessions")
+local QuestieProfessions = QuestieSmazakLoader:ImportModule("QuestieProfessions")
 ---@type QuestieQuest
-local QuestieQuest = QuestieLoader:ImportModule("QuestieQuest")
+local QuestieQuest = QuestieSmazakLoader:ImportModule("QuestieQuest")
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 ---@type QuestieCorrections
-local QuestieCorrections = QuestieLoader:ImportModule("QuestieCorrections")
+local QuestieCorrections = QuestieSmazakLoader:ImportModule("QuestieCorrections")
 ---@type QuestieCombatQueue
-local QuestieCombatQueue = QuestieLoader:ImportModule("QuestieCombatQueue")
+local QuestieCombatQueue = QuestieSmazakLoader:ImportModule("QuestieCombatQueue")
 ---@type QuestiePopup
-local QuestiePopup = QuestieLoader:ImportModule("QuestiePopup")
+local QuestiePopup = QuestieSmazakLoader:ImportModule("QuestiePopup")
 ---@type AvailableQuests
-local AvailableQuests = QuestieLoader:ImportModule("AvailableQuests")
+local AvailableQuests = QuestieSmazakLoader:ImportModule("AvailableQuests")
 ---@type Townsfolk
-local Townsfolk = QuestieLoader:ImportModule("Townsfolk")
+local Townsfolk = QuestieSmazakLoader:ImportModule("Townsfolk")
 ---@type Moonwell
-local Moonwell = QuestieLoader:ImportModule("Moonwell")
+local Moonwell = QuestieSmazakLoader:ImportModule("Moonwell")
 ---@type QuestieOptionsEngine
-local QuestieOptionsEngine = QuestieLoader:ImportModule("QuestieOptionsEngine")
+local QuestieOptionsEngine = QuestieSmazakLoader:ImportModule("QuestieOptionsEngine")
 
 local LibDropDown = LibStub:GetLibrary("LibUIDropDownMenuQuestie-4.0")
 
@@ -110,7 +110,7 @@ local _spawnTickers = {} -- pending spawn ticker per townsfolk key, cancelled wh
 ---@return string
 local function getNpcTitle(id, key)
     local npcName = QuestieDB.QueryNPCSingle(id, "name") or ("Missing NPC name for " .. tostring(id))
-    local npcTitle = Questie:Colorize(npcName, "white")
+    local npcTitle = QuestieSmazak:Colorize(npcName, "white")
 
     local subName = QuestieDB.QueryNPCSingle(id, "subName")
     if (not subName) then
@@ -129,21 +129,21 @@ end
 ---@param key string|number
 ---@return boolean
 local function isTrackedAsKnownProfession(key)
-    return Questie.db.profile.townsfolkKnownProfessions == true
+    return QuestieSmazak.db.profile.townsfolkKnownProfessions == true
         and Townsfolk.professionTrainers[key] ~= nil
-        and (not Questie.db.profile.townsfolkConfig[key])
+        and (not QuestieSmazak.db.profile.townsfolkConfig[key])
         and QuestieProfessions:GetPlayerProfessions()[key] ~= nil
 end
 
 ---@param key string|number
 ---@return boolean
 local function isTracked(key)
-    return Questie.db.profile.townsfolkConfig[key] or isTrackedAsKnownProfession(key)
+    return QuestieSmazak.db.profile.townsfolkConfig[key] or isTrackedAsKnownProfession(key)
 end
 
-local function toggle(key, forceRemove) -- /run QuestieLoader:ImportModule("QuestieMap"):ShowNPC(525, nil, 1, "teaste", {}, true)
+local function toggle(key, forceRemove) -- /run QuestieSmazakLoader:ImportModule("QuestieMap"):ShowNPC(525, nil, 1, "teaste", {}, true)
     if key == "Moonwell" then
-        if Questie.db.profile.townsfolkConfig[key] and (not forceRemove) then
+        if QuestieSmazak.db.profile.townsfolkConfig[key] and (not forceRemove) then
             Moonwell:ShowAll()
         else
             Moonwell:HideAll()
@@ -152,12 +152,12 @@ local function toggle(key, forceRemove) -- /run QuestieLoader:ImportModule("Ques
     end
 
     local ids = Townsfolk.townsfolk[key] or
-            Questie.db.char.townsfolk[key] or
+            QuestieSmazak.db.char.townsfolk[key] or
             Townsfolk.professionTrainers[key] or
-            Questie.db.char.vendorList[key]
+            QuestieSmazak.db.char.vendorList[key]
 
     if (not ids) then
-        Questie.Debug(Questie.DEBUG_INFO, "Invalid townsfolk key", tostring(key))
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_INFO, "Invalid townsfolk key", tostring(key))
         return
     end
 
@@ -168,10 +168,10 @@ local function toggle(key, forceRemove) -- /run QuestieLoader:ImportModule("Ques
                 if key == "Meeting Stones" then
                     local dungeonName, levelRange = MeetingStones:GetLocalizedDungeonNameAndLevelRangeByObjectId(id)
                     if dungeonName and levelRange then
-                        QuestieMap:ShowObject(id, icon, 1.2, Questie:Colorize(l10n("Meeting Stone"), "white") .. "|n" .. dungeonName .. " " .. levelRange, {}, true, key)
+                        QuestieMap:ShowObject(id, icon, 1.2, QuestieSmazak:Colorize(l10n("Meeting Stone"), "white") .. "|n" .. dungeonName .. " " .. levelRange, {}, true, key)
                     end
                 else
-                    QuestieMap:ShowObject(id, icon, 1.2, Questie:Colorize(l10n(key), "white"), {}, true, key)
+                    QuestieMap:ShowObject(id, icon, 1.2, QuestieSmazak:Colorize(l10n(key), "white"), {}, true, key)
                 end
             end
         else
@@ -230,10 +230,10 @@ local function build(key)
 
     return {
         text = l10n(tostring(key)),
-        func = function() Questie.db.profile.townsfolkConfig[key] = not Questie.db.profile.townsfolkConfig[key] toggle(key) end,
+        func = function() QuestieSmazak.db.profile.townsfolkConfig[key] = not QuestieSmazak.db.profile.townsfolkConfig[key] toggle(key) end,
         icon=icon,
         notCheckable=false,
-        checked=Questie.db.profile.townsfolkConfig[key],
+        checked=QuestieSmazak.db.profile.townsfolkConfig[key],
         isNotRadio=true,
         keepShownOnClick=true
     }
@@ -250,7 +250,7 @@ local function buildProfession(key, localizedText, profMenu)
         func = function(button)
             -- Locked rows still get clicks forwarded from their icon, which bypasses the disabled button
             if not isTrackedAsKnownProfession(key) then
-                Questie.db.profile.townsfolkConfig[key] = not Questie.db.profile.townsfolkConfig[key]
+                QuestieSmazak.db.profile.townsfolkConfig[key] = not QuestieSmazak.db.profile.townsfolkConfig[key]
                 toggle(key)
             end
             -- Unchecking a known profession leaves it tracked through "Known Professions", so it turns gray.
@@ -309,7 +309,7 @@ end
 ---professions that are no longer tracked (setting turned off or profession unlearned)
 function QuestieMenu.RefreshKnownProfessionTrainers()
     for key in pairs(Townsfolk.professionTrainers) do
-        if (not Questie.db.profile.townsfolkConfig[key]) then
+        if (not QuestieSmazak.db.profile.townsfolkConfig[key]) then
             local shownFrames = QuestieMap.manualFrames[key]
             if isTracked(key) or _spawnTickers[key] or (shownFrames and next(shownFrames)) then
                 toggle(key)
@@ -321,23 +321,23 @@ end
 function QuestieMenu:OnLogin(forceRemove) -- toggle all icons
     Townsfolk:UpdatePlayerVendors()
 
-    if (not Questie.db.profile.townsfolkConfig) then
-        Questie.db.profile.townsfolkConfig = {
+    if (not QuestieSmazak.db.profile.townsfolkConfig) then
+        QuestieSmazak.db.profile.townsfolkConfig = {
             ["Flight Master"] = true,
             ["Mailbox"] = true,
             ["Meeting Stones"] = true,
             ["Moonwell"] = false
         }
     end
-    for key in pairs(Questie.db.profile.townsfolkConfig) do
+    for key in pairs(QuestieSmazak.db.profile.townsfolkConfig) do
         if forceRemove then
             toggle(key, forceRemove)
         end
         toggle(key)
     end
-    if Questie.db.profile.townsfolkKnownProfessions then
+    if QuestieSmazak.db.profile.townsfolkKnownProfessions then
         for key in pairs(QuestieProfessions:GetPlayerProfessions()) do
-            if Townsfolk.professionTrainers[key] and (not Questie.db.profile.townsfolkConfig[key]) then
+            if Townsfolk.professionTrainers[key] and (not QuestieSmazak.db.profile.townsfolkConfig[key]) then
                 if forceRemove then
                     toggle(key, forceRemove)
                 end
@@ -406,10 +406,10 @@ function QuestieMenu.buildProfessionMenu()
     local ridingMenu = {}
 
     tinsert(profMenu, { text= l10n("Known Professions"), func = function(button)
-        Questie.db.profile.townsfolkKnownProfessions = not Questie.db.profile.townsfolkKnownProfessions
+        QuestieSmazak.db.profile.townsfolkKnownProfessions = not QuestieSmazak.db.profile.townsfolkKnownProfessions
         QuestieMenu.RefreshKnownProfessionTrainers()
         refreshProfessionButtons(profMenu, button:GetParent())
-    end, icon="Interface\\Minimap\\tracking\\profession", notCheckable=false, checked=function() return Questie.db.profile.townsfolkKnownProfessions end, isNotRadio=true, keepShownOnClick=true})
+    end, icon="Interface\\Minimap\\tracking\\profession", notCheckable=false, checked=function() return QuestieSmazak.db.profile.townsfolkKnownProfessions end, isNotRadio=true, keepShownOnClick=true})
     tinsert(profMenu, div)
 
     for key, _ in pairs(Townsfolk.professionTrainers) do
@@ -443,7 +443,7 @@ function QuestieMenu.buildVendorMenu()
     local vendorMenu = {}
     local vendorMenuSorted = {}
     local vendorMenuData = {}
-    for key, _ in pairs(Questie.db.char.vendorList) do
+    for key, _ in pairs(QuestieSmazak.db.char.vendorList) do
         local localizedKey = l10n(tostring(key))
         vendorMenuData[localizedKey] = build(key)
         tinsert(vendorMenuSorted, localizedKey)
@@ -458,7 +458,7 @@ end
 function QuestieMenu.buildTownsfolkMenu()
     local townsfolkMenu = {}
     for _, key in ipairs(_townsfolk_order) do
-        if Townsfolk.townsfolk[key] or Questie.db.char.townsfolk[key] then
+        if Townsfolk.townsfolk[key] or QuestieSmazak.db.char.townsfolk[key] then
             tinsert(townsfolkMenu, build(key))
         end
     end
@@ -466,8 +466,8 @@ function QuestieMenu.buildTownsfolkMenu()
 end
 
 function QuestieMenu:Show(hideDelay)
-    if not Questie.db.profile.townsfolkConfig then
-        Questie.db.profile.townsfolkConfig = {}
+    if not QuestieSmazak.db.profile.townsfolkConfig then
+        QuestieSmazak.db.profile.townsfolkConfig = {}
     end
     if not QuestieMenu.menu then
         QuestieMenu.menu = LibDropDown:Create_UIDropDownMenu("QuestieTownsfolkMenuFrame", UIParent)
@@ -478,27 +478,27 @@ function QuestieMenu:Show(hideDelay)
         tinsert(menuTable, build("Moonwell"))
     end
     tinsert(menuTable, { text= l10n("Available Quest"), func = function()
-        local value = not Questie.db.profile.showAvailableQuests
-        Questie.db.profile.showAvailableQuests = value
+        local value = not QuestieSmazak.db.profile.showAvailableQuests
+        QuestieSmazak.db.profile.showAvailableQuests = value
         QuestieQuest:ToggleNotes(value)
         QuestieQuest:SmoothReset()
-    end, icon=QuestieLib.AddonPath.."Icons\\available.blp", notCheckable=false, checked=Questie.db.profile.showAvailableQuests, isNotRadio=true, keepShownOnClick=true})
+    end, icon=QuestieLib.AddonPath.."Icons\\available.blp", notCheckable=false, checked=QuestieSmazak.db.profile.showAvailableQuests, isNotRadio=true, keepShownOnClick=true})
     tinsert(menuTable, { text= l10n("Trivial Quest"), func = function()
-        local value = Questie.db.profile.lowLevelStyle == Questie.LOWLEVEL_ALL
+        local value = QuestieSmazak.db.profile.lowLevelStyle == QuestieSmazak.LOWLEVEL_ALL
         if value then
-            Questie.db.profile.lowLevelStyle = Questie.LOWLEVEL_NONE
+            QuestieSmazak.db.profile.lowLevelStyle = QuestieSmazak.LOWLEVEL_NONE
         else
-            Questie.db.profile.lowLevelStyle = Questie.LOWLEVEL_ALL
+            QuestieSmazak.db.profile.lowLevelStyle = QuestieSmazak.LOWLEVEL_ALL
         end
         AvailableQuests.ResetLevelRequirementCache()
         AvailableQuests.CalculateAndDrawAll()
-    end, icon=QuestieLib.AddonPath.."Icons\\available_gray.blp", notCheckable=false, checked=Questie.db.profile.lowLevelStyle==Questie.LOWLEVEL_ALL, isNotRadio=true, keepShownOnClick=true})
+    end, icon=QuestieLib.AddonPath.."Icons\\available_gray.blp", notCheckable=false, checked=QuestieSmazak.db.profile.lowLevelStyle==QuestieSmazak.LOWLEVEL_ALL, isNotRadio=true, keepShownOnClick=true})
     tinsert(menuTable, { text= l10n("Objective"), func = function()
-        local value = not Questie.db.profile.enableObjectives
-        Questie.db.profile.enableObjectives = value
+        local value = not QuestieSmazak.db.profile.enableObjectives
+        QuestieSmazak.db.profile.enableObjectives = value
         QuestieQuest:ToggleNotes(value)
         QuestieQuest:SmoothReset()
-    end, icon=QuestieLib.AddonPath.."Icons\\event.blp", notCheckable=false, checked=Questie.db.profile.enableObjectives, isNotRadio=true, keepShownOnClick=true})
+    end, icon=QuestieLib.AddonPath.."Icons\\event.blp", notCheckable=false, checked=QuestieSmazak.db.profile.enableObjectives, isNotRadio=true, keepShownOnClick=true})
     tinsert(menuTable, {text= l10n("Profession Trainers"), func = function() end, keepShownOnClick=true, hasArrow=true, menuList=QuestieMenu.buildProfessionMenu(), notCheckable=true})
     tinsert(menuTable, {text= l10n("Vendor"), func = function() end, keepShownOnClick=true, hasArrow=true, menuList=QuestieMenu.buildVendorMenu(), notCheckable=true})
 
@@ -528,7 +528,7 @@ function QuestieMenu:Show(hideDelay)
         end
     end})
 
-    tinsert(menuTable, { text= l10n("Questie Options"), func=function()
+    tinsert(menuTable, { text= l10n("QuestieSmazak Options"), func=function()
         if QuestieJourney:IsShown() then
             QuestieJourney:ToggleJourneyWindow()
         end
@@ -543,9 +543,9 @@ function QuestieMenu:Show(hideDelay)
         end
     end})
 
-    if Questie.db.profile.debugEnabled then
+    if QuestieSmazak.db.profile.debugEnabled then
         tinsert(menuTable, { text= l10n('Reload UI'), func=function()
-            if Questie.IsForever then
+            if QuestieSmazak.IsForever then
                 -- With Forever the ReloadUI API is restricted with "#hwevent", which means it needs a direct user interaction (e.g. a button click).
                 QuestiePopup.Show("QUESTIE_MENU_RELOAD_UI")
             else
@@ -566,8 +566,8 @@ function QuestieMenu.IsOpen()
 end
 
 function QuestieMenu:ShowTownsfolk(hideDelay)
-    if not Questie.db.profile.townsfolkConfig then
-        Questie.db.profile.townsfolkConfig = {}
+    if not QuestieSmazak.db.profile.townsfolkConfig then
+        QuestieSmazak.db.profile.townsfolkConfig = {}
     end
     if not QuestieMenu.menuTowns then
         QuestieMenu.menuTowns = LibDropDown:Create_UIDropDownMenu("QuestieTownsfolkMenuFrameTownsfolk", UIParent)
@@ -578,8 +578,8 @@ function QuestieMenu:ShowTownsfolk(hideDelay)
 end
 
 function QuestieMenu:ShowProfessions(hideDelay)
-    if not Questie.db.profile.townsfolkConfig then
-        Questie.db.profile.townsfolkConfig = {}
+    if not QuestieSmazak.db.profile.townsfolkConfig then
+        QuestieSmazak.db.profile.townsfolkConfig = {}
     end
     if not QuestieMenu.menuProfs then
         QuestieMenu.menuProfs = LibDropDown:Create_UIDropDownMenu("QuestieTownsfolkMenuFrameProfs", UIParent)
@@ -590,8 +590,8 @@ function QuestieMenu:ShowProfessions(hideDelay)
 end
 
 function QuestieMenu:ShowVendors(hideDelay)
-    if not Questie.db.profile.townsfolkConfig then
-        Questie.db.profile.townsfolkConfig = {}
+    if not QuestieSmazak.db.profile.townsfolkConfig then
+        QuestieSmazak.db.profile.townsfolkConfig = {}
     end
     if not QuestieMenu.menuVendors then
         QuestieMenu.menuVendors = LibDropDown:Create_UIDropDownMenu("QuestieTownsfolkMenuFrameVendors", UIParent)

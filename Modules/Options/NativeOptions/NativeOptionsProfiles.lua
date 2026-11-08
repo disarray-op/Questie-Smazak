@@ -1,37 +1,37 @@
 ---@type QuestiePopup
-local Popup = QuestieLoader:ImportModule("QuestiePopup")
+local Popup = QuestieSmazakLoader:ImportModule("QuestiePopup")
 
 -------------------------
 --Import modules.
 -------------------------
 ---@type QuestieOptionsEngine
-local QuestieOptionsEngine = QuestieLoader:ImportModule("QuestieOptionsEngine")
+local QuestieOptionsEngine = QuestieSmazakLoader:ImportModule("QuestieOptionsEngine")
 ---@type QuestieQuest
-local QuestieQuest = QuestieLoader:ImportModule("QuestieQuest")
+local QuestieQuest = QuestieSmazakLoader:ImportModule("QuestieQuest")
 ---@type QuestieTracker
-local QuestieTracker = QuestieLoader:ImportModule("QuestieTracker")
+local QuestieTracker = QuestieSmazakLoader:ImportModule("QuestieTracker")
 ---@type QuestieNameplate
-local QuestieNameplate = QuestieLoader:ImportModule("QuestieNameplate")
+local QuestieNameplate = QuestieSmazakLoader:ImportModule("QuestieNameplate")
 ---@type MinimapIcon
-local MinimapIcon = QuestieLoader:ImportModule("MinimapIcon")
+local MinimapIcon = QuestieSmazakLoader:ImportModule("MinimapIcon")
 ---@type QuestieMap
-local QuestieMap = QuestieLoader:ImportModule("QuestieMap")
+local QuestieMap = QuestieSmazakLoader:ImportModule("QuestieMap")
 ---@type AvailableQuests
-local AvailableQuests = QuestieLoader:ImportModule("AvailableQuests")
+local AvailableQuests = QuestieSmazakLoader:ImportModule("AvailableQuests")
 ---@type QuestieDBMIntegration
-local QuestieDBMIntegration = QuestieLoader:ImportModule("QuestieDBMIntegration")
+local QuestieDBMIntegration = QuestieSmazakLoader:ImportModule("QuestieDBMIntegration")
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 
 QuestieOptionsEngine.tabs.profiles = { ... }
 
 local selectedDeleteProfile = nil
 
----Applies the new profile to Questie's visuals and to the option controls being shown. AceDB calls this for every
+---Applies the new profile to QuestieSmazak's visuals and to the option controls being shown. AceDB calls this for every
 ---change of profile. Refreshing a control never runs its setter, so what setters do to apply a value is covered here.
 local function _OnProfileChanged()
-    if Questie.SetIcons then
-        Questie:SetIcons()
+    if QuestieSmazak.SetIcons then
+        QuestieSmazak:SetIcons()
     end
     if QuestieMap and QuestieMap.RescaleIcons then
         QuestieMap:RescaleIcons()
@@ -51,8 +51,8 @@ local function _OnProfileChanged()
         QuestieNameplate:RedrawFrameIcon()
     end
     MinimapIcon.RefreshProfile()
-    QuestieDBMIntegration:ChangeZoomLevel(Questie.db.profile.DBMHUDZoom)
-    QuestieDBMIntegration:ChangeRefreshRate(Questie.db.profile.DBMHUDRefresh)
+    QuestieDBMIntegration:ChangeZoomLevel(QuestieSmazak.db.profile.DBMHUDZoom)
+    QuestieDBMIntegration:ChangeRefreshRate(QuestieSmazak.db.profile.DBMHUDRefresh)
     QuestieOptionsEngine:RefreshStates()
 end
 
@@ -61,11 +61,11 @@ end
 local function _GetChooseProfiles()
     local profiles = {}
 
-    for _, name in ipairs(Questie.db:GetProfiles({})) do
+    for _, name in ipairs(QuestieSmazak.db:GetProfiles({})) do
         profiles[name] = name
     end
 
-    local keys = Questie.db.keys
+    local keys = QuestieSmazak.db.keys
     local localizedClass = UnitClass("player")
 
     profiles["Default"] = l10n("Default")
@@ -89,8 +89,8 @@ end
 ---@return table<string, string>
 local function _GetExistingNonActiveProfiles()
     local profiles = {}
-    local current = Questie.db:GetCurrentProfile()
-    for _, name in ipairs(Questie.db:GetProfiles({})) do
+    local current = QuestieSmazak.db:GetCurrentProfile()
+    for _, name in ipairs(QuestieSmazak.db:GetProfiles({})) do
         if name ~= current then
             profiles[name] = name
         end
@@ -106,10 +106,10 @@ end
 
 function QuestieOptionsEngine.tabs.profiles:Initialize()
     -- Register AceDB callbacks to keep profile display and dropdowns synced
-    if Questie.db and Questie.db.RegisterCallback then
-        Questie.db.RegisterCallback(QuestieOptionsEngine.tabs.profiles, "OnProfileChanged", _OnProfileChanged)
-        Questie.db.RegisterCallback(QuestieOptionsEngine.tabs.profiles, "OnProfileCopied", _OnProfileChanged)
-        Questie.db.RegisterCallback(QuestieOptionsEngine.tabs.profiles, "OnProfileReset", _OnProfileChanged)
+    if QuestieSmazak.db and QuestieSmazak.db.RegisterCallback then
+        QuestieSmazak.db.RegisterCallback(QuestieOptionsEngine.tabs.profiles, "OnProfileChanged", _OnProfileChanged)
+        QuestieSmazak.db.RegisterCallback(QuestieOptionsEngine.tabs.profiles, "OnProfileCopied", _OnProfileChanged)
+        QuestieSmazak.db.RegisterCallback(QuestieOptionsEngine.tabs.profiles, "OnProfileReset", _OnProfileChanged)
     end
 
     return {
@@ -132,8 +132,8 @@ function QuestieOptionsEngine.tabs.profiles:Initialize()
                 width = 0.6,
                 titleAlign = "RIGHT",
                 get = function()
-                    local current = Questie.db:GetCurrentProfile() or "Default"
-                    return l10n("Current Profile: %s", Questie:Colorize(current, "yellow"))
+                    local current = QuestieSmazak.db:GetCurrentProfile() or "Default"
+                    return l10n("Current Profile: %s", QuestieSmazak:Colorize(current, "yellow"))
                 end,
             },
             reset_profile = {
@@ -171,11 +171,11 @@ function QuestieOptionsEngine.tabs.profiles:Initialize()
                         return
                     end
                     if strlenutf8(val) > 50 then
-                        Questie.Error("Profile names cannot be longer than 50 characters")
+                        QuestieSmazak.Error("Profile names cannot be longer than 50 characters")
                         return
                     end
                     selectedDeleteProfile = nil
-                    Questie.db:SetProfile(val)
+                    QuestieSmazak.db:SetProfile(val)
                 end,
                 textBoxCharLimit = 50,
             },
@@ -187,14 +187,14 @@ function QuestieOptionsEngine.tabs.profiles:Initialize()
                 width = "half",
                 options = _GetChooseProfiles,
                 get = function()
-                    return Questie.db:GetCurrentProfile()
+                    return QuestieSmazak.db:GetCurrentProfile()
                 end,
                 set = function(val)
-                    if val and val ~= Questie.db:GetCurrentProfile() then
+                    if val and val ~= QuestieSmazak.db:GetCurrentProfile() then
                         if selectedDeleteProfile == val then
                             selectedDeleteProfile = nil
                         end
-                        Questie.db:SetProfile(val)
+                        QuestieSmazak.db:SetProfile(val)
                     end
                 end,
             },
@@ -224,7 +224,7 @@ function QuestieOptionsEngine.tabs.profiles:Initialize()
                 end,
                 set = function(val)
                     if val then
-                        Questie.db:CopyProfile(val)
+                        QuestieSmazak.db:CopyProfile(val)
                     end
                 end,
             },
@@ -286,10 +286,10 @@ Popup.Dialogs["QUESTIE_PROFILE_RESET_CONFIRM"] = {
     button1 = YES,
     button2 = NO,
     OnAccept = function()
-        Questie.db:ResetProfile()
+        QuestieSmazak.db:ResetProfile()
     end,
     OnShow = function(self)
-        local current = Questie.db:GetCurrentProfile() or ""
+        local current = QuestieSmazak.db:GetCurrentProfile() or ""
         self.Text:SetText(l10n("Are you sure you want to reset the '%s' profile to default settings?", current))
         self:SetFrameStrata("FULLSCREEN_DIALOG")
         self:Raise()
@@ -304,10 +304,10 @@ Popup.Dialogs["QUESTIE_PROFILE_DELETE_CONFIRM"] = {
     button1 = YES,
     button2 = NO,
     OnAccept = function()
-        if selectedDeleteProfile and selectedDeleteProfile ~= Questie.db:GetCurrentProfile() then
+        if selectedDeleteProfile and selectedDeleteProfile ~= QuestieSmazak.db:GetCurrentProfile() then
             local toDelete = selectedDeleteProfile
             selectedDeleteProfile = nil
-            Questie.db:DeleteProfile(toDelete, true)
+            QuestieSmazak.db:DeleteProfile(toDelete, true)
             QuestieOptionsEngine:RefreshStates()
         end
     end,

@@ -1,17 +1,17 @@
 -- Draws scenario objectives. Challenge Mode dungeons are scenarios with an additional timer line.
 ---@class ScenarioSection
-local ScenarioSection = QuestieLoader:CreateModule("ScenarioSection")
+local ScenarioSection = QuestieSmazakLoader:CreateModule("ScenarioSection")
 
 ---@type TrackerLayout
-local TrackerLayout = QuestieLoader:ImportModule("TrackerLayout")
+local TrackerLayout = QuestieSmazakLoader:ImportModule("TrackerLayout")
 ---@type TrackerLinePool
-local TrackerLinePool = QuestieLoader:ImportModule("TrackerLinePool")
+local TrackerLinePool = QuestieSmazakLoader:ImportModule("TrackerLinePool")
 ---@type ChallengeModeTimer
-local ChallengeModeTimer = QuestieLoader:ImportModule("ChallengeModeTimer")
+local ChallengeModeTimer = QuestieSmazakLoader:ImportModule("ChallengeModeTimer")
 ---@type QuestieLib
-local QuestieLib = QuestieLoader:ImportModule("QuestieLib")
+local QuestieLib = QuestieSmazakLoader:ImportModule("QuestieLib")
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 
 local LSM30 = LibStub("LibSharedMedia-3.0")
 
@@ -20,7 +20,7 @@ local LSM30 = LibStub("LibSharedMedia-3.0")
 ---@param fontSize number
 ---@param marginLeft number
 local function _SetupLine(line, fontName, fontSize, marginLeft)
-    line.label:SetFont(LSM30:Fetch("font", fontName), fontSize, Questie.db.profile.trackerFontOutline)
+    line.label:SetFont(LSM30:Fetch("font", fontName), fontSize, QuestieSmazak.db.profile.trackerFontOutline)
     line.label:SetHeight(fontSize)
     line.expandZone:Hide()
     line.expandQuest:Hide()
@@ -50,7 +50,7 @@ function ScenarioSection.Draw(isChallengeMode)
         return
     end
 
-    _SetupLine(line, Questie.db.profile.trackerFontZone, Questie.db.profile.trackerFontSizeZone + 3, 0)
+    _SetupLine(line, QuestieSmazak.db.profile.trackerFontZone, QuestieSmazak.db.profile.trackerFontSizeZone + 3, 0)
 
     local dungeonName = GetInstanceInfo()
     if isChallengeMode then
@@ -69,7 +69,7 @@ function ScenarioSection.Draw(isChallengeMode)
             return
         end
 
-        _SetupLine(line, Questie.db.profile.trackerFontQuest, Questie.db.profile.trackerFontSizeQuest + 10, 15)
+        _SetupLine(line, QuestieSmazak.db.profile.trackerFontQuest, QuestieSmazak.db.profile.trackerFontSizeQuest + 10, 15)
 
         line.label:SetText(ChallengeModeTimer.GetTimerString())
         ChallengeModeTimer.SetTimerLabel(line.label)
@@ -98,7 +98,7 @@ function ScenarioSection.Draw(isChallengeMode)
             Completed = criteriaInfo.completed,
         }
 
-        _SetupLine(line, Questie.db.profile.trackerFontObjective, Questie.db.profile.trackerFontSizeObjective + 2, 15)
+        _SetupLine(line, QuestieSmazak.db.profile.trackerFontObjective, QuestieSmazak.db.profile.trackerFontSizeObjective + 2, 15)
         line:SetScenarioCriteria(objective)
 
         local lineEnding = tostring(objective.Collected) .. "/" .. tostring(objective.Needed)

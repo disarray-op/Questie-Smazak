@@ -1,5 +1,5 @@
 ---@class Expansions
-local Expansions = QuestieLoader:CreateModule("Expansions")
+local Expansions = QuestieSmazakLoader:CreateModule("Expansions")
 
 -- Make sure these are available
 -- Provided by blizzard
@@ -18,7 +18,7 @@ Expansions.MoP = expansionOrderLookup[WOW_PROJECT_MISTS_CLASSIC or 19]
 
 -- Only a missing project ID defaults to Era. Unknown IDs, including actual Retail, remain unmapped.
 Expansions.Current = expansionOrderLookup[WOW_PROJECT_ID or 2]
-if Questie and Questie.IsForever then
+if QuestieSmazak and QuestieSmazak.IsForever then
     -- VersionCheck runs first in every TOC. Forever's API family does not determine its content expansion.
     Expansions.Current = Expansions.Era
 end

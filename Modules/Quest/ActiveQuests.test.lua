@@ -6,7 +6,7 @@ describe("ActiveQuests", function()
 
     before_each(function()
         dofile("Modules/Quest/ActiveQuests.lua")
-        ActiveQuests = QuestieLoader:ImportModule("ActiveQuests")
+        ActiveQuests = QuestieSmazakLoader:ImportModule("ActiveQuests")
     end)
 
     describe("Add", function()

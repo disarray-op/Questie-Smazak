@@ -7,7 +7,7 @@ describe("BlacklistFilter", function()
 
     before_each(function()
         dofile("Database/Corrections/BlacklistFilter.lua")
-        BlacklistFilter = QuestieLoader:ImportModule("BlacklistFilter")
+        BlacklistFilter = QuestieSmazakLoader:ImportModule("BlacklistFilter")
     end)
 
     it("should correctly filter blacklists", function()

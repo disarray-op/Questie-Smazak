@@ -1,11 +1,11 @@
 ---@class QuestieProfiler
-local QuestieProfiler = QuestieLoader:CreateModule("Profiler")
+local QuestieProfiler = QuestieSmazakLoader:CreateModule("Profiler")
 ---@type Expansions
-local Expansions = QuestieLoader:ImportModule("Expansions")
+local Expansions = QuestieSmazakLoader:ImportModule("Expansions")
 ---@type ThreadLib
-local ThreadLib = QuestieLoader:ImportModule("ThreadLib")
+local ThreadLib = QuestieSmazakLoader:ImportModule("ThreadLib")
 ---@type QuestieProfilerPreHook
-local ProfilerPreHook = QuestieLoader:ImportModule("ProfilerPreHook")
+local ProfilerPreHook = QuestieSmazakLoader:ImportModule("ProfilerPreHook")
 
 local setThreadProfilingCallbacks = ThreadLib.SetProfilingCallbacks
 local clearThreadProfilingCallbacks = ThreadLib.ClearProfilingCallbacks
@@ -18,9 +18,9 @@ local unpack = unpack
 -- negative elapsed that AddMeasurement then accumulates - permanently poisoning that function's total and the
 -- session's highestMS. It was carried as a fallback for a while and was worth neither the bug class nor the
 -- code: measured on a live client, a reset mid-call published -99 ms, and the branch could never run anyway
--- because QuestieLoader calls GetTimePreciseSec directly and would have errored first.
+-- because QuestieSmazakLoader calls GetTimePreciseSec directly and would have errored first.
 --
--- GetTimePreciseSec is monotonic and present on every client Questie supports. If it is ever absent the
+-- GetTimePreciseSec is monotonic and present on every client QuestieSmazak supports. If it is ever absent the
 -- profiler declines to arm rather than measuring with something that can go backwards.
 ---@type (fun(): number)? @Current time in milliseconds; nil when the client offers no usable timer
 local Now
@@ -167,7 +167,7 @@ end
 ---Naming an anonymous job by where it is defined rather than where it was submitted means one closure
 ---submitted from several call sites aggregates into a single job row. That is the intent: the closure is the
 ---scheduling unit, and splitting it by call site would report the same work as several unrelated jobs.
----A path from another addon is left untouched, so nothing can collapse into a Questie name by accident.
+---A path from another addon is left untouched, so nothing can collapse into a QuestieSmazak name by accident.
 ---@param stackLine string
 ---@return string description
 local function ShortenStackFrame(stackLine)
@@ -177,23 +177,23 @@ local function ShortenStackFrame(stackLine)
         stackLine = definitionFile .. ":" .. definitionLine
     end
 
-    -- Anchored on "AddOns/Questie/" rather than on "Interface", because WoW truncates a long path from the
-    -- left with an ellipsis - "...erface/AddOns/Questie/Modules/..." - and a match that needs the whole word
+    -- Anchored on "AddOns/QuestieSmazak/" rather than on "Interface", because WoW truncates a long path from the
+    -- left with an ellipsis - "...erface/AddOns/QuestieSmazak/Modules/..." - and a match that needs the whole word
     -- silently leaves the ellipsis and the full path in the job's name. Still specific enough that another
-    -- addon's path cannot collapse into a Questie one.
-    stackLine = string.gsub(stackLine, "[^%[%]]-[Aa]dd[Oo]ns[/\\]+[Qq]uestie[/\\]+", "", 1)
+    -- addon's path cannot collapse into a QuestieSmazak one.
+    stackLine = string.gsub(stackLine, "[^%[%]]-[Aa]dd[Oo]ns[/\\]+[Qq]uestie[Ss]mazak[/\\]+", "", 1)
 
-    -- The match above still needs "AddOns/Questie/" intact, and for a window of path lengths the ellipsis
-    -- cut lands inside the marker itself - "...Ons/Questie/Modules/..." or "...stie/Modules/..." - keeping
+    -- The match above still needs "AddOns/QuestieSmazak/" intact, and for a window of path lengths the ellipsis
+    -- cut lands inside the marker itself - "...Ons/QuestieSmazak/Modules/..." or "...stie/Modules/..." - keeping
     -- the exact ellipsis-and-path name this function exists to remove. What sits between the ellipsis and
     -- the first slash can then only be the tail of a marker directory, so it is judged as a suffix. A
     -- foreign addon whose truncated name merely ends like "AddOns" keeps its path: the strip needs the
-    -- Questie segment after it, which no other addon's path carries.
+    -- QuestieSmazak segment after it, which no other addon's path carries.
     local ellipsisFragment, afterFragment = string.match(stackLine, "^%.%.%.([^/\\]*)[/\\]+(.*)$")
     if ellipsisFragment then
         local lowerFragment = string.lower(ellipsisFragment)
         if lowerFragment == "" or string.sub("addons", -string.len(lowerFragment)) == lowerFragment then
-            local strippedPath, questieMatches = string.gsub(afterFragment, "^[Qq]uestie[/\\]+", "")
+            local strippedPath, questieMatches = string.gsub(afterFragment, "^[Qq]uestie[Ss]mazak[/\\]+", "")
             if questieMatches > 0 then
                 stackLine = strippedPath
             end
@@ -769,18 +769,18 @@ end
 -------------------------
 -- Bundled library roots
 -------------------------
--- A library method called by Questie is already being paid for - it sits inside the self time of whichever
--- Questie function called it, unnamed. Profiling these roots does not add cost to the addon, it moves cost
+-- A library method called by QuestieSmazak is already being paid for - it sits inside the self time of whichever
+-- QuestieSmazak function called it, unnamed. Profiling these roots does not add cost to the addon, it moves cost
 -- that is already there onto a row that says where it went. Measured on Era: a full icon redraw spent 774 ms
--- inside HereBeDragons-Pins public methods against 1419 ms in every Questie function combined, 643 ms of it in
+-- inside HereBeDragons-Pins public methods against 1419 ms in every QuestieSmazak function combined, 643 ms of it in
 -- RemoveWorldMapIcon alone, and none of it was visible in the report.
 --
--- Questie-suffixed majors only. The other 22 libraries LibStub holds here are generic - Ace3, CallbackHandler,
+-- QuestieSmazak-suffixed majors only. The other 22 libraries LibStub holds here are generic - Ace3, CallbackHandler,
 -- LibSharedMedia, LibDBIcon, Krowi - and registration is not ownership: the loaded copy may belong to another
 -- addon, so wrapping those tables would count other addons' calls, add overhead to them, and let this report
--- claim work that is not Questie's. An explicit list rather than a name pattern, because "Questie" in a major
+-- claim work that is not QuestieSmazak's. An explicit list rather than a name pattern, because "QuestieSmazak" in a major
 -- is a naming convention rather than a guarantee, and four entries are cheap to keep honest.
--- Named for the folder the code sits in and for whatever Questie's own files call the library - HBD, HBDPins
+-- Named for the folder the code sits in and for whatever QuestieSmazak's own files call the library - HBD, HBDPins
 -- and LibDropDown are the aliases used at 11 call sites across the addon, while the LibStub major is a string
 -- nobody types. It reads as the same thing the reader already has in their own file, and it leaves room in the
 -- narrow relation columns, where "Libraries.HereBeDragonsPins.worldmapProvider.HandlePin" lost the function
@@ -795,7 +795,7 @@ local PROFILED_LIBRARIES = {
         major = "HereBeDragonsQuestie-Pins-2.0",
         name = "Libs.HBDPins",
         -- The minimap updater, and the reason frame scripts are worth reaching at all. Measured on Era while
-        -- running 659 yards: 6.68 ms per second here against 0.11 ms per second across every Questie function
+        -- running 659 yards: 6.68 ms per second here against 0.11 ms per second across every QuestieSmazak function
         -- combined, because UpdateMinimapIconPosition redraws every active pin on every frame the player moves.
         -- Standing still it costs 0.36 ms per second, the loop being guarded on the position having changed,
         -- which is why every stationary measurement taken before this said there was nothing here.
@@ -821,7 +821,7 @@ local PROFILED_LIBRARIES = {
 ---
 ---Explicitly named frames only, and this must stay that way. Frames are runtime objects with protected
 ---behaviour and enormous graphs, and probing an arbitrary one is how a profiler starts breaking the UI it
----is measuring. These two belong to Questie's own embedded copies of HBD and are ordinary unprotected frames.
+---is measuring. These two belong to QuestieSmazak's own embedded copies of HBD and are ordinary unprotected frames.
 ---@param library table
 ---@param target table @An entry of PROFILED_LIBRARIES
 local function HookLibraryFrameScripts(library, target)
@@ -856,7 +856,7 @@ end
 
 ---Traverses the allowlisted libraries as profiler roots.
 ---
----Runs before the Questie modules so that a table reachable from both is named for the library that owns it
+---Runs before the QuestieSmazak modules so that a table reachable from both is named for the library that owns it
 ---rather than for whichever module happened to reach it first.
 ---@param excludedTables table<table, boolean>
 ---@param visitedTables table<table, boolean>
@@ -909,14 +909,14 @@ local function HookPreInstalledIndirections()
     end
 end
 
----Hooks newly available Questie module functions without stacking wrappers.
+---Hooks newly available QuestieSmazak module functions without stacking wrappers.
 ---@return boolean refreshed
 function QuestieProfiler:RefreshHooks()
     if not QuestieProfiler.active then
         return false
     end
 
-    -- Treat direct global tables as external boundaries when they are encountered beneath a Questie module.
+    -- Treat direct global tables as external boundaries when they are encountered beneath a QuestieSmazak module.
     local excludedTables = {}
     for _, globalValue in pairs(_G) do
         if type(globalValue) == "table" then
@@ -924,21 +924,21 @@ function QuestieProfiler:RefreshHooks()
         end
     end
 
-    -- AceAddon and AceDB attach non-Questie internals and saved/profile data to the Runtime Addon Object.
-    if Questie.db then
-        excludedTables[Questie.db] = true
+    -- AceAddon and AceDB attach non-QuestieSmazak internals and saved/profile data to the Runtime Addon Object.
+    if QuestieSmazak.db then
+        excludedTables[QuestieSmazak.db] = true
     end
-    if Questie.modules then
-        excludedTables[Questie.modules] = true
+    if QuestieSmazak.modules then
+        excludedTables[QuestieSmazak.modules] = true
     end
-    if Questie.orderedModules then
-        excludedTables[Questie.orderedModules] = true
+    if QuestieSmazak.orderedModules then
+        excludedTables[QuestieSmazak.orderedModules] = true
     end
 
-    local questieStreamLib = QuestieLoader._modules.QuestieStreamLib
+    local questieStreamLib = QuestieSmazakLoader._modules.QuestieStreamLib
 
     local moduleNames = {}
-    for moduleName, module in pairs(QuestieLoader._modules) do
+    for moduleName, module in pairs(QuestieSmazakLoader._modules) do
         -- ProfilerReport is the window's other half. Wrapping it would measure the diagnostic tool
         -- while it builds the very report the measurements are displayed in.
         if module ~= QuestieProfiler and moduleName ~= "ProfilerUI" and moduleName ~= "ProfilerReport"
@@ -958,18 +958,18 @@ function QuestieProfiler:RefreshHooks()
     HookPreInstalledIndirections()
     HookProfiledLibraries(excludedTables, visitedTables, namespaceShapeCache, questieStreamLib)
     for _, moduleName in ipairs(moduleNames) do
-        QuestieProfiler:HookTable(QuestieLoader._modules[moduleName], moduleName, excludedTables, visitedTables,
+        QuestieProfiler:HookTable(QuestieSmazakLoader._modules[moduleName], moduleName, excludedTables, visitedTables,
             namespaceShapeCache, true, questieStreamLib)
     end
 
-    QuestieProfiler:HookTable(Questie, "Questie", excludedTables, visitedTables, namespaceShapeCache, true, questieStreamLib)
+    QuestieProfiler:HookTable(QuestieSmazak, "QuestieSmazak", excludedTables, visitedTables, namespaceShapeCache, true, questieStreamLib)
     return true
 end
 
 -------------------------
 -- Addon file load
 -------------------------
--- QuestieLoader records how long each file took to load. Those rows describe work that finished before this
+-- QuestieSmazakLoader records how long each file took to load. Those rows describe work that finished before this
 -- session's wrappers existed, so they are published rather than measured. The loader retains its closed
 -- readings, and each later Start republishes them after clearing the previous session's result tables.
 --
@@ -978,10 +978,10 @@ end
 -- file's duration become the reported peak for functions and force every consumer to sniff a name prefix to
 -- tell the two apart.
 
----Publishes QuestieLoader's per-file load timings.
+---Publishes QuestieSmazakLoader's per-file load timings.
 function QuestieProfiler:ImportLoadTimings()
-    local loadTimings = QuestieLoader.loadTimings
-    local loadMemory = QuestieLoader.loadMemory or {}
+    local loadTimings = QuestieSmazakLoader.loadTimings
+    local loadMemory = QuestieSmazakLoader.loadMemory or {}
     if not QuestieProfiler.active or type(loadTimings) ~= "table" then
         return
     end
@@ -996,12 +996,12 @@ end
 -- UI entry points
 -------------------------
 -- The UI module owns all frame and refresh state. These facades keep profiler lifecycle callers independent of its implementation.
--- Resolved once at file scope rather than per call. ImportModule is what QuestieLoader stamps load timings on,
+-- Resolved once at file scope rather than per call. ImportModule is what QuestieSmazakLoader stamps load timings on,
 -- so calling it at runtime would reopen an interval under this file's name and charge it whatever ran next -
 -- which is how hook installation, the most expensive thing startup does, ended up reported as this file's
 -- load cost. QuestieProfilerUI.lua loads after this one, but ImportModule hands back the table it will fill.
 ---@type QuestieProfilerUI
-local ProfilerUI = QuestieLoader:ImportModule("ProfilerUI")
+local ProfilerUI = QuestieSmazakLoader:ImportModule("ProfilerUI")
 
 ---@return QuestieProfilerUI
 local function ImportProfilerUI()
@@ -1168,12 +1168,12 @@ local function StartProfilingSession(showUI)
         if showUI ~= false then
             local uiShown, showError = pcall(QuestieProfiler.ShowUI, QuestieProfiler)
             if not uiShown then
-                Questie.Error("QuestieProfiler failed to show its UI", showError)
+                QuestieSmazak.Error("QuestieProfiler failed to show its UI", showError)
             end
         else
             local uiHidden, hideError = pcall(QuestieProfiler.HideUI, QuestieProfiler)
             if not uiHidden then
-                Questie.Error("QuestieProfiler failed to hide its UI", hideError)
+                QuestieSmazak.Error("QuestieProfiler failed to hide its UI", hideError)
             end
         end
         return true
@@ -1182,7 +1182,7 @@ local function StartProfilingSession(showUI)
     -- Said out loud rather than failing quietly: the player asked for a profiling session, and "nothing
     -- happened" is a worse answer than a line in chat naming the reason.
     if not Now then
-        Questie.Error("QuestieProfiler cannot run: this client has no GetTimePreciseSec")
+        QuestieSmazak.Error("QuestieProfiler cannot run: this client has no GetTimePreciseSec")
         return false, true
     end
     -- Claim callback ownership before resetting prior results, then install active callbacks only after state is ready.
@@ -1198,24 +1198,24 @@ local function StartProfilingSession(showUI)
         return false
     end
     StartFrameBoundaryReset()
-    -- ResetSessionState cleared the published copy, but QuestieLoader still holds the readings. Addon load
+    -- ResetSessionState cleared the published copy, but QuestieSmazakLoader still holds the readings. Addon load
     -- happened once for this client and cannot be measured again, so a restarted session republishes rather
     -- than destroying the only record of it. The UI hides the rows instead, which is reversible.
     local imported, importError = pcall(QuestieProfiler.ImportLoadTimings, QuestieProfiler)
     if not imported then
-        Questie.Error("QuestieProfiler failed to import load timings", importError)
+        QuestieSmazak.Error("QuestieProfiler failed to import load timings", importError)
     end
 
     -- Showing first gives immediate feedback while the bounded module traversal installs the function wrappers.
     if showUI ~= false then
         local uiShown, showError = pcall(QuestieProfiler.ShowUI, QuestieProfiler)
         if not uiShown then
-            Questie.Error("QuestieProfiler failed to show its UI", showError)
+            QuestieSmazak.Error("QuestieProfiler failed to show its UI", showError)
         end
     else
         local uiHidden, hideError = pcall(QuestieProfiler.HideUI, QuestieProfiler)
         if not uiHidden then
-            Questie.Error("QuestieProfiler failed to hide its UI", hideError)
+            QuestieSmazak.Error("QuestieProfiler failed to hide its UI", hideError)
         end
     end
 
@@ -1223,14 +1223,14 @@ local function StartProfilingSession(showUI)
     -- would be a low-level path quietly dominating every report.
     local mismatches = QuestieProfiler.FindPreHookExclusionMismatches()
     if #mismatches > 0 then
-        Questie.Error("QuestieProfilerPreHook is missing exclusions the profiler requires:",
+        QuestieSmazak.Error("QuestieProfilerPreHook is missing exclusions the profiler requires:",
             table.concat(mismatches, ", "))
     end
 
     local hooksRefreshed, refreshError = pcall(QuestieProfiler.RefreshHooks, QuestieProfiler)
     if not hooksRefreshed then
         QuestieProfiler:Unhook()
-        Questie.Error("QuestieProfiler failed to install hooks", refreshError)
+        QuestieSmazak.Error("QuestieProfiler failed to install hooks", refreshError)
         return false, true
     end
     return true

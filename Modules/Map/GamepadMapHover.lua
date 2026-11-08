@@ -1,13 +1,13 @@
 ---@class GamepadMapHover
-local GamepadMapHover = QuestieLoader:CreateModule("GamepadMapHover")
+local GamepadMapHover = QuestieSmazakLoader:CreateModule("GamepadMapHover")
 local _GamepadMapHover = GamepadMapHover.private
 
 ---@type MapIconTooltip
-local MapIconTooltip = QuestieLoader:ImportModule("MapIconTooltip")
+local MapIconTooltip = QuestieSmazakLoader:ImportModule("MapIconTooltip")
 ---@type QuestieFrame
-local QuestieFrame = QuestieLoader:ImportModule("QuestieFrame")
+local QuestieFrame = QuestieSmazakLoader:ImportModule("QuestieSmazakFrame")
 
--- Blizzard's gamepad cursor can't see Questie pins (see HBDHooks), so we find the hovered icon ourselves.
+-- Blizzard's gamepad cursor can't see QuestieSmazak pins (see HBDHooks), so we find the hovered icon ourselves.
 
 local PIN_TEMPLATE = "HereBeDragonsPinsTemplateQuestie"
 local UPDATE_INTERVAL = 0.05
@@ -21,7 +21,7 @@ local hoveredData
 
 function GamepadMapHover.Initialize()
     -- Showing the tooltip on GameTooltip from here taints the gamepad UI
-    _GamepadMapHover.tooltip = CreateFrame("GameTooltip", "QuestieGamepadMapTooltip", UIParent, "GameTooltipTemplate")
+    _GamepadMapHover.tooltip = CreateFrame("GameTooltip", "QuestieSmazakGamepadMapTooltip", UIParent, "GameTooltipTemplate")
     _GamepadMapHover.updateFrame = CreateFrame("Frame")
     _GamepadMapHover.updateFrame:SetScript("OnUpdate", _GamepadMapHover.OnUpdate)
 end

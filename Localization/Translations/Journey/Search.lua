@@ -1,5 +1,5 @@
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 
 local searchLocales = {
     ["Advanced Search"] = {
@@ -362,14 +362,14 @@ local searchLocales = {
         ["zhCN"] = "\n启用时，即使该任务处于活动状态也将其在地图中隐藏。\n\n也可以通过在地图上按住Shift+单击来隐藏该任务",
         ["zhTW"] = "\n啟用時，即使是正在進行中的任務，也會在地圖上隱藏。\n\n也可以按住 Shift 點擊地圖上的任務來隱藏",
     },
-    ["Hidden by Questie"] = {
+    ["Hidden by QuestieSmazak"] = {
         ["enUS"] = true,
-        ["deDE"] = "Von Questie versteckt",
-        ["esES"] = "Ocultado por Questie",
-        ["esMX"] = "Ocultado por Questie",
-        ["frFR"] = "Cachée par Questie",
+        ["deDE"] = "Von QuestieSmazak versteckt",
+        ["esES"] = "Ocultado por QuestieSmazak",
+        ["esMX"] = "Ocultado por QuestieSmazak",
+        ["frFR"] = "Cachée par QuestieSmazak",
         ["koKR"] = "퀘스티로 숨겨짐",
-        ["ptBR"] = "Oculto por Questie",
+        ["ptBR"] = "Oculto por QuestieSmazak",
         ["ruRU"] = "Скрыто аддоном",
         ["zhCN"] = "被Questie隐藏",
         ["zhTW"] = "被任務位置提示插件隱藏",

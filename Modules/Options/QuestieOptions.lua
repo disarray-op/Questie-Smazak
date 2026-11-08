@@ -1,32 +1,32 @@
 ---@type QuestieCompat
-local QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+local QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
 
 ---@class QuestieOptions
-local QuestieOptions = QuestieLoader:CreateModule("QuestieOptions");
+local QuestieOptions = QuestieSmazakLoader:CreateModule("QuestieOptions");
 -------------------------
 --Import modules.
 -------------------------
 ---@type QuestieOptionsEngine
-local QuestieOptionsEngine = QuestieLoader:ImportModule("QuestieOptionsEngine");
+local QuestieOptionsEngine = QuestieSmazakLoader:ImportModule("QuestieOptionsEngine");
 ---@type QuestieQuest
-local QuestieQuest = QuestieLoader:ImportModule("QuestieQuest");
+local QuestieQuest = QuestieSmazakLoader:ImportModule("QuestieQuest");
 ---@type QuestieJourney
-local QuestieJourney = QuestieLoader:ImportModule("QuestieJourney");
+local QuestieJourney = QuestieSmazakLoader:ImportModule("QuestieJourney");
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 ---@type QuestieCombatQueue
-local QuestieCombatQueue = QuestieLoader:ImportModule("QuestieCombatQueue")
+local QuestieCombatQueue = QuestieSmazakLoader:ImportModule("QuestieCombatQueue")
 ---@type QuestieLib
-local QuestieLib = QuestieLoader:ImportModule("QuestieLib")
+local QuestieLib = QuestieSmazakLoader:ImportModule("QuestieLib")
 ---@type Sounds
-local Sounds = QuestieLoader:ImportModule("Sounds")
+local Sounds = QuestieSmazakLoader:ImportModule("Sounds")
 ---@type QuestieTracker
-local QuestieTracker = QuestieLoader:ImportModule("QuestieTracker")
+local QuestieTracker = QuestieSmazakLoader:ImportModule("QuestieTracker")
 ---@type TrackerBaseFrame
-local TrackerBaseFrame = QuestieLoader:ImportModule("TrackerBaseFrame")
+local TrackerBaseFrame = QuestieSmazakLoader:ImportModule("TrackerBaseFrame")
 
 QuestieOptions.tabs = { ... }
-QuestieConfigFrame = nil
+QuestieSmazakConfigFrame = nil
 
 local AceGUI = LibStub("AceGUI-3.0")
 ---@type AceConfigDialog-3.0
@@ -46,14 +46,14 @@ function QuestieOptions:Initialize()
     ------------------------------------------------------------
     -- Everything below this initializes the old AceGUI popup --
     ------------------------------------------------------------
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieOptions]: Initializing...")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieOptions]: Initializing...")
 
     local optionsTable = _CreateOptionsTable()
 
     coroutine.yield()
 
-    LibStub("AceConfig-3.0"):RegisterOptionsTable("Questie", optionsTable)
-    --AceConfigDialog:AddToBlizOptions("Questie", "Questie");
+    LibStub("AceConfig-3.0"):RegisterOptionsTable("QuestieSmazak", optionsTable)
+    --AceConfigDialog:AddToBlizOptions("QuestieSmazak", "QuestieSmazak");
 
     coroutine.yield()
 
@@ -63,8 +63,8 @@ function QuestieOptions:Initialize()
     configFrame:Hide()
     coroutine.yield()
 
-    AceConfigDialog:SetDefaultSize("Questie", 640, 700)
-    AceConfigDialog:Open("Questie", configFrame) -- load the options into configFrame
+    AceConfigDialog:SetDefaultSize("QuestieSmazak", 640, 700)
+    AceConfigDialog:Open("QuestieSmazak", configFrame) -- load the options into configFrame
     configFrame:SetLayout("Fill")
     configFrame:EnableResize(false)
     QuestieCompat.SetResizeBounds(configFrame.frame, 550, 400)
@@ -86,37 +86,37 @@ function QuestieOptions:Initialize()
     configFrame:Hide()
     coroutine.yield()
 
-    QuestieConfigFrame = configFrame
-    table.insert(UISpecialFrames, "QuestieConfigFrame")
+    QuestieSmazakConfigFrame = configFrame
+    table.insert(UISpecialFrames, "QuestieSmazakConfigFrame")
 
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieOptions]: Initialization done")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieOptions]: Initialization done")
 end
 
 -- Generic function to hide the config frame.
 function QuestieOptions:HideFrame()
-    if QuestieConfigFrame and QuestieConfigFrame:IsShown() then
-        QuestieConfigFrame:Hide();
+    if QuestieSmazakConfigFrame and QuestieSmazakConfigFrame:IsShown() then
+        QuestieSmazakConfigFrame:Hide();
     end
 end
 
 -- Open the configuration window
 function QuestieOptions:ToggleConfigWindow()
-    if not QuestieConfigFrame:IsShown() then
+    if not QuestieSmazakConfigFrame:IsShown() then
         PlaySound(882)
-        AceConfigDialog:Open("Questie", QuestieConfigFrame)
+        AceConfigDialog:Open("QuestieSmazak", QuestieSmazakConfigFrame)
     else
-        QuestieConfigFrame:Hide()
+        QuestieSmazakConfigFrame:Hide()
     end
 end
 
 -- get option value
 function QuestieOptions:GetProfileValue(info)
-    return Questie.db.profile[info[#info]]
+    return QuestieSmazak.db.profile[info[#info]]
 end
 
 -- set option value
 function QuestieOptions:SetProfileValue(info, value)
-    Questie.db.profile[info[#info]] = value
+    QuestieSmazak.db.profile[info[#info]] = value
 end
 
 ---@return table
@@ -140,8 +140,8 @@ _CreateOptionsTable = function()
     QuestieOptionsEngine:Initialize()
     coroutine.yield()
     return {
-        name = "Questie",
-        handler = Questie,
+        name = "QuestieSmazak",
+        handler = QuestieSmazak,
         type = "group",
         childGroups = "tab",
         args = {
@@ -153,7 +153,7 @@ _CreateOptionsTable = function()
             nameplate_tab = nameplate_tab,
             dbm_hud_tab = dbm_hud_tab,
             advanced_tab = advanced_tab,
-            profiles_tab = LibStub("AceDBOptions-3.0"):GetOptionsTable(Questie.db)
+            profiles_tab = LibStub("AceDBOptions-3.0"):GetOptionsTable(QuestieSmazak.db)
         }
     }
 end
@@ -162,7 +162,7 @@ end
 --local initFrame = CreateFrame("Frame")
 --initFrame:RegisterEvent("ADDON_LOADED")
 --initFrame:SetScript("OnEvent", function(self, event, addonName)
---    if addonName == "Questie" then -- Replace with your actual folder name
+--    if addonName == "QuestieSmazak" then -- Replace with your actual folder name
 --        self:UnregisterEvent("ADDON_LOADED")
 --    end
 --end)

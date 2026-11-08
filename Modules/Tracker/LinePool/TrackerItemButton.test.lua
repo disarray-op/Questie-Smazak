@@ -1,6 +1,6 @@
 dofile("setupTests.lua")
 local stub = require("luassert.stub")
-local QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+local QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
 local LoadQuestieDBMock = dofile("test/QuestieDBMock.lua")
 
 describe("TrackerItemButton", function()
@@ -11,7 +11,7 @@ describe("TrackerItemButton", function()
     local getItemCountMock, getItemCooldownMock, getItemIconMock, itemCount
 
     before_each(function()
-        Questie.db.profile = {}
+        QuestieSmazak.db.profile = {}
         CreateFrame.resetMockedFrames()
         itemCount = 3
         getItemCountMock = stub(QuestieCompat, "GetItemCount", function(itemId) return itemId == 123 and itemCount or 0 end)
@@ -21,10 +21,10 @@ describe("TrackerItemButton", function()
         -- QuestieDB binds the provider schema and queries at file load.
         LoadQuestieDBMock()
         dofile("Database/QuestieDB.lua")
-        QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+        QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
 
         dofile("Modules/Tracker/LinePool/TrackerItemButton.lua")
-        TrackerItemButton = QuestieLoader:ImportModule("TrackerItemButton")
+        TrackerItemButton = QuestieSmazakLoader:ImportModule("TrackerItemButton")
     end)
 
     after_each(function()
@@ -37,7 +37,7 @@ describe("TrackerItemButton", function()
         local TrackerFadeTicker, originals, onHighlightEnter, onHighlightLeave
 
         before_each(function()
-            TrackerFadeTicker = QuestieLoader:ImportModule("TrackerFadeTicker")
+            TrackerFadeTicker = QuestieSmazakLoader:ImportModule("TrackerFadeTicker")
             originals = {
                 Unfade = TrackerFadeTicker.Unfade,
                 Fade = TrackerFadeTicker.Fade,
@@ -101,7 +101,7 @@ describe("TrackerItemButton", function()
     end)
 
     it("should set alpha to 0 when trackerFadeQuestItemButtons is true", function()
-        Questie.db.profile.trackerFadeQuestItemButtons = true
+        QuestieSmazak.db.profile.trackerFadeQuestItemButtons = true
         local trackerItemButton = TrackerItemButton.New("TestButton")
 
         assert.is_equal(0, trackerItemButton:GetAlpha())

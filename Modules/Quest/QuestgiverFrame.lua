@@ -1,51 +1,51 @@
 ---@type QuestieCompat
-local QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+local QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
 
 ---@class QuestgiverFrame
-local QuestgiverFrame = QuestieLoader:CreateModule("QuestgiverFrame")
+local QuestgiverFrame = QuestieSmazakLoader:CreateModule("QuestgiverFrame")
 
 ---@type QuestieDB
-local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
 
 ---@type QuestieLib
-local QuestieLib = QuestieLoader:ImportModule("QuestieLib")
+local QuestieLib = QuestieSmazakLoader:ImportModule("QuestieLib")
 
 local _G = _G
 
 -- This is the logic used for determining which icon we should show for a quest
--- This just determines the "type" of icon shown, not the exact icon file - see Questie.icons
+-- This just determines the "type" of icon shown, not the exact icon file - see QuestieSmazak.icons
 ---@param questID number
 ---@param isActive boolean
 ---@return string
 local function determineAppropriateQuestIcon(questID, isActive)
     if questID == 0 then -- if we were fed a questID of 0, the ID bruteforce failed, abort
         if isActive == true then
-            return Questie.icons["incomplete"]
+            return QuestieSmazak.icons["incomplete"]
         else
-            return Questie.icons["available"]
+            return QuestieSmazak.icons["available"]
         end
     end
-    local icon = Questie.icons["available"] -- fallback icon in case any of the logic below fails
+    local icon = QuestieSmazak.icons["available"] -- fallback icon in case any of the logic below fails
     if isActive == true then
-        icon = Questie.icons["incomplete"] -- fallback icon in case any of the logic below fails
+        icon = QuestieSmazak.icons["incomplete"] -- fallback icon in case any of the logic below fails
         if QuestieDB.IsComplete(questID) == 1 then
             if QuestieDB.IsPvPQuest(questID) then
-                icon = Questie.icons["pvpquest_complete"]
+                icon = QuestieSmazak.icons["pvpquest_complete"]
             elseif QuestieDB.IsActiveEventQuest(questID) then
-                icon = Questie.icons["eventquest_complete"]
+                icon = QuestieSmazak.icons["eventquest_complete"]
             elseif QuestieDB.IsRepeatable(questID) then
-                icon = Questie.icons["repeatable_complete"]
+                icon = QuestieSmazak.icons["repeatable_complete"]
             else
-                icon = Questie.icons["complete"]
+                icon = QuestieSmazak.icons["complete"]
             end
         end
     else
         if QuestieDB.IsPvPQuest(questID) then
-            icon = Questie.icons["pvpquest"]
+            icon = QuestieSmazak.icons["pvpquest"]
         elseif QuestieDB.IsActiveEventQuest(questID) then
-            icon = Questie.icons["eventquest"]
+            icon = QuestieSmazak.icons["eventquest"]
         elseif QuestieDB.IsRepeatable(questID) then
-            icon = Questie.icons["repeatable"]
+            icon = QuestieSmazak.icons["repeatable"]
         end
     end
     return icon
@@ -53,7 +53,7 @@ end
 
 -- 9.0.0 API GOSSIP
 local function updateGossipFrame()
-    Questie.Debug(Questie.DEBUG_DEVELOP, "Updating Gossip frame 9.0-")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "Updating Gossip frame 9.0-")
     local numAvailable = QuestieCompat.GetNumGossipAvailableQuests()
     local numActive = QuestieCompat.GetNumGossipActiveQuests()
     local availQuests = QuestieCompat.GetAvailableQuests()
@@ -105,18 +105,18 @@ end
 -- This function is called for QUEST_LOG_UPDATE events.
 -- If that event fires, this function checks to see if a greeting dialog is currently open,
 -- and if so it runs our icon pass again. This is because the greeting dialog may open
--- showing we've accepted a quest before Questie is even aware we're on it.
+-- showing we've accepted a quest before QuestieSmazak is even aware we're on it.
 -- This also fixes race conditions with server lag delaying events.
 function QuestgiverFrame.RecheckGreeting()
     local activeTitle, _ = GetActiveTitle(1)
     local availableTitle, _ = GetAvailableTitle(1)
     if activeTitle or availableTitle then
-        Questie.Debug(Questie.DEBUG_DEVELOP, "Greeting Panel Refreshing. Active: " .. tostring(activeTitle) .. " Available: " .. tostring(availableTitle))
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "Greeting Panel Refreshing. Active: " .. tostring(activeTitle) .. " Available: " .. tostring(availableTitle))
         QuestgiverFrame.GreetingMark()
     end
 end
 
--- Forever: Blizzard's gossip buttons feed the gamepad UI, so Questie must not replace their Setup. Icons are set on
+-- Forever: Blizzard's gossip buttons feed the gamepad UI, so QuestieSmazak must not replace their Setup. Icons are set on
 -- the next frame instead, after Blizzard has filled the dialog.
 local function updateModernGossipIcons()
     local panel = GossipFrame and GossipFrame:IsShown() and GossipFrame.GreetingPanel
@@ -137,8 +137,8 @@ local function updateModernGossipIcons()
 end
 
 function QuestgiverFrame.GossipMark()
-    if Questie.db.profile.enableQuestFrameIcons == true then
-        if Questie.IsForever and GossipAvailableQuestButtonMixin then
+    if QuestieSmazak.db.profile.enableQuestFrameIcons == true then
+        if QuestieSmazak.IsForever and GossipAvailableQuestButtonMixin then
             C_Timer.After(0, updateModernGossipIcons)
         elseif GossipAvailableQuestButtonMixin then -- This call is added with Dragonflight (10.0.0) API, use if available
             return -- This call is automatically hooked, no need to run a function
@@ -148,9 +148,9 @@ function QuestgiverFrame.GossipMark()
     end
 end
 
----Applies Questie's icons to populated greeting buttons once Questie is ready and icons are enabled.
+---Applies QuestieSmazak's icons to populated greeting buttons once QuestieSmazak is ready and icons are enabled.
 function QuestgiverFrame.GreetingMark()
-    if Questie.started and Questie.db.profile.enableQuestFrameIcons == true then
+    if QuestieSmazak.started and QuestieSmazak.db.profile.enableQuestFrameIcons == true then
         updateGreetingFrame()
     end
 end
@@ -166,29 +166,29 @@ end
 
 ---Blizzard rebuilds the gossip buttons on QUEST_LOG_UPDATE while the dialog is open.
 function QuestgiverFrame.RecheckGossip()
-    if Questie.IsForever and GossipFrame and GossipFrame:IsShown() then
+    if QuestieSmazak.IsForever and GossipFrame and GossipFrame:IsShown() then
         QuestgiverFrame.GossipMark()
     end
 end
 
 -- Gossip uses a separate list and its own button mixins.
-if GossipAvailableQuestButtonMixin and not Questie.IsForever then
+if GossipAvailableQuestButtonMixin and not QuestieSmazak.IsForever then
     local oldAvailableSetup = GossipAvailableQuestButtonMixin.Setup
     function GossipAvailableQuestButtonMixin:Setup(...)
-        Questie.Debug(Questie.DEBUG_DEVELOP, "Updating GossipAvailableQuestButtonMixin frame 10.0+")
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "Updating GossipAvailableQuestButtonMixin frame 10.0+")
         oldAvailableSetup(self, ...)
-        if (not Questie.started) then
+        if (not QuestieSmazak.started) then
             return
         end
 
-        if self.GetElementData ~= nil and Questie.db.profile.enableQuestFrameIcons == true then
+        if self.GetElementData ~= nil and QuestieSmazak.db.profile.enableQuestFrameIcons == true then
             local id = self.GetElementData().info.questID
             if id then
                 self.Icon:SetTexture(determineAppropriateQuestIcon(id, false))
             else
-                Questie.Error("Frame error! Missing Gossip line item quest ID. Please report this on Github or Discord!")
-                Questie.Error("Questgiver for available quest is: " .. UnitGUID("npc"))
-                Questie.Error("Client info is: " .. GetBuildInfo() .. "; " .. QuestieLib:GetAddonVersionString())
+                QuestieSmazak.Error("Frame error! Missing Gossip line item quest ID. Please report this on Github or Discord!")
+                QuestieSmazak.Error("Questgiver for available quest is: " .. UnitGUID("npc"))
+                QuestieSmazak.Error("Client info is: " .. GetBuildInfo() .. "; " .. QuestieLib:GetAddonVersionString())
                 return
             end
         end
@@ -196,20 +196,20 @@ if GossipAvailableQuestButtonMixin and not Questie.IsForever then
 
     local oldActiveSetup = GossipActiveQuestButtonMixin.Setup
     function GossipActiveQuestButtonMixin:Setup(...)
-        Questie.Debug(Questie.DEBUG_DEVELOP, "Updating GossipActiveQuestButtonMixin frame 10.0+")
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "Updating GossipActiveQuestButtonMixin frame 10.0+")
         oldActiveSetup(self, ...)
-        if (not Questie.started) then
+        if (not QuestieSmazak.started) then
             return
         end
 
-        if self.GetElementData ~= nil and Questie.db.profile.enableQuestFrameIcons == true then
+        if self.GetElementData ~= nil and QuestieSmazak.db.profile.enableQuestFrameIcons == true then
             local id = self.GetElementData().info.questID
             if id then
                 self.Icon:SetTexture(determineAppropriateQuestIcon(id, true))
             else
-                Questie.Error("Frame error! Missing Gossip line item quest ID. Please report this on Github or Discord!")
-                Questie.Error("Questgiver for active quest is: " .. UnitGUID("npc"))
-                Questie.Error("Client info is: " .. GetBuildInfo() .. "; " .. QuestieLib:GetAddonVersionString())
+                QuestieSmazak.Error("Frame error! Missing Gossip line item quest ID. Please report this on Github or Discord!")
+                QuestieSmazak.Error("Questgiver for active quest is: " .. UnitGUID("npc"))
+                QuestieSmazak.Error("Client info is: " .. GetBuildInfo() .. "; " .. QuestieLib:GetAddonVersionString())
                 return
             end
         end

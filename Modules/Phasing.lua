@@ -1,13 +1,13 @@
 ---@class Phasing
-local Phasing = QuestieLoader:CreateModule("Phasing")
+local Phasing = QuestieSmazakLoader:CreateModule("Phasing")
 ---@type QuestLogCache
-local QuestLogCache = QuestieLoader:ImportModule("QuestLogCache")
+local QuestLogCache = QuestieSmazakLoader:ImportModule("QuestLogCache")
 
 local _Phasing = {}
 local playerFaction
 
--- QuestieDB owns the IDs used by spawn data; Questie owns their visibility rules.
--- This shared table is read-only for consumers, including Questie-defined fake phase IDs.
+-- QuestieDB owns the IDs used by spawn data; QuestieSmazak owns their visibility rules.
+-- This shared table is read-only for consumers, including QuestieSmazak-defined fake phase IDs.
 local phases = LibQuestieDB.Enum.phases
 Phasing.phases = phases
 
@@ -27,7 +27,7 @@ function Phasing.IsSpawnVisible(phase)
         return _Phasing.CheckQuestLog(questLog)
     end
 
-    local complete = Questie.db.char.complete
+    local complete = QuestieSmazak.db.char.complete
 
     -- We return "or false", to convert nil to false
 

@@ -1,38 +1,38 @@
 ---@class MapIconTooltip
-local MapIconTooltip = QuestieLoader:CreateModule("MapIconTooltip");
+local MapIconTooltip = QuestieSmazakLoader:CreateModule("MapIconTooltip");
 local _MapIconTooltip = {}
 local tinsert = table.insert;
 
 ---@type QuestieReputation
-local QuestieReputation = QuestieLoader:ImportModule("QuestieReputation")
+local QuestieReputation = QuestieSmazakLoader:ImportModule("QuestieReputation")
 ---@type QuestieCorrections
-local QuestieCorrections = QuestieLoader:ImportModule("QuestieCorrections")
+local QuestieCorrections = QuestieSmazakLoader:ImportModule("QuestieCorrections")
 ---@type QuestiePlayer
-local QuestiePlayer = QuestieLoader:ImportModule("QuestiePlayer")
+local QuestiePlayer = QuestieSmazakLoader:ImportModule("QuestiePlayer")
 ---@type QuestieEvent
-local QuestieEvent = QuestieLoader:ImportModule("QuestieEvent")
+local QuestieEvent = QuestieSmazakLoader:ImportModule("QuestieEvent")
 ---@type QuestieDB
-local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
 ---@type QuestieLib
-local QuestieLib = QuestieLoader:ImportModule("QuestieLib")
+local QuestieLib = QuestieSmazakLoader:ImportModule("QuestieLib")
 ---@type QuestLogCache
-local QuestLogCache = QuestieLoader:ImportModule("QuestLogCache")
+local QuestLogCache = QuestieSmazakLoader:ImportModule("QuestLogCache")
 ---@type ActiveQuests
-local ActiveQuests = QuestieLoader:ImportModule("ActiveQuests")
+local ActiveQuests = QuestieSmazakLoader:ImportModule("ActiveQuests")
 ---@type TooltipLayout
-local TooltipLayout = QuestieLoader:ImportModule("TooltipLayout")
+local TooltipLayout = QuestieSmazakLoader:ImportModule("TooltipLayout")
 ---@type QuestieComms
-local QuestieComms = QuestieLoader:ImportModule("QuestieComms")
+local QuestieComms = QuestieSmazakLoader:ImportModule("QuestieComms")
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 ---@type QuestXP
-local QuestXP = QuestieLoader:ImportModule("QuestXP")
+local QuestXP = QuestieSmazakLoader:ImportModule("QuestXP")
 ---@type ZoneDB
-local ZoneDB = QuestieLoader:ImportModule("ZoneDB")
+local ZoneDB = QuestieSmazakLoader:ImportModule("ZoneDB")
 ---@type QuestieWaypoints
-local QuestieWaypoints = QuestieLoader:ImportModule("QuestieWaypoints")
+local QuestieWaypoints = QuestieSmazakLoader:ImportModule("QuestieWaypoints")
 ---@type WaypointHover
-local WaypointHover = QuestieLoader:ImportModule("WaypointHover")
+local WaypointHover = QuestieSmazakLoader:ImportModule("WaypointHover")
 
 local HBDPins = LibStub("HereBeDragonsQuestie-Pins-2.0")
 local GetCoinTextureString = C_CurrencyInfo.GetCoinTextureString or GetCoinTextureString
@@ -82,11 +82,11 @@ function MapIconTooltip.ShowOnTooltip(self, Tooltip, owner, icons)
     -- An icon faded out shows nothing when hovered itself. A hovered path shows, whatever its icon's fade.
     local _, _, _, alpha = self.texture:GetVertexColor();
     if alpha == 0 and not owner then
-        Questie.Debug(Questie.DEBUG_DEVELOP, "[MapIconTooltip:Show] Alpha of texture is 0, nothing to show")
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[MapIconTooltip:Show] Alpha of texture is 0, nothing to show")
         return
     end
     if GetTime() - lastTooltipShowTimestamp < 0.05 and Tooltip:IsShown() then
-        Questie.Debug(Questie.DEBUG_DEVELOP, "[MapIconTooltip:Show] Call has been too fast, not showing again")
+        QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[MapIconTooltip:Show] Call has been too fast, not showing again")
         return
     end
     lastTooltipShowTimestamp = GetTime()
@@ -147,7 +147,7 @@ function MapIconTooltip.ShowOnTooltip(self, Tooltip, owner, icons)
         local iconData = icon.data
 
         if not iconData then
-            Questie.Error("[MapIconTooltip:Show] handleMapIcon - iconData is nil! self.data.Id =", self.data.Id, "- Aborting!")
+            QuestieSmazak.Error("[MapIconTooltip:Show] handleMapIcon - iconData is nil! self.data.Id =", self.data.Id, "- Aborting!")
             return
         end
 
@@ -161,7 +161,7 @@ function MapIconTooltip.ShowOnTooltip(self, Tooltip, owner, icons)
             local entry = {}
             entry.color = {icon.texture.r, icon.texture.g, icon.texture.b, icon.texture.a};
             entry.icon = icon;
-            if Questie.db.profile.questObjectiveColors then
+            if QuestieSmazak.db.profile.questObjectiveColors then
                 icon.texture:SetVertexColor(1, 1, 1, 1); -- If different colors are active simply change it to the regular icon color
             else
                 icon.texture:SetVertexColor(0.6, 1, 1, 1); -- Without colors make it blueish
@@ -285,7 +285,7 @@ function MapIconTooltip.ShowOnTooltip(self, Tooltip, owner, icons)
                     local quest = QuestieDB.GetQuest(questData.questId)
                     local rewardString = ""
                     if (quest and shift) then
-                        local xpReward = QuestXP:GetQuestLogRewardXP(questData.questId, Questie.db.profile.showQuestXpAtMaxLevel)
+                        local xpReward = QuestXP:GetQuestLogRewardXP(questData.questId, QuestieSmazak.db.profile.showQuestXpAtMaxLevel)
                         if xpReward > 0 then
                             rewardString = QuestieLib:PrintDifficultyColor(quest.level, l10n("(") .. FormatLargeNumber(xpReward) .. xpString .. l10n(")") .. " ",
                                 QuestieDB.IsRepeatable(questData.questId), QuestieEvent.IsEventQuest(questData.questId), QuestieDB.IsPvPQuest(questData.questId), questData.questId)
@@ -293,7 +293,7 @@ function MapIconTooltip.ShowOnTooltip(self, Tooltip, owner, icons)
 
                         local moneyReward = QuestXP.GetQuestRewardMoney(questData.questId)
                         if moneyReward > 0 then
-                            rewardString = rewardString .. Questie:Colorize(l10n("(") .. GetCoinTextureString(moneyReward) .. l10n(")") .. " ", "white")
+                            rewardString = rewardString .. QuestieSmazak:Colorize(l10n("(") .. GetCoinTextureString(moneyReward) .. l10n(")") .. " ", "white")
                         end
                     end
                     rewardString = rewardString .. questData.type
@@ -333,10 +333,10 @@ function MapIconTooltip.ShowOnTooltip(self, Tooltip, owner, icons)
                 if shift and next(reputationReward) then
                     local rewardString = QuestieReputation.GetReputationRewardString(reputationReward)
                     -- Apply color through AddLine args so description wrapping cannot split color escape sequences.
-                    tooltipRows:AddDescription(REPUTATION_ICON_TEXTURE .. " " .. rewardString, indentTwo, Questie:ColorizeRGB("reputationBlue"))
+                    tooltipRows:AddDescription(REPUTATION_ICON_TEXTURE .. " " .. rewardString, indentTwo, QuestieSmazak:ColorizeRGB("reputationBlue"))
                 end
                 
-                if shift and Questie.db.profile.enableTooltipsBreadcrumbQuests then
+                if shift and QuestieSmazak.db.profile.enableTooltipsBreadcrumbQuests then
                     local breadcrumbs = QuestieDB.QueryQuestSingle(questData.questId, "breadcrumbs")
                     if breadcrumbs then
                         local firstBreadcrumb = true
@@ -345,7 +345,7 @@ function MapIconTooltip.ShowOnTooltip(self, Tooltip, owner, icons)
                             local exclusiveQuests = QuestieDB.QueryQuestSingle(breadcrumbId, "exclusiveTo")
                             if exclusiveQuests then
                                 for _, exclusiveQuestId in pairs(exclusiveQuests) do
-                                    if Questie.db.char.complete[exclusiveQuestId] or ActiveQuests.Get(exclusiveQuestId) then
+                                    if QuestieSmazak.db.char.complete[exclusiveQuestId] or ActiveQuests.Get(exclusiveQuestId) then
                                         exclusiveQuestCompleted = true
                                         break
                                     end
@@ -356,9 +356,9 @@ function MapIconTooltip.ShowOnTooltip(self, Tooltip, owner, icons)
                             local requiredRaces = QuestieDB.QueryQuestSingle(breadcrumbId, "requiredRaces")
                             local requiredClasses = QuestieDB.QueryQuestSingle(breadcrumbId, "requiredClasses")
                             local availableUntilCompleted = QuestieDB.QueryQuestSingle(breadcrumbId, "availableUntilCompleted")
-                            if (not QuestieCorrections.hiddenQuests[breadcrumbId]) and (not Questie.db.char.complete[breadcrumbId]) and
+                            if (not QuestieCorrections.hiddenQuests[breadcrumbId]) and (not QuestieSmazak.db.char.complete[breadcrumbId]) and
                                 QuestiePlayer.HasRequiredRace(requiredRaces) and QuestiePlayer.HasRequiredClass(requiredClasses) and
-                                (not exclusiveQuestCompleted) and (not Questie.db.char.complete[availableUntilCompleted]) then
+                                (not exclusiveQuestCompleted) and (not QuestieSmazak.db.char.complete[availableUntilCompleted]) then
                                 if firstBreadcrumb then
                                     tooltipRows:AddLine(breadcrumbLabelPrefix .. l10n("Breadcrumb Quests") .. l10n(": "), 0.86, 0.86, 0.86)
                                     firstBreadcrumb = false
@@ -371,7 +371,7 @@ function MapIconTooltip.ShowOnTooltip(self, Tooltip, owner, icons)
                     end
                 end
 
-                if shift and Questie.db.profile.enableTooltipsNextInChain then
+                if shift and QuestieSmazak.db.profile.enableTooltipsNextInChain then
                     local DoableStates = QuestieDB.DoableStates
                     local nextQuestId = QuestieDB.QueryQuestSingle(questData.questId, "nextQuestInChain")
                     if nextQuestId > 0 and (not QuestieCorrections.hiddenQuests[nextQuestId]) then
@@ -406,8 +406,8 @@ function MapIconTooltip.ShowOnTooltip(self, Tooltip, owner, icons)
             local textList = self.questOrder[questId]
             ---@type Quest
             local quest = QuestieDB.GetQuest(questId);
-            local questTitle = QuestieLib:GetColoredQuestName(questId, Questie.db.profile.enableTooltipsQuestLevel, true);
-            local xpReward = QuestXP:GetQuestLogRewardXP(questId, Questie.db.profile.showQuestXpAtMaxLevel) or 0
+            local questTitle = QuestieLib:GetColoredQuestName(questId, QuestieSmazak.db.profile.enableTooltipsQuestLevel, true);
+            local xpReward = QuestXP:GetQuestLogRewardXP(questId, QuestieSmazak.db.profile.showQuestXpAtMaxLevel) or 0
             local rewardString = xpReward > 0 and
                 QuestieLib:PrintDifficultyColor(quest.level, l10n("(") .. FormatLargeNumber(xpReward) .. xpString .. l10n(")") .. " ",
                     QuestieDB.IsRepeatable(questId), QuestieEvent.IsEventQuest(questId), QuestieDB.IsPvPQuest(questId), questId) or ""
@@ -496,7 +496,7 @@ function MapIconTooltip.ShowOnTooltip(self, Tooltip, owner, icons)
                 end
             end
             if self.miniMapIcon == false and not data.disableShiftToRemove then
-                tooltipRows:AddLine(Questie:Colorize(l10n("Shift-click to hide"), "gray")) -- gray
+                tooltipRows:AddLine(QuestieSmazak:Colorize(l10n("Shift-click to hide"), "gray")) -- gray
             end
         end
 
@@ -583,7 +583,7 @@ local function _GetQuestTag(quest)
             --  Group(Elite)       Class               Raid                Dungeon             World Event         Legendary           Escort              Heroic              Raid(10)            Raid(25)            Scenario            Celestial
         elseif (questTagId == 1 or questTagId == 21 or questTagId == 62 or questTagId == 81 or questTagId == 82 or questTagId == 83 or questTagId == 84 or questTagId == 85 or questTagId == 88 or questTagId == 89 or questTagId == 98 or questTagId == 294) then
             return l10n("(") .. questTagName .. l10n(")");
-        elseif (Questie.IsSoD and QuestieDB.IsSoDRuneQuest(quest.Id)) then
+        elseif (QuestieSmazak.IsSoD and QuestieDB.IsSoDRuneQuest(quest.Id)) then
             return l10n("(") .. l10n("Rune") .. l10n(")");
         else
             return l10n("(") .. l10n("Available") .. l10n(")");
@@ -594,7 +594,7 @@ end
 function _MapIconTooltip:GetAvailableOrCompleteTooltip(icon)
     local tip = {};
     tip.type = _GetQuestTag(icon.data)
-    tip.title = QuestieLib:GetColoredQuestName(icon.data.Id, Questie.db.profile.enableTooltipsQuestLevel, false)
+    tip.title = QuestieLib:GetColoredQuestName(icon.data.Id, QuestieSmazak.db.profile.enableTooltipsQuestLevel, false)
     tip.subData = icon.data.QuestData.Description
     tip.questId = icon.data.Id;
 
@@ -635,7 +635,7 @@ function _MapIconTooltip:GetObjectiveTooltip(icon)
                 else
                     playerColor = QuestieComms.remotePlayerClasses[playerName]
                     if playerColor then
-                        playerColor = Questie:GetClassColor(playerColor)
+                        playerColor = QuestieSmazak:GetClassColor(playerColor)
                         playerType = " " .. l10n("(") .. l10n("Nearby") .. l10n(")")
                     end
                 end
@@ -647,7 +647,7 @@ function _MapIconTooltip:GetObjectiveTooltip(icon)
                 if playerColor then
                     local objectiveEntry = objectiveData[iconData.ObjectiveIndex]
                     if not objectiveEntry then
-                        Questie.Debug(Questie.DEBUG_DEVELOP, "[_MapIconTooltip:GetObjectiveTooltip] No objective data for quest", quest.Id)
+                        QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[_MapIconTooltip:GetObjectiveTooltip] No objective data for quest", quest.Id)
                         objectiveEntry = {} -- This will make "GetRGBForObjective" return default color
                     end
                     local remoteColor = QuestieLib:GetRGBForObjective(objectiveEntry)
@@ -756,10 +756,10 @@ end
 ---@param indent string
 ---@return string, string
 function _MapIconTooltip.GetNextQuestInChainLines(questId, questLevel, indent)
-    local questTitle = QuestieLib:GetColoredQuestName(questId, Questie.db.profile.enableTooltipsQuestLevel, false);
+    local questTitle = QuestieLib:GetColoredQuestName(questId, QuestieSmazak.db.profile.enableTooltipsQuestLevel, false);
 
     local nextQuestXpRewardString = "";
-    local xpReward = QuestXP:GetQuestLogRewardXP(questId, Questie.db.profile.showQuestXpAtMaxLevel)
+    local xpReward = QuestXP:GetQuestLogRewardXP(questId, QuestieSmazak.db.profile.showQuestXpAtMaxLevel)
     if xpReward > 0 then
         nextQuestXpRewardString = QuestieLib:PrintDifficultyColor(questLevel, l10n("(") .. FormatLargeNumber(xpReward) .. l10n("xp") .. l10n(")") .. " ",
             QuestieDB.IsRepeatable(questId), QuestieEvent.IsEventQuest(questId), QuestieDB.IsPvPQuest(questId), questId)
@@ -768,7 +768,7 @@ function _MapIconTooltip.GetNextQuestInChainLines(questId, questLevel, indent)
     local nextQuestMoneyRewardString = "";
     local moneyReward = QuestXP.GetQuestRewardMoney(questId)
     if moneyReward > 0 then
-        nextQuestMoneyRewardString = Questie:Colorize(l10n("(") .. GetCoinTextureString(moneyReward) .. l10n(")") .. " ", "white")
+        nextQuestMoneyRewardString = QuestieSmazak:Colorize(l10n("(") .. GetCoinTextureString(moneyReward) .. l10n(")") .. " ", "white")
     end
 
     return indent .. questTitle, nextQuestXpRewardString .. nextQuestMoneyRewardString

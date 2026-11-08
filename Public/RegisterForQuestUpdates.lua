@@ -1,5 +1,5 @@
 ---@class QuestieAPI
-local QuestieAPI = QuestieLoader:ImportModule("QuestieAPI")
+local QuestieAPI = QuestieSmazakLoader:ImportModule("QuestieAPI")
 
 ---@type fun(questId: number, objectiveIndex: number?, triggerReason: QuestUpdateTriggerReason)[]
 local questUpdateCallbacks = {}
@@ -7,9 +7,9 @@ local questUpdateCallbacks = {}
 --- Registers a callback function that will be called whenever a quest is updated.
 --- The callback function should accept three parameters: questId (number), the objective index (number|nil) and the trigger reason (Enum).
 ---@param callback fun(questId: number, objectiveIndex: number?, triggerReason: QuestUpdateTriggerReason)
-function Questie.API.RegisterForQuestUpdates(callback)
+function QuestieSmazak.API.RegisterForQuestUpdates(callback)
     if type(callback) ~= "function" then
-        error("Questie.API.RegisterForQuestUpdates: callback must be a function")
+        error("QuestieSmazak.API.RegisterForQuestUpdates: callback must be a function")
     end
 
     table.insert(questUpdateCallbacks, callback)

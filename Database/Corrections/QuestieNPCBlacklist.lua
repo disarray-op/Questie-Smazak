@@ -1,9 +1,9 @@
 ---@class QuestieNPCBlacklist
-local QuestieNPCBlacklist = QuestieLoader:CreateModule("QuestieNPCBlacklist")
+local QuestieNPCBlacklist = QuestieSmazakLoader:CreateModule("QuestieNPCBlacklist")
 ---@type Expansions
-local Expansions = QuestieLoader:ImportModule("Expansions")
+local Expansions = QuestieSmazakLoader:ImportModule("Expansions")
 ---@type ContentPhases
-local ContentPhases = QuestieLoader:ImportModule("ContentPhases")
+local ContentPhases = QuestieSmazakLoader:ImportModule("ContentPhases")
 
 ---@return table<NpcId, boolean>
 function QuestieNPCBlacklist:Load()
@@ -11,7 +11,7 @@ function QuestieNPCBlacklist:Load()
         [3032] = Expansions.Current >= Expansions.Cata, -- Beram Skychaser
         [7666] = Expansions.Current >= Expansions.Cata, -- Archmage Allistarj
         [8001] = true,
-        [12397] = Questie.IsSoD, -- Lord Kazzak
+        [12397] = QuestieSmazak.IsSoD, -- Lord Kazzak
         [13151] = Expansions.Current == Expansions.Era, -- Syndicate Master Ryson
         [13153] = Expansions.Current == Expansions.Era, -- Commander Mulfort
         [13154] = Expansions.Current == Expansions.Era, -- Commander Louis Philips

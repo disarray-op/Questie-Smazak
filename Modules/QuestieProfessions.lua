@@ -1,15 +1,15 @@
 ---@type QuestieCompat
-local QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+local QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
 
 ---@class QuestieProfessions
-local QuestieProfessions = QuestieLoader:CreateModule("QuestieProfessions")
+local QuestieProfessions = QuestieSmazakLoader:CreateModule("QuestieProfessions")
 ---@type QuestieQuest
-local QuestieQuest = QuestieLoader:ImportModule("QuestieQuest")
+local QuestieQuest = QuestieSmazakLoader:ImportModule("QuestieQuest")
 ---@type Expansions
-local Expansions = QuestieLoader:ImportModule("Expansions")
+local Expansions = QuestieSmazakLoader:ImportModule("Expansions")
 
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 
 local playerProfessions = {}
 local professionTable = {}
@@ -41,7 +41,7 @@ end
 ---@return boolean HasProfessionUpdate @True for a skill threshold increase, a new profession, or an unlearned profession.
 ---@return boolean HasNewProfession @Returns true if the player has learned a new profession
 function QuestieProfessions:Update()
-    Questie.Debug(Questie.DEBUG_DEVELOP, "QuestieProfession: Update")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "QuestieProfession: Update")
     local hasProfessionUpdate = false
     local hasNewProfession = false
 
@@ -69,7 +69,7 @@ function QuestieProfessions:Update()
 
     for professionId, _ in pairs(temporaryPlayerProfessions) do
         if not playerProfessions[professionId] then
-            Questie.Debug(Questie.DEBUG_DEVELOP, "New profession: " .. temporaryPlayerProfessions[professionId][1])
+            QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "New profession: " .. temporaryPlayerProfessions[professionId][1])
             hasProfessionUpdate = true
             hasNewProfession = true
 
@@ -80,14 +80,14 @@ function QuestieProfessions:Update()
             local newRank = temporaryPlayerProfessions[professionId][2]
             if newRank > oldRank and (math.floor(oldRank / 5) ~= math.floor(newRank / 5)) then
                 -- We only want to update every 5 skill levels because all other progressions won't unlock new quests
-                Questie.Debug(Questie.DEBUG_DEVELOP, "Profession update: " .. temporaryPlayerProfessions[professionId][1] .. " " .. oldRank .. " -> " .. newRank)
+                QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "Profession update: " .. temporaryPlayerProfessions[professionId][1] .. " " .. oldRank .. " -> " .. newRank)
                 hasProfessionUpdate = true
             end
         end
     end
     for professionId, profession in pairs(playerProfessions) do
         if not temporaryPlayerProfessions[professionId] then
-            Questie.Debug(Questie.DEBUG_DEVELOP, "Unlearned profession: " .. profession[1] .. "(" .. professionId .. ")")
+            QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "Unlearned profession: " .. profession[1] .. "(" .. professionId .. ")")
             QuestieQuest.ResetAutoblacklistCategory("skill")
             hasProfessionUpdate = true
         end

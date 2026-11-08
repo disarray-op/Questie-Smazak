@@ -18,18 +18,18 @@ describe("QuestieDB", function()
     local testQuest
 
     before_each(function()
-        QuestieLoader:ImportModule("SupportValidation").ValidateFactionTemplates = function() return true end
+        QuestieSmazakLoader:ImportModule("SupportValidation").ValidateFactionTemplates = function() return true end
         mock = LoadQuestieDBMock()
-        Questie.db.char.complete = {}
-        Questie.IsTitanReforged = false
-        QuestiePlayer = QuestieLoader:ImportModule("QuestiePlayer")
-        QuestieLib = QuestieLoader:ImportModule("QuestieLib")
-        QuestieCorrections = QuestieLoader:ImportModule("QuestieCorrections")
+        QuestieSmazak.db.char.complete = {}
+        QuestieSmazak.IsTitanReforged = false
+        QuestiePlayer = QuestieSmazakLoader:ImportModule("QuestiePlayer")
+        QuestieLib = QuestieSmazakLoader:ImportModule("QuestieLib")
+        QuestieCorrections = QuestieSmazakLoader:ImportModule("QuestieCorrections")
         QuestieCorrections.hiddenQuests = {}
         QuestieCorrections.questItemBlacklist = {}
 
         dofile("Database/QuestieDB.lua")
-        QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+        QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
         QuestieDB.killCreditObjectiveFirst = {}
         QuestieDB.objectObjectiveFirst = {}
         QuestieDB.itemObjectiveFirst = {}
@@ -62,7 +62,7 @@ describe("QuestieDB", function()
             mock.lib.Enum.factionRaceMasks = {Alliance = 4294967373, Horde = 8589934770}
 
             dofile("Database/QuestieDB.lua")
-            QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+            QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
 
             assert.are_same(4294967373, QuestieDB.raceKeys.ALL_ALLIANCE)
             assert.are_same(8589934770, QuestieDB.raceKeys.ALL_HORDE)
@@ -72,7 +72,7 @@ describe("QuestieDB", function()
             mock.lib.Enum.factionRaceMasks = nil
 
             dofile("Database/QuestieDB.lua")
-            QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+            QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
 
             assert.is_nil(QuestieDB.raceKeys.ALL_ALLIANCE)
             assert.is_nil(QuestieDB.raceKeys.ALL_HORDE)
@@ -236,7 +236,7 @@ describe("QuestieDB", function()
         end)
 
         it("uses Titan quest tag corrections on Titan Reforged", function()
-            Questie.IsTitanReforged = true
+            QuestieSmazak.IsTitanReforged = true
             QuestieDB.private.InitializeQuestTagInfoCorrections()
             _G.GetQuestTagInfo = spy.new(function() return 41, "PvP" end)
 
@@ -388,29 +388,29 @@ describe("QuestieDB", function()
         end)
 
         it("should return true for fulfilled preQuestGroup", function()
-            Questie.db.char.complete = {[1] = true, [2] = true, [3] = true}
+            QuestieSmazak.db.char.complete = {[1] = true, [2] = true, [3] = true}
             assert.is_true(QuestieDB:IsPreQuestGroupFulfilled({1, 2, 3}))
         end)
 
         it("should return false for unfulfilled preQuestGroup without an exclusiveTo quest", function()
-            Questie.db.char.complete = {[1] = true, [2] = true}
+            QuestieSmazak.db.char.complete = {[1] = true, [2] = true}
             QuestieDB.QueryQuestSingle = spy.new(function() return nil end)
             assert.is_false(QuestieDB:IsPreQuestGroupFulfilled({1, 2, 3}))
         end)
 
         it("should return true for unfulfilled preQuestGroup when an exclusiveTo quest is fulfilled", function()
-            Questie.db.char.complete = {[1] = true, [2] = true, [4] = true}
+            QuestieSmazak.db.char.complete = {[1] = true, [2] = true, [4] = true}
             QuestieDB.QueryQuestSingle = spy.new(function() return {4} end)
             assert.is_true(QuestieDB:IsPreQuestGroupFulfilled({1, 2, 3}))
         end)
 
         it("should return false for unfulfilled preQuestGroup when ID is negative and exclusiveTo is not checked", function()
-            Questie.db.char.complete = {[1] = true, [2] = true}
+            QuestieSmazak.db.char.complete = {[1] = true, [2] = true}
             assert.is_false(QuestieDB:IsPreQuestGroupFulfilled({1, -2, -3}))
         end)
 
         it("should return true for fulfilled preQuestGroup when ID is negative", function()
-            Questie.db.char.complete = {[1] = true, [2] = true}
+            QuestieSmazak.db.char.complete = {[1] = true, [2] = true}
             assert.is_true(QuestieDB:IsPreQuestGroupFulfilled({1, -2}))
         end)
     end)
@@ -425,12 +425,12 @@ describe("QuestieDB", function()
         end)
 
         it("should return true for fulfilled preQuestSingle", function()
-            Questie.db.char.complete = {[1] = true}
+            QuestieSmazak.db.char.complete = {[1] = true}
             assert.is_true(QuestieDB:IsPreQuestSingleFulfilled({1}))
         end)
 
         it("should return false for unfulfilled preQuestSingle", function()
-            Questie.db.char.complete = {[2] = true}
+            QuestieSmazak.db.char.complete = {[2] = true}
             assert.is_false(QuestieDB:IsPreQuestSingleFulfilled({1}))
         end)
     end)
@@ -471,7 +471,7 @@ describe("QuestieDB", function()
         before_each(function()
             LibQuestieDB = mock.lib
             QuestieLib.TableMemoizeFunction = function() return {} end
-            Questie.db.char.hidden = {}
+            QuestieSmazak.db.char.hidden = {}
 
             local questKeys, npcKeys, itemKeys, objectKeys = QuestieDB.questKeys, QuestieDB.npcKeys, QuestieDB.itemKeys, QuestieDB.objectKeys
             mock.SetBaseRow("Quest", 2, {
@@ -500,7 +500,7 @@ describe("QuestieDB", function()
             mock.supportModules.QuestieDB.factionTemplate = {[35] = 12}
             -- The outer before_each stubs some of these after loading; a fresh load shows the bindings.
             dofile("Database/QuestieDB.lua")
-            QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+            QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
 
             assert.are_equal(LibQuestieDB.Meta.QuestMeta.questKeys, QuestieDB.questKeys)
             assert.are_equal(LibQuestieDB.Meta.NpcMeta.npcKeys, QuestieDB.npcKeys)
@@ -590,12 +590,12 @@ describe("QuestieDB", function()
         before_each(function()
             LibQuestieDB = mock.lib
             QuestieLib.TableMemoizeFunction = function() return {} end
-            Questie.db.char.hidden = {}
+            QuestieSmazak.db.char.hidden = {}
             QuestieDB.Initialize()
         end)
 
         it("rebinds only the written datatype's ID map", function()
-            LibQuestieDB.Corrections.Set("Questie", "Item", "RuntimeItemRepair", {[999] = {[QuestieDB.itemKeys.name] = "Repaired Item"}})
+            LibQuestieDB.Corrections.Set("QuestieSmazak", "Item", "RuntimeItemRepair", {[999] = {[QuestieDB.itemKeys.name] = "Repaired Item"}})
             assert.are_not_equal(LibQuestieDB.Item.GetAllIds(true), QuestieDB.ItemPointers)
             -- A sentinel carries the "only": a rebind-all implementation would overwrite it with
             -- the provider's Quest map, which a kept map identity could not distinguish.
@@ -609,13 +609,13 @@ describe("QuestieDB", function()
         end)
 
         it("makes a slot-added Item visible and a withdrawn Item disappear", function()
-            LibQuestieDB.Corrections.Set("Questie", "Item", "RuntimeItemRepair", {[999] = {[QuestieDB.itemKeys.name] = "Repaired Item"}})
+            LibQuestieDB.Corrections.Set("QuestieSmazak", "Item", "RuntimeItemRepair", {[999] = {[QuestieDB.itemKeys.name] = "Repaired Item"}})
             QuestieDB.RefreshAfterCorrectionApply("Item", {[999] = true})
 
             assert.is_true(QuestieDB.ItemPointers[999])
             assert.are_same("Repaired Item", QuestieDB:GetItem(999).name)
 
-            LibQuestieDB.Corrections.Set("Questie", "Item", "RuntimeItemRepair", nil)
+            LibQuestieDB.Corrections.Set("QuestieSmazak", "Item", "RuntimeItemRepair", nil)
             QuestieDB.RefreshAfterCorrectionApply("Item", {[999] = true})
 
             assert.is_nil(QuestieDB.ItemPointers[999])
@@ -681,17 +681,17 @@ describe("QuestieDB", function()
         end)
     end)
     it("validates the bound faction template before initializing consumer state with debug disabled", function()
-        Questie.db.profile.debugEnabled = false
+        QuestieSmazak.db.profile.debugEnabled = false
         local bound = {[1] = 99}
         QuestieDB.factionTemplate = bound
         local validator = spy.new(function() return false, "faction report" end)
-        QuestieLoader:ImportModule("SupportValidation").ValidateFactionTemplates = validator
+        QuestieSmazakLoader:ImportModule("SupportValidation").ValidateFactionTemplates = validator
         local initTags = spy.new(function() end)
         QuestieDB.private.InitializeQuestTagInfoCorrections = initTags
         local valid, report = QuestieDB.Initialize()
         assert.is_false(valid)
         assert.are_equal("faction report", report)
-        assert.spy(validator).was.called_with(bound, QuestieLoader:ImportModule("Expansions").Current)
+        assert.spy(validator).was.called_with(bound, QuestieSmazakLoader:ImportModule("Expansions").Current)
         assert.spy(initTags).was.not_called()
         assert.are_same({[1] = 99}, bound)
         assert.are_not_equal(bound, mock.supportModules.QuestieDB.factionTemplate)
@@ -701,8 +701,8 @@ describe("QuestieDB", function()
         local QuestLogCache, QuestieQuest, originalQuestLog, originalCheckQuestSourceItem
 
         before_each(function()
-            QuestLogCache = QuestieLoader:ImportModule("QuestLogCache")
-            QuestieQuest = QuestieLoader:ImportModule("QuestieQuest")
+            QuestLogCache = QuestieSmazakLoader:ImportModule("QuestLogCache")
+            QuestieQuest = QuestieSmazakLoader:ImportModule("QuestieQuest")
             originalQuestLog = QuestLogCache.questLog_DO_NOT_MODIFY
             originalCheckQuestSourceItem = QuestieQuest.CheckQuestSourceItem
             QuestieQuest.CheckQuestSourceItem = spy.new(function() return false end)

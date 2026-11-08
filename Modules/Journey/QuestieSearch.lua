@@ -1,8 +1,8 @@
 ---@class QuestieSearch
-local QuestieSearch = QuestieLoader:CreateModule("QuestieSearch");
+local QuestieSearch = QuestieSmazakLoader:CreateModule("QuestieSearch");
 
 ---@type QuestieDB
-local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
 
 QuestieSearch.types = {"npc", "object", "item", "quest"}
 

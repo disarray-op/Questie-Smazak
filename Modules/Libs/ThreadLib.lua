@@ -1,5 +1,5 @@
 ---@class ThreadLib
-local ThreadLib = QuestieLoader:CreateModule("ThreadLib")
+local ThreadLib = QuestieSmazakLoader:CreateModule("ThreadLib")
 
 --Coroutine functions
 local coStatus, coResume, coCreate = coroutine.status, coroutine.resume, coroutine.create
@@ -30,7 +30,7 @@ local function CallProfilingCallback(callbacks, callbackName, ...)
     -- Lua 5.1 cannot yield across pcall's C boundary; this isolates failures and forbids observer yields through the scheduler.
     local success, callbackError = pcall(callback, ...)
     if not success then
-        Questie.Error("ThreadLib profiling callback failed", callbackName, callbackError)
+        QuestieSmazak.Error("ThreadLib profiling callback failed", callbackName, callbackError)
     end
 end
 
@@ -120,7 +120,7 @@ function ThreadLib.Thread(threadFunction, delay, errorMessage, callbackFunction,
         -- Something in the coroutine went wrong, print the error and stop the timer
         if not success then
             local stack = debugstack(thread)
-            Questie.Error(errorMessage or "Error in thread", ret, "\n", stack)
+            QuestieSmazak.Error(errorMessage or "Error in thread", ret, "\n", stack)
             timer:Cancel();
             if errorCallback then
                 errorCallback(ret)
@@ -204,7 +204,7 @@ end
 
     ---@param self Thread
     Kill = function(self)
-      print(Questie.DEBUG_CRITICAL, "[ThreadLib] Thread cancelled")
+      print(QuestieSmazak.DEBUG_CRITICAL, "[ThreadLib] Thread cancelled")
       self._timer:Cancel()
       self._thread = nil
       self._timer = nil
@@ -218,7 +218,7 @@ end
         local success, ret = coResume(newThread._thread)
         -- Something in the coroutine went wrong, print the error and stop the timer
         if not success then
-            Questie.Error(errorMessage or "Error in thread", ret)
+            QuestieSmazak.Error(errorMessage or "Error in thread", ret)
             newThread._timer:Cancel();
         end
       elseif (coStatus(newThread._thread) == "dead") then --It's faster not to lookup the value but instead have it here

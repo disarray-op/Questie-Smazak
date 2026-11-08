@@ -1,8 +1,8 @@
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 
 local autoOptionsLocales = {
-    ["Auto Options"] = { -- this is for a feature called Questie Auto, which auto-accepts and auto-completes quests
+    ["Auto Options"] = { -- this is for a feature called QuestieSmazak Auto, which auto-accepts and auto-completes quests
         ["enUS"] = true,
         ["deDE"] = "Automatische Optionen", -- 🤖 Gemini Flash 3.8
         ["esES"] = "Opciones de automatización", -- 🤖 Gemini Flash 3.8
@@ -26,14 +26,14 @@ local autoOptionsLocales = {
         ["zhCN"] = "自动交任务",
         ["zhTW"] = "自動回任務",
     },
-    ["If checked, Questie will automatically hand in finished quests when talking to NPCs."] = {
+    ["If checked, QuestieSmazak will automatically hand in finished quests when talking to NPCs."] = {
         ["enUS"] = true,
-        ["deDE"] = "Wenn aktiviert, wird Questie automatisch Quests abgeben.",
-        ["esES"] = "Si está seleccionado, Questie entregará automáticamente las misiones completadas cuando hables con los PNJ.",
-        ["esMX"] = "Si está seleccionado, Questie entregará automáticamente las misiones completadas cuando hables con los PNJ.",
-        ["frFR"] = "Si cette option est cochée, Questie remettra automatiquement les quêtes terminées en parlant aux PNJ.",
+        ["deDE"] = "Wenn aktiviert, wird QuestieSmazak automatisch Quests abgeben.",
+        ["esES"] = "Si está seleccionado, QuestieSmazak entregará automáticamente las misiones completadas cuando hables con los PNJ.",
+        ["esMX"] = "Si está seleccionado, QuestieSmazak entregará automáticamente las misiones completadas cuando hables con los PNJ.",
+        ["frFR"] = "Si cette option est cochée, QuestieSmazak remettra automatiquement les quêtes terminées en parlant aux PNJ.",
         ["koKR"] = "이 옵션을 선택하면 Questie는 NPC와 대화할 때 완료된 퀘스트를 자동으로 제출합니다.",
-        ["ptBR"] = "Se marcado, o Questie entregará automaticamente missões concluídas ao falar com NPCs.",
+        ["ptBR"] = "Se marcado, o QuestieSmazak entregará automaticamente missões concluídas ao falar com NPCs.",
         ["ruRU"] = "Когда включено, задания будут завершаться автоматически при разговоре с NPC",
         ["zhCN"] = "启用时，与NPC对话时会自动提交已完成的任务",
         ["zhTW"] = "啟用時，和 NPC 對話會自動交回已完成的任務",
@@ -50,14 +50,14 @@ local autoOptionsLocales = {
         ["zhCN"] = "自动接任务",
         ["zhTW"] = "自動接任務",
     },
-    ["If checked, Questie will automatically accept quest dialogs when they appear, depending on the rules below."] = {
+    ["If checked, QuestieSmazak will automatically accept quest dialogs when they appear, depending on the rules below."] = {
         ["enUS"] = true,
-        ["deDE"] = "Wenn aktiviert, wird Questie automatisch Quests annehmen, abhängig von den unten stehenden Regeln.",
-        ["esES"] = "Si está seleccionado, Questie aceptará automáticamente las misiones cuando aparezcan, dependiendo de las reglas a continuación.",
-        ["esMX"] = "Si está seleccionado, Questie aceptará automáticamente las misiones cuando aparezcan, dependiendo de las reglas a continuación.",
-        ["frFR"] = "Si cette option est cochée, Questie acceptera automatiquement les quêtes lorsqu'elles apparaissent, en fonction des règles ci-dessous.",
+        ["deDE"] = "Wenn aktiviert, wird QuestieSmazak automatisch Quests annehmen, abhängig von den unten stehenden Regeln.",
+        ["esES"] = "Si está seleccionado, QuestieSmazak aceptará automáticamente las misiones cuando aparezcan, dependiendo de las reglas a continuación.",
+        ["esMX"] = "Si está seleccionado, QuestieSmazak aceptará automáticamente las misiones cuando aparezcan, dependiendo de las reglas a continuación.",
+        ["frFR"] = "Si cette option est cochée, QuestieSmazak acceptera automatiquement les quêtes lorsqu'elles apparaissent, en fonction des règles ci-dessous.",
         ["koKR"] = "이 옵션을 선택하면 Questie는 아래 규칙에 따라 퀘스트 대화 상자가 나타날 때 자동으로 수락합니다.",
-        ["ptBR"] = "Se marcado, Questie aceitará automaticamente as missões quando aparecerem, dependendo das regras abaixo.",
+        ["ptBR"] = "Se marcado, QuestieSmazak aceitará automaticamente as missões quando aparecerem, dependendo das regras abaixo.",
         ["ruRU"] = "Когда включено, задания будут приниматься автоматически в зависимости от правил ниже",
         ["zhCN"] = "启用时，会根据下列规则，在任务对话框出现时自动接任务",
         ["zhTW"] = "啟用時，會根據下方的規則，在任務對話框出現時自動接受任務",
@@ -350,15 +350,15 @@ local autoOptionsLocales = {
         ["zhCN"] = "已自动放弃任务 %s，因为线索任务 %s 未完成",
         ["zhTW"] = "已自動放棄任務 %s，因為線索任務 %s 未完成",
     },
-    ["Further Auto customization is coming in a future Questie update."] = {
+    ["Further Auto customization is coming in a future QuestieSmazak update."] = {
         ["enUS"] = true,
-        ["deDE"] = "Weitere Anpassungsmöglichkeiten werden in einem zukünftigen Questie-Update kommen.",
-        ["esES"] = "Una mayor personalización automática llegará en una futura actualización de Questie.",
-        ["esMX"] = "Una mayor personalización automática llegará en una futura actualización de Questie.",
-        ["frFR"] = "Des personnalisations automatiques supplémentaires arriveront dans une future mise à jour de Questie.",
-        ["koKR"] = "추후 Questie 업데이트에서 더 많은 자동화 커스터마이징 기능이 제공될 예정입니다.",
-        ["ptBR"] = "Mais personalizações automáticas estão chegando em uma futura atualização de Questie.",
-        ["ruRU"] = "Другие настройки автоматизации будут добавлены в будущих версиях Questie",
+        ["deDE"] = "Weitere Anpassungsmöglichkeiten werden in einem zukünftigen QuestieSmazak-Update kommen.",
+        ["esES"] = "Una mayor personalización automática llegará en una futura actualización de QuestieSmazak.",
+        ["esMX"] = "Una mayor personalización automática llegará en una futura actualización de QuestieSmazak.",
+        ["frFR"] = "Des personnalisations automatiques supplémentaires arriveront dans une future mise à jour de QuestieSmazak.",
+        ["koKR"] = "추후 QuestieSmazak 업데이트에서 더 많은 자동화 커스터마이징 기능이 제공될 예정입니다.",
+        ["ptBR"] = "Mais personalizações automáticas estão chegando em uma futura atualização de QuestieSmazak.",
+        ["ruRU"] = "Другие настройки автоматизации будут добавлены в будущих версиях QuestieSmazak",
         ["zhCN"] = "未来版本会提供更多自定义功能",
         ["zhTW"] = "未來的版本會提供更多自訂自動的功能",
     },

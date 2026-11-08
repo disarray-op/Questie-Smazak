@@ -2,7 +2,7 @@ dofile("setupTests.lua")
 
 local FakeUI = dofile("cli/testData/options/FakeUI.lua")
 
-local LOADING_MESSAGE = "Please wait a moment for Questie to finish loading"
+local LOADING_MESSAGE = "Please wait a moment for QuestieSmazak to finish loading"
 local CHECKBOX_TEMPLATE = "SettingsCheckboxTemplate"
 
 describe("QuestieOptionsEngine", function()
@@ -15,16 +15,16 @@ describe("QuestieOptionsEngine", function()
     local settings, reads, threadErrors
 
     local function LoadEngineModules()
-        dofile("Modules/Libs/QuestieLoader.lua")
+        dofile("Modules/Libs/QuestieSmazakLoader.lua")
         dofile("Localization/l10n.lua")
         dofile("Modules/Libs/ThreadLib.lua")
-        ThreadLib = QuestieLoader:ImportModule("ThreadLib")
+        ThreadLib = QuestieSmazakLoader:ImportModule("ThreadLib")
         dofile("Modules/Options/QuestieOptionsUtils.lua")
         dofile("Modules/Options/QuestieOptionsControls.lua")
         dofile("Modules/Options/QuestieOptionsLayout.lua")
         dofile("Modules/Options/QuestieOptionsWindow.lua")
         dofile("Modules/Options/QuestieOptionsEngine.lua")
-        QuestieOptionsEngine = QuestieLoader:ImportModule("QuestieOptionsEngine")
+        QuestieOptionsEngine = QuestieSmazakLoader:ImportModule("QuestieOptionsEngine")
     end
 
     local function CreateCheckbox(order, key, enabled)
@@ -140,12 +140,12 @@ describe("QuestieOptionsEngine", function()
         reads = {}
         threadErrors = {}
 
-        originalQuestie = {Colorize = Questie.Colorize, Error = Questie.Error, IsForever = Questie.IsForever}
-        Questie.Colorize = function(_, text) return text end
-        Questie.Error = function(...)
+        originalQuestie = {Colorize = QuestieSmazak.Colorize, Error = QuestieSmazak.Error, IsForever = QuestieSmazak.IsForever}
+        QuestieSmazak.Colorize = function(_, text) return text end
+        QuestieSmazak.Error = function(...)
             table.insert(threadErrors, table.concat({...}, " "))
         end
-        Questie.IsForever = true
+        QuestieSmazak.IsForever = true
 
         LoadEngineModules()
         RegisterTestTabs()
@@ -153,9 +153,9 @@ describe("QuestieOptionsEngine", function()
 
     after_each(function()
         local errors = threadErrors
-        Questie.Colorize = originalQuestie.Colorize
-        Questie.Error = originalQuestie.Error
-        Questie.IsForever = originalQuestie.IsForever
+        QuestieSmazak.Colorize = originalQuestie.Colorize
+        QuestieSmazak.Error = originalQuestie.Error
+        QuestieSmazak.IsForever = originalQuestie.IsForever
         ui.Restore()
         assert.are_same({}, errors)
     end)
@@ -165,7 +165,7 @@ describe("QuestieOptionsEngine", function()
             Initialize()
 
             assert.are.equal(2, #ui.categories)
-            assert.are.equal("Questie", ui.categories[1].name)
+            assert.are.equal("Questie-Smazak", ui.categories[1].name)
             assert.is_nil(ui.categories[1].parent)
             assert.are.equal("Map", ui.categories[2].name)
             assert.are.equal(ui.categories[1], ui.categories[2].parent)
@@ -186,7 +186,7 @@ describe("QuestieOptionsEngine", function()
 
             Initialize()
 
-            assert.are.equal("Questie", ui.categories[1].name)
+            assert.are.equal("Questie-Smazak", ui.categories[1].name)
             assert.are.equal("Beta", ui.categories[2].name)
             assert.are.equal("A last", ui.categories[3].name)
         end)
@@ -627,7 +627,7 @@ describe("QuestieOptionsEngine", function()
             end)
 
             it("should switch to My Journey from its button", function()
-                local QuestieJourney = QuestieLoader:ImportModule("QuestieJourney")
+                local QuestieJourney = QuestieSmazakLoader:ImportModule("QuestieJourney")
                 local journeyToggles = 0
                 QuestieJourney.ToggleJourneyWindow = function() journeyToggles = journeyToggles + 1 end
                 local window = OpenWindow()
@@ -652,8 +652,8 @@ describe("QuestieOptionsEngine", function()
         local function LoadRealTabs()
             QuestieOptionsEngine.tabs = {}
             dofile("Modules/Options/QuestieOptionsDefaults.lua")
-            local defaults = QuestieLoader:ImportModule("QuestieOptionsDefaults"):Load()
-            Questie.db = {
+            local defaults = QuestieSmazakLoader:ImportModule("QuestieOptionsDefaults"):Load()
+            QuestieSmazak.db = {
                 profile = defaults.profile,
                 char = defaults.char,
                 global = defaults.global or {},
@@ -662,14 +662,14 @@ describe("QuestieOptionsEngine", function()
                 GetCurrentProfile = function() return "Default" end,
             }
 
-            QuestieLoader:ImportModule("IsleOfQuelDanas").localizedPhaseNames = {"Phase 1", "Phase 2"}
-            local compat = QuestieLoader:ImportModule("QuestieCompat")
+            QuestieSmazakLoader:ImportModule("IsleOfQuelDanas").localizedPhaseNames = {"Phase 1", "Phase 2"}
+            local compat = QuestieSmazakLoader:ImportModule("QuestieCompat")
             compat.IsAddOnLoaded = function() return false end
             compat.IsSuperTrackingSupported = function() return true end
-            local trackerUtils = QuestieLoader:ImportModule("TrackerUtils")
+            local trackerUtils = QuestieSmazakLoader:ImportModule("TrackerUtils")
             trackerUtils.IsVoiceOverLoaded = function() return false end
             trackerUtils.IsSpokenLoaded = function() return false end
-            QuestieLoader:ImportModule("QuestiePopup").Dialogs = {}
+            QuestieSmazakLoader:ImportModule("QuestiePopup").Dialogs = {}
             dofile("Modules/Expansions.lua")
 
             for _, tabFile in ipairs(TAB_FILES) do
@@ -692,11 +692,11 @@ describe("QuestieOptionsEngine", function()
         end
 
         before_each(function()
-            originalDb = Questie.db
-            originalQuestie.GetIconNameFromPath = Questie.GetIconNameFromPath
-            originalQuestie.icons = Questie.icons
-            Questie.GetIconNameFromPath = function() return "slay" end
-            Questie.icons = setmetatable({}, {__index = function(_, name) return "Icons\\" .. name end})
+            originalDb = QuestieSmazak.db
+            originalQuestie.GetIconNameFromPath = QuestieSmazak.GetIconNameFromPath
+            originalQuestie.icons = QuestieSmazak.icons
+            QuestieSmazak.GetIconNameFromPath = function() return "slay" end
+            QuestieSmazak.icons = setmetatable({}, {__index = function(_, name) return "Icons\\" .. name end})
 
             local tabGlobals = {
                 UnitClass = function() return "Druid" end,
@@ -716,9 +716,9 @@ describe("QuestieOptionsEngine", function()
         end)
 
         after_each(function()
-            Questie.db = originalDb
-            Questie.GetIconNameFromPath = originalQuestie.GetIconNameFromPath
-            Questie.icons = originalQuestie.icons
+            QuestieSmazak.db = originalDb
+            QuestieSmazak.GetIconNameFromPath = originalQuestie.GetIconNameFromPath
+            QuestieSmazak.icons = originalQuestie.icons
             for name, original in pairs(originalGlobals) do
                 _G[name] = original[1]
             end
@@ -770,13 +770,13 @@ describe("QuestieOptionsEngine", function()
         end
 
         it("should build every tab on the Forever client art", function()
-            Questie.IsForever = true
+            QuestieSmazak.IsForever = true
 
             ExpectEveryTabToBuild()
         end)
 
         it("should build every tab on the Classic client art", function()
-            Questie.IsForever = false
+            QuestieSmazak.IsForever = false
 
             ExpectEveryTabToBuild()
         end)
@@ -786,7 +786,7 @@ describe("QuestieOptionsEngine", function()
 
             Initialize()
 
-            assert.are.equal("Questie", ui.categories[1].name)
+            assert.are.equal("Questie-Smazak", ui.categories[1].name)
             assert.is_nil(ui.categories[1].parent)
             assert.is_truthy(ui.categories[1].canvas:GetName():find("general", 1, true))
         end)
@@ -801,14 +801,14 @@ describe("QuestieOptionsEngine", function()
         end)
 
         it("should show the Season of Discovery rune options on Season of Discovery only", function()
-            local originalIsSoD = Questie.IsSoD
+            local originalIsSoD = QuestieSmazak.IsSoD
             LoadRealTabs()
 
-            Questie.IsSoD = true
+            QuestieSmazak.IsSoD = true
             local itemsOnSoD = QuestieOptionsEngine.tabs.icons:Initialize().items.icon_toggles_group.items
-            Questie.IsSoD = false
+            QuestieSmazak.IsSoD = false
             local itemsElsewhere = QuestieOptionsEngine.tabs.icons:Initialize().items.icon_toggles_group.items
-            Questie.IsSoD = originalIsSoD
+            QuestieSmazak.IsSoD = originalIsSoD
 
             for _, key in ipairs({"sod_rune_options", "showSoDRunes", "sodRuneSelection"}) do
                 assert.is_true(itemsOnSoD[key].visible, key)

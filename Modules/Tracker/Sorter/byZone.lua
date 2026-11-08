@@ -1,8 +1,8 @@
 ---@class Sorter
-local Sorter = QuestieLoader:ImportModule("Sorter")
+local Sorter = QuestieSmazakLoader:ImportModule("Sorter")
 
 ---@type QuestieLib
-local QuestieLib = QuestieLoader:ImportModule("QuestieLib")
+local QuestieLib = QuestieSmazakLoader:ImportModule("QuestieLib")
 
 ---@param questIdA QuestId
 ---@param questLevelA number

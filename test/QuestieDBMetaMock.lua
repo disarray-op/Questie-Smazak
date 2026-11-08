@@ -150,7 +150,7 @@ local QuestieDBMetaMock = {
 setmetatable(QuestieDBMetaMock, {
     __call = function()
         ---@type QuestieDB
-        local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+        local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
 
         QuestieDB.questKeys = questKeys
         QuestieDB.npcKeys = npcKeys

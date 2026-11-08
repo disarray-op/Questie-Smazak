@@ -35,19 +35,19 @@ describe("ScenarioSection", function()
         _G.GetInstanceInfo = function() return "Temple of the Jade Serpent" end
         _G.C_Scenario = {GetStepInfo = function() return nil, nil, #criteria end}
         _G.C_ScenarioInfo = {GetCriteriaInfo = function(index) return criteria[index] end}
-        Questie.db.profile.trackerColorObjectives = "white"
-        Questie.db.profile.trackerFontSizeZone = 12
-        Questie.db.profile.trackerFontSizeQuest = 12
-        Questie.db.profile.trackerFontSizeObjective = 12
+        QuestieSmazak.db.profile.trackerColorObjectives = "white"
+        QuestieSmazak.db.profile.trackerFontSizeZone = 12
+        QuestieSmazak.db.profile.trackerFontSizeQuest = 12
+        QuestieSmazak.db.profile.trackerFontSizeObjective = 12
 
-        TrackerLayout = QuestieLoader:ImportModule("TrackerLayout")
+        TrackerLayout = QuestieSmazakLoader:ImportModule("TrackerLayout")
         TrackerLayout.GetBaseFrameWidth = function() return 200 end
         TrackerLayout.TrackLineWidth = function() end
         TrackerLayout.GetLineWidth = function() return 10 end
         TrackerLayout.UpdateWidth = spy.new(function() end)
         TrackerLayout.UpdateHeight = spy.new(function() end)
 
-        TrackerLinePool = QuestieLoader:ImportModule("TrackerLinePool")
+        TrackerLinePool = QuestieSmazakLoader:ImportModule("TrackerLinePool")
         TrackerLinePool.GetNextLine = spy.new(function()
             if availableLines == 0 then
                 return nil
@@ -56,14 +56,14 @@ describe("ScenarioSection", function()
             return _FakeLine()
         end)
 
-        ChallengeModeTimer = QuestieLoader:ImportModule("ChallengeModeTimer")
+        ChallengeModeTimer = QuestieSmazakLoader:ImportModule("ChallengeModeTimer")
         ChallengeModeTimer.GetTimerString = function() return "12:34" end
         ChallengeModeTimer.SetTimerLabel = spy.new(function() end)
 
         dofile("Localization/l10n.lua")
         dofile("Modules/Libs/QuestieLib.lua")
         dofile("Modules/Tracker/Sections/ScenarioSection.lua")
-        ScenarioSection = QuestieLoader:ImportModule("ScenarioSection")
+        ScenarioSection = QuestieSmazakLoader:ImportModule("ScenarioSection")
     end)
 
     after_each(function()

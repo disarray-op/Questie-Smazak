@@ -1,7 +1,7 @@
 -- Shared layout state and helpers for drawing the tracker sections.
 -- Imports no other tracker module. QuestieTracker hands in its frames and resize functions on Initialize.
 ---@class TrackerLayout
-local TrackerLayout = QuestieLoader:CreateModule("TrackerLayout")
+local TrackerLayout = QuestieSmazakLoader:CreateModule("TrackerLayout")
 
 TrackerLayout.MARGIN_LEFT = 14
 TrackerLayout.MARGIN_RIGHT = 30
@@ -52,7 +52,7 @@ end
 ---The button slots are laid out from the quest title to the left: [focus] [play] [quest item or +/-] title
 ---@return TrackerMargins
 function TrackerLayout.GetMargins()
-    local fontSizeQuest = Questie.db.profile.trackerFontSizeQuest
+    local fontSizeQuest = QuestieSmazak.db.profile.trackerFontSizeQuest
     local buttonSize = fontSizeQuest + 3
     local itemButtonSize = 12 + fontSizeQuest
     local itemColumn = itemColumnShown and itemButtonSize or buttonSize
@@ -116,7 +116,7 @@ end
 ---@param line TrackerLineFrame
 ---@param marginLeft number
 function TrackerLayout.UpdateLineWidth(line, marginLeft)
-    local trackerMaxWidth = GetScreenWidth() * Questie.db.profile.trackerWidthRatio
+    local trackerMaxWidth = GetScreenWidth() * QuestieSmazak.db.profile.trackerWidthRatio
     local margin = marginLeft + TrackerLayout.MARGIN_RIGHT
     local contentMaxWidth = trackerMaxWidth - margin
 
@@ -148,7 +148,7 @@ function TrackerLayout.UpdateLineWidth(line, marginLeft)
         -- We add an extra pixel per line to account for WoW's internal line spacing on top of the raw font size.
         local lineHeight = ((fontSize + 1) * line.label:GetNumLines()) + 1 -- add an extra pixel to make sure it really wraps
         line.label:SetHeight(lineHeight)
-        line:SetHeight(line.label:GetHeight() + (Questie.db.profile.trackerQuestPadding + 2))
+        line:SetHeight(line.label:GetHeight() + (QuestieSmazak.db.profile.trackerQuestPadding + 2))
 
         TrackerLayout.TrackLineWidth(line.label:GetWrappedWidth() + marginLeft)
     end

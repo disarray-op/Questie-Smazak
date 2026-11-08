@@ -1,12 +1,12 @@
 ---@type Tutorial
-local Tutorial = QuestieLoader:ImportModule("Tutorial")
+local Tutorial = QuestieSmazakLoader:ImportModule("Tutorial")
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 ---@type AvailableQuests
-local AvailableQuests = QuestieLoader:ImportModule("AvailableQuests")
+local AvailableQuests = QuestieSmazakLoader:ImportModule("AvailableQuests")
 
 function Tutorial.ShowRunes()
-    local baseFrame = CreateFrame("Frame", "QuestieTutorialShowRunes", UIParent, BackdropTemplateMixin and "BackdropTemplate")
+    local baseFrame = CreateFrame("Frame", "QuestieSmazakTutorialShowRunes", UIParent, BackdropTemplateMixin and "BackdropTemplate")
     baseFrame:SetSize(525, 240)
     baseFrame:SetPoint("CENTER", 0, 50)
     baseFrame:SetFrameStrata("HIGH")
@@ -26,19 +26,19 @@ function Tutorial.ShowRunes()
     baseFrame:SetBackdropBorderColor(1, 1, 1, 1)
 
     local titleText = baseFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-    titleText:SetText(l10n("Welcome to Questie"))
+    titleText:SetText(l10n("Welcome to QuestieSmazak"))
     titleText:SetFont(STANDARD_TEXT_FONT, 16)
     titleText:SetPoint("TOP", 0, -10)
 
     local customText = baseFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     customText:SetText(
-        l10n("Questie can show you the locations of runes for your class from previous SoD Phases.\n\n") ..
+        l10n("QuestieSmazak can show you the locations of runes for your class from previous SoD Phases.\n\n") ..
         l10n("Rune locations are marked with the following symbol:")
     )
     customText:SetPoint("TOP", 0, -35)
 
     local showRunesIcon = baseFrame:CreateTexture(nil, "OVERLAY")
-    showRunesIcon:SetTexture("Interface\\Addons\\Questie\\Icons\\sod_rune.blp")
+    showRunesIcon:SetTexture("Interface\\Addons\\QuestieSmazak\\Icons\\sod_rune.blp")
     showRunesIcon:SetSize(30, 30)
     showRunesIcon:SetPoint("TOP", 0, -85)
 
@@ -83,10 +83,10 @@ function Tutorial.ShowRunes()
         local showPhase3Runes = showPhase3RunesButton:GetChecked()
         local showPhase4Runes = showPhase3RunesButton:GetChecked()
 
-        Questie.db.profile.showSoDRunes = showPhase1Runes or showPhase2Runes or showPhase3Runes or showPhase4Runes
-        Questie.db.profile.tutorialShowRunesDone = true
+        QuestieSmazak.db.profile.showSoDRunes = showPhase1Runes or showPhase2Runes or showPhase3Runes or showPhase4Runes
+        QuestieSmazak.db.profile.tutorialShowRunesDone = true
 
-        Questie.db.profile.showRunesOfPhase = {
+        QuestieSmazak.db.profile.showRunesOfPhase = {
             phase1 = showPhase1Runes,
             phase2 = showPhase2Runes,
             phase3 = showPhase3Runes,

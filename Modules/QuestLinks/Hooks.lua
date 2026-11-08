@@ -1,15 +1,15 @@
 ---@type QuestieCompat
-local QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+local QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
 
 local WatchFrame_Update = QuestWatch_Update or QuestieCompat.WatchFrame_Update
 
 ---@class Hooks
-local Hooks = QuestieLoader:CreateModule("Hooks")
+local Hooks = QuestieSmazakLoader:CreateModule("Hooks")
 
 ---@type QuestieTracker
-local QuestieTracker = QuestieLoader:ImportModule("QuestieTracker")
+local QuestieTracker = QuestieSmazakLoader:ImportModule("QuestieTracker")
 ---@type Expansions
-local Expansions = QuestieLoader:ImportModule("Expansions")
+local Expansions = QuestieSmazakLoader:ImportModule("Expansions")
 
 function Hooks:HookQuestLogTitle()
     -- The modern quest log handles links itself and tracks through C_QuestLog, not these title buttons.
@@ -17,7 +17,7 @@ function Hooks:HookQuestLogTitle()
         return
     end
 
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[Hooks] Hooking Quest Log Title")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[Hooks] Hooking Quest Log Title")
     local baseQLTB_OnClick = QuestLogTitleButton_OnClick
 
     -- We can not use hooksecurefunc because this needs to be a pre-hook to work properly unfortunately
@@ -40,7 +40,7 @@ function Hooks:HookQuestLogTitle()
             ChatEdit_InsertLink("[" .. string.gsub(self:GetText(), " *(.*)", "%1") .. " (" .. questId .. ")]")
         else
             -- only call if we actually want to fix this quest (normal quests already call AQW_insert)
-            if Questie.db.profile.trackerEnabled and QuestieCompat.GetNumQuestLeaderBoards(questLogLineIndex) == 0 and (not QuestieCompat.IsQuestWatched(questLogLineIndex)) then
+            if QuestieSmazak.db.profile.trackerEnabled and QuestieCompat.GetNumQuestLeaderBoards(questLogLineIndex) == 0 and (not QuestieCompat.IsQuestWatched(questLogLineIndex)) then
                 QuestieTracker:AQW_Insert(questLogLineIndex, QUEST_WATCH_NO_EXPIRE)
                 WatchFrame_Update()
                 QuestieCompat.QuestLog_SetSelection(questLogLineIndex)

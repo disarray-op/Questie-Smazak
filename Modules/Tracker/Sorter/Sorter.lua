@@ -1,5 +1,5 @@
 ---@class Sorter
-local Sorter = QuestieLoader:CreateModule("Sorter")
+local Sorter = QuestieSmazakLoader:CreateModule("Sorter")
 
 ---@class QuestSortDetails
 ---@field questCompletePercent number

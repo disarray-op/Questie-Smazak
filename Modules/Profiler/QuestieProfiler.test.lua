@@ -42,28 +42,28 @@ describe("QuestieProfiler", function()
 
     before_each(function()
         testModuleName = "ProfilerTestRoot"
-        QuestieLoader._modules[testModuleName] = nil
+        QuestieSmazakLoader._modules[testModuleName] = nil
         originalDebug = _G.debug
         originalDebugProfileStop = _G.debugprofilestop
         originalGetTimePreciseSec = _G.GetTimePreciseSec
         originalDebugStack = _G.debugstack
         originalTimerAPI = _G.C_Timer
-        originalQuestieTestFunction = Questie.ProfilerTestFunction
-        originalQuestieDB = Questie.db
-        originalQuestieModules = Questie.modules
-        originalQuestieOrderedModules = Questie.orderedModules
-        originalQuestieError = Questie.Error
-        QuestieStreamLib = QuestieLoader:ImportModule("QuestieStreamLib")
-        QuestieSerializer = QuestieLoader:ImportModule("QuestieSerializer")
-        QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+        originalQuestieTestFunction = QuestieSmazak.ProfilerTestFunction
+        originalQuestieDB = QuestieSmazak.db
+        originalQuestieModules = QuestieSmazak.modules
+        originalQuestieOrderedModules = QuestieSmazak.orderedModules
+        originalQuestieError = QuestieSmazak.Error
+        QuestieStreamLib = QuestieSmazakLoader:ImportModule("QuestieStreamLib")
+        QuestieSerializer = QuestieSmazakLoader:ImportModule("QuestieSerializer")
+        QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
         originalStreamLoad = QuestieStreamLib.Load
         originalStreamHotRead = QuestieStreamLib.HotRead
         originalSerializerReaders = QuestieSerializer.ReaderTable
         originalSerializerWriters = QuestieSerializer.WriterTable
         originalSerialize = QuestieSerializer.Serialize
         originalGetQuest = QuestieDB.GetQuest
-        originalLoadTimings = QuestieLoader.loadTimings
-        originalLoadMemory = QuestieLoader.loadMemory
+        originalLoadTimings = QuestieSmazakLoader.loadTimings
+        originalLoadMemory = QuestieSmazakLoader.loadMemory
         originalQuerySlots = {}
         for _, slotName in ipairs(querySlotNames) do
             originalQuerySlots[slotName] = QuestieDB[slotName]
@@ -92,33 +92,33 @@ describe("QuestieProfiler", function()
         _G.debugstack = function() return "test stack" end
 
         dofile("Modules/Libs/ThreadLib.lua")
-        ThreadLib = QuestieLoader:ImportModule("ThreadLib")
-        ProfilerUI = QuestieLoader:ImportModule("ProfilerUI")
+        ThreadLib = QuestieSmazakLoader:ImportModule("ThreadLib")
+        ProfilerUI = QuestieSmazakLoader:ImportModule("ProfilerUI")
         ProfilerUI.Create = function() end
         ProfilerUI.Show = function() end
         ProfilerUI.Hide = function() end
         dofile("Modules/Profiler/QuestieProfiler.lua")
-        Profiler = QuestieLoader:ImportModule("Profiler")
+        Profiler = QuestieSmazakLoader:ImportModule("Profiler")
         originalProfilerShowUI = Profiler.ShowUI
     end)
 
     after_each(function()
         Profiler:Unhook()
         Profiler.ShowUI = originalProfilerShowUI
-        QuestieLoader._modules[testModuleName] = nil
-        Questie.ProfilerTestFunction = originalQuestieTestFunction
-        Questie.db = originalQuestieDB
-        Questie.modules = originalQuestieModules
-        Questie.orderedModules = originalQuestieOrderedModules
-        Questie.Error = originalQuestieError
+        QuestieSmazakLoader._modules[testModuleName] = nil
+        QuestieSmazak.ProfilerTestFunction = originalQuestieTestFunction
+        QuestieSmazak.db = originalQuestieDB
+        QuestieSmazak.modules = originalQuestieModules
+        QuestieSmazak.orderedModules = originalQuestieOrderedModules
+        QuestieSmazak.Error = originalQuestieError
         QuestieStreamLib.Load = originalStreamLoad
         QuestieStreamLib.HotRead = originalStreamHotRead
         QuestieSerializer.ReaderTable = originalSerializerReaders
         QuestieSerializer.WriterTable = originalSerializerWriters
         QuestieSerializer.Serialize = originalSerialize
         QuestieDB.GetQuest = originalGetQuest
-        QuestieLoader.loadTimings = originalLoadTimings
-        QuestieLoader.loadMemory = originalLoadMemory
+        QuestieSmazakLoader.loadTimings = originalLoadTimings
+        QuestieSmazakLoader.loadMemory = originalLoadMemory
         for _, slotName in ipairs(querySlotNames) do
             QuestieDB[slotName] = originalQuerySlots[slotName]
         end
@@ -130,7 +130,7 @@ describe("QuestieProfiler", function()
     end)
 
     it("declines to arm, and says so, when the client has no GetTimePreciseSec", function()
-        local testModule = QuestieLoader:CreateModule(testModuleName)
+        local testModule = QuestieSmazakLoader:CreateModule(testModuleName)
         local original = function() end
         testModule.Work = original
 
@@ -139,10 +139,10 @@ describe("QuestieProfiler", function()
         _G.GetTimePreciseSec = nil
         _G.debugprofilestop = function() return clock end
         dofile("Modules/Profiler/QuestieProfiler.lua")
-        Profiler = QuestieLoader:ImportModule("Profiler")
+        Profiler = QuestieSmazakLoader:ImportModule("Profiler")
 
         local reported
-        Questie.Error = function(message) reported = message end
+        QuestieSmazak.Error = function(message) reported = message end
         local armed, rejectionReported = Profiler:Start(false)
 
         assert.is_false(armed)
@@ -169,9 +169,9 @@ describe("QuestieProfiler", function()
                 error("debugprofilestop must not be read while GetTimePreciseSec is available")
             end
             dofile("Modules/Profiler/QuestieProfiler.lua")
-            Profiler = QuestieLoader:ImportModule("Profiler")
+            Profiler = QuestieSmazakLoader:ImportModule("Profiler")
 
-            local testModule = QuestieLoader:CreateModule(testModuleName)
+            local testModule = QuestieSmazakLoader:CreateModule(testModuleName)
             testModule.Work = function()
                 preciseSeconds = preciseSeconds + 0.25
             end
@@ -189,7 +189,7 @@ describe("QuestieProfiler", function()
             end
             _G.debugprofilestop = nil
             dofile("Modules/Profiler/QuestieProfiler.lua")
-            Profiler = QuestieLoader:ImportModule("Profiler")
+            Profiler = QuestieSmazakLoader:ImportModule("Profiler")
 
             assert.is_true(Profiler:Start(false))
             assert.is_true(Profiler.active)
@@ -197,7 +197,7 @@ describe("QuestieProfiler", function()
     end)
 
     it("StartStartup(false) wraps ordinary functions without showing the UI", function()
-        local testModule = QuestieLoader:CreateModule(testModuleName)
+        local testModule = QuestieSmazakLoader:CreateModule(testModuleName)
         local ordinaryFunction = function()
             clock = clock + 4
         end
@@ -222,7 +222,7 @@ describe("QuestieProfiler", function()
     end)
 
     it("shows the UI before traversal and preserves the active session when Start is repeated", function()
-        local testModule = QuestieLoader:CreateModule(testModuleName)
+        local testModule = QuestieSmazakLoader:CreateModule(testModuleName)
         testModule.Work = function()
             clock = clock + 3
         end
@@ -250,13 +250,13 @@ describe("QuestieProfiler", function()
 
     it("reports a startup UI failure without blocking or duplicating hook traversal", function()
         local reportedErrors = {}
-        Questie.Error = function(message, profilerError)
+        QuestieSmazak.Error = function(message, profilerError)
             table.insert(reportedErrors, {message, profilerError})
         end
         Profiler.ShowUI = function()
             error("expected ShowUI failure")
         end
-        local testModule = QuestieLoader:CreateModule(testModuleName)
+        local testModule = QuestieSmazakLoader:CreateModule(testModuleName)
         local original = function()
             clock = clock + 3
         end
@@ -280,7 +280,7 @@ describe("QuestieProfiler", function()
     end)
 
     it("reopens a stopped session's results instead of resetting them", function()
-        local testModule = QuestieLoader:CreateModule(testModuleName)
+        local testModule = QuestieSmazakLoader:CreateModule(testModuleName)
         testModule.Work = function()
             clock = clock + 3
         end
@@ -314,7 +314,7 @@ describe("QuestieProfiler", function()
 
     it("rolls back partial hook installation and allows a clean retry", function()
         local reportedErrors = {}
-        Questie.Error = function(message, profilerError)
+        QuestieSmazak.Error = function(message, profilerError)
             table.insert(reportedErrors, {message, profilerError})
         end
         local shown = 0
@@ -325,7 +325,7 @@ describe("QuestieProfiler", function()
         ProfilerUI.Hide = function()
             hidden = hidden + 1
         end
-        local testModule = QuestieLoader:CreateModule(testModuleName)
+        local testModule = QuestieSmazakLoader:CreateModule(testModuleName)
         local original = function()
             clock = clock + 2
         end
@@ -361,7 +361,7 @@ describe("QuestieProfiler", function()
     end)
 
     it("gives Start(false) and StartStartup(false) the same hook scope", function()
-        local testModule = QuestieLoader:CreateModule(testModuleName)
+        local testModule = QuestieSmazakLoader:CreateModule(testModuleName)
         local rootFunction = function() end
         local nestedFunction = function() end
         testModule.RootFunction = rootFunction
@@ -395,7 +395,7 @@ describe("QuestieProfiler", function()
             clock = clock + 2
             return "quest"
         end
-        local testModule = QuestieLoader:CreateModule(testModuleName)
+        local testModule = QuestieSmazakLoader:CreateModule(testModuleName)
         testModule.copiedStream = {
             _mode = "raw",
             Load = streamLoad,
@@ -491,7 +491,7 @@ describe("QuestieProfiler", function()
     end)
 
     it("preserves leading, interior, and trailing nil return values", function()
-        local testModule = QuestieLoader:CreateModule(testModuleName)
+        local testModule = QuestieSmazakLoader:CreateModule(testModuleName)
         testModule.ReturnValues = function()
             clock = clock + 5
             return nil, "middle", nil, "last", nil
@@ -512,7 +512,7 @@ describe("QuestieProfiler", function()
     end)
 
     it("propagates a main-thread error with its original message", function()
-        local testModule = QuestieLoader:CreateModule(testModuleName)
+        local testModule = QuestieSmazakLoader:CreateModule(testModuleName)
         testModule.Boom = function()
             error("expected boom")
         end
@@ -525,7 +525,7 @@ describe("QuestieProfiler", function()
     end)
 
     it("propagates a non-string error object unchanged", function()
-        local testModule = QuestieLoader:CreateModule(testModuleName)
+        local testModule = QuestieSmazakLoader:CreateModule(testModuleName)
         local errorObject = {code = "expected"}
         testModule.Boom = function()
             error(errorObject)
@@ -539,7 +539,7 @@ describe("QuestieProfiler", function()
     end)
 
     it("preserves coroutine yields and final return values", function()
-        local testModule = QuestieLoader:CreateModule(testModuleName)
+        local testModule = QuestieSmazakLoader:CreateModule(testModuleName)
         testModule.YieldingFunction = function()
             local resumedWith = coroutine.yield("first yield", nil, "third yield")
             return nil, resumedWith, nil
@@ -567,7 +567,7 @@ describe("QuestieProfiler", function()
     end)
 
     it("counts raw coroutine calls without timing suspended wall-clock time", function()
-        local testModule = QuestieLoader:CreateModule(testModuleName)
+        local testModule = QuestieSmazakLoader:CreateModule(testModuleName)
         testModule.RawCoroutineWork = function()
             clock = clock + 2
             coroutine.yield()
@@ -587,7 +587,7 @@ describe("QuestieProfiler", function()
     end)
 
     it("times work spanning resume slices, counting the slices and never the suspension", function()
-        local testModule = QuestieLoader:CreateModule(testModuleName)
+        local testModule = QuestieSmazakLoader:CreateModule(testModuleName)
         testModule.SlicedJob = function()
             clock = clock + 2
             coroutine.yield()
@@ -624,7 +624,7 @@ describe("QuestieProfiler", function()
     end)
 
     it("discards a nested errored frame when its ThreadLib caller catches the error", function()
-        local testModule = QuestieLoader:CreateModule(testModuleName)
+        local testModule = QuestieSmazakLoader:CreateModule(testModuleName)
         testModule.Inner = function()
             clock = clock + 3
             error("expected inner failure")
@@ -645,7 +645,7 @@ describe("QuestieProfiler", function()
     end)
 
     it("credits a caller spanning resumes without crediting the frame its caught error left behind", function()
-        local testModule = QuestieLoader:CreateModule(testModuleName)
+        local testModule = QuestieSmazakLoader:CreateModule(testModuleName)
         testModule.Inner = function()
             clock = clock + 2
             error("expected inner failure")
@@ -673,7 +673,7 @@ describe("QuestieProfiler", function()
     end)
 
     it("keeps self time right when a call spans a resume and its child does not", function()
-        local testModule = QuestieLoader:CreateModule(testModuleName)
+        local testModule = QuestieSmazakLoader:CreateModule(testModuleName)
         testModule.Child = function()
             clock = clock + 5
         end
@@ -699,7 +699,7 @@ describe("QuestieProfiler", function()
     end)
 
     it("does not carry caught errors from an unwrapped job into a measurement reset", function()
-        local testModule = QuestieLoader:CreateModule(testModuleName)
+        local testModule = QuestieSmazakLoader:CreateModule(testModuleName)
         testModule.FailingWork = function()
             clock = clock + 2
             error("expected failure")
@@ -724,7 +724,7 @@ describe("QuestieProfiler", function()
     end)
 
     it("keeps only the active job when measurements reset between resume slices", function()
-        local testModule = QuestieLoader:CreateModule(testModuleName)
+        local testModule = QuestieSmazakLoader:CreateModule(testModuleName)
         testModule.ResetWhileSuspended = function()
             clock = clock + 2
             coroutine.yield()
@@ -776,7 +776,7 @@ describe("QuestieProfiler", function()
     end)
 
     it("does not publish a main-thread call across a measurement reset", function()
-        local testModule = QuestieLoader:CreateModule(testModuleName)
+        local testModule = QuestieSmazakLoader:CreateModule(testModuleName)
         testModule.ResetDuringCall = function()
             clock = clock + 2
             Profiler:ResetMeasurements()
@@ -792,7 +792,7 @@ describe("QuestieProfiler", function()
     end)
 
     it("records nested function timings inclusively", function()
-        local testModule = QuestieLoader:CreateModule(testModuleName)
+        local testModule = QuestieSmazakLoader:CreateModule(testModuleName)
         testModule.Inner = function()
             clock = clock + 3
         end
@@ -810,8 +810,8 @@ describe("QuestieProfiler", function()
     end)
 
     describe("addon load timings", function()
-        it("publishes each file QuestieLoader timed as its own result row", function()
-            QuestieLoader.loadTimings = {
+        it("publishes each file QuestieSmazakLoader timed as its own result row", function()
+            QuestieSmazakLoader.loadTimings = {
                 ["Localization/lookups/lookupZones.lua"] = 202.5,
                 ["Database/Zones/zoneDB.lua"] = 19.6,
             }
@@ -824,7 +824,7 @@ describe("QuestieProfiler", function()
         end)
 
         it("reports a loaded file as one call whose time is entirely its own", function()
-            QuestieLoader.loadTimings = {["Database/Zones/zoneDB.lua"] = 19.6}
+            QuestieSmazakLoader.loadTimings = {["Database/Zones/zoneDB.lua"] = 19.6}
             Profiler:Start(false)
 
             Profiler:ImportLoadTimings()
@@ -836,7 +836,7 @@ describe("QuestieProfiler", function()
         end)
 
         it("does not let a file duration become the reported peak for functions", function()
-            QuestieLoader.loadTimings = {["Localization/lookups/lookupZones.lua"] = 900}
+            QuestieSmazakLoader.loadTimings = {["Localization/lookups/lookupZones.lua"] = 900}
             Profiler:Start(false)
 
             Profiler:ImportLoadTimings()
@@ -844,9 +844,9 @@ describe("QuestieProfiler", function()
             assert.are_same(0, Profiler.highestMS)
         end)
 
-        it("carries the allocation QuestieLoader recorded for each file", function()
-            QuestieLoader.loadTimings = {["Database/Zones/zoneDB.lua"] = 19.6}
-            QuestieLoader.loadMemory = {["Database/Zones/zoneDB.lua"] = 2140}
+        it("carries the allocation QuestieSmazakLoader recorded for each file", function()
+            QuestieSmazakLoader.loadTimings = {["Database/Zones/zoneDB.lua"] = 19.6}
+            QuestieSmazakLoader.loadMemory = {["Database/Zones/zoneDB.lua"] = 2140}
             Profiler:Start(false)
 
             Profiler:ImportLoadTimings()
@@ -856,8 +856,8 @@ describe("QuestieProfiler", function()
 
         it("does not reopen a load interval by resolving the UI at runtime", function()
             local importsDuringUse = 0
-            local originalImportModule = QuestieLoader.ImportModule
-            QuestieLoader.ImportModule = function(loader, name)
+            local originalImportModule = QuestieSmazakLoader.ImportModule
+            QuestieSmazakLoader.ImportModule = function(loader, name)
                 if name == "ProfilerUI" then
                     importsDuringUse = importsDuringUse + 1
                 end
@@ -867,14 +867,14 @@ describe("QuestieProfiler", function()
             Profiler:ShowUI()
             Profiler:HideUI()
 
-            QuestieLoader.ImportModule = originalImportModule
+            QuestieSmazakLoader.ImportModule = originalImportModule
             -- A runtime import would re-stamp this file as the open load interval and charge it whatever
             -- ran next, which is how hook installation was once reported as this file's load cost.
             assert.are_same(0, importsDuringUse)
         end)
 
         it("does nothing when profiling is not active", function()
-            QuestieLoader.loadTimings = {["Database/Zones/zoneDB.lua"] = 19.6}
+            QuestieSmazakLoader.loadTimings = {["Database/Zones/zoneDB.lua"] = 19.6}
 
             Profiler:ImportLoadTimings()
 
@@ -884,7 +884,7 @@ describe("QuestieProfiler", function()
         it("republishes load rows when a fresh session starts", function()
             -- Addon load happened once for this client and cannot be measured again, so a restarted session
             -- must not be the only way to destroy the record of it. The UI hides the rows instead.
-            QuestieLoader.loadTimings = {["Database/Zones/zoneDB.lua"] = 19.6}
+            QuestieSmazakLoader.loadTimings = {["Database/Zones/zoneDB.lua"] = 19.6}
             Profiler:Start(false)
             Profiler:ImportLoadTimings()
             Profiler:Stop()
@@ -895,7 +895,7 @@ describe("QuestieProfiler", function()
         end)
 
         it("still clears function measurements when a fresh session starts", function()
-            local testModule = QuestieLoader:CreateModule(testModuleName)
+            local testModule = QuestieSmazakLoader:CreateModule(testModuleName)
             testModule.Work = function()
                 clock = clock + 3
             end
@@ -911,7 +911,7 @@ describe("QuestieProfiler", function()
 
     describe("self time", function()
         it("excludes time spent inside profiled children", function()
-            local testModule = QuestieLoader:CreateModule(testModuleName)
+            local testModule = QuestieSmazakLoader:CreateModule(testModuleName)
             testModule.Inner = function()
                 clock = clock + 3
             end
@@ -928,7 +928,7 @@ describe("QuestieProfiler", function()
         end)
 
         it("equals total time for a function with no profiled children", function()
-            local testModule = QuestieLoader:CreateModule(testModuleName)
+            local testModule = QuestieSmazakLoader:CreateModule(testModuleName)
             testModule.Leaf = function()
                 clock = clock + 4
             end
@@ -941,7 +941,7 @@ describe("QuestieProfiler", function()
         end)
 
         it("subtracts each of several children from one parent", function()
-            local testModule = QuestieLoader:CreateModule(testModuleName)
+            local testModule = QuestieSmazakLoader:CreateModule(testModuleName)
             testModule.First = function()
                 clock = clock + 2
             end
@@ -963,7 +963,7 @@ describe("QuestieProfiler", function()
         end)
 
         it("keeps recursive inclusive and self time distinct", function()
-            local testModule = QuestieLoader:CreateModule(testModuleName)
+            local testModule = QuestieSmazakLoader:CreateModule(testModuleName)
             testModule.Recurse = function(depth)
                 clock = clock + 1
                 if depth > 0 then
@@ -984,7 +984,7 @@ describe("QuestieProfiler", function()
         end)
 
         it("accumulates across repeated calls", function()
-            local testModule = QuestieLoader:CreateModule(testModuleName)
+            local testModule = QuestieSmazakLoader:CreateModule(testModuleName)
             testModule.Work = function()
                 clock = clock + 3
             end
@@ -997,7 +997,7 @@ describe("QuestieProfiler", function()
         end)
 
         it("charges a caught descendant error to the descendant, not to its caller", function()
-            local testModule = QuestieLoader:CreateModule(testModuleName)
+            local testModule = QuestieSmazakLoader:CreateModule(testModuleName)
             testModule.Inner = function()
                 clock = clock + 3
                 error("expected inner failure")
@@ -1056,12 +1056,12 @@ describe("QuestieProfiler", function()
             assert.are_not_equal(original, libraries["HereBeDragonsQuestie-2.0"].GetZoneDistance)
         end)
 
-        it("measures a library call and names the Questie function that made it", function()
+        it("measures a library call and names the QuestieSmazak function that made it", function()
             MockLibStub({["HereBeDragonsQuestie-Pins-2.0"] = {
                 AddWorldMapIconMap = function() clock = clock + 4 end,
             }})
             local HBDPins = libraries["HereBeDragonsQuestie-Pins-2.0"]
-            local testModule = QuestieLoader:CreateModule(testModuleName)
+            local testModule = QuestieSmazakLoader:CreateModule(testModuleName)
             testModule.DrawIcon = function()
                 clock = clock + 1
                 HBDPins.AddWorldMapIconMap()
@@ -1252,10 +1252,10 @@ describe("QuestieProfiler", function()
             assert.are_same(2, Profiler.hookTimeCount["Libs.HBD.GetZoneDistance"])
         end)
 
-        it("gives a table shared with a Questie module the library identity", function()
+        it("gives a table shared with a QuestieSmazak module the library identity", function()
             local shared = {Convert = function() end}
             MockLibStub({["HereBeDragonsQuestie-2.0"] = {utils = shared}})
-            local testModule = QuestieLoader:CreateModule(testModuleName)
+            local testModule = QuestieSmazakLoader:CreateModule(testModuleName)
             testModule.utils = shared
 
             Profiler:Start(false)
@@ -1267,7 +1267,7 @@ describe("QuestieProfiler", function()
 
     describe("caller attribution", function()
         it("names the calling function of a nested call", function()
-            local testModule = QuestieLoader:CreateModule(testModuleName)
+            local testModule = QuestieSmazakLoader:CreateModule(testModuleName)
             testModule.Inner = function()
                 clock = clock + 3
             end
@@ -1283,7 +1283,7 @@ describe("QuestieProfiler", function()
         end)
 
         it("names the root for a call with no profiled function below it", function()
-            local testModule = QuestieLoader:CreateModule(testModuleName)
+            local testModule = QuestieSmazakLoader:CreateModule(testModuleName)
             testModule.Work = function() end
             Profiler:Start(false)
 
@@ -1293,7 +1293,7 @@ describe("QuestieProfiler", function()
         end)
 
         it("counts each caller of a shared function separately", function()
-            local testModule = QuestieLoader:CreateModule(testModuleName)
+            local testModule = QuestieSmazakLoader:CreateModule(testModuleName)
             testModule.Shared = function()
                 clock = clock + 1
             end
@@ -1316,7 +1316,7 @@ describe("QuestieProfiler", function()
         end)
 
         it("attributes elapsed time to the caller that spent it", function()
-            local testModule = QuestieLoader:CreateModule(testModuleName)
+            local testModule = QuestieSmazakLoader:CreateModule(testModuleName)
             testModule.Shared = function()
                 clock = clock + 2
             end
@@ -1339,7 +1339,7 @@ describe("QuestieProfiler", function()
         end)
 
         it("resolves the caller of a call made after a caught descendant error", function()
-            local testModule = QuestieLoader:CreateModule(testModuleName)
+            local testModule = QuestieSmazakLoader:CreateModule(testModuleName)
             testModule.Boom = function()
                 error("expected failure")
             end
@@ -1362,7 +1362,7 @@ describe("QuestieProfiler", function()
         end)
 
         it("resolves the caller of a call made after a caught error, before the catcher returns", function()
-            local testModule = QuestieLoader:CreateModule(testModuleName)
+            local testModule = QuestieSmazakLoader:CreateModule(testModuleName)
             testModule.Boom = function()
                 error("expected failure")
             end
@@ -1381,7 +1381,7 @@ describe("QuestieProfiler", function()
         end)
 
         it("names the ThreadLib job as the caller of the work it scheduled", function()
-            local testModule = QuestieLoader:CreateModule(testModuleName)
+            local testModule = QuestieSmazakLoader:CreateModule(testModuleName)
             testModule.Step = function()
                 clock = clock + 2
             end
@@ -1400,7 +1400,7 @@ describe("QuestieProfiler", function()
         end)
 
         it("clears edges when measurements are reset", function()
-            local testModule = QuestieLoader:CreateModule(testModuleName)
+            local testModule = QuestieSmazakLoader:CreateModule(testModuleName)
             testModule.Work = function()
                 clock = clock + 2
             end
@@ -1415,7 +1415,7 @@ describe("QuestieProfiler", function()
         end)
 
         it("preserves edges and self time after profiling stops", function()
-            local testModule = QuestieLoader:CreateModule(testModuleName)
+            local testModule = QuestieSmazakLoader:CreateModule(testModuleName)
             testModule.Work = function()
                 clock = clock + 2
             end
@@ -1430,7 +1430,7 @@ describe("QuestieProfiler", function()
     end)
 
     it("terminates on cyclic and shared tables without probing frames or table-valued keys", function()
-        local testModule = QuestieLoader:CreateModule(testModuleName)
+        local testModule = QuestieSmazakLoader:CreateModule(testModuleName)
         local shared = {
             Work = function() end,
         }
@@ -1466,7 +1466,7 @@ describe("QuestieProfiler", function()
     end)
 
     it("hooks functions inside two bounded namespace levels", function()
-        local testModule = QuestieLoader:CreateModule(testModuleName)
+        local testModule = QuestieSmazakLoader:CreateModule(testModuleName)
         local original = function()
             clock = clock + 6
         end
@@ -1486,7 +1486,7 @@ describe("QuestieProfiler", function()
     end)
 
     it("does not traverse large pure-data subtrees", function()
-        local testModule = QuestieLoader:CreateModule(testModuleName)
+        local testModule = QuestieSmazakLoader:CreateModule(testModuleName)
         testModule.RootWork = function() end
         local pureData = {}
         local descendantFunctions = {}
@@ -1519,25 +1519,25 @@ describe("QuestieProfiler", function()
             },
         }
         local aceModuleWork = function() end
-        Questie.db = testDB
-        Questie.modules = {AceModule = {Work = aceModuleWork}}
-        Questie.orderedModules = {Questie.modules.AceModule}
+        QuestieSmazak.db = testDB
+        QuestieSmazak.modules = {AceModule = {Work = aceModuleWork}}
+        QuestieSmazak.orderedModules = {QuestieSmazak.modules.AceModule}
 
         Profiler:Start(false)
         assert.is_true(Profiler:RefreshHooks())
 
         assert.is_nil(Profiler.alreadyHooked[testDB])
         assert.is_nil(Profiler.alreadyHooked[testDB.profile])
-        assert.is_nil(Profiler.alreadyHooked[Questie.modules])
-        assert.is_nil(Profiler.alreadyHooked[Questie.orderedModules])
-        assert.are_equal(setProfile, Questie.db.SetProfile)
-        assert.are_equal(profileFunction, Questie.db.profile.ProfileFunction)
-        assert.are_equal(aceModuleWork, Questie.modules.AceModule.Work)
-        assert.is_nil(Profiler.lookupToHook["Questie.db.SetProfile"])
+        assert.is_nil(Profiler.alreadyHooked[QuestieSmazak.modules])
+        assert.is_nil(Profiler.alreadyHooked[QuestieSmazak.orderedModules])
+        assert.are_equal(setProfile, QuestieSmazak.db.SetProfile)
+        assert.are_equal(profileFunction, QuestieSmazak.db.profile.ProfileFunction)
+        assert.are_equal(aceModuleWork, QuestieSmazak.modules.AceModule.Work)
+        assert.is_nil(Profiler.lookupToHook["QuestieSmazak.db.SetProfile"])
     end)
 
     it("uses an explicit ThreadLib job name before known function and stack metadata", function()
-        local testModule = QuestieLoader:CreateModule(testModuleName)
+        local testModule = QuestieSmazakLoader:CreateModule(testModuleName)
         testModule.KnownJob = function() end
         _G.debugstack = function()
             return "Modules/Quest/AvailableQuests/AvailableQuests.lua:123: in function 'original'"
@@ -1554,7 +1554,7 @@ describe("QuestieProfiler", function()
     end)
 
     it("names an anonymous job after the profiled function that submitted it", function()
-        local testModule = QuestieLoader:CreateModule(testModuleName)
+        local testModule = QuestieSmazakLoader:CreateModule(testModuleName)
         testModule.Submitter = function()
             ThreadLib.ThreadSimple(function() end, 0)
         end
@@ -1595,7 +1595,7 @@ describe("QuestieProfiler", function()
     end)
 
     it("looks past ThreadLib's own frames to the function that submitted the job", function()
-        local testModule = QuestieLoader:CreateModule(testModuleName)
+        local testModule = QuestieSmazakLoader:CreateModule(testModuleName)
         -- ThreadSimple forwards to Thread, so the scheduler sits on the shadow stack above the submitter.
         -- Naming the job after it would label every job in the addon "ThreadLib.Thread".
         testModule.Submitter = function()
@@ -1611,7 +1611,7 @@ describe("QuestieProfiler", function()
     end)
 
     it("prefers an explicit name over the submitting function", function()
-        local testModule = QuestieLoader:CreateModule(testModuleName)
+        local testModule = QuestieSmazakLoader:CreateModule(testModuleName)
         testModule.Submitter = function()
             ThreadLib.Thread(function() end, 0, nil, nil, nil, "Explicitly named work")
         end
@@ -1624,10 +1624,10 @@ describe("QuestieProfiler", function()
     end)
 
     it("keeps the addon prefix off a job name WoW truncated from the left", function()
-        -- WoW renders a long path as "...erface/AddOns/Questie/...", which a match needing the whole word
+        -- WoW renders a long path as "...erface/AddOns/QuestieSmazak/...", which a match needing the whole word
         -- "Interface" would leave untouched, putting the ellipsis and full path in the job's name.
         _G.debugstack = function()
-            return "...erface/AddOns/Questie/Modules/Quest/QuestieQuest.lua:105"
+            return "...erface/AddOns/QuestieSmazak/Modules/Quest/QuestieQuest.lua:105"
         end
         Profiler:Start(false)
 
@@ -1639,9 +1639,9 @@ describe("QuestieProfiler", function()
 
     it("recovers a job name whose truncation cut landed inside the addon marker itself", function()
         -- The cut position depends on total path length, so for a window of lengths the ellipsis bisects
-        -- "AddOns/Questie/" and a match needing the whole marker is a no-op.
+        -- "AddOns/QuestieSmazak/" and a match needing the whole marker is a no-op.
         _G.debugstack = function()
-            return "...Ons/Questie/Modules/Quest/QuestieQuest.lua:105"
+            return "...Ons/QuestieSmazak/Modules/Quest/QuestieQuest.lua:105"
         end
         Profiler:Start(false)
 
@@ -1651,7 +1651,7 @@ describe("QuestieProfiler", function()
             Profiler.threadJobCallCount["ThreadLib job: Modules/Quest/QuestieQuest.lua:105"])
     end)
 
-    it("recovers a job name whose truncation cut landed inside the Questie segment", function()
+    it("recovers a job name whose truncation cut landed inside the QuestieSmazak segment", function()
         _G.debugstack = function()
             return "...stie/Modules/Quest/QuestieQuest.lua:105"
         end
@@ -1708,8 +1708,8 @@ describe("QuestieProfiler", function()
     it("names an anonymous job by its definition site, not the call site that repeats the path", function()
         _G.debugstack = function()
             return "Modules/Libs/ThreadLib.lua:86: in function 'Thread'\n"
-                .. "[Interface/AddOns/Questie/Modules/QuestieInit.lua]:394: "
-                .. "in function <Interface/AddOns/Questie/Modules/QuestieInit.lua:392>"
+                .. "[Interface/AddOns/QuestieSmazak/Modules/QuestieInit.lua]:394: "
+                .. "in function <Interface/AddOns/QuestieSmazak/Modules/QuestieInit.lua:392>"
         end
         Profiler:Start(false)
 
@@ -1723,7 +1723,7 @@ describe("QuestieProfiler", function()
     it("drops the addon path prefix and WoW's brackets from a call site", function()
         _G.debugstack = function()
             return "Modules/Libs/ThreadLib.lua:86: in function 'Thread'\n"
-                .. "[Interface/AddOns/Questie/Modules/Quest/QuestieQuest.lua]:507"
+                .. "[Interface/AddOns/QuestieSmazak/Modules/Quest/QuestieQuest.lua]:507"
         end
         Profiler:Start(false)
 
@@ -1737,8 +1737,8 @@ describe("QuestieProfiler", function()
         local callSiteLine = 100
         _G.debugstack = function()
             return "Modules/Libs/ThreadLib.lua:86: in function 'Thread'\n"
-                .. "[Interface/AddOns/Questie/Modules/QuestieInit.lua]:" .. callSiteLine
-                .. ": in function <Interface/AddOns/Questie/Modules/QuestieInit.lua:50>"
+                .. "[Interface/AddOns/QuestieSmazak/Modules/QuestieInit.lua]:" .. callSiteLine
+                .. ": in function <Interface/AddOns/QuestieSmazak/Modules/QuestieInit.lua:50>"
         end
         Profiler:Start(false)
 
@@ -1751,7 +1751,7 @@ describe("QuestieProfiler", function()
         assert.are_same(2, Profiler.threadJobCallCount[lookupKey])
     end)
 
-    it("leaves another addon's path alone, so nothing collapses into a Questie name", function()
+    it("leaves another addon's path alone, so nothing collapses into a QuestieSmazak name", function()
         _G.debugstack = function()
             return "Modules/Libs/ThreadLib.lua:86: in function 'Thread'\n"
                 .. "[Interface/AddOns/SomeOtherAddon/Modules/QuestieInit.lua]:100"
@@ -1767,7 +1767,7 @@ describe("QuestieProfiler", function()
     it("spells a backslash path the way addon-load rows spell it", function()
         _G.debugstack = function()
             return "Modules/Libs/ThreadLib.lua:86: in function 'Thread'\n"
-                .. "[Interface\\AddOns\\Questie\\Modules\\QuestieInit.lua]:100"
+                .. "[Interface\\AddOns\\QuestieSmazak\\Modules\\QuestieInit.lua]:100"
         end
         Profiler:Start(false)
 
@@ -1778,7 +1778,7 @@ describe("QuestieProfiler", function()
     end)
 
     it("uses the exact module path for a known submitted ThreadLib function", function()
-        local testModule = QuestieLoader:CreateModule(testModuleName)
+        local testModule = QuestieSmazakLoader:CreateModule(testModuleName)
         testModule.KnownJob = function() end
         _G.debugstack = function()
             return "Modules/Libs/ThreadLib.lua:86\nModules/Quest/AvailableQuests/AvailableQuests.lua:123"
@@ -1836,7 +1836,7 @@ describe("QuestieProfiler", function()
     end)
 
     it("wraps and restores each alias slot independently", function()
-        local testModule = QuestieLoader:CreateModule(testModuleName)
+        local testModule = QuestieSmazakLoader:CreateModule(testModuleName)
         local original = function()
             clock = clock + 1
         end
@@ -1859,7 +1859,7 @@ describe("QuestieProfiler", function()
     end)
 
     it("wraps a late-bound module method once when hooks are refreshed", function()
-        local testModule = QuestieLoader:CreateModule(testModuleName)
+        local testModule = QuestieSmazakLoader:CreateModule(testModuleName)
         testModule.Existing = function() end
         Profiler:Start(false)
         local lateOriginal = function()
@@ -1882,7 +1882,7 @@ describe("QuestieProfiler", function()
     it("leaves functions untouched when ThreadLib profiling callbacks have another owner", function()
         local foreignOwner = {}
         assert.is_true(ThreadLib.SetProfilingCallbacks(foreignOwner, {}))
-        local testModule = QuestieLoader:CreateModule(testModuleName)
+        local testModule = QuestieSmazakLoader:CreateModule(testModuleName)
         local original = function() end
         testModule.Work = original
 
@@ -1946,7 +1946,7 @@ describe("QuestieProfiler", function()
     end)
 
     it("does not stack wrappers when Start is repeated", function()
-        local testModule = QuestieLoader:CreateModule(testModuleName)
+        local testModule = QuestieSmazakLoader:CreateModule(testModuleName)
         testModule.Work = function() end
         Profiler:Start(false)
         local firstWrapper = testModule.Work
@@ -1959,7 +1959,7 @@ describe("QuestieProfiler", function()
     end)
 
     it("resets measurements without replacing installed wrappers", function()
-        local testModule = QuestieLoader:CreateModule(testModuleName)
+        local testModule = QuestieSmazakLoader:CreateModule(testModuleName)
         testModule.Work = function()
             clock = clock + 3
         end
@@ -1979,7 +1979,7 @@ describe("QuestieProfiler", function()
     end)
 
     it("releases wrappers on Stop while preserving completed measurements", function()
-        local testModule = QuestieLoader:CreateModule(testModuleName)
+        local testModule = QuestieSmazakLoader:CreateModule(testModuleName)
         testModule.Work = function()
             clock = clock + 3
         end
@@ -2002,7 +2002,7 @@ describe("QuestieProfiler", function()
 
     it("keeps a retained wrapper disabled after profiling restarts", function()
         local originalCalls = 0
-        local testModule = QuestieLoader:CreateModule(testModuleName)
+        local testModule = QuestieSmazakLoader:CreateModule(testModuleName)
         testModule.Work = function()
             originalCalls = originalCalls + 1
             clock = clock + 2
@@ -2023,7 +2023,7 @@ describe("QuestieProfiler", function()
     end)
 
     it("does not double-count a replacement that delegates to a stale wrapper", function()
-        local testModule = QuestieLoader:CreateModule(testModuleName)
+        local testModule = QuestieSmazakLoader:CreateModule(testModuleName)
         testModule.Work = function()
             clock = clock + 3
         end
@@ -2042,7 +2042,7 @@ describe("QuestieProfiler", function()
     end)
 
     it("does not publish a main-thread call across Stop and restart", function()
-        local testModule = QuestieLoader:CreateModule(testModuleName)
+        local testModule = QuestieSmazakLoader:CreateModule(testModuleName)
         testModule.RestartDuringCall = function()
             clock = clock + 2
             Profiler:Stop()
@@ -2062,7 +2062,7 @@ describe("QuestieProfiler", function()
     end)
 
     it("does not publish a suspended wrapper into a restarted session", function()
-        local testModule = QuestieLoader:CreateModule(testModuleName)
+        local testModule = QuestieSmazakLoader:CreateModule(testModuleName)
         testModule.SuspendedWork = function()
             clock = clock + 2
             coroutine.yield()
@@ -2082,7 +2082,7 @@ describe("QuestieProfiler", function()
     end)
 
     it("allows repeated teardown and starts a fresh session on restart", function()
-        local testModule = QuestieLoader:CreateModule(testModuleName)
+        local testModule = QuestieSmazakLoader:CreateModule(testModuleName)
         local original = function() end
         testModule.Work = original
         Profiler:Start(false)
@@ -2099,7 +2099,7 @@ describe("QuestieProfiler", function()
     end)
 
     it("preserves a slot replaced by another owner after profiling starts", function()
-        local testModule = QuestieLoader:CreateModule(testModuleName)
+        local testModule = QuestieSmazakLoader:CreateModule(testModuleName)
         testModule.Work = function() end
         Profiler:Start(false)
         local laterReplacement = function() return "replacement" end
@@ -2111,19 +2111,19 @@ describe("QuestieProfiler", function()
         assert.are_same("replacement", testModule.Work())
     end)
 
-    it("hooks and restores functions on the global Questie addon object", function()
+    it("hooks and restores functions on the global QuestieSmazak addon object", function()
         local original = function()
             clock = clock + 7
         end
-        Questie.ProfilerTestFunction = original
+        QuestieSmazak.ProfilerTestFunction = original
         Profiler:Start(false)
 
-        Questie.ProfilerTestFunction()
+        QuestieSmazak.ProfilerTestFunction()
 
-        assert.are_not_equal(original, Questie.ProfilerTestFunction)
-        assert.are_same(1, Profiler.hookCallCount["Questie.ProfilerTestFunction"])
-        assert.are_same(7, Profiler.hookTimeCount["Questie.ProfilerTestFunction"])
+        assert.are_not_equal(original, QuestieSmazak.ProfilerTestFunction)
+        assert.are_same(1, Profiler.hookCallCount["QuestieSmazak.ProfilerTestFunction"])
+        assert.are_same(7, Profiler.hookTimeCount["QuestieSmazak.ProfilerTestFunction"])
         Profiler:Unhook()
-        assert.are_equal(original, Questie.ProfilerTestFunction)
+        assert.are_equal(original, QuestieSmazak.ProfilerTestFunction)
     end)
 end)

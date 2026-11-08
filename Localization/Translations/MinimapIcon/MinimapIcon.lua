@@ -1,5 +1,5 @@
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 
 local minimapIconLocales = {
     ["Error"] = {
@@ -86,7 +86,7 @@ local minimapIconLocales = {
         ["zhCN"] = false,
         ["zhTW"] = false,
     },
-    ["Questie expansion: %s (%s)"] = {
+    ["QuestieSmazak expansion: %s (%s)"] = {
         ["enUS"] = true,
         ["deDE"] = false,
         ["esES"] = false,
@@ -206,7 +206,7 @@ local minimapIconLocales = {
         ["zhCN"] = false,
         ["zhTW"] = false,
     },
-    ["Provider contracts: %s to %s; Questie requires %s"] = {
+    ["Provider contracts: %s to %s; QuestieSmazak requires %s"] = {
         ["enUS"] = true,
         ["deDE"] = false,
         ["esES"] = false,
@@ -242,7 +242,7 @@ local minimapIconLocales = {
         ["zhCN"] = false,
         ["zhTW"] = false,
     },
-    ["Questie could not start: %s"] = {
+    ["QuestieSmazak could not start: %s"] = {
         ["enUS"] = true,
         ["deDE"] = false,
         ["esES"] = false,
@@ -254,7 +254,7 @@ local minimapIconLocales = {
         ["zhCN"] = false,
         ["zhTW"] = false,
     },
-    ["Update Questie and QuestieDB, then reload the UI."] = {
+    ["Update QuestieSmazak and QuestieDB, then reload the UI."] = {
         ["enUS"] = true,
         ["deDE"] = false,
         ["esES"] = false,
@@ -314,14 +314,14 @@ local minimapIconLocales = {
         ["zhCN"] = "隐藏小地图图标",
         ["zhTW"] = "隱藏小地圖按鈕",
     },
-    ["Reload Questie"] = {
+    ["Reload QuestieSmazak"] = {
         ["enUS"] = true,
-        ["deDE"] = "Questie neu laden",
-        ["esES"] = "Recargar Questie",
-        ["esMX"] = "Recargar Questie",
-        ["frFR"] = "Recharger Questie",
-        ["koKR"] = "Questie 리로드",
-        ["ptBR"] = "Recarregar Questie",
+        ["deDE"] = "QuestieSmazak neu laden",
+        ["esES"] = "Recargar QuestieSmazak",
+        ["esMX"] = "Recargar QuestieSmazak",
+        ["frFR"] = "Recharger QuestieSmazak",
+        ["koKR"] = "QuestieSmazak 리로드",
+        ["ptBR"] = "Recarregar QuestieSmazak",
         ["ruRU"] = "Перезагрузить аддон",
         ["zhCN"] = "重新载入Questie",
         ["zhTW"] = "重新載入任務位置提示",
@@ -350,17 +350,17 @@ local minimapIconLocales = {
         ["zhCN"] = "低等级任务",
         ["zhTW"] = "低等級任務",
     },
-    ["Questie will open after combat ends."] = {
+    ["QuestieSmazak will open after combat ends."] = {
         ["enUS"] = true,
-        ["deDE"] = "Questie öffnet sich nach dem Kampf.",
-        ["esES"] = "Questie se abrirá cuando estés fuera de combate.",
-        ["esMX"] = "Questie se abrirá cuando estés fuera de combate.",
+        ["deDE"] = "QuestieSmazak öffnet sich nach dem Kampf.",
+        ["esES"] = "QuestieSmazak se abrirá cuando estés fuera de combate.",
+        ["esMX"] = "QuestieSmazak se abrirá cuando estés fuera de combate.",
         ["frFR"] = "La quête s'ouvrira après la fin du combat.",
         ["koKR"] = "전투 종료 후 퀘스티가 열립니다",
-        ["ptBR"] = "Questie será aberta após o término do combate.",
-        ["ruRU"] = "Questie откроется по завершении боя.",
-        ["zhCN"] = "Questie 会在战斗结束后打开",
-        ["zhTW"] = "Questie 會在戰鬥結束後開啟",
+        ["ptBR"] = "QuestieSmazak será aberta após o término do combate.",
+        ["ruRU"] = "QuestieSmazak откроется по завершении боя.",
+        ["zhCN"] = "QuestieSmazak 会在战斗结束后打开",
+        ["zhTW"] = "QuestieSmazak 會在戰鬥結束後開啟",
     },
 }
 

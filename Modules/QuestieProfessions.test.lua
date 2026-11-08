@@ -32,7 +32,7 @@ describe("QuestieProfessions", function()
         end
 
         dofile("Localization/l10n.lua")
-        l10n = QuestieLoader:ImportModule("l10n")
+        l10n = QuestieSmazakLoader:ImportModule("l10n")
         l10n.translations = {
             ["First Aid"] = {["enUS"] = true},
             ["Blacksmithing"] = {["enUS"] = true},
@@ -51,12 +51,12 @@ describe("QuestieProfessions", function()
             ["Inscription"] = {["enUS"] = true},
             ["Riding"] = {["enUS"] = true},
         }
-        QuestieQuest = QuestieLoader:ImportModule("QuestieQuest")
+        QuestieQuest = QuestieSmazakLoader:ImportModule("QuestieQuest")
         QuestieQuest.ResetAutoblacklistCategory = spy.new(function()  end)
 
         dofile("Modules/QuestieCompat.lua")
         dofile("Modules/QuestieProfessions.lua")
-        QuestieProfessions = QuestieLoader:ImportModule("QuestieProfessions")
+        QuestieProfessions = QuestieSmazakLoader:ImportModule("QuestieProfessions")
         QuestieProfessions:Init()
     end)
 

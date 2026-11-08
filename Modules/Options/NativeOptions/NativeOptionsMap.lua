@@ -2,26 +2,26 @@
 --Import modules.
 -------------------------
 ---@type QuestieOptionsEngine
-local QuestieOptionsEngine = QuestieLoader:ImportModule("QuestieOptionsEngine")
+local QuestieOptionsEngine = QuestieSmazakLoader:ImportModule("QuestieOptionsEngine")
 ---@type QuestieOptionsDefaults
-local QuestieOptionsDefaults = QuestieLoader:ImportModule("QuestieOptionsDefaults")
+local QuestieOptionsDefaults = QuestieSmazakLoader:ImportModule("QuestieOptionsDefaults")
 ---@type QuestieWaypoints
-local QuestieWaypoints = QuestieLoader:ImportModule("QuestieWaypoints")
+local QuestieWaypoints = QuestieSmazakLoader:ImportModule("QuestieWaypoints")
 ---@type WaypointRenderer
-local WaypointRenderer = QuestieLoader:ImportModule("WaypointRenderer")
+local WaypointRenderer = QuestieSmazakLoader:ImportModule("WaypointRenderer")
 
 QuestieOptionsEngine.tabs.map = { ... }
 local optionsDefaults = QuestieOptionsDefaults:Load()
 
 local function _Get(key)
     return function()
-        return Questie.db.profile[key]
+        return QuestieSmazak.db.profile[key]
     end
 end
 
 local function _SetAndRefresh(key)
     return function(_, value)
-        Questie.db.profile[key] = value
+        QuestieSmazak.db.profile[key] = value
         QuestieWaypoints.Refresh()
     end
 end
@@ -29,19 +29,19 @@ end
 -- Colors are stored as {r, g, b, a}.
 local function _GetColor(key)
     return function()
-        return unpack(Questie.db.profile[key])
+        return unpack(QuestieSmazak.db.profile[key])
     end
 end
 
 local function _SetColor(key)
     return function(r, g, b, a)
-        Questie.db.profile[key] = {r, g, b, a}
+        QuestieSmazak.db.profile[key] = {r, g, b, a}
         QuestieWaypoints.Refresh()
     end
 end
 
 local function _WaypointsEnabled()
-    local profile = Questie.db.profile
+    local profile = QuestieSmazak.db.profile
     return (profile.waypointMapEnabled or profile.waypointMinimapEnabled) and true or false
 end
 
@@ -61,7 +61,7 @@ function QuestieOptionsEngine.tabs.map:Initialize()
                 type = "checkbox",
                 order = 1.1,
                 title = "Enable Map Waypoints",
-                tooltip = "Draws the patrol paths of the NPCs Questie shows on the world map.",
+                tooltip = "Draws the patrol paths of the NPCs QuestieSmazak shows on the world map.",
                 width = "half",
                 get = _Get("waypointMapEnabled"),
                 set = _SetAndRefresh("waypointMapEnabled"),
@@ -70,7 +70,7 @@ function QuestieOptionsEngine.tabs.map:Initialize()
                 type = "checkbox",
                 order = 1.2,
                 title = "Enable Minimap Waypoints",
-                tooltip = "Draws the patrol paths of the NPCs Questie shows on the minimap. Minimap icons must be enabled too.",
+                tooltip = "Draws the patrol paths of the NPCs QuestieSmazak shows on the minimap. Minimap icons must be enabled too.",
                 width = "half",
                 get = _Get("waypointMinimapEnabled"),
                 set = _SetAndRefresh("waypointMinimapEnabled"),
@@ -148,7 +148,7 @@ function QuestieOptionsEngine.tabs.map:Initialize()
                         width = "third",
                         hasOpacity = true,
                         enabled = function()
-                            return _WaypointsEnabled() and (Questie.db.profile.waypointHighlight == true)
+                            return _WaypointsEnabled() and (QuestieSmazak.db.profile.waypointHighlight == true)
                         end,
                         get = _GetColor("waypointHighlightColor"),
                         set = _SetColor("waypointHighlightColor"),
@@ -172,7 +172,7 @@ function QuestieOptionsEngine.tabs.map:Initialize()
                         step = 0.05,
                         get = _Get("waypointSmoothing"),
                         set = function(_, value)
-                            Questie.db.profile.waypointSmoothing = value
+                            QuestieSmazak.db.profile.waypointSmoothing = value
                             WaypointRenderer.RedrawAll()
                         end,
                         enabled = _WaypointsEnabled,

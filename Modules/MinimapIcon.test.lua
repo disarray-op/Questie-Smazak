@@ -31,9 +31,9 @@ describe("MinimapIcon", function()
     local _ = match._ -- any match
 
     before_each(function()
-        Questie.started = true
-        Questie.db.profile.enabled = true
-        Questie.db.profile.minimap = {hide = false, showInCompartment = false}
+        QuestieSmazak.started = true
+        QuestieSmazak.db.profile.enabled = true
+        QuestieSmazak.db.profile.minimap = {hide = false, showInCompartment = false}
 
         LibDBIconMock.Hide:clear()
         LibDBIconMock.Show:clear()
@@ -44,41 +44,41 @@ describe("MinimapIcon", function()
         _G.IsControlKeyDown = function() return false end
         _G.IsShiftKeyDown = function() return false end
 
-        QuestieJourney = QuestieLoader:ImportModule("QuestieJourney")
+        QuestieJourney = QuestieSmazakLoader:ImportModule("QuestieJourney")
         QuestieJourney.IsShown = spy.new(function() end)
         QuestieJourney.ToggleJourneyWindow = spy.new(function() end)
 
-        QuestieLoader:ImportModule("QuestieProfessions")
-        QuestieLoader:ImportModule("QuestieLib")
+        QuestieSmazakLoader:ImportModule("QuestieProfessions")
+        QuestieSmazakLoader:ImportModule("QuestieLib")
 
-        QuestieMenu = QuestieLoader:ImportModule("QuestieMenu")
+        QuestieMenu = QuestieSmazakLoader:ImportModule("QuestieMenu")
         QuestieMenu.Show = spy.new(function() end)
         QuestieMenu.Hide = spy.new(function() end)
 
-        QuestieQuest = QuestieLoader:ImportModule("QuestieQuest")
+        QuestieQuest = QuestieSmazakLoader:ImportModule("QuestieQuest")
         QuestieQuest.SmoothReset = spy.new(function() end)
         QuestieQuest.ToggleNotes = spy.new(function() end)
 
-        QuestieOptions = QuestieLoader:ImportModule("QuestieOptions")
+        QuestieOptions = QuestieSmazakLoader:ImportModule("QuestieOptions")
         QuestieOptions.HideFrame = spy.new(function() end)
         QuestieOptions.ToggleConfigWindow = spy.new(function() end)
 
-        QuestieOptionsEngine = QuestieLoader:ImportModule("QuestieOptionsEngine")
+        QuestieOptionsEngine = QuestieSmazakLoader:ImportModule("QuestieOptionsEngine")
         QuestieOptionsEngine.IsShown = spy.new(function() end)
         QuestieOptionsEngine.RefreshStates = spy.new(function() end)
         QuestieOptionsEngine.ToggleConfigWindow = spy.new(function() end)
 
-        QuestieCombatQueue = QuestieLoader:ImportModule("QuestieCombatQueue")
+        QuestieCombatQueue = QuestieSmazakLoader:ImportModule("QuestieCombatQueue")
         QuestieCombatQueue.Queue = function(_, callback) callback() end
 
-        QuestieStatus = QuestieLoader:ImportModule("QuestieStatus")
+        QuestieStatus = QuestieSmazakLoader:ImportModule("QuestieStatus")
         QuestieStatus.Severity = {Error = 1, Warning = 2, Info = 3}
 
         _G.LibStub = function() return LibDBIconMock end
         dofile("Localization/l10n.lua")
 
         dofile("Modules/MinimapIcon.lua")
-        MinimapIcon = QuestieLoader:ImportModule("MinimapIcon")
+        MinimapIcon = QuestieSmazakLoader:ImportModule("MinimapIcon")
     end)
 
     describe("status display", function()
@@ -90,11 +90,11 @@ describe("MinimapIcon", function()
         before_each(function()
             originalGetErrorHandler = _G.geterrorhandler
             originalTextureAPI = _G.C_Texture
-            originalColorize = Questie.Colorize
-            originalVersion = QuestieLoader:ImportModule("QuestieLib").GetAddonVersionString
+            originalColorize = QuestieSmazak.Colorize
+            originalVersion = QuestieSmazakLoader:ImportModule("QuestieLib").GetAddonVersionString
             originalRegister, originalGetButton = LibDBIconMock.Register, LibDBIconMock.GetMinimapButton
-            Questie.Colorize = function(_, text) return text end
-            QuestieLoader:ImportModule("QuestieLib").GetAddonVersionString = function() return "vTest" end
+            QuestieSmazak.Colorize = function(_, text) return text end
+            QuestieSmazakLoader:ImportModule("QuestieLib").GetAddonVersionString = function() return "vTest" end
             _G.C_Texture = {GetAtlasInfo = function(name)
                 if name == "common-icon-redx" or name == "custom-atlas" then return {} end
             end}
@@ -137,8 +137,8 @@ describe("MinimapIcon", function()
         after_each(function()
             _G.geterrorhandler = originalGetErrorHandler
             _G.C_Texture = originalTextureAPI
-            Questie.Colorize = originalColorize
-            QuestieLoader:ImportModule("QuestieLib").GetAddonVersionString = originalVersion
+            QuestieSmazak.Colorize = originalColorize
+            QuestieSmazakLoader:ImportModule("QuestieLib").GetAddonVersionString = originalVersion
             LibDBIconMock.Register, LibDBIconMock.GetMinimapButton = originalRegister, originalGetButton
         end)
 
@@ -152,7 +152,7 @@ describe("MinimapIcon", function()
             assert.spy(badge.SetPoint).was.called_with(badge, "TOPRIGHT", button, "TOPRIGHT", -1, -1)
             assert.are_same({atlas = "common-icon-redx"}, selectedIcon)
             assert.is_true(shown)
-            assert.are_same("Interface\\Addons\\Questie\\Icons\\questie.png", dataObject.icon)
+            assert.are_same("Interface\\Addons\\QuestieSmazak\\Icons\\questie.png", dataObject.icon)
         end)
 
         it("uses the warning image and yellow tooltip styling for warnings", function()
@@ -174,7 +174,7 @@ describe("MinimapIcon", function()
             _G.C_Texture = nil
             badge.SetTexture = function() return false end
             dofile("Modules/Status/QuestieStatus.lua")
-            QuestieStatus = QuestieLoader:ImportModule("QuestieStatus")
+            QuestieStatus = QuestieSmazakLoader:ImportModule("QuestieStatus")
             QuestieStatus.Set("startup", {severity = QuestieStatus.Severity.Error, message = "Startup failed"})
 
             assert.is_false(MinimapIcon:Init())
@@ -231,7 +231,7 @@ describe("MinimapIcon", function()
         end)
 
         it("localizes every notice on hover and omits unusable controls before startup completes", function()
-            Questie.started = false
+            QuestieSmazak.started = false
             issues = {
                 {
                     severity = QuestieStatus.Severity.Error, message = "Cannot load %s.", args = {"QuestieDB"}, action = "Try again.",
@@ -240,7 +240,7 @@ describe("MinimapIcon", function()
                 {severity = QuestieStatus.Severity.Info, message = "Source mode"},
             }
             MinimapIcon:Init()
-            local l10n = QuestieLoader:ImportModule("l10n")
+            local l10n = QuestieSmazakLoader:ImportModule("l10n")
             l10n.translations["Error"] = {deDE = "Fehler"}
             l10n.translations["Cannot load %s."] = {deDE = "%s konnte nicht geladen werden."}
             l10n.translations["Try again."] = {deDE = "Erneut versuchen."}
@@ -275,8 +275,8 @@ describe("MinimapIcon", function()
         end)
     end)
 
-    it("should not do anything when Questie is not started yet", function()
-        Questie.started = false
+    it("should not do anything when QuestieSmazak is not started yet", function()
+        QuestieSmazak.started = false
         local button = "LeftButton"
 
         MinimapIcon.private:OnClick(button)
@@ -297,7 +297,7 @@ describe("MinimapIcon", function()
         assert.spy(QuestieJourney.ToggleJourneyWindow).was.called()
     end)
 
-    it("should open Questie on left click with Shift key down", function()
+    it("should open QuestieSmazak on left click with Shift key down", function()
         local button = "LeftButton"
         _G.IsShiftKeyDown = function() return true end
 
@@ -306,7 +306,7 @@ describe("MinimapIcon", function()
         assert.spy(QuestieOptionsEngine.ToggleConfigWindow).was.called()
     end)
 
-    it("should open Questie on left click with Shift key down after combat", function()
+    it("should open QuestieSmazak on left click with Shift key down after combat", function()
         local button = "LeftButton"
         _G.IsShiftKeyDown = function() return true end
         _G.InCombatLockdown = function() return true end
@@ -316,7 +316,7 @@ describe("MinimapIcon", function()
         assert.spy(QuestieOptionsEngine.ToggleConfigWindow).was.called()
     end)
 
-    it("should reset Questie on left click with CTRL key down", function()
+    it("should reset QuestieSmazak on left click with CTRL key down", function()
         local button = "LeftButton"
         _G.IsControlKeyDown = function() return true end
 
@@ -332,7 +332,7 @@ describe("MinimapIcon", function()
 
         MinimapIcon.private:OnClick(button)
 
-        assert.is_false(Questie.db.profile.enabled)
+        assert.is_false(QuestieSmazak.db.profile.enabled)
         assert.spy(QuestieQuest.ToggleNotes).was.called_with(_, false)
         assert.spy(QuestieOptionsEngine.RefreshStates).was.called()
     end)
@@ -363,57 +363,57 @@ describe("MinimapIcon", function()
 
         MinimapIcon.private:OnClick(button)
 
-        assert.is_true(Questie.db.profile.minimap.hide)
-        assert.spy(LibDBIconMock.Hide).was.called_with(_, "Questie")
+        assert.is_true(QuestieSmazak.db.profile.minimap.hide)
+        assert.spy(LibDBIconMock.Hide).was.called_with(_, "QuestieSmazak")
     end)
 
     it("should add the button to the compartment when toggled on", function()
         MinimapIcon.ToggleCompartment(true)
 
-        assert.is_true(Questie.db.profile.minimap.showInCompartment)
-        assert.spy(LibDBIconMock.AddButtonToCompartment).was.called_with(_, "Questie")
+        assert.is_true(QuestieSmazak.db.profile.minimap.showInCompartment)
+        assert.spy(LibDBIconMock.AddButtonToCompartment).was.called_with(_, "QuestieSmazak")
         assert.spy(LibDBIconMock.RemoveButtonFromCompartment).was.not_called()
     end)
 
     it("should remove the button from the compartment when toggled off", function()
         MinimapIcon.ToggleCompartment(false)
 
-        assert.is_false(Questie.db.profile.minimap.showInCompartment)
-        assert.spy(LibDBIconMock.RemoveButtonFromCompartment).was.called_with(_, "Questie")
+        assert.is_false(QuestieSmazak.db.profile.minimap.showInCompartment)
+        assert.spy(LibDBIconMock.RemoveButtonFromCompartment).was.called_with(_, "QuestieSmazak")
         assert.spy(LibDBIconMock.AddButtonToCompartment).was.not_called()
     end)
 
     it("should keep the compartment setting off when the library clears it on removal", function()
-        Questie.db.profile.minimap.showInCompartment = true
+        QuestieSmazak.db.profile.minimap.showInCompartment = true
         LibDBIconMock.RemoveButtonFromCompartment = spy.new(function()
-            Questie.db.profile.minimap.showInCompartment = nil
+            QuestieSmazak.db.profile.minimap.showInCompartment = nil
         end)
 
         MinimapIcon.ToggleCompartment(false)
 
-        assert.is_false(Questie.db.profile.minimap.showInCompartment)
+        assert.is_false(QuestieSmazak.db.profile.minimap.showInCompartment)
     end)
 
     it("should refresh LibDBIcon with the active profile and keep the compartment setting off", function()
         local profileMinimap = {hide = false, showInCompartment = false}
-        Questie.db.profile.minimap = profileMinimap
+        QuestieSmazak.db.profile.minimap = profileMinimap
         LibDBIconMock.RemoveButtonFromCompartment = spy.new(function()
             profileMinimap.showInCompartment = nil
         end)
 
         MinimapIcon.RefreshProfile()
 
-        assert.spy(LibDBIconMock.Refresh).was.called_with(_, "Questie", profileMinimap)
-        assert.spy(LibDBIconMock.RemoveButtonFromCompartment).was.called_with(_, "Questie")
+        assert.spy(LibDBIconMock.Refresh).was.called_with(_, "QuestieSmazak", profileMinimap)
+        assert.spy(LibDBIconMock.RemoveButtonFromCompartment).was.called_with(_, "QuestieSmazak")
         assert.is_false(profileMinimap.showInCompartment)
     end)
 
     it("should add the button to the compartment when the active profile enables it", function()
-        Questie.db.profile.minimap.showInCompartment = true
+        QuestieSmazak.db.profile.minimap.showInCompartment = true
 
         MinimapIcon.RefreshProfile()
 
-        assert.spy(LibDBIconMock.AddButtonToCompartment).was.called_with(_, "Questie")
-        assert.is_true(Questie.db.profile.minimap.showInCompartment)
+        assert.spy(LibDBIconMock.AddButtonToCompartment).was.called_with(_, "QuestieSmazak")
+        assert.is_true(QuestieSmazak.db.profile.minimap.showInCompartment)
     end)
 end)

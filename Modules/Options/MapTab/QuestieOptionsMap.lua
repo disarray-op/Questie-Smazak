@@ -2,15 +2,15 @@
 --Import modules.
 -------------------------
 ---@type QuestieOptions
-local QuestieOptions = QuestieLoader:ImportModule("QuestieOptions")
+local QuestieOptions = QuestieSmazakLoader:ImportModule("QuestieOptions")
 ---@type QuestieOptionsDefaults
-local QuestieOptionsDefaults = QuestieLoader:ImportModule("QuestieOptionsDefaults")
+local QuestieOptionsDefaults = QuestieSmazakLoader:ImportModule("QuestieOptionsDefaults")
 ---@type QuestieWaypoints
-local QuestieWaypoints = QuestieLoader:ImportModule("QuestieWaypoints")
+local QuestieWaypoints = QuestieSmazakLoader:ImportModule("QuestieWaypoints")
 ---@type WaypointRenderer
-local WaypointRenderer = QuestieLoader:ImportModule("WaypointRenderer")
+local WaypointRenderer = QuestieSmazakLoader:ImportModule("WaypointRenderer")
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 
 QuestieOptions.tabs.map = {...}
 local optionsDefaults = QuestieOptionsDefaults:Load()
@@ -26,16 +26,16 @@ end
 
 -- Colors are stored as {r, g, b, a}.
 local function _GetColor(info)
-    return unpack(Questie.db.profile[info[#info]])
+    return unpack(QuestieSmazak.db.profile[info[#info]])
 end
 
 local function _SetColor(info, r, g, b, a)
-    Questie.db.profile[info[#info]] = {r, g, b, a}
+    QuestieSmazak.db.profile[info[#info]] = {r, g, b, a}
     QuestieWaypoints.Refresh()
 end
 
 local function _WaypointsDisabled()
-    local profile = Questie.db.profile
+    local profile = QuestieSmazak.db.profile
     return not (profile.waypointMapEnabled or profile.waypointMinimapEnabled)
 end
 
@@ -60,7 +60,7 @@ function QuestieOptions.tabs.map:Initialize()
                 type = "toggle",
                 order = 1.1,
                 name = function() return l10n("Enable Map Waypoints"); end,
-                desc = function() return l10n("Draws the patrol paths of the NPCs Questie shows on the world map."); end,
+                desc = function() return l10n("Draws the patrol paths of the NPCs QuestieSmazak shows on the world map."); end,
                 width = 1.595,
                 get = _Get,
                 set = _SetAndRefresh,
@@ -69,7 +69,7 @@ function QuestieOptions.tabs.map:Initialize()
                 type = "toggle",
                 order = 1.2,
                 name = function() return l10n("Enable Minimap Waypoints"); end,
-                desc = function() return l10n("Draws the patrol paths of the NPCs Questie shows on the minimap. Minimap icons must be enabled too."); end,
+                desc = function() return l10n("Draws the patrol paths of the NPCs QuestieSmazak shows on the minimap. Minimap icons must be enabled too."); end,
                 width = 1.595,
                 get = _Get,
                 set = _SetAndRefresh,
@@ -142,7 +142,7 @@ function QuestieOptions.tabs.map:Initialize()
                         name = function() return l10n("Highlight color"); end,
                         desc = function() return l10n("Color of an NPC's patrol paths while its icon or one of its paths is hovered."); end,
                         hasAlpha = true,
-                        disabled = function() return _WaypointsDisabled() or not Questie.db.profile.waypointHighlight; end,
+                        disabled = function() return _WaypointsDisabled() or not QuestieSmazak.db.profile.waypointHighlight; end,
                         get = _GetColor,
                         set = _SetColor,
                     },

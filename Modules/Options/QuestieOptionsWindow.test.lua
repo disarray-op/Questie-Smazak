@@ -17,18 +17,18 @@ describe("QuestieOptionsWindow", function()
 
     before_each(function()
         ui = FakeUI.Install()
-        originalIsForever = Questie.IsForever
-        Questie.IsForever = true
+        originalIsForever = QuestieSmazak.IsForever
+        QuestieSmazak.IsForever = true
 
-        dofile("Modules/Libs/QuestieLoader.lua")
+        dofile("Modules/Libs/QuestieSmazakLoader.lua")
         dofile("Localization/l10n.lua")
         dofile("Modules/Options/QuestieOptionsUtils.lua")
         dofile("Modules/Options/QuestieOptionsWindow.lua")
-        QuestieOptionsWindow = QuestieLoader:ImportModule("QuestieOptionsWindow")
+        QuestieOptionsWindow = QuestieSmazakLoader:ImportModule("QuestieOptionsWindow")
     end)
 
     after_each(function()
-        Questie.IsForever = originalIsForever
+        QuestieSmazak.IsForever = originalIsForever
         ui.Restore()
     end)
 
@@ -37,7 +37,7 @@ describe("QuestieOptionsWindow", function()
             local window = QuestieOptionsWindow.Create()
 
             assert.is_false(window:IsShown())
-            assert.are_same({"QuestieStandaloneSettings"}, UISpecialFrames)
+            assert.are_same({"QuestieSmazakStandaloneSettings"}, UISpecialFrames)
         end)
 
         it("should take its height from the screen", function()

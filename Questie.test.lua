@@ -1,7 +1,7 @@
 dofile("setupTests.lua")
-local QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+local QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
 
-describe("Questie", function()
+describe("QuestieSmazak", function()
     local startupCalls
     local Profiler
     local QuestieValidateGameCache
@@ -14,22 +14,22 @@ describe("Questie", function()
 
     before_each(function()
         startupCalls = {}
-        originalProfilerEnabled = _G.QuestieProfilerEnabled
+        originalProfilerEnabled = _G.QuestieSmazakProfilerEnabled
         -- Profiling is opt-in, so the tests below that expect it to arm must opt in.
-        _G.QuestieProfilerEnabled = true
-        Profiler = QuestieLoader:ImportModule("Profiler")
-        QuestieValidateGameCache = QuestieLoader:ImportModule("QuestieValidateGameCache")
+        _G.QuestieSmazakProfilerEnabled = true
+        Profiler = QuestieSmazakLoader:ImportModule("Profiler")
+        QuestieValidateGameCache = QuestieSmazakLoader:ImportModule("QuestieValidateGameCache")
         originalProfilerStartStartup = Profiler.StartStartup
         originalProfilerImportLoadTimings = Profiler.ImportLoadTimings
-        originalLoaderFinishLoadTimings = QuestieLoader.FinishLoadTimings
+        originalLoaderFinishLoadTimings = QuestieSmazakLoader.FinishLoadTimings
         originalStartCheck = QuestieValidateGameCache.StartCheck
-        originalQuestiePrint = Questie.Print
+        originalQuestiePrint = QuestieSmazak.Print
 
         Profiler.StartStartup = function(_, showUI)
             table.insert(startupCalls, {name = "profiler", showUI = showUI})
             return true
         end
-        QuestieLoader.FinishLoadTimings = function()
+        QuestieSmazakLoader.FinishLoadTimings = function()
             table.insert(startupCalls, {name = "loadClose"})
         end
         Profiler.ImportLoadTimings = function()
@@ -41,12 +41,12 @@ describe("Questie", function()
     end)
 
     after_each(function()
-        _G.QuestieProfilerEnabled = originalProfilerEnabled
+        _G.QuestieSmazakProfilerEnabled = originalProfilerEnabled
         Profiler.StartStartup = originalProfilerStartStartup
         Profiler.ImportLoadTimings = originalProfilerImportLoadTimings
-        QuestieLoader.FinishLoadTimings = originalLoaderFinishLoadTimings
+        QuestieSmazakLoader.FinishLoadTimings = originalLoaderFinishLoadTimings
         QuestieValidateGameCache.StartCheck = originalStartCheck
-        Questie.Print = originalQuestiePrint
+        QuestieSmazak.Print = originalQuestiePrint
     end)
 
     it("shows profiling immediately before Game Cache Validation", function()
@@ -62,7 +62,7 @@ describe("Questie", function()
     end)
 
     it("does not arm profiling when it has not been enabled", function()
-        _G.QuestieProfilerEnabled = nil
+        _G.QuestieSmazakProfilerEnabled = nil
 
         dofile("Questie.lua")
 
@@ -75,7 +75,7 @@ describe("Questie", function()
         Profiler.StartStartup = function()
             error("expected profiler startup failure")
         end
-        Questie.Print = function(_, errorPrefix, message, profilerError)
+        QuestieSmazak.Print = function(_, errorPrefix, message, profilerError)
             table.insert(reportedErrors, {errorPrefix, message, profilerError})
         end
 
@@ -97,7 +97,7 @@ describe("Questie", function()
         Profiler.StartStartup = function()
             return false
         end
-        Questie.Print = function(_, errorPrefix, message)
+        QuestieSmazak.Print = function(_, errorPrefix, message)
             table.insert(reportedErrors, {errorPrefix, message})
         end
 
@@ -117,7 +117,7 @@ describe("Questie", function()
         Profiler.StartStartup = function()
             return false, true
         end
-        Questie.Print = function(_, errorPrefix, message)
+        QuestieSmazak.Print = function(_, errorPrefix, message)
             table.insert(reportedErrors, {errorPrefix, message})
         end
 
@@ -137,7 +137,7 @@ describe("Questie", function()
             table.insert(startupCalls, {name = "loadImport"})
             error("expected load import failure")
         end
-        Questie.Print = function(_, errorPrefix, message, profilerError)
+        QuestieSmazak.Print = function(_, errorPrefix, message, profilerError)
             table.insert(reportedErrors, {errorPrefix, message, profilerError})
         end
 
@@ -157,7 +157,7 @@ describe("Questie", function()
     it("still closes load timing when the profiler import method is missing", function()
         local reportedErrors = {}
         Profiler.ImportLoadTimings = nil
-        Questie.Print = function(_, errorPrefix, message, profilerError)
+        QuestieSmazak.Print = function(_, errorPrefix, message, profilerError)
             table.insert(reportedErrors, {errorPrefix, message, profilerError})
         end
 
@@ -175,11 +175,11 @@ describe("Questie", function()
 
     it("does not import load timings when closing the final interval fails", function()
         local reportedErrors = {}
-        QuestieLoader.FinishLoadTimings = function()
+        QuestieSmazakLoader.FinishLoadTimings = function()
             table.insert(startupCalls, {name = "loadClose"})
             error("expected load close failure")
         end
-        Questie.Print = function(_, errorPrefix, message, profilerError)
+        QuestieSmazak.Print = function(_, errorPrefix, message, profilerError)
             table.insert(reportedErrors, {errorPrefix, message, profilerError})
         end
 
@@ -200,29 +200,29 @@ describe("Questie", function()
 
         before_each(function()
             dofile("Questie.lua")
-            originalProfile = Questie.db.profile
-            Questie.db.profile = {debugEnabled = false, debugEnabledPrint = true, debugLevel = Questie.DEBUG_CRITICAL}
-            Questie.Print = spy.new(function() end)
+            originalProfile = QuestieSmazak.db.profile
+            QuestieSmazak.db.profile = {debugEnabled = false, debugEnabledPrint = true, debugLevel = QuestieSmazak.DEBUG_CRITICAL}
+            QuestieSmazak.Print = spy.new(function() end)
         end)
 
         after_each(function()
-            Questie.db.profile = originalProfile
+            QuestieSmazak.db.profile = originalProfile
         end)
 
         it("does not print warnings when debug mode is disabled", function()
-            Questie.Warning("Missing objective data for quest ", 42, " ", "Wolf")
+            QuestieSmazak.Warning("Missing objective data for quest ", 42, " ", "Wolf")
 
-            assert.spy(Questie.Print).was.not_called()
+            assert.spy(QuestieSmazak.Print).was.not_called()
         end)
 
         it("prints important warnings in debug mode even with verbose debug output disabled", function()
-            Questie.db.profile.debugEnabled = true
-            Questie.db.profile.debugEnabledPrint = false
-            Questie.db.profile.debugLevel = 0
+            QuestieSmazak.db.profile.debugEnabled = true
+            QuestieSmazak.db.profile.debugEnabledPrint = false
+            QuestieSmazak.db.profile.debugLevel = 0
 
-            Questie.Warning("Missing objective data for quest ", 42, " ", "Wolf")
+            QuestieSmazak.Warning("Missing objective data for quest ", 42, " ", "Wolf")
 
-            assert.spy(Questie.Print).was.called_with(Questie, "|cffffff00[WARNING]|r",
+            assert.spy(QuestieSmazak.Print).was.called_with(QuestieSmazak, "|cffffff00[WARNING]|r",
                 "Missing objective data for quest ", 42, " ", "Wolf")
         end)
     end)
@@ -236,40 +236,40 @@ describe("Questie", function()
         local expansions
 
         before_each(function()
-            originalForever = Questie.IsForever
+            originalForever = QuestieSmazak.IsForever
             originalShowWatchFrame = QuestieCompat.ShowWatchFrame
             originalHideWatchFrame = QuestieCompat.HideWatchFrame
-            originalProfile = Questie.db.profile
-            expansions = QuestieLoader:ImportModule("Expansions")
+            originalProfile = QuestieSmazak.db.profile
+            expansions = QuestieSmazakLoader:ImportModule("Expansions")
             originalExpansion = expansions.Current
-            Questie.IsForever = true
+            QuestieSmazak.IsForever = true
             expansions.Current = expansions.Era
-            Questie.db.profile = {trackerEnabled = true}
+            QuestieSmazak.db.profile = {trackerEnabled = true}
             QuestieCompat.HideWatchFrame = spy.new(function() end)
             QuestieCompat.ShowWatchFrame = spy.new(function() end)
             dofile("Questie.lua")
         end)
 
         after_each(function()
-            Questie.IsForever = originalForever
+            QuestieSmazak.IsForever = originalForever
             QuestieCompat.ShowWatchFrame = originalShowWatchFrame
             QuestieCompat.HideWatchFrame = originalHideWatchFrame
-            Questie.db.profile = originalProfile
+            QuestieSmazak.db.profile = originalProfile
             expansions.Current = originalExpansion
         end)
 
         it("releases and reacquires the modern tracker despite using Era content", function()
-            Questie:OnDisable()
+            QuestieSmazak:OnDisable()
             assert.spy(QuestieCompat.ShowWatchFrame).was.called(1)
 
-            Questie:OnEnable()
+            QuestieSmazak:OnEnable()
             assert.spy(QuestieCompat.HideWatchFrame).was.called(1)
         end)
 
         it("should hide the watch frame when the legacy Blizzard timer setting is true", function()
-            Questie.db.profile.showBlizzardQuestTimer = true
+            QuestieSmazak.db.profile.showBlizzardQuestTimer = true
 
-            Questie:OnEnable()
+            QuestieSmazak:OnEnable()
 
             assert.spy(QuestieCompat.HideWatchFrame).was.called(1)
         end)
@@ -277,11 +277,11 @@ describe("Questie", function()
 
     describe("RefreshConfig", function()
         it("redraws waypoint lines with the new profile's settings", function()
-            local QuestieQuest = QuestieLoader:ImportModule("QuestieQuest")
-            local TrackerBaseFrame = QuestieLoader:ImportModule("TrackerBaseFrame")
-            local CommsVisibility = QuestieLoader:ImportModule("CommsVisibility")
-            local WaypointRenderer = QuestieLoader:ImportModule("WaypointRenderer")
-            local QuestieWaypoints = QuestieLoader:ImportModule("QuestieWaypoints")
+            local QuestieQuest = QuestieSmazakLoader:ImportModule("QuestieQuest")
+            local TrackerBaseFrame = QuestieSmazakLoader:ImportModule("TrackerBaseFrame")
+            local CommsVisibility = QuestieSmazakLoader:ImportModule("CommsVisibility")
+            local WaypointRenderer = QuestieSmazakLoader:ImportModule("WaypointRenderer")
+            local QuestieWaypoints = QuestieSmazakLoader:ImportModule("QuestieWaypoints")
             local originals = {QuestieQuest.SmoothReset, TrackerBaseFrame.OnProfileChange, CommsVisibility.ScheduleSnapshot,
                 WaypointRenderer.RedrawAll, QuestieWaypoints.Refresh}
             finally(function()
@@ -295,9 +295,9 @@ describe("Questie", function()
             WaypointRenderer.RedrawAll = spy.new(function() end)
             QuestieWaypoints.Refresh = spy.new(function() end)
             dofile("Questie.lua")
-            Questie.SetIcons = function() end
+            QuestieSmazak.SetIcons = function() end
 
-            Questie:RefreshConfig("OnProfileChanged")
+            QuestieSmazak:RefreshConfig("OnProfileChanged")
 
             assert.spy(WaypointRenderer.RedrawAll).was.called(1)
             assert.spy(QuestieWaypoints.Refresh).was.called(1)
@@ -327,24 +327,24 @@ describe("Questie", function()
             }
 
             for color, expected in pairs(expectedColors) do
-                assert.are_same(expected, Questie:Colorize("Text", color))
+                assert.are_same(expected, QuestieSmazak:Colorize("Text", color))
             end
         end)
 
         it("should default to yellow", function()
-            assert.are_same("|cFFffff00Text|r", Questie:Colorize("Text"))
+            assert.are_same("|cFFffff00Text|r", QuestieSmazak:Colorize("Text"))
         end)
 
         it("should preserve raw RGB hex color output", function()
-            assert.are_same("|cFFD9D9D9Text|r", Questie:Colorize("Text", "D9D9D9"))
+            assert.are_same("|cFFD9D9D9Text|r", QuestieSmazak:Colorize("Text", "D9D9D9"))
         end)
 
         it("should preserve raw color text without normalizing ARGB input", function()
-            assert.are_same("|cFFFF7F00FEText|r", Questie:Colorize("Text", "FF7F00FE"))
+            assert.are_same("|cFFFF7F00FEText|r", QuestieSmazak:Colorize("Text", "FF7F00FE"))
         end)
 
         it("should ignore extra arguments", function()
-            assert.are_same("|cFFff0000Text|r", Questie:Colorize("Text", "red", true))
+            assert.are_same("|cFFff0000Text|r", QuestieSmazak:Colorize("Text", "red", true))
         end)
     end)
 
@@ -378,60 +378,60 @@ describe("Questie", function()
 
         it("should return normalized RGB values for all named colors", function()
             for color, expected in pairs(expectedNamedColors) do
-                _AssertRGB(expected, Questie:ColorizeRGB(color))
+                _AssertRGB(expected, QuestieSmazak:ColorizeRGB(color))
             end
         end)
 
         it("should default to yellow", function()
-            _AssertRGB({1, 1, 0}, Questie:ColorizeRGB())
+            _AssertRGB({1, 1, 0}, QuestieSmazak:ColorizeRGB())
         end)
 
         it("should return three values for valid colors", function()
-            local count = select("#", Questie:ColorizeRGB("red"))
+            local count = select("#", QuestieSmazak:ColorizeRGB("red"))
 
             assert.are_same(3, count)
         end)
 
         it("should return normalized RGB values for raw RGB hex colors", function()
-            _AssertRGB({127 / 255, 0, 254 / 255}, Questie:ColorizeRGB("7F00FE"))
+            _AssertRGB({127 / 255, 0, 254 / 255}, QuestieSmazak:ColorizeRGB("7F00FE"))
         end)
 
         it("should return normalized RGB values for raw ARGB hex colors", function()
-            _AssertRGB({127 / 255, 0, 254 / 255}, Questie:ColorizeRGB("FF7F00FE"))
+            _AssertRGB({127 / 255, 0, 254 / 255}, QuestieSmazak:ColorizeRGB("FF7F00FE"))
         end)
 
         it("should ignore alpha in raw ARGB hex colors", function()
-            _AssertRGB({127 / 255, 0, 254 / 255}, Questie:ColorizeRGB("007F00FE"))
+            _AssertRGB({127 / 255, 0, 254 / 255}, QuestieSmazak:ColorizeRGB("007F00FE"))
         end)
 
         it("should return normalized RGB values for WoW color strings", function()
-            _AssertRGB({127 / 255, 0, 254 / 255}, Questie:ColorizeRGB("|cFF7F00FEText|r"))
+            _AssertRGB({127 / 255, 0, 254 / 255}, QuestieSmazak:ColorizeRGB("|cFF7F00FEText|r"))
         end)
 
         it("should return normalized RGB values for uppercase WoW color strings", function()
-            _AssertRGB({127 / 255, 0, 254 / 255}, Questie:ColorizeRGB("|CFF7F00FEText|r"))
+            _AssertRGB({127 / 255, 0, 254 / 255}, QuestieSmazak:ColorizeRGB("|CFF7F00FEText|r"))
         end)
 
         it("should ignore alpha in WoW color strings", function()
-            _AssertRGB({127 / 255, 0, 254 / 255}, Questie:ColorizeRGB("|c007F00FEText|r"))
+            _AssertRGB({127 / 255, 0, 254 / 255}, QuestieSmazak:ColorizeRGB("|c007F00FEText|r"))
         end)
 
         it("should return nil RGB output for malformed string colors", function()
-            assert.is_nil(Questie:ColorizeRGB("XYZXYZ"))
-            assert.is_nil(Questie:ColorizeRGB("12345"))
-            assert.is_nil(Questie:ColorizeRGB("#7F00FE"))
-            assert.is_nil(Questie:ColorizeRGB("|cFF7F00"))
+            assert.is_nil(QuestieSmazak:ColorizeRGB("XYZXYZ"))
+            assert.is_nil(QuestieSmazak:ColorizeRGB("12345"))
+            assert.is_nil(QuestieSmazak:ColorizeRGB("#7F00FE"))
+            assert.is_nil(QuestieSmazak:ColorizeRGB("|cFF7F00"))
         end)
 
         it("should return nil RGB output for non-string invalid colors", function()
-            assert.is_nil(Questie:ColorizeRGB({}))
-            assert.is_nil(Questie:ColorizeRGB(123456))
-            assert.is_nil(Questie:ColorizeRGB(false))
+            assert.is_nil(QuestieSmazak:ColorizeRGB({}))
+            assert.is_nil(QuestieSmazak:ColorizeRGB(123456))
+            assert.is_nil(QuestieSmazak:ColorizeRGB(false))
         end)
 
         it("should return three nil values for malformed string colors", function()
-            local count = select("#", Questie:ColorizeRGB("XYZXYZ"))
-            local r, g, b = Questie:ColorizeRGB("XYZXYZ")
+            local count = select("#", QuestieSmazak:ColorizeRGB("XYZXYZ"))
+            local r, g, b = QuestieSmazak:ColorizeRGB("XYZXYZ")
 
             assert.are_same(3, count)
             assert.is_nil(r)
@@ -440,8 +440,8 @@ describe("Questie", function()
         end)
 
         it("should return three nil values for non-string invalid colors", function()
-            local count = select("#", Questie:ColorizeRGB({}))
-            local r, g, b = Questie:ColorizeRGB({})
+            local count = select("#", QuestieSmazak:ColorizeRGB({}))
+            local r, g, b = QuestieSmazak:ColorizeRGB({})
 
             assert.are_same(3, count)
             assert.is_nil(r)
@@ -457,7 +457,7 @@ describe("Questie", function()
                 captured.r, captured.g, captured.b = ...
             end
 
-            _Capture("  ", Questie:ColorizeRGB("reputationBlue"))
+            _Capture("  ", QuestieSmazak:ColorizeRGB("reputationBlue"))
 
             assert.are_same("  ", captured.prefix)
             assert.are_same(3, captured.count)
@@ -468,10 +468,10 @@ describe("Questie", function()
 
         it("should preserve RGB values through TooltipLayout description rows", function()
             dofile("Modules/Tooltips/TooltipLayout.lua")
-            local TooltipLayout = QuestieLoader:ImportModule("TooltipLayout")
+            local TooltipLayout = QuestieSmazakLoader:ImportModule("TooltipLayout")
             local rows = TooltipLayout:CreateRows()
 
-            rows:AddDescription("rep", "  ", Questie:ColorizeRGB("reputationBlue"))
+            rows:AddDescription("rep", "  ", QuestieSmazak:ColorizeRGB("reputationBlue"))
 
             assert.are_same("description", rows[1].kind)
             assert.are_same("rep", rows[1].text)
@@ -483,7 +483,7 @@ describe("Questie", function()
         end)
 
         it("should not expand all RGB values from a non-final argument position", function()
-            local count = select("#", Questie:ColorizeRGB("reputationBlue"), "tail")
+            local count = select("#", QuestieSmazak:ColorizeRGB("reputationBlue"), "tail")
 
             assert.are_same(2, count)
         end)

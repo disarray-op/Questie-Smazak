@@ -1,19 +1,19 @@
 ---@type QuestieCompat
-local QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+local QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
 
 --- Contains last known valid state of each quest in game's quest log, per quest.
 --- I.E. All data related to a quest is valid.
 --- Includes a "hack" to have correct objectives' progress while quest isComplete = 1. Otherwise it would need to be done everywhere else in code
 ---@class QuestLogCache
-local QuestLogCache = QuestieLoader:CreateModule("QuestLogCache")
+local QuestLogCache = QuestieSmazakLoader:CreateModule("QuestLogCache")
 ---@type QuestieLib
-local QuestieLib = QuestieLoader:ImportModule("QuestieLib")
+local QuestieLib = QuestieSmazakLoader:ImportModule("QuestieLib")
 ---@type Sounds
-local Sounds = QuestieLoader:ImportModule("Sounds")
+local Sounds = QuestieSmazakLoader:ImportModule("Sounds")
 ---@type QuestEventHandler
-local QuestEventHandler = QuestieLoader:ImportModule("QuestEventHandler")
+local QuestEventHandler = QuestieSmazakLoader:ImportModule("QuestEventHandler")
 ---@type ActiveQuests
-local ActiveQuests = QuestieLoader:ImportModule("ActiveQuests")
+local ActiveQuests = QuestieSmazakLoader:ImportModule("ActiveQuests")
 
 local GetQuestLogTitle, C_QuestLog_GetQuestObjectives = QuestieCompat.GetQuestLogTitle, C_QuestLog.GetQuestObjectives
 
@@ -63,7 +63,7 @@ local cache = {
 
 
 ---@class QuestLogCacheObjectiveData
----@field type "monster"|"object"|"item"|"reputation"|"killcredit"|"event"|"spell"|string Includes client objective types unknown to Questie.
+---@field type "monster"|"object"|"item"|"reputation"|"killcredit"|"event"|"spell"|string Includes client objective types unknown to QuestieSmazak.
 ---@field objectiveType number? The client's QuestObjectiveType, e.g. CRITERIA_TREE_OBJECTIVE_TYPE.
 ---@field finished boolean
 ---@field numFulfilled number
@@ -189,13 +189,13 @@ local function GetNewObjectives(questId, oldObjectives, oldNumRows, isCompleteAc
         else -- objective text not in game's cache
             if oldObj then
                 needsRetry = true
-                Questie.Debug(Questie.DEBUG_INFO, "[GetNewObjectives] objective not in game's cache. Using addon's cache. questID, objIndex:", questId, objIndex)
+                QuestieSmazak.Debug(QuestieSmazak.DEBUG_INFO, "[GetNewObjectives] objective not in game's cache. Using addon's cache. questID, objIndex:", questId, objIndex)
                 -- Extremely unlikely that the objective has changed from cached version as a change SHOULD trigger fetching data into game cache.
                 -- Possible bug point if there comes desync issues.
                 newObjectives[objIndex] = oldObj
                 allObjectivesFinished = allObjectivesFinished and oldObj.finished -- if any objective is not finished, whole quest is not complete
             else
-                Questie.Debug(Questie.DEBUG_INFO, "[GetNewObjectives] \"WARNING\" objective not in game's cache nor addon's cache. questID, objIndex:", questId,
+                QuestieSmazak.Debug(QuestieSmazak.DEBUG_INFO, "[GetNewObjectives] \"WARNING\" objective not in game's cache nor addon's cache. questID, objIndex:", questId,
                     objIndex)
                 -- Objective has been never cached
                 -- Tell to function caller that we couldn't get all required data from game's cache
@@ -248,7 +248,7 @@ QuestLogCache._GetNewObjectives = GetNewObjectives
 ---@param questIdsToCheck table? @keys are the questIds
 ---@return boolean cacheMiss, table changes, table questIdsChecked, table questIdsUnlisted @cacheMiss = couldn't get all required data  ; changes[questId] = list of changed objectiveIndexes (may be an empty list if quest has no objectives) ; questIdsUnlisted = quests in the game's log that questIdsToCheck left out
 function QuestLogCache.CheckForChanges(questIdsToCheck)
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestLogCache.CheckForChanges]")
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestLogCache.CheckForChanges]")
 
     local cacheMiss = false
     local changes = {} -- table key = questid of the changed quest, table value = list of changed objective ids
@@ -333,7 +333,7 @@ function QuestLogCache.CheckForChanges(questIdsToCheck)
                     end
                 end
             else
-                Questie.Debug(Questie.DEBUG_CRITICAL, "[QuestLogCache.CheckForChanges] HaveQuestData() == false. questId, index:", questId, questLogIndex)
+                QuestieSmazak.Debug(QuestieSmazak.DEBUG_CRITICAL, "[QuestLogCache.CheckForChanges] HaveQuestData() == false. questId, index:", questId, questLogIndex)
 
                 -- In theory this shouldn't happen, but it does. This is not error but an edge case.
 
@@ -368,7 +368,7 @@ end
 ---@param questId QuestId
 ---@return nil
 function QuestLogCache.RemoveQuest(questId)
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestLogCache.RemoveQuest] remove questId:", questId)
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestLogCache.RemoveQuest] remove questId:", questId)
     questsAwaitingRecovery[questId] = nil
     if cache[questId] then
         cache[questId] = nil
@@ -395,7 +395,7 @@ function QuestLogCache.TestGameCache()
         end
     end
 
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestLogCache.TestGameCache]", (gameCacheOK and "Cache ok." or "Cache missing data."))
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestLogCache.TestGameCache]", (gameCacheOK and "Cache ok." or "Cache missing data."))
     return gameCacheOK
 end
 
@@ -417,8 +417,8 @@ end
 function QuestLogCache.GetQuest(questId)
     -- Fix the issue at function caller side if this error pops up.
     if (not cache[questId]) then
-        Questie:Print(debugstack(1, 20, 4))
-        Questie.Error("Please report this error. GetQuest: The quest doesn't exist in QuestLogCache.", questId)
+        QuestieSmazak:Print(debugstack(1, 20, 4))
+        QuestieSmazak.Error("Please report this error. GetQuest: The quest doesn't exist in QuestLogCache.", questId)
         return
     end
     return cache[questId]
@@ -443,9 +443,9 @@ function QuestLogCache.PrintQuestLogStates()
         activeQuestsStr = activeQuestsStr .. qId .. ", "
     end
 
-    Questie.Error(cacheStr)
-    Questie.Error(questLogStatesStr)
-    Questie.Error(activeQuestsStr)
+    QuestieSmazak.Error(cacheStr)
+    QuestieSmazak.Error(questLogStatesStr)
+    QuestieSmazak.Error(activeQuestsStr)
 end
 
 --- A wrapper function to add error check instead using exposed table directly.
@@ -454,8 +454,8 @@ end
 function QuestLogCache.GetQuestObjectives(questId)
     -- Fix the issue at function caller side if this error pops up.
     if (not cache[questId]) then
-        Questie:Print(debugstack(1, 20, 4))
-        Questie.Error("Please report this error. GetQuestObjectives: The quest doesn't exist in QuestLogCache.", questId)
+        QuestieSmazak:Print(debugstack(1, 20, 4))
+        QuestieSmazak.Error("Please report this error. GetQuestObjectives: The quest doesn't exist in QuestLogCache.", questId)
         QuestLogCache.PrintQuestLogStates()
         return
     end

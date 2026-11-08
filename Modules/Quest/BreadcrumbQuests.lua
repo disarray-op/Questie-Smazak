@@ -1,21 +1,21 @@
 ---@type QuestieCompat
-local QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+local QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
 
 ---@class BreadcrumbQuests
-local BreadcrumbQuests = QuestieLoader:CreateModule("BreadcrumbQuests")
+local BreadcrumbQuests = QuestieSmazakLoader:CreateModule("BreadcrumbQuests")
 
 ---@type QuestieDB
-local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
 ---@type QuestiePlayer
-local QuestiePlayer = QuestieLoader:ImportModule("QuestiePlayer")
+local QuestiePlayer = QuestieSmazakLoader:ImportModule("QuestiePlayer")
 ---@type ActiveQuests
-local ActiveQuests = QuestieLoader:ImportModule("ActiveQuests")
+local ActiveQuests = QuestieSmazakLoader:ImportModule("ActiveQuests")
 ---@type QuestieAnnounce
-local QuestieAnnounce = QuestieLoader:ImportModule("QuestieAnnounce")
+local QuestieAnnounce = QuestieSmazakLoader:ImportModule("QuestieAnnounce")
 ---@type QuestieLink
-local QuestieLink = QuestieLoader:ImportModule("QuestieLink")
+local QuestieLink = QuestieSmazakLoader:ImportModule("QuestieLink")
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 
 --- Abandons the given quest and prints a message referencing the incomplete breadcrumb quest.
 ---@param questId number
@@ -29,7 +29,7 @@ function BreadcrumbQuests.AbandonQuest(questId, breadcrumbQuestId)
         QuestieCompat.AbandonQuest()
         local questLink = QuestieLink:GetQuestHyperLink(questId)
         local breadcrumbLink = QuestieLink:GetQuestHyperLink(breadcrumbQuestId)
-        Questie:Print(l10n("Automatically abandoned quest %s because breadcrumb quest %s is not completed.", questLink or "no quest name", breadcrumbLink or "no quest name"))
+        QuestieSmazak:Print(l10n("Automatically abandoned quest %s because breadcrumb quest %s is not completed.", questLink or "no quest name", breadcrumbLink or "no quest name"))
         return true
     end
     return false
@@ -38,7 +38,7 @@ end
 --- Checks if a quest has incomplete breadcrumbs and announces/abandons accordingly.
 ---@param questId number
 function BreadcrumbQuests.CheckQuestBreadcrumbs(questId)
-    if not (Questie.db.profile.questAnnounceIncompleteBreadcrumb or Questie.db.profile.autoAccept.abandonBreadcrumbFollowup) then
+    if not (QuestieSmazak.db.profile.questAnnounceIncompleteBreadcrumb or QuestieSmazak.db.profile.autoAccept.abandonBreadcrumbFollowup) then
         return
     end
 
@@ -47,7 +47,7 @@ function BreadcrumbQuests.CheckQuestBreadcrumbs(questId)
         local lastIncompleteBreadcrumbId = nil
         for _, breadcrumbQuestId in ipairs(breadcrumbs) do
             -- We want to let users know when they picked up a quest without finishing its breadcrumb
-            if (not Questie.db.char.complete[breadcrumbQuestId]) and (not ActiveQuests.Get(breadcrumbQuestId)) then
+            if (not QuestieSmazak.db.char.complete[breadcrumbQuestId]) and (not ActiveQuests.Get(breadcrumbQuestId)) then
                 local requiredRaces = QuestieDB.QueryQuestSingle(breadcrumbQuestId, "requiredRaces")
                 local requiredClasses = QuestieDB.QueryQuestSingle(breadcrumbQuestId, "requiredClasses")
                 local availableUntilCompleted = QuestieDB.QueryQuestSingle(breadcrumbQuestId, "availableUntilCompleted")
@@ -56,7 +56,7 @@ function BreadcrumbQuests.CheckQuestBreadcrumbs(questId)
                 local exclusiveQuestCompleted = false
                 if exclusiveQuests then
                     for _, exclusiveQuestId in pairs(exclusiveQuests) do
-                        if Questie.db.char.complete[exclusiveQuestId] or ActiveQuests.Get(exclusiveQuestId) then
+                        if QuestieSmazak.db.char.complete[exclusiveQuestId] or ActiveQuests.Get(exclusiveQuestId) then
                             exclusiveQuestCompleted = true
                             break
                         end
@@ -66,8 +66,8 @@ function BreadcrumbQuests.CheckQuestBreadcrumbs(questId)
                 if QuestiePlayer.HasRequiredRace(requiredRaces)
                     and QuestiePlayer.HasRequiredClass(requiredClasses)
                     and (not exclusiveQuestCompleted)
-                    and (not availableUntilCompleted or not Questie.db.char.complete[availableUntilCompleted]) then
-                    if Questie.db.profile.questAnnounceIncompleteBreadcrumb then
+                    and (not availableUntilCompleted or not QuestieSmazak.db.char.complete[availableUntilCompleted]) then
+                    if QuestieSmazak.db.profile.questAnnounceIncompleteBreadcrumb then
                         QuestieAnnounce.IncompleteBreadcrumbQuest(questId, breadcrumbQuestId)
                     end
                     lastIncompleteBreadcrumbId = breadcrumbQuestId
@@ -75,7 +75,7 @@ function BreadcrumbQuests.CheckQuestBreadcrumbs(questId)
             end
         end
 
-        if lastIncompleteBreadcrumbId and Questie.db.profile.autoAccept.abandonBreadcrumbFollowup then
+        if lastIncompleteBreadcrumbId and QuestieSmazak.db.profile.autoAccept.abandonBreadcrumbFollowup then
             BreadcrumbQuests.AbandonQuest(questId, lastIncompleteBreadcrumbId)
         end
     end

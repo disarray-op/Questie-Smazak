@@ -1,4 +1,4 @@
-## Interface: 11508, 11509
+## Interface: 16001
 ## Title: Questie-Smazak|cFF00FF00 v12.6.4|r
 ## Author: Aero/Logon/Muehe/TheCrux(BreakBB)/Drejjmit/Dyaxler/Cheeq/TechnoHunter/Yttrium/Everyone else
 ## Notes: A standalone Classic QuestHelper
@@ -26,20 +26,21 @@
 ## X-QuestieDB-Contract: 4
 ## OptionalDeps: QuestieDB, QuestieTrace, Ace3, CallbackHandler-1.0, HereBeDragons, Krowi_WorldMapButtons, LibDataBroker-1.1, LibDBIcon-1.0, LibSharedMedia-3.0, LibStub, LibUIDropDownMenu
 ## LoadSavedVariablesFirst: 1
-## SavedVariables: QuestieConfig, QuestieProfilerEnabled
-## SavedVariablesPerCharacter: QuestieConfigCharacter
+## SavedVariables: QuestieSmazakConfig, QuestieSmazakProfilerEnabled
+## SavedVariablesPerCharacter: QuestieSmazakConfigCharacter
 ## IconTexture: Interface\AddOns\Questie\Icons\questie.png
 ## X-Curse-Project-ID: 334372
 ## X-Wago-ID: qv634BKb
 
 # Loader module. First so that every file after it can be timed: the load-time hook lives here,
 # and anything loaded before it is invisible to measurement. It has no dependencies of its own.
-Modules\Libs\QuestieLoader.lua
+Modules\Libs\QuestieSmazakLoader.lua
 # As early as possible on purpose: a file above this one can still alias an unwrapped
 # function, and nothing would report that it did. Only the loader is above it.
 # Does nothing unless QuestieProfilerEnabled is set.
 Modules\Profiler\QuestieProfilerPreHook.lua
 
+# Compatibility includes Forever's library bridges, so it must precede embedded libraries.
 Modules\QuestieCompat.lua
 
 embeds.xml
@@ -189,6 +190,7 @@ Modules\FramePool\QuestieFrame.lua
 Modules\Map\QuestieMap.lua
 Modules\Map\QuestieMapUtils.lua
 Modules\Map\HBDHooks.lua
+Modules\Map\GamepadMapHover.lua
 Modules\Map\WeaponMasterSkills.lua
 Modules\Map\Moonwell.lua
 Modules\Map\FocusedQuestgiver.lua
@@ -281,13 +283,12 @@ Modules\Tracker\LinePool\ExpandZoneButton.lua
 Modules\Tracker\LinePool\TrackerItemButton.lua
 Modules\Tracker\LinePool\TrackerMenu.lua
 Modules\Tracker\LinePool\VoiceOverPlayButton.lua
-Modules\Tracker\LinePool\SpokenPlayButton.lua
 Modules\Tracker\LinePool\TrackerLine.lua
 Modules\Tracker\LinePool\TrackerLinePool.lua
 Modules\Tracker\LinePool\LineBuilder.lua
 
 # Tutorial
-Modules\Tutorial\ShowRunes.lua
+Modules\Tutorial\ChooseObjectiveType.lua
 Modules\Tutorial\RejectInBattlegrounds.lua
 Modules\Tutorial\Tutorial.lua
 

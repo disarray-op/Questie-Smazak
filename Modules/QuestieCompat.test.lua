@@ -8,14 +8,14 @@ describe("QuestieCompat", function()
     local QuestieCompat
 
     before_each(function()
-        QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+        QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
 
         _G.C_GossipInfo = nil
         _G.GetGossipAvailableQuests = nil
         _G.GetGossipActiveQuests = nil
 
         dofile("Modules/QuestieCompat.lua")
-        QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+        QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
     end)
 
     describe("OpenWorldMap", function()
@@ -548,7 +548,7 @@ describe("QuestieCompat shared API selection", function()
         end
         -- Compat loads early; resolve these APIs when called, not when the module is loaded.
         dofile("Modules/QuestieCompat.lua")
-        QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+        QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
     end)
 
     after_each(function()
@@ -685,7 +685,7 @@ describe("QuestieCompat status messages", function()
         _G.ActionStatus_DisplayMessage = nil
         _G.UIErrorsFrame = {AddMessage = spy.new(function() end)}
         dofile("Modules/QuestieCompat.lua")
-        QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+        QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
     end)
 
     after_each(function()
@@ -724,7 +724,7 @@ describe("QuestieCompat.GetQuestGreenRange", function()
     local function loadCompat(interfaceVersion)
         _G.GetBuildInfo = function() return "", "0", "", interfaceVersion end
         dofile("Modules/QuestieCompat.lua")
-        QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+        QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
     end
 
     before_each(function()
@@ -808,7 +808,7 @@ describe("QuestieCompat modern quest log boundary", function()
         originalGetCVarBool = _G.GetCVarBool
         _G.GetCVarBool = spy.new(function() return false end)
         dofile("Modules/QuestieCompat.lua")
-        QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+        QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
         _G.C_QuestLog = {
             GetInfo = spy.new(function() return {questID = 783, title = "A Threat Within"} end),
             GetQuestTagInfo = spy.new(function() return {tagName = "Group"} end),
@@ -828,7 +828,7 @@ describe("QuestieCompat modern quest log boundary", function()
 
     it("registers through the loader without publishing a global", function()
         assert.is_nil(_G.QuestieCompat)
-        assert.are.equal(QuestieLoader:ImportModule("QuestieCompat"), QuestieCompat)
+        assert.are.equal(QuestieSmazakLoader:ImportModule("QuestieCompat"), QuestieCompat)
     end)
 
     it("keeps the quest tag and failed status in the legacy tuple", function()
@@ -909,7 +909,7 @@ describe("QuestieCompat legacy return shapes", function()
         _G.C_StableInfo = {GetStablePetFoodTypes = function() return {} end}
         _G.C_Item = {GetItemInfo = function(id) return ({[10] = "Letter", [20] = "Key"})[id] end}
         dofile("Modules/QuestieCompat.lua")
-        QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+        QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
     end)
 
     after_each(function()
@@ -954,7 +954,7 @@ describe("QuestieCompat Classic paths", function()
     local QuestieCompat
     local originals
     local names = {
-        "GetBuildInfo", "Questie", "QuestWatchFrame", "WatchFrame", "CreateFrame",
+        "GetBuildInfo", "QuestieSmazak", "QuestWatchFrame", "WatchFrame", "CreateFrame",
         "SetDesaturation", "IsQuestWatched", "MouseIsOver", "GetQuestTimers", "C_PlayerInfo", "HaveQuestData",
     }
     local watchFrame
@@ -963,7 +963,7 @@ describe("QuestieCompat Classic paths", function()
         originals = {}
         for _, name in ipairs(names) do originals[name] = _G[name] end
         _G.GetBuildInfo = function() return "1.15.9", "0", "", 11509 end
-        _G.Questie = {IsTitanReforged = false}
+        _G.QuestieSmazak = {IsTitanReforged = false}
         watchFrame = {
             Hide = spy.new(function() end),
             Show = spy.new(function() end),
@@ -974,7 +974,7 @@ describe("QuestieCompat Classic paths", function()
         _G.CreateFrame = spy.new(function() error("Classic must not allocate the Forever visibility frame") end)
         _G.SetDesaturation = nil
         dofile("Modules/QuestieCompat.lua")
-        QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+        QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
     end)
 
     after_each(function()
@@ -987,7 +987,7 @@ describe("QuestieCompat Classic paths", function()
             _G.GetBuildInfo = function() return "", "0", "", interfaceVersion end
             dofile("Modules/QuestieCompat.lua")
             ---@type QuestieCompat
-            QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+            QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
             QuestieCompat.HideWatchFrame()
             QuestieCompat.ShowWatchFrame()
             assert.spy(watchFrame.Hide).was.called(index)
@@ -999,7 +999,7 @@ describe("QuestieCompat Classic paths", function()
     end)
 
     it("preserves Titan's alpha-based visibility workaround", function()
-        Questie.IsTitanReforged = true
+        QuestieSmazak.IsTitanReforged = true
         QuestieCompat.HideWatchFrame()
         QuestieCompat.ShowWatchFrame()
         assert.spy(watchFrame.SetAlpha).was.called_with(watchFrame, 0)
@@ -1048,8 +1048,8 @@ describe("QuestieCompat Forever paths", function()
         "GetAddOnMetadata", "SetDesaturation", "UnitAura", "MouseIsOver", "GetQuestTimers",
     }
     local dependencies = {
-        "QuestieLoader", "QuestieCompat", "C_QuestLog", "C_Reputation", "Enum", "CreateFrame",
-        "ObjectiveTrackerFrame", "InCombatLockdown", "GetBuildInfo", "Questie", "C_UnitAuras", "AuraUtil",
+        "QuestieSmazakLoader", "QuestieCompat", "C_QuestLog", "C_Reputation", "Enum", "CreateFrame",
+        "ObjectiveTrackerFrame", "InCombatLockdown", "GetBuildInfo", "QuestieSmazak", "C_UnitAuras", "AuraUtil",
         "GetCVarBool", "C_PlayerInfo", "HaveQuestData",
     }
     local savedGlobals
@@ -1066,11 +1066,11 @@ describe("QuestieCompat Forever paths", function()
         for _, name in ipairs(dependencies) do
             savedGlobals[name] = _G[name]
         end
-        -- Compatibility must work at TOC load, before Questie and VersionCheck exist.
-        _G.Questie = nil
+        -- Compatibility must work at TOC load, before QuestieSmazak and VersionCheck exist.
+        _G.QuestieSmazak = nil
         _G.GetBuildInfo = function() return "1.60.1", "69913", "", 16001 end
         _G.GetCVarBool = function() return false end
-        dofile("Modules/Libs/QuestieLoader.lua")
+        dofile("Modules/Libs/QuestieSmazakLoader.lua")
         _G.C_Reputation = {}
         _G.Enum = {QuestWatchType = {Manual = 1}}
         visibilityFrame = {
@@ -1096,7 +1096,7 @@ describe("QuestieCompat Forever paths", function()
             GetNumQuestWatches = function() return 1 end,
         }
         dofile("Modules/QuestieCompat.lua")
-        QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+        QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
     end)
 
     after_each(function()
@@ -1108,8 +1108,8 @@ describe("QuestieCompat Forever paths", function()
         end
     end)
 
-    it("installs the missing AceGUI desaturation bridge before Questie exists", function()
-        assert.is_nil(_G.Questie)
+    it("installs the missing AceGUI desaturation bridge before QuestieSmazak exists", function()
+        assert.is_nil(_G.QuestieSmazak)
         assert.is_nil(_G.QuestieCompat)
         local texture = {SetDesaturated = spy.new(function() end)}
         SetDesaturation(texture, true)
@@ -1409,7 +1409,7 @@ describe("QuestieCompat super tracking", function()
     before_each(function()
         originalSuperTrack = _G.C_SuperTrack
         dofile("Modules/QuestieCompat.lua")
-        QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+        QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
     end)
 
     after_each(function()
@@ -1482,7 +1482,7 @@ describe("QuestieCompat.GetQuestUiMapID", function()
     before_each(function()
         originalGetQuestUiMapID, originalCQuestLog = _G.GetQuestUiMapID, _G.C_QuestLog
         dofile("Modules/QuestieCompat.lua")
-        QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+        QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
     end)
 
     after_each(function()
@@ -1539,7 +1539,7 @@ describe("QuestieCompat skill lines", function()
             ExpandSkillHeader = _G.ExpandSkillHeader,
         }
         dofile("Modules/QuestieCompat.lua")
-        QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+        QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
     end)
 
     after_each(function()

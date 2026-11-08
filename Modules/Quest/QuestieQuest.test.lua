@@ -23,27 +23,27 @@ describe("QuestieQuest", function()
     local l10n
 
     before_each(function()
-        Questie.db.char = {}
-        ZoneDB = QuestieLoader:ImportModule("ZoneDB")
+        QuestieSmazak.db.char = {}
+        ZoneDB = QuestieSmazakLoader:ImportModule("ZoneDB")
         ZoneDB.GetDungeons = function() return {} end
-        QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+        QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
         QuestieDB.GetQuest = spy.new(function() return {} end)
-        AvailableQuests = QuestieLoader:ImportModule("AvailableQuests")
+        AvailableQuests = QuestieSmazakLoader:ImportModule("AvailableQuests")
         AvailableQuests.CalculateAndDrawAll = spy.new(function() end)
-        QuestieMap = QuestieLoader:ImportModule("QuestieMap")
-        QuestLogCache = QuestieLoader:ImportModule("QuestLogCache")
+        QuestieMap = QuestieSmazakLoader:ImportModule("QuestieMap")
+        QuestLogCache = QuestieSmazakLoader:ImportModule("QuestLogCache")
         QuestLogCache.TryGetQuest = function() end
         dofile("Modules/Quest/ActiveQuests.lua")
-        ActiveQuests = QuestieLoader:ImportModule("ActiveQuests")
-        QuestieCombatQueue = QuestieLoader:ImportModule("QuestieCombatQueue")
+        ActiveQuests = QuestieSmazakLoader:ImportModule("ActiveQuests")
+        QuestieCombatQueue = QuestieSmazakLoader:ImportModule("QuestieCombatQueue")
         QuestieCombatQueue.Queue = function() end
-        CommsVisibility = QuestieLoader:ImportModule("CommsVisibility")
+        CommsVisibility = QuestieSmazakLoader:ImportModule("CommsVisibility")
         CommsVisibility.ScheduleSnapshot = spy.new(function() end)
-        l10n = QuestieLoader:ImportModule("l10n")
+        l10n = QuestieSmazakLoader:ImportModule("l10n")
         setmetatable(l10n, {__call = function(_, key, ...) return key end})
 
         dofile("Modules/Quest/QuestieQuest.lua")
-        QuestieQuest = QuestieLoader:ImportModule("QuestieQuest")
+        QuestieQuest = QuestieSmazakLoader:ImportModule("QuestieQuest")
     end)
 
     describe("sequenced completion overrides", function()
@@ -51,35 +51,35 @@ describe("QuestieQuest", function()
         local originalSendMessage, originalThreadCallback
 
         before_each(function()
-            compat = QuestieLoader:ImportModule("QuestieCompat")
+            compat = QuestieSmazakLoader:ImportModule("QuestieCompat")
             originalIsSequenced = compat.IsQuestSequenced
             compat.IsQuestSequenced = function() return true end
-            Questie.db.char.complete = {}
+            QuestieSmazak.db.char.complete = {}
             quest = {
                 Id = 93927, sourceItemId = 0, Objectives = {{Completed = true}},
                 ObjectiveData = {}, SpecialObjectives = {}, Finisher = {NPC = {100}},
                 IsComplete = function() return 0 end,
             }
             QuestieDB.GetQuest = function() return quest end
-            finisher = QuestieLoader:ImportModule("QuestFinisher")
+            finisher = QuestieSmazakLoader:ImportModule("QuestFinisher")
             finisher.AddFinisher = spy.new(function() end)
             AvailableQuests.RemoveQuest = spy.new(function(_, callback) if callback then callback() end end)
-            originalThreadCallback = QuestieLoader:ImportModule("ThreadLib").ThreadCallbackInstant
-            QuestieLoader:ImportModule("ThreadLib").ThreadCallbackInstant = function(work, callback)
+            originalThreadCallback = QuestieSmazakLoader:ImportModule("ThreadLib").ThreadCallbackInstant
+            QuestieSmazakLoader:ImportModule("ThreadLib").ThreadCallbackInstant = function(work, callback)
                 work()
                 callback()
             end
             QuestieMap.UnloadQuestFrames = function() end
-            originalSendMessage = Questie.SendMessage
-            Questie.SendMessage = spy.new(function() end)
+            originalSendMessage = QuestieSmazak.SendMessage
+            QuestieSmazak.SendMessage = spy.new(function() end)
             QuestieQuest.UpdateObjectiveNotes = spy.new(function() end)
             QuestieQuest.ShouldShowQuestNotes = function() return true end
         end)
 
         after_each(function()
             compat.IsQuestSequenced = originalIsSequenced
-            Questie.SendMessage = originalSendMessage
-            QuestieLoader:ImportModule("ThreadLib").ThreadCallbackInstant = originalThreadCallback
+            QuestieSmazak.SendMessage = originalSendMessage
+            QuestieSmazakLoader:ImportModule("ThreadLib").ThreadCallbackInstant = originalThreadCallback
         end)
 
         it("updates a finished visible stage without promoting the whole quest to complete", function()
@@ -135,7 +135,7 @@ describe("QuestieQuest", function()
             QuestieQuest.RegisterObjectiveTooltips = function() end
             quest.IsComplete = function() return 1 end
             local unloaded
-            QuestieLoader:ImportModule("ThreadLib").ThreadCallbackInstant = function(_, callback) unloaded = callback end
+            QuestieSmazakLoader:ImportModule("ThreadLib").ThreadCallbackInstant = function(_, callback) unloaded = callback end
 
             QuestieQuest:UpdateQuest(93927)
             -- AbandonQuest and AcceptQuest reset the progress of the same quest object
@@ -150,7 +150,7 @@ describe("QuestieQuest", function()
             compat.IsQuestSequenced = function() return false end
             QuestieQuest.PopulateQuestLogInfo = function() end
             local unloaded
-            QuestieLoader:ImportModule("ThreadLib").ThreadCallbackInstant = function(_, callback) unloaded = callback end
+            QuestieSmazakLoader:ImportModule("ThreadLib").ThreadCallbackInstant = function(_, callback) unloaded = callback end
 
             QuestieQuest:UpdateQuest(93927)
             quest.WasComplete = nil
@@ -165,22 +165,22 @@ describe("QuestieQuest", function()
             QuestieQuest.PopulateQuestLogInfo = function() end
             QuestieQuest.RegisterObjectiveTooltips = function() end
             quest.IsComplete = function() return 1 end
-            QuestieLoader:ImportModule("ThreadLib").ThreadCallbackInstant = function() end
+            QuestieSmazakLoader:ImportModule("ThreadLib").ThreadCallbackInstant = function() end
 
             QuestieQuest:UpdateQuest(93927)
 
-            assert.spy(Questie.SendMessage).was.called_with(Questie, "QC_ID_BROADCAST_QUEST_UPDATE", 93927)
+            assert.spy(QuestieSmazak.SendMessage).was.called_with(QuestieSmazak, "QC_ID_BROADCAST_QUEST_UPDATE", 93927)
         end)
 
         it("broadcasts an inferred complete quest without waiting for the icon unload", function()
             compat.IsQuestSequenced = function() return false end
             QuestieQuest.PopulateQuestLogInfo = function() end
-            QuestieLoader:ImportModule("ThreadLib").ThreadCallbackInstant = function() end
+            QuestieSmazakLoader:ImportModule("ThreadLib").ThreadCallbackInstant = function() end
 
             QuestieQuest:UpdateQuest(93927)
 
             assert.is_true(quest.isComplete)
-            assert.spy(Questie.SendMessage).was.called_with(Questie, "QC_ID_BROADCAST_QUEST_UPDATE", 93927)
+            assert.spy(QuestieSmazak.SendMessage).was.called_with(QuestieSmazak, "QC_ID_BROADCAST_QUEST_UPDATE", 93927)
         end)
 
         it("does not infer completion from absent objective mappings even when a finisher exists", function()
@@ -267,26 +267,26 @@ describe("QuestieQuest", function()
 
         before_each(function()
             originalCTimer = _G.C_Timer
-            local ThreadLib = QuestieLoader:ImportModule("ThreadLib")
+            local ThreadLib = QuestieSmazakLoader:ImportModule("ThreadLib")
             originalThreadCallback = ThreadLib.ThreadCallbackInstant
             originalThreadInstant = ThreadLib.ThreadInstant
             ThreadLib.ThreadCallbackInstant = function(_, callback) callback() end
             QuestLogCache.TestGameCache = function() return true end
             QuestieMap._mapDrawQueue = {}
             QuestieMap._minimapDrawQueue = {}
-            QuestieLoader:ImportModule("QuestieDBMIntegration").ClearAll = function() end
-            QuestieLoader:ImportModule("QuestieMenu").OnLogin = function() end
-            QuestieLoader:ImportModule("QuestieCompat").GetQuestsCompleted = function() return {} end
-            QuestieLoader:ImportModule("QuestieProfessions").Update = function() end
-            QuestieLoader:ImportModule("QuestieReputation").Update = function() end
+            QuestieSmazakLoader:ImportModule("QuestieDBMIntegration").ClearAll = function() end
+            QuestieSmazakLoader:ImportModule("QuestieMenu").OnLogin = function() end
+            QuestieSmazakLoader:ImportModule("QuestieCompat").GetQuestsCompleted = function() return {} end
+            QuestieSmazakLoader:ImportModule("QuestieProfessions").Update = function() end
+            QuestieSmazakLoader:ImportModule("QuestieReputation").Update = function() end
             QuestieQuest.ClearAllToolTips = function() end
             QuestieQuest.GetAllQuestIdsNoObjectives = function() end
         end)
 
         after_each(function()
             _G.C_Timer = originalCTimer
-            QuestieLoader:ImportModule("ThreadLib").ThreadCallbackInstant = originalThreadCallback
-            QuestieLoader:ImportModule("ThreadLib").ThreadInstant = originalThreadInstant
+            QuestieSmazakLoader:ImportModule("ThreadLib").ThreadCallbackInstant = originalThreadCallback
+            QuestieSmazakLoader:ImportModule("ThreadLib").ThreadInstant = originalThreadInstant
             QuestieQuest._isResetting = nil
         end)
 
@@ -408,7 +408,7 @@ describe("QuestieQuest", function()
             QuestieQuest.UpdateQuest = function() end
             QuestieQuest.PopulateObjective = spy.new(function() end)
             local pending = {}
-            QuestieLoader:ImportModule("ThreadLib").ThreadInstant = function(work) table.insert(pending, work) end
+            QuestieSmazakLoader:ImportModule("ThreadLib").ThreadInstant = function(work) table.insert(pending, work) end
 
             QuestieQuest:SmoothReset()
             for _ = 1, 10 do
@@ -424,7 +424,7 @@ describe("QuestieQuest", function()
 
     describe("ClearAllNotes", function()
         it("should unload the frames even when a logged quest has no quest object", function()
-            local QuestieFramePool = QuestieLoader:ImportModule("QuestieFramePool")
+            local QuestieFramePool = QuestieSmazakLoader:ImportModule("QuestieFramePool")
             local originalUnloadFrame = QuestieFramePool.UnloadFrame
             QuestieFramePool.UnloadFrame = spy.new(function() end)
             local icon = {Unload = function() end}
@@ -444,7 +444,7 @@ describe("QuestieQuest", function()
 
     describe("ClearAllToolTips", function()
         it("should reset the tooltip lookups even when a logged quest has no quest object", function()
-            local QuestieTooltips = QuestieLoader:ImportModule("QuestieTooltips")
+            local QuestieTooltips = QuestieSmazakLoader:ImportModule("QuestieTooltips")
             QuestieTooltips.lookupByKey = {["m_1"] = {}}
             ActiveQuests.Add(1)
 
@@ -457,12 +457,12 @@ describe("QuestieQuest", function()
     describe("UnhideQuest", function()
         it("should unhide a quest", function()
             local questId = 123
-            Questie.db.char = {hidden = {[questId] = true}}
+            QuestieSmazak.db.char = {hidden = {[questId] = true}}
             QuestieQuest.PopulateObjectiveNotes = spy.new(function() end)
 
             QuestieQuest:UnhideQuest(questId)
 
-            assert.is_nil(Questie.db.char.hidden[questId])
+            assert.is_nil(QuestieSmazak.db.char.hidden[questId])
             assert.spy(CommsVisibility.ScheduleSnapshot).was.called()
             assert.spy(AvailableQuests.CalculateAndDrawAll).was.called()
             assert.spy(QuestieDB.GetQuest).was.not_called()
@@ -471,13 +471,13 @@ describe("QuestieQuest", function()
 
         it("should unhide a quest that is in the quest log", function()
             local questId = 123
-            Questie.db.char = {hidden = {[questId] = true}}
+            QuestieSmazak.db.char = {hidden = {[questId] = true}}
             ActiveQuests.Add(questId)
             QuestieQuest.PopulateObjectiveNotes = spy.new(function() end)
 
             QuestieQuest:UnhideQuest(questId)
 
-            assert.is_nil(Questie.db.char.hidden[questId])
+            assert.is_nil(QuestieSmazak.db.char.hidden[questId])
             assert.spy(CommsVisibility.ScheduleSnapshot).was.called()
             assert.spy(AvailableQuests.CalculateAndDrawAll).was.not_called()
             assert.spy(QuestieDB.GetQuest).was.called_with(123)
@@ -525,7 +525,7 @@ describe("QuestieQuest", function()
         local ThreadLib, originalThreadInstant, originalThreadCallback
 
         before_each(function()
-            ThreadLib = QuestieLoader:ImportModule("ThreadLib")
+            ThreadLib = QuestieSmazakLoader:ImportModule("ThreadLib")
             originalThreadInstant, originalThreadCallback = ThreadLib.ThreadInstant, ThreadLib.ThreadCallbackInstant
             ThreadLib.ThreadInstant = function(work) coroutine.wrap(work)() end
             ThreadLib.ThreadCallbackInstant = spy.new(function() end)
@@ -647,8 +647,8 @@ describe("QuestieQuest", function()
         end)
 
         it("hides the icons the tracker hid before drawing the quest's notes", function()
-            Questie.db.char.TrackerHiddenQuests = {[5] = true}
-            Questie.db.char.TrackerHiddenObjectives = {["5 2"] = true}
+            QuestieSmazak.db.char.TrackerHiddenQuests = {[5] = true}
+            QuestieSmazak.db.char.TrackerHiddenObjectives = {["5 2"] = true}
             local quest = {Id = 5, IsComplete = function() return 0 end, Objectives = {{Index = 1}, {Index = 2}}, SpecialObjectives = {}}
             local hiddenWhenDrawn
             QuestieQuest.PopulateObjectiveNotes = spy.new(function()
@@ -672,26 +672,26 @@ describe("QuestieQuest", function()
         local originalQuestLog
 
         before_each(function()
-            originalSessionWarnings = Questie._sessionWarnings
-            originalDebugEnabled = Questie.db.profile.debugEnabled
-            originalIsSoD = Questie.IsSoD
-            originalWarning = Questie.Warning
+            originalSessionWarnings = QuestieSmazak._sessionWarnings
+            originalDebugEnabled = QuestieSmazak.db.profile.debugEnabled
+            originalIsSoD = QuestieSmazak.IsSoD
+            originalWarning = QuestieSmazak.Warning
             originalQuestPointers = QuestieDB.QuestPointers
             originalQuestLog = QuestLogCache.questLog_DO_NOT_MODIFY
-            Questie._sessionWarnings = {}
-            Questie.db.profile.debugEnabled = false
-            Questie.IsSoD = false
-            Questie.Warning = spy.new(function() end)
+            QuestieSmazak._sessionWarnings = {}
+            QuestieSmazak.db.profile.debugEnabled = false
+            QuestieSmazak.IsSoD = false
+            QuestieSmazak.Warning = spy.new(function() end)
             QuestieDB.QuestPointers = {}
             QuestLogCache.questLog_DO_NOT_MODIFY = {[42] = {title = "Missing quest"}}
             dofile("Localization/l10n.lua")
         end)
 
         after_each(function()
-            Questie._sessionWarnings = originalSessionWarnings
-            Questie.db.profile.debugEnabled = originalDebugEnabled
-            Questie.IsSoD = originalIsSoD
-            Questie.Warning = originalWarning
+            QuestieSmazak._sessionWarnings = originalSessionWarnings
+            QuestieSmazak.db.profile.debugEnabled = originalDebugEnabled
+            QuestieSmazak.IsSoD = originalIsSoD
+            QuestieSmazak.Warning = originalWarning
             QuestieDB.QuestPointers = originalQuestPointers
             QuestLogCache.questLog_DO_NOT_MODIFY = originalQuestLog
         end)
@@ -700,17 +700,17 @@ describe("QuestieQuest", function()
             QuestieQuest:GetAllQuestIdsNoObjectives()
             coroutine.wrap(function() QuestieQuest:GetAllQuestIds() end)()
 
-            assert.spy(Questie.Warning).was.not_called()
-            assert.is_nil(Questie._sessionWarnings[42])
+            assert.spy(QuestieSmazak.Warning).was.not_called()
+            assert.is_nil(QuestieSmazak._sessionWarnings[42])
 
-            Questie.db.profile.debugEnabled = true
+            QuestieSmazak.db.profile.debugEnabled = true
             QuestieQuest:GetAllQuestIdsNoObjectives()
             coroutine.wrap(function() QuestieQuest:GetAllQuestIds() end)()
 
-            assert.spy(Questie.Warning).was.called(1)
-            assert.spy(Questie.Warning).was.called_with(
-                "The quest 42 is missing from Questie's database. Please report this on GitHub or Discord!")
-            assert.is_true(Questie._sessionWarnings[42])
+            assert.spy(QuestieSmazak.Warning).was.called(1)
+            assert.spy(QuestieSmazak.Warning).was.called_with(
+                "The quest 42 is missing from QuestieSmazak's database. Please report this on GitHub or Discord!")
+            assert.is_true(QuestieSmazak._sessionWarnings[42])
         end)
     end)
 
@@ -722,15 +722,15 @@ describe("QuestieQuest", function()
         local QuestFinisher
 
         before_each(function()
-            originalWarning = Questie.Warning
-            Questie.Warning = spy.new(function() end)
+            originalWarning = QuestieSmazak.Warning
+            QuestieSmazak.Warning = spy.new(function() end)
             originalGetQuest = QuestLogCache.GetQuest
             originalGetLeaderBoardDetails = QuestieQuest.GetAllLeaderBoardDetails
             dofile("Modules/Libs/QuestieLib.lua")
             QuestLogCache.GetQuest = function() return {isComplete = 0} end
             ActiveQuests.Add(42, {})
             originalRemoveQuest = AvailableQuests.RemoveQuest
-            QuestFinisher = QuestieLoader:ImportModule("QuestFinisher")
+            QuestFinisher = QuestieSmazakLoader:ImportModule("QuestFinisher")
             originalAddFinisher = QuestFinisher.AddFinisher
             AvailableQuests.RemoveQuest = spy.new(function(_, callback) callback() end)
             QuestFinisher.AddFinisher = spy.new(function() end)
@@ -742,7 +742,7 @@ describe("QuestieQuest", function()
         after_each(function()
             QuestLogCache.GetQuest = originalGetQuest
             QuestieQuest.GetAllLeaderBoardDetails = originalGetLeaderBoardDetails
-            Questie.Warning = originalWarning
+            QuestieSmazak.Warning = originalWarning
             AvailableQuests.RemoveQuest = originalRemoveQuest
             QuestFinisher.AddFinisher = originalAddFinisher
         end)
@@ -810,7 +810,7 @@ describe("QuestieQuest", function()
 
             QuestieQuest:PopulateQuestLogInfo(quest)
 
-            assert.spy(Questie.Warning).was.not_called()
+            assert.spy(QuestieSmazak.Warning).was.not_called()
             assert.are_same({}, quest.Objectives)
         end)
 
@@ -822,7 +822,7 @@ describe("QuestieQuest", function()
 
             QuestieQuest:PopulateQuestLogInfo(quest)
 
-            assert.spy(Questie.Warning).was.not_called()
+            assert.spy(QuestieSmazak.Warning).was.not_called()
             assert.are_same({}, quest.Objectives)
         end)
 
@@ -831,7 +831,7 @@ describe("QuestieQuest", function()
 
             QuestieQuest:PopulateQuestLogInfo(quest)
 
-            assert.spy(Questie.Warning).was.called_with("Missing objective data for quest ", 42, " ", "Wolf slain: 0/1")
+            assert.spy(QuestieSmazak.Warning).was.called_with("Missing objective data for quest ", 42, " ", "Wolf slain: 0/1")
             assert.are_same({}, quest.Objectives)
         end)
 
@@ -872,7 +872,7 @@ describe("QuestieQuest", function()
         local QuestieCompat, originalGetItemCount, itemCount
 
         before_each(function()
-            QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+            QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
             originalGetItemCount = QuestieCompat.GetItemCount
             itemCount = 0
             QuestieCompat.GetItemCount = spy.new(function() return itemCount end)
@@ -908,7 +908,7 @@ describe("QuestieQuest", function()
         it("announces accepted native text using the original objective index", function()
             local objectives = {[3] = {text = "Wolf slain: 2/5", numFulfilled = 2, numRequired = 5}}
             QuestLogCache.GetQuestObjectives = function() return objectives end
-            local announce = QuestieLoader:ImportModule("QuestieAnnounce")
+            local announce = QuestieSmazakLoader:ImportModule("QuestieAnnounce")
             announce.ObjectiveChanged = spy.new(function() end)
 
             assert.are.equal(objectives, QuestieQuest:GetAllLeaderBoardDetails(42))
@@ -920,7 +920,7 @@ describe("QuestieQuest", function()
         local ThreadLib, originalThreadCallback
 
         before_each(function()
-            ThreadLib = QuestieLoader:ImportModule("ThreadLib")
+            ThreadLib = QuestieSmazakLoader:ImportModule("ThreadLib")
             originalThreadCallback = ThreadLib.ThreadCallbackInstant
             ThreadLib.ThreadCallbackInstant = function(work) work() end
             QuestieQuest.PopulateObjective = spy.new(function() end)
@@ -993,19 +993,19 @@ describe("QuestieQuest", function()
             replacements, draws = {}, {}
             entrances = {{1537, 27.63, 47.83}} -- The Hall of Thanes -> Ironforge
             replace(_G, "LibStub", function() return {GetWorldCoordinatesFromZone = function() end} end)
-            replace(Questie, "Warning", spy.new(function() end))
-            replace(Questie.db, "profile", {enableObjectives = true, objectiveFilterDistance = 0})
+            replace(QuestieSmazak, "Warning", spy.new(function() end))
+            replace(QuestieSmazak.db, "profile", {enableObjectives = true, objectiveFilterDistance = 0})
             replace(ZoneDB, "GetUiMapIdByAreaId", function(_, area) if area == 1537 then return 1455 end end)
             replace(ZoneDB, "GetDungeonLocation", function() return entrances end)
-            replace(QuestieLoader:ImportModule("Phasing"), "IsSpawnVisible", function() return true end)
-            replace(QuestieLoader:ImportModule("QuestieTooltips"), "RegisterObjectiveTooltip", function() end)
-            replace(QuestieLoader:ImportModule("QuestieLib"), "Euclid", function() return 0 end)
+            replace(QuestieSmazakLoader:ImportModule("Phasing"), "IsSpawnVisible", function() return true end)
+            replace(QuestieSmazakLoader:ImportModule("QuestieTooltips"), "RegisterObjectiveTooltip", function() end)
+            replace(QuestieSmazakLoader:ImportModule("QuestieLib"), "Euclid", function() return 0 end)
             replace(QuestieMap, "DrawWorldIcon", function(_, data, area, x, y)
                 draws[#draws + 1] = {area, x, y, data.ObjectiveTargetId}
                 return {}, {}
             end)
             dofile("Modules/Quest/QuestieQuest.lua")
-            QuestieQuest = QuestieLoader:ImportModule("QuestieQuest")
+            QuestieQuest = QuestieSmazakLoader:ImportModule("QuestieQuest")
         end)
 
         after_each(function()
@@ -1034,7 +1034,7 @@ describe("QuestieQuest", function()
 
             assert.are.same({{1537, 27.63, 47.83, 673474}}, draws)
             assert.are.equal(1, #objective.AlreadySpawned[673474].mapRefs)
-            assert.spy(Questie.Warning).was.not_called()
+            assert.spy(QuestieSmazak.Warning).was.not_called()
         end)
 
         it("keeps both entrances and their frame references", function()
@@ -1051,7 +1051,7 @@ describe("QuestieQuest", function()
             populate()
 
             assert.are.same({}, draws)
-            assert.spy(Questie.Warning).was.called_with("[QuestieQuest] Cannot draw quest", 96403, "target", 673474,
+            assert.spy(QuestieSmazak.Warning).was.called_with("[QuestieQuest] Cannot draw quest", 96403, "target", 673474,
                 "area", 16919, "missing dungeon entrance or UiMap mapping")
         end)
 
@@ -1059,7 +1059,7 @@ describe("QuestieQuest", function()
             local quest, objective, acceptance
 
             before_each(function()
-                replace(Questie.db, "profile", {enableObjectives = true, objectiveFilterDistance = 0, enableIconLimit = false})
+                replace(QuestieSmazak.db, "profile", {enableObjectives = true, objectiveFilterDistance = 0, enableIconLimit = false})
                 local spawns = {}
                 for index = 1, 100 do
                     spawns[index] = {index * 0.5, index * 0.5}
@@ -1177,14 +1177,14 @@ describe("QuestieQuest", function()
         local QuestieCompat
 
         before_each(function()
-            QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
-            Questie.db.profile = Questie.db.profile or {}
-            Questie.db.char.AutoUntrackedQuests = {}
-            Questie.db.char.TrackedQuests = {}
+            QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
+            QuestieSmazak.db.profile = QuestieSmazak.db.profile or {}
+            QuestieSmazak.db.char.AutoUntrackedQuests = {}
+            QuestieSmazak.db.char.TrackedQuests = {}
         end)
 
-        it("defers to the Blizzard watch state when the Questie tracker is disabled", function()
-            Questie.db.profile.trackerEnabled = false
+        it("defers to the Blizzard watch state when the QuestieSmazak tracker is disabled", function()
+            QuestieSmazak.db.profile.trackerEnabled = false
             QuestieCompat.GetQuestLogIndexByID = spy.new(function() return 7 end)
             QuestieCompat.IsQuestWatched = spy.new(function() return false end)
 
@@ -1197,22 +1197,22 @@ describe("QuestieQuest", function()
         end)
 
         it("normalizes a nil watch result to false when the tracker is disabled", function()
-            Questie.db.profile.trackerEnabled = false
+            QuestieSmazak.db.profile.trackerEnabled = false
             QuestieCompat.GetQuestLogIndexByID = spy.new(function() return 0 end)
             QuestieCompat.IsQuestWatched = spy.new(function() return nil end)
 
             assert.is_false(QuestieQuest:IsQuestTracked(123))
         end)
 
-        it("uses Questie's own tables and ignores the watch state when the tracker is enabled", function()
-            Questie.db.profile.trackerEnabled = true
-            Questie.db.profile.autoTrackQuests = true
+        it("uses QuestieSmazak's own tables and ignores the watch state when the tracker is enabled", function()
+            QuestieSmazak.db.profile.trackerEnabled = true
+            QuestieSmazak.db.profile.autoTrackQuests = true
             QuestieCompat.IsQuestWatched = spy.new(function() return false end)
 
             -- autoTrack on and not in AutoUntrackedQuests => tracked
             assert.is_true(QuestieQuest:IsQuestTracked(123))
 
-            Questie.db.char.AutoUntrackedQuests[123] = true
+            QuestieSmazak.db.char.AutoUntrackedQuests[123] = true
             assert.is_false(QuestieQuest:IsQuestTracked(123))
 
             -- the Blizzard watch state must not be consulted while the tracker is enabled

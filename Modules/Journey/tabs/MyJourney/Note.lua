@@ -1,17 +1,17 @@
 ---@type QuestiePopup
-local Popup = QuestieLoader:ImportModule("QuestiePopup")
+local Popup = QuestieSmazakLoader:ImportModule("QuestiePopup")
 
 ---@type QuestieJourney
-local QuestieJourney = QuestieLoader:ImportModule("QuestieJourney")
+local QuestieJourney = QuestieSmazakLoader:ImportModule("QuestieJourney")
 local _QuestieJourney = QuestieJourney.private
 _QuestieJourney.notePopup = nil
 -------------------------
 --Import modules
 -------------------------
 ---@type QuestieJourneyUtils
-local QuestieJourneyUtils = QuestieLoader:ImportModule("QuestieJourneyUtils")
+local QuestieJourneyUtils = QuestieSmazakLoader:ImportModule("QuestieJourneyUtils")
 ---@type l10n
-local l10n = QuestieLoader:ImportModule("l10n")
+local l10n = QuestieSmazakLoader:ImportModule("l10n")
 
 local AceGUI = LibStub("AceGUI-3.0")
 local titleBox, messageBox
@@ -75,7 +75,7 @@ end
 
 _CreateDescription  =function ()
     local desc = AceGUI:Create("Label")
-    desc:SetText(Questie:Colorize(l10n('Create an entry in your journal to remember a specific moment. Simply supply a title and description and Questie will remember it for you!'), 'yellow'))
+    desc:SetText(QuestieSmazak:Colorize(l10n('Create an entry in your journal to remember a specific moment. Simply supply a title and description and QuestieSmazak will remember it for you!'), 'yellow'))
     desc:SetFullWidth(true)
     return desc
 end
@@ -106,7 +106,7 @@ _CreateNoteAddButton = function ()
 end
 
 _HandleNoteEntry = function ()
-    local error = Questie:Colorize('[Questie] ', 'lightBlue')
+    local error = QuestieSmazak:Colorize('[QuestieSmazak] ', 'lightBlue')
     if titleBox:GetText() == '' then
         print (error .. l10n('No Title was entered. You must enter a title before submitting your note.'))
         return
@@ -120,7 +120,7 @@ _HandleNoteEntry = function ()
     data.Title = titleBox:GetText()
     data.Timestamp = time()
 
-    tinsert(Questie.db.char.journey, data)
+    tinsert(QuestieSmazak.db.char.journey, data)
 
     _QuestieJourney.myJourney:ManageTree(_QuestieJourney.treeCache)
     _QuestieJourney.notePopup:Hide()
@@ -128,12 +128,12 @@ end
 
 _DeleteNote = function(noteIndex)
     local success = false
-    if noteIndex and noteIndex > 0 and noteIndex <= #Questie.db.char.journey then
-        local entry = Questie.db.char.journey[noteIndex]
+    if noteIndex and noteIndex > 0 and noteIndex <= #QuestieSmazak.db.char.journey then
+        local entry = QuestieSmazak.db.char.journey[noteIndex]
         if entry and entry.Event == "Note" then
-            table.remove(Questie.db.char.journey, noteIndex)
+            table.remove(QuestieSmazak.db.char.journey, noteIndex)
             success = true
-            Questie:Print(l10n('Note deleted successfully'))
+            QuestieSmazak:Print(l10n('Note deleted successfully'))
             if _QuestieJourney.myJourney and _QuestieJourney.treeCache then
                 _QuestieJourney.myJourney:ManageTree(_QuestieJourney.treeCache)
             end
@@ -156,9 +156,9 @@ Popup.Dialogs["QUESTIE_DELETE_NOTE_CONFIRM"] = {
         local noteIndex = self.data
         local confirmText = l10n("Are you sure you want to delete this note?")
         if noteIndex then
-            local entry = Questie.db.char.journey[noteIndex]
+            local entry = QuestieSmazak.db.char.journey[noteIndex]
             if entry and entry.Event == "Note" then
-                confirmText = confirmText .. "\n\n" .. Questie:Colorize(entry.Title, 'yellow')
+                confirmText = confirmText .. "\n\n" .. QuestieSmazak:Colorize(entry.Title, 'yellow')
             end
         end
         self.Text:SetText(confirmText)

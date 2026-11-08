@@ -1,14 +1,14 @@
 ---@type QuestieCompat
-local QuestieCompat = QuestieLoader:ImportModule("QuestieCompat")
+local QuestieCompat = QuestieSmazakLoader:ImportModule("QuestieCompat")
 ---@type QuestieCombatQueue
-local QuestieCombatQueue = QuestieLoader:ImportModule("QuestieCombatQueue")
+local QuestieCombatQueue = QuestieSmazakLoader:ImportModule("QuestieCombatQueue")
 
 ---Play button for the Spoken addon. Spoken_Quests exposes its environment as the VoiceOver global.
 ---@class SpokenPlayButton
-local SpokenPlayButton = QuestieLoader:CreateModule("SpokenPlayButton")
+local SpokenPlayButton = QuestieSmazakLoader:CreateModule("SpokenPlayButton")
 
-local PLAY_TEXTURE = "Interface\\Addons\\Questie\\Icons\\QuestLogPlayButton"
-local STOP_TEXTURE = "Interface\\Addons\\Questie\\Icons\\QuestLogStopButton"
+local PLAY_TEXTURE = "Interface\\Addons\\QuestieSmazak\\Icons\\QuestLogPlayButton"
+local STOP_TEXTURE = "Interface\\Addons\\QuestieSmazak\\Icons\\QuestLogStopButton"
 
 ---@type Button[]
 local playButtons = {}
@@ -36,7 +36,7 @@ local function _Toggle(playButton)
             title = QuestieCompat.GetQuestLogTitle(QuestieCompat.GetQuestLogIndexByID(questId)) or "",
             unitGUID = giverId and VoiceOver.Enums.GUID:CanHaveID(giverType) and VoiceOver.Utils:MakeGUID(giverType, giverId) or nil,
             unitIsObjectOrItem = giverId ~= nil and (not VoiceOver.Enums.GUID:IsCreature(giverType)),
-            origin = "Questie's tracker Play button",
+            origin = "QuestieSmazak's tracker Play button",
         }
         VoiceOver.Player:PlayNow(soundData)
     end
@@ -82,13 +82,13 @@ end
 ---@param parent TrackerLineFrame
 ---@return Button
 function SpokenPlayButton.New(index, parent)
-    local playButton = CreateFrame("Button", "linePool.playButton" .. index, parent)
+    local playButton = CreateFrame("Button", "QuestieSmazaklinePool.playButton" .. index, parent)
     playButton:SetFrameLevel(100)
     playButton:SetNormalTexture(PLAY_TEXTURE)
     playButton:SetHighlightTexture("Interface\\BUTTONS\\UI-Panel-MinimizeButton-Highlight")
 
     function playButton:SetPlayButton(questId)
-        if questId and Questie.db.profile.trackerShowPlayButtons and Spoken:IsPartOn("quests") and _HasSound(questId) then
+        if questId and QuestieSmazak.db.profile.trackerShowPlayButtons and Spoken:IsPartOn("quests") and _HasSound(questId) then
             self.mode = questId
             _UpdateTexture(self)
             self:Show()

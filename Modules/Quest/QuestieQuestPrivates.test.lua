@@ -7,10 +7,10 @@ describe("QuestieQuestPrivates", function()
     local _QuestieQuest
 
     before_each(function()
-        QuestieDB = QuestieLoader:ImportModule("QuestieDB")
-        QuestieLoader:ImportModule("QuestieCorrections").questNPCBlacklist = {}
+        QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
+        QuestieSmazakLoader:ImportModule("QuestieCorrections").questNPCBlacklist = {}
         dofile("Modules/Quest/QuestieQuestPrivates.lua")
-        _QuestieQuest = QuestieLoader:ImportModule("QuestieQuest").private
+        _QuestieQuest = QuestieSmazakLoader:ImportModule("QuestieQuest").private
     end)
 
     describe("item", function()

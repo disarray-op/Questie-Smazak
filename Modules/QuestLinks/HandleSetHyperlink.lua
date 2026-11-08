@@ -1,9 +1,9 @@
 ---@class HandleSetHyperlink
-local HandleSetHyperlink = QuestieLoader:CreateModule("HandleSetHyperlink")
+local HandleSetHyperlink = QuestieSmazakLoader:CreateModule("HandleSetHyperlink")
 ---@type QuestieLink
-local QuestieLink = QuestieLoader:ImportModule("QuestieLink")
+local QuestieLink = QuestieSmazakLoader:ImportModule("QuestieLink")
 ---@type QuestieDB
-local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+local QuestieDB = QuestieSmazakLoader:ImportModule("QuestieDB")
 
 ---Used to track the last questId that was displayed in the ItemRefTooltip. This is used to
 ---detect repeated clicks on the same quest link, which should close the tooltip.
@@ -23,7 +23,7 @@ function HandleSetHyperlink.Run(self, fallbackHandler, link, ...)
 end
 
 --- Link handler for LinkUtil.RegisterLinkHandler. Blizzard's SetItemRef calls it before
---- ItemRefTooltip:SetHyperlink, so Questie doesn't need to replace SetHyperlink.
+--- ItemRefTooltip:SetHyperlink, so QuestieSmazak doesn't need to replace SetHyperlink.
 ---@param link string
 ---@return number @LinkProcessorResponse
 function HandleSetHyperlink.ProcessLink(link)
@@ -41,12 +41,12 @@ function HandleSetHyperlink.ProcessLink(link)
     return LinkProcessorResponse.Unhandled
 end
 
---- Shows the Questie quest tooltip in the ItemRefTooltip for questie and native quest links.
+--- Shows the QuestieSmazak quest tooltip in the ItemRefTooltip for questie and native quest links.
 ---@param link string
 ---@return boolean @true if the link was handled
 function HandleSetHyperlink.TryShowQuestTooltip(link)
-    -- If Questie hasn't started yet, let the default handler take over to avoid accessing uninitialized DB
-    if (not Questie.started) then
+    -- If QuestieSmazak hasn't started yet, let the default handler take over to avoid accessing uninitialized DB
+    if (not QuestieSmazak.started) then
         return false
     end
 
@@ -81,7 +81,7 @@ function HandleSetHyperlink.TryShowQuestTooltip(link)
         lastItemRefTooltip = nil
     end
 
-    Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieTooltips:ItemRefTooltip] SetHyperlink:", link)
+    QuestieSmazak.Debug(QuestieSmazak.DEBUG_DEVELOP, "[QuestieTooltips:ItemRefTooltip] SetHyperlink:", link)
     ShowUIPanel(ItemRefTooltip)
     ItemRefTooltip:SetOwner(UIParent, "ANCHOR_PRESERVE");
     ItemRefTooltip:ClearLines()
